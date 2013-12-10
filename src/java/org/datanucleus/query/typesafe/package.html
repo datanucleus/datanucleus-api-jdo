@@ -1,0 +1,20 @@
+<BODY>
+    Package providing a typesafe query mechanism, primarily for JDO.
+    Fields/Params/Vars of a persistable type are represented as <i>PathExpression</i>. This type is extended
+    by all "Q" classes, to provide access to persistable fields.
+    Fields/Params/Vars of a container type are represented as <i>CollectionExpression</i>, <i>MapExpression</i>
+    Fields/Params/Vars of other types, or literals are represented by
+    <ul>
+        <li>StringExpression</li>
+        <li>EnumExpression</li>
+        <li>NumericExpression</li>
+        <li>BooleanExpression</li>
+        <li>ByteExpression</li>
+        <li>CharacterExpression</li>
+        <li>DateExpression</li>
+        <li>ObjectExpression</li>
+    </ul>
+    <p>
+        This package is likely to be renamed "javax.jdo.query" in the future when it makes its way into JDO.
+    </p>
+</BODY>

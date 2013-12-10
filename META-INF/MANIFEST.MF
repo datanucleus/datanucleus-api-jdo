@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DataNucleus JDO API
+Bundle-SymbolicName: org.datanucleus.api.jdo;singleton:=true
+Bundle-Vendor: DataNucleus
+Bundle-Version: 3.2.6
+Require-Bundle: org.datanucleus;bundle-version="3.2.9"
+Import-Package: javax.jdo;version="3.0.0",
+ javax.jdo.annotations;version="3.0.0",
+ javax.jdo.datastore;version="3.0.0",
+ javax.jdo.identity;version="3.0.0",
+ javax.jdo.listener;version="3.0.0",
+ javax.jdo.metadata;version="3.0.0",
+ javax.jdo.spi;version="3.0.0",
+ javax.naming;resolution:=optional,
+ javax.naming.spi;resolution:=optional,
+ javax.transaction;version="1.1.0";resolution:=optional,
+ javax.transaction.xa;version="1.1.0";resolution:=optional,
+ org.xml.sax;resolution:=optional
+Export-Package: org.datanucleus.api.jdo;version="3.2.6",
+ org.datanucleus.api.jdo.exceptions;version="3.2.6",
+ org.datanucleus.api.jdo.metadata;version="3.2.6",
+ org.datanucleus.api.jdo.query;version="3.2.6",
+ org.datanucleus.api.jdo.state;version="3.2.6",
+ org.datanucleus.query.typesafe;version="3.2.6"
