@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.datanucleus</groupId>
         <artifactId>datanucleus-maven-parent</artifactId>
-        <version>3.3-SNAPSHOT</version>
+        <version>3.3</version>
     </parent>
     
     <artifactId>datanucleus-api-jdo</artifactId>
     <version>3.2.7-SNAPSHOT</version>
-    
+
     <name>DataNucleus JDO API plugin</name>
     <description>
         Plugin providing DataNucleus implementation of the JDO API.
@@ -21,12 +21,12 @@
         <url>scm:git:git://github.com/datanucleus/datanucleus-api-jdo.git</url>
         <developerConnection>scm:git:git://github.com/datanucleus/datanucleus-api-jdo.git</developerConnection>
     </scm>
-    
+
     <properties>
         <jdo.version>3.0</jdo.version>
         <dn.core.version>3.2.9</dn.core.version>
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
