@@ -1260,18 +1260,18 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     {
         if (queryString == null)
         {
-            StringBuffer str = null;
+            StringBuilder str = null;
             if (type == QueryType.BULK_UPDATE)
             {
-                str = new StringBuffer("UPDATE");
+                str = new StringBuilder("UPDATE");
             }
             else if (type == QueryType.BULK_DELETE)
             {
-                str = new StringBuffer("DELETE");
+                str = new StringBuilder("DELETE");
             }
             else
             {
-                str = new StringBuffer("SELECT");
+                str = new StringBuilder("SELECT");
             }
 
             if (type == QueryType.SELECT)
