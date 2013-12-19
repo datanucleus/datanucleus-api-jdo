@@ -720,11 +720,11 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param obj The object to persist
      * @throws JDOUserException thrown if the object could not be persisted
      */
-    private Object jdoMakePersistent(Object obj)
+    private <T> T jdoMakePersistent(T obj)
     {
         try
         {
-            return ec.persistObject(obj, false);
+            return (T) ec.persistObject(obj, false);
         }
         catch (NucleusException ne)
         {
@@ -739,7 +739,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param obj The object
      * @return The persisted object
      */
-    public Object makePersistent(Object obj)
+    public <T> T makePersistent(T obj)
     {
         assertIsOpen();
         assertWritable();
@@ -756,9 +756,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * JDO method to make persistent an array of objects.
      * @param pcs The objects to persist
      */
-    public Object[] makePersistentAll(Object... pcs)
+    public <T> T[] makePersistentAll(T... pcs)
     {
-        return makePersistentAll(Arrays.asList(pcs)).toArray();
+        return (T[]) makePersistentAll(Arrays.asList(pcs)).toArray();
     }
 
     /**
@@ -766,7 +766,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * Throws a JDOUserException if objects could not be made persistent.
      * @param pcs The objects to persist
      */
-    public Collection makePersistentAll(Collection pcs)
+    public <T> Collection<T> makePersistentAll(Collection<T> pcs)
     {
         assertIsOpen();
         assertWritable();
@@ -1134,12 +1134,12 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param state DetachState
      * @throws JDOUserException thrown if the object could not be detached
      */
-    private Object jdoDetachCopy(Object obj, FetchPlanState state)
+    private <T> T jdoDetachCopy(T obj, FetchPlanState state)
     {
         ec.assertClassPersistable(obj.getClass());
         try
         {
-            return ec.detachObjectCopy(obj, state);
+            return (T) ec.detachObjectCopy(obj, state);
         }
         catch (NucleusException ne)
         {
@@ -1155,7 +1155,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param pc The object
      * @return The detached object
      */
-    public Object detachCopy(Object pc)
+    public <T> T detachCopy(T pc)
     {
         assertIsOpen();
         if (pc == null)
@@ -1189,9 +1189,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param pcs the instances to detach
      * @return the detached instances
      */
-    public Object[] detachCopyAll(Object... pcs)
+    public <T> T[] detachCopyAll(T... pcs)
     {
-        return detachCopyAll(Arrays.asList(pcs)).toArray();
+        return (T[]) detachCopyAll(Arrays.asList(pcs)).toArray();
     }
 
     /**
@@ -1200,7 +1200,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @return the detached instances
      * @see #detachCopyAll(Object[])
      */
-    public Collection detachCopyAll(Collection pcs)
+    public <T> Collection<T> detachCopyAll(Collection<T> pcs)
     {
         assertIsOpen();
         assertReadable("detachCopyAll");
@@ -1552,7 +1552,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * parameter class, and if the subclasses flag is true, all of the instances
      * of the parameter class and its subclasses.
      */
-    public Extent getExtent(Class pcClass, boolean subclasses)
+    public <T> Extent<T> getExtent(Class<T> pcClass, boolean subclasses)
     {
         assertIsOpen();
         try
@@ -1576,7 +1576,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * parameter class, and all of the instances of the parameter class and its
      * subclasses.
      */
-    public Extent getExtent(Class pcClass)
+    public <T> Extent<T> getExtent(Class<T> pcClass)
     {
         return getExtent(pcClass, true);
     }
@@ -1588,12 +1588,12 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param pc The class of the interface or abstract class, or concrete class defined in MetaData
      * @return The instance of this type
      */
-    public Object newInstance(Class pc)
+    public <T> T newInstance(Class<T> pc)
     {
         assertIsOpen();
         try
         {
-            return ec.newInstance(pc);
+            return (T) ec.newInstance(pc);
         }
         catch (NucleusException ne)
         {
@@ -1735,9 +1735,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param key Value of the key field for SingleFieldIdentity, or the string value of the key otherwise
      * @return The object for this id.
      */
-    public Object getObjectById(Class cls, Object key)
+    public <T> T getObjectById(Class<T> cls, Object key)
     {
-        return getObjectById(newObjectIdInstance (cls, key), true);
+        return (T) getObjectById(newObjectIdInstance (cls, key), true);
     }
 
     /**

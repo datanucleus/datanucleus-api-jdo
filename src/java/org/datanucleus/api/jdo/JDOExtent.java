@@ -25,8 +25,9 @@ import javax.jdo.PersistenceManager;
 
 /**
  * Wrapper implementation of a JDO Extent.
+ * @param <E> type that this Extent is for.
  */
-public class JDOExtent implements Extent
+public class JDOExtent<E> implements Extent<E>
 {
     /** Underlying PersistenceManager. */
     PersistenceManager pm;
@@ -70,7 +71,7 @@ public class JDOExtent implements Extent
      * Accessor for the candidate class of the Extent.
      * @return Candidate class
      */
-    public Class getCandidateClass()
+    public Class<E> getCandidateClass()
     {
         return extent.getCandidateClass();
     }
@@ -115,7 +116,7 @@ public class JDOExtent implements Extent
      * Accessor for an iterator for this Extent.
      * @return The iterator
      */
-    public Iterator iterator()
+    public Iterator<E> iterator()
     {
         return extent.iterator();
     }
