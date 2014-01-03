@@ -77,6 +77,7 @@ import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.exceptions.TransactionActiveOnCloseException;
 import org.datanucleus.identity.SCOID;
 import org.datanucleus.metadata.AbstractClassMetaData;
+import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ExtensionMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
@@ -94,6 +95,7 @@ import org.datanucleus.store.NucleusSequence;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
+import org.datanucleus.util.TypeConversionHelper;
 
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the
@@ -1737,6 +1739,27 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T getObjectById(Class<T> cls, Object key)
     {
+        if (ec.getNucleusContext().getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
+        {
+            AbstractClassMetaData acmd = ec.getMetaDataManager().getMetaDataForClass(cls, ec.getClassLoaderResolver());
+            if (acmd != null && acmd.getIdentityType() == IdentityType.APPLICATION)
+            {
+                String[] pkNames = acmd.getPrimaryKeyMemberNames();
+                AbstractMemberMetaData mmd = acmd.getMetaDataForMember(pkNames[0]);
+                if (key instanceof Long && mmd.getType() != Long.class)
+                {
+                    key = TypeConversionHelper.convertTo(key, mmd.getType());
+                }
+                else if (key instanceof Integer && mmd.getType() != Integer.class)
+                {
+                    key = TypeConversionHelper.convertTo(key, mmd.getType());
+                }
+                else if (key instanceof Short && mmd.getType() != Short.class)
+                {
+                    key = TypeConversionHelper.convertTo(key, mmd.getType());
+                }
+            }
+        }
         return (T) getObjectById(newObjectIdInstance (cls, key), true);
     }
 

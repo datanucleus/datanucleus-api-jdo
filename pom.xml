@@ -24,7 +24,7 @@
 
     <properties>
         <jdo.version>3.0</jdo.version>
-        <dn.core.version>3.2.9</dn.core.version>
+        <dn.core.version>3.2.12-SNAPSHOT</dn.core.version>
     </properties>
 
     <build>
