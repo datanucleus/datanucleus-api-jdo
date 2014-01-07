@@ -7,3 +7,11 @@ This is built using Maven, by executing `mvn clean install` which installs the b
 repository.
 
 Please refer to http://www.datanucleus.org/plugins/api.jdo.html  for more information.
+
+License
+-------
+Apache 2 licensed
+
+Issue Tracker
+-------------
+http://www.datanucleus.org/servlet/jira/browse/NUCAPIJDO
