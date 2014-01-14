@@ -378,6 +378,75 @@ public class JDOTransaction implements Transaction
     }
 
     /**
+     * Method to mark the current point as a savepoint with the provided name.
+     * @param name Name of the savepoint.
+     * @throws UnsupportedOperationException if the underlying datastore doesn't support savepoints
+     * @throws IllegalStateException if no name is provided
+     */
+    public void setSavepoint(String name)
+    {
+        if (name == null)
+        {
+            throw new IllegalStateException("No savepoint name provided so cannot set savepoint");
+        }
+        if (tx.isActive())
+        {
+            // TODO Implement in DN 4.0
+            throw new UnsupportedOperationException("Dont currently support savepoints");
+        }
+        else
+        {
+            throw new IllegalStateException("No active transaction so cannot set savepoint");
+        }
+    }
+
+    /**
+     * Method to mark the current point as a savepoint with the provided name.
+     * @param name Name of the savepoint.
+     * @throws UnsupportedOperationException if the underlying datastore doesn't support savepoints
+     * @throws IllegalStateException if no name is provided, or the name doesn't correspond to a known savepoint
+     */
+    public void releaseSavepoint(String name)
+    {
+        if (name == null)
+        {
+            throw new IllegalStateException("No savepoint name provided so cannot release savepoint");
+        }
+        if (tx.isActive())
+        {
+            // TODO Implement in DN 4.0
+            throw new UnsupportedOperationException("Dont currently support savepoints");
+        }
+        else
+        {
+            throw new IllegalStateException("No active transaction so cannot release a savepoint");
+        }
+    }
+
+    /**
+     * Method to mark the current point as a savepoint with the provided name.
+     * @param name Name of the savepoint.
+     * @throws UnsupportedOperationException if the underlying datastore doesn't support savepoints
+     * @throws IllegalStateException if no name is provided, or the name doesn't correspond to a known savepoint
+     */
+    public void rollbackToSavepoint(String name)
+    {
+        if (name == null)
+        {
+            throw new IllegalStateException("No savepoint name provided so cannot rollback to savepoint");
+        }
+        if (tx.isActive())
+        {
+            // TODO Implement in DN 4.0
+            throw new UnsupportedOperationException("Dont currently support savepoints");
+        }
+        else
+        {
+            throw new IllegalStateException("No active transaction so cannot rollback to savepoint");
+        }
+    }
+
+    /**
      * Throw an Exception if the underlying transaction is currently committing.
      */
     protected void assertNotCommitting()
