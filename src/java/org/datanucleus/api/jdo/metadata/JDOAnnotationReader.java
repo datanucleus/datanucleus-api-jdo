@@ -308,6 +308,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             pkmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
                         }
                     }
+                    JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[])annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.JOINS))
                 {
@@ -533,6 +534,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] columns = (Column[])annotationValues.get("columns");
 
                     IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[])annotationValues.get("extensions"));
                     if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(LOCALISER.msg("044204", cls.getName()));
@@ -575,6 +577,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] columns = (Column[])annotationValues.get("columns");
 
                     UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[])annotationValues.get("extensions"));
                     if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(LOCALISER.msg("044205", cls.getName()));
@@ -626,6 +629,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                     ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, 
                         deleteAction, updateAction, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[])annotationValues.get("extensions"));
                     if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(LOCALISER.msg("044206", cls.getName()));
@@ -1578,6 +1582,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] columns = (Column[])annotationValues.get("columns");
 
                     idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[])annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.UNIQUE))
                 {
@@ -1589,6 +1594,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] columns = (Column[])annotationValues.get("columns");
 
                     unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[])annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
                 {
@@ -1606,6 +1612,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                     fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction,
                         members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[])annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
                 {
