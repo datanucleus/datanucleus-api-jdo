@@ -226,6 +226,18 @@ public class JDOMetaDataManager extends MetaDataManager
     }
 
     /**
+     * Convenience method to allow the unloading of metadata, for example where the user wants to reload a class definition
+     * and that class maybe has different metadata with the new definition.
+     * @param className Name of the class
+     */
+    public void unloadMetaDataForClass(String className)
+    {
+        super.unloadMetaDataForClass(className);
+
+        ormClassMetaDataByClass.remove(className);
+    }
+
+    /**
      * Utility to parse a file, using the "jdo" MetaData handler.
      * @param fileURL URL of the file
      * @return The FileMetaData for this file
