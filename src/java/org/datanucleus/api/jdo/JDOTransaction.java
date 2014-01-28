@@ -466,12 +466,6 @@ public class JDOTransaction implements Transaction
         {
             throw new TransactionActiveException(this);
         }
-
-        // TODO How to get the Connection now that it is not in the txn ?
-/*        if (conn != null)
-        {
-            throw new ConnectionInUseException();
-        }*/
     }
 
     /**
