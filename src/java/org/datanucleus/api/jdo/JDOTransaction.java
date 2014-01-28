@@ -391,8 +391,7 @@ public class JDOTransaction implements Transaction
         }
         if (tx.isActive())
         {
-            // TODO Implement in DN 4.0
-            throw new UnsupportedOperationException("Dont currently support savepoints");
+            tx.setSavepoint(name);
         }
         else
         {
@@ -414,8 +413,7 @@ public class JDOTransaction implements Transaction
         }
         if (tx.isActive())
         {
-            // TODO Implement in DN 4.0
-            throw new UnsupportedOperationException("Dont currently support savepoints");
+            tx.releaseSavepoint(name);
         }
         else
         {
@@ -437,8 +435,7 @@ public class JDOTransaction implements Transaction
         }
         if (tx.isActive())
         {
-            // TODO Implement in DN 4.0
-            throw new UnsupportedOperationException("Dont currently support savepoints");
+            tx.rollbackToSavepoint(name);
         }
         else
         {
