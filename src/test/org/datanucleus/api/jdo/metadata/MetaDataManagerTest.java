@@ -23,7 +23,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.datanucleus.NucleusContext;
+import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 
 /**
@@ -45,7 +45,7 @@ public class MetaDataManagerTest extends TestCase
      */
     public void testLocationsForPackage()
     {
-        JDOMetaDataManager mgr = new JDOMetaDataManager(new NucleusContext("JDO", null));
+        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", null));
 
         // Try typical JDO package name
         String packageName = "org.jpox.samples";
@@ -107,7 +107,7 @@ public class MetaDataManagerTest extends TestCase
      */
     public void testLocationsForClass()
     {
-        JDOMetaDataManager mgr = new JDOMetaDataManager(new NucleusContext("JDO", null));
+        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", null));
 
         // Try typical JDO class name
         String className = "org.jpox.samples.store.Product";

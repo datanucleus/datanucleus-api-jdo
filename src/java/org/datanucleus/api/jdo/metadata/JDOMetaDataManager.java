@@ -32,9 +32,11 @@ import javax.jdo.spi.RegisterClassListener;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.NucleusContext;
-import org.datanucleus.PersistenceConfiguration;
+import org.datanucleus.Configuration;
+import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.enhancer.EnhancementNucleusContextImpl;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.ClassMetaData;
@@ -119,9 +121,9 @@ public class JDOMetaDataManager extends MetaDataManager
 
         // Do we want to use the JDO class initialisation listener ?
         boolean useMetadataListener = false;
-        PersistenceConfiguration conf = ctxt.getPersistenceConfiguration();
+        Configuration conf = ctxt.getConfiguration();
         if (conf.getStringProperty(PropertyNames.PROPERTY_PERSISTENCE_UNIT_NAME) == null &&
-            ctxt.getType() == NucleusContext.ContextType.PERSISTENCE &&
+            ctxt instanceof PersistenceNucleusContextImpl &&
             conf.getBooleanProperty(PropertyNames.PROPERTY_METADATA_AUTOREGISTER))
         {
             useMetadataListener = true;
@@ -674,7 +676,7 @@ public class JDOMetaDataManager extends MetaDataManager
      */
     public void addORMDataToClass(Class c, ClassLoaderResolver clr)
     {
-        if (getNucleusContext().getType() == NucleusContext.ContextType.ENHANCEMENT)
+        if (getNucleusContext() instanceof EnhancementNucleusContextImpl)
         {
             // We don't need ORM data when enhancing
             return;
@@ -978,7 +980,7 @@ public class JDOMetaDataManager extends MetaDataManager
      */
     private String getORMMappingName()
     {
-        String mappingName = nucleusContext.getPersistenceConfiguration().getStringProperty(PropertyNames.PROPERTY_MAPPING);
+        String mappingName = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_MAPPING);
         return (StringUtils.isWhitespace(mappingName) ? null : mappingName);
     }
 
@@ -988,7 +990,7 @@ public class JDOMetaDataManager extends MetaDataManager
      */
     private String getJDOFileSuffix()
     {
-        String suffix = nucleusContext.getPersistenceConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_JDO_SUFFIX);
+        String suffix = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_JDO_SUFFIX);
         return (StringUtils.isWhitespace(suffix) ? "jdo" : suffix);
     }
 
@@ -998,7 +1000,7 @@ public class JDOMetaDataManager extends MetaDataManager
      */
     private String getORMFileSuffix()
     {
-        String suffix = nucleusContext.getPersistenceConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_ORM_SUFFIX);
+        String suffix = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_ORM_SUFFIX);
         return (StringUtils.isWhitespace(suffix) ? "orm" : suffix);
     }
 
@@ -1008,7 +1010,7 @@ public class JDOMetaDataManager extends MetaDataManager
      */
     private String getJDOQueryFileSuffix()
     {
-        String suffix = nucleusContext.getPersistenceConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_JDOQUERY_SUFFIX);
+        String suffix = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_METADATA_JDOQUERY_SUFFIX);
         return (StringUtils.isWhitespace(suffix) ? "jdoquery" : suffix);
     }
 

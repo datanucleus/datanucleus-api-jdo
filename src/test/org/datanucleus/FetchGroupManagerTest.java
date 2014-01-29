@@ -25,7 +25,7 @@ public class FetchGroupManagerTest extends TestCase
 {
     public void testAddFetchGroup()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         FetchGroup fg = fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         fgmgr.addFetchGroup(fg);
@@ -34,7 +34,7 @@ public class FetchGroupManagerTest extends TestCase
 
     public void testRemoveFetchGroup()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         FetchGroup fg = fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         fgmgr.addFetchGroup(fg);
@@ -43,7 +43,7 @@ public class FetchGroupManagerTest extends TestCase
 
     public void testCreateFetchGroup()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         FetchGroup fg = fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         assertEquals("fg1",fg.getName());
@@ -52,7 +52,7 @@ public class FetchGroupManagerTest extends TestCase
 
     public void testGetFetchGroupsWithName()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         FetchGroup fg = fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         fgmgr.addFetchGroup(fg);
@@ -61,7 +61,7 @@ public class FetchGroupManagerTest extends TestCase
 
     public void testClearFetchGroups()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         fgmgr.clearFetchGroups();
@@ -69,7 +69,7 @@ public class FetchGroupManagerTest extends TestCase
 
     public void testMultithreadedAccess()
     {
-        NucleusContext ctx = new NucleusContext("JDO", null);
+        NucleusContext ctx = new PersistenceNucleusContextImpl("JDO", null);
         final FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         Thread[] threads = new Thread[300];
         final AtomicInteger counter = new AtomicInteger();

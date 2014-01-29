@@ -61,10 +61,12 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 
+import org.datanucleus.AbstractNucleusContext;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.NucleusContext;
-import org.datanucleus.PersistenceConfiguration;
+import org.datanucleus.PersistenceNucleusContext;
+import org.datanucleus.PersistenceNucleusContextImpl;
+import org.datanucleus.Configuration;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.metadata.ClassMetadataImpl;
 import org.datanucleus.api.jdo.metadata.InterfaceMetadataImpl;
@@ -112,7 +114,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     private static ConcurrentHashMap<String, JDOPersistenceManagerFactory> pmfByName;
 
     /** The context that this factory uses. TODO Ought to be serializable, or able to recreate. */
-    protected transient NucleusContext nucleusContext;
+    protected transient PersistenceNucleusContext nucleusContext;
 
     /** The cache of PM's in use. */
     private transient Set<JDOPersistenceManager> pmCache = new HashSet<JDOPersistenceManager>();
@@ -380,7 +382,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
     	// Initialise the context with all properties
-        nucleusContext = new NucleusContext("JDO", props);
+        nucleusContext = new PersistenceNucleusContextImpl("JDO", props);
 
         initialiseMetaData(pumd);
 
@@ -399,7 +401,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (props != null)
         {
             // Possible properties to check for
-            for (String startupPropName : NucleusContext.STARTUP_PROPERTIES)
+            for (String startupPropName : AbstractNucleusContext.STARTUP_PROPERTIES)
             {
                 if (props.containsKey(startupPropName))
                 {
@@ -413,7 +415,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         // Initialise the context for JDO (need nucleusContext to load persistence-unit)
-        nucleusContext = new NucleusContext("JDO", startupProps);
+        nucleusContext = new PersistenceNucleusContextImpl("JDO", startupProps);
 
         // Generate the properties to apply to the PMF
         Map pmfProps = new HashMap();
@@ -729,7 +731,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
         // Turn off loading of metadata from here if required
         boolean allowMetadataLoad =
-            nucleusContext.getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_LOAD_AT_RUNTIME);
+            nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_LOAD_AT_RUNTIME);
         if (!allowMetadataLoad)
         {
             nucleusContext.getMetaDataManager().setAllowMetaDataLoad(false);
@@ -749,7 +751,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             try
             {
                 m = JDOImplHelper.class.getDeclaredMethod("assertOnlyKnownStandardProperties", new Class[] {Map.class});
-                m.invoke(null, nucleusContext.getPersistenceConfiguration().getPersistenceProperties());
+                m.invoke(null, nucleusContext.getConfiguration().getPersistenceProperties());
             }
             catch (InvocationTargetException ite)
             {
@@ -849,7 +851,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      * Gets the context for this PMF
      * @return Returns the context.
      */
-    public NucleusContext getNucleusContext()
+    public PersistenceNucleusContext getNucleusContext()
     {
         return nucleusContext;
     }
@@ -858,9 +860,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      * Accessor for the persistence configuration.
      * @return Returns the configuration.
      */
-    protected PersistenceConfiguration getConfiguration()
+    protected Configuration getConfiguration()
     {
-        return nucleusContext.getPersistenceConfiguration();
+        return nucleusContext.getConfiguration();
     }
 
     /**
@@ -1081,7 +1083,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         props.setProperty("VersionNumber", nucleusContext.getPluginManager().getVersionForBundle("org.datanucleus.api.jdo"));
 
         // Add all properties from the persistence configuration
-        props.putAll(nucleusContext.getPersistenceConfiguration().getPersistenceProperties());
+        props.putAll(nucleusContext.getConfiguration().getPersistenceProperties());
 
         return props;
     }
@@ -1988,7 +1990,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void addInstanceLifecycleListener(InstanceLifecycleListener listener, Class[] classes)
     {
-        boolean allowListeners = getNucleusContext().getPersistenceConfiguration().getBooleanProperty(
+        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty(
             "datanucleus.allowListenerUpdateAfterInit", false);
         if (!allowListeners)
         {
@@ -2030,7 +2032,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void removeInstanceLifecycleListener(InstanceLifecycleListener listener)
     {
-        boolean allowListeners = getNucleusContext().getPersistenceConfiguration().getBooleanProperty(
+        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty(
             "datanucleus.allowListenerUpdateAfterInit", false);
         if (!allowListeners)
         {
@@ -2350,7 +2352,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     private void writeObject(ObjectOutputStream oos) throws IOException 
     {
         oos.defaultWriteObject();
-        oos.writeObject(nucleusContext.getPersistenceConfiguration().getPersistenceProperties());
+        oos.writeObject(nucleusContext.getConfiguration().getPersistenceProperties());
     }
 
     private Map<String, Object> deserialisationProps = null;
@@ -2390,7 +2392,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             pmCache = new HashSet<JDOPersistenceManager>();
         }
-        nucleusContext = new NucleusContext("JDO", deserialisationProps);
+        nucleusContext = new PersistenceNucleusContextImpl("JDO", deserialisationProps);
         PersistenceUnitMetaData pumd = null;
         if (getPersistenceUnitName() != null)
         {

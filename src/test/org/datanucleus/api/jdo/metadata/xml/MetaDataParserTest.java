@@ -21,6 +21,7 @@ package org.datanucleus.api.jdo.metadata.xml;
 import junit.framework.TestCase;
 
 import org.datanucleus.NucleusContext;
+import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.xml.MetaDataParser;
@@ -29,7 +30,7 @@ public class MetaDataParserTest extends TestCase
 {
     public void testParseMetaDataURLnullURL()
     {
-        NucleusContext nucCtx = new NucleusContext("JDO", null);
+        NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
         MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
         try
         {
@@ -44,7 +45,7 @@ public class MetaDataParserTest extends TestCase
 
     public void testParseMetaDataURLnullhandler()
     {
-        NucleusContext nucCtx = new NucleusContext("JDO", null);
+        NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
         MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
         try
         {

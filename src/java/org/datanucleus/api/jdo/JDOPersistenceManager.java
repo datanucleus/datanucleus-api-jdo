@@ -64,7 +64,7 @@ import org.datanucleus.ClassConstants;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.FetchGroup;
-import org.datanucleus.PersistenceConfiguration;
+import org.datanucleus.Configuration;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionNotActiveException;
@@ -1739,7 +1739,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T getObjectById(Class<T> cls, Object key)
     {
-        if (ec.getNucleusContext().getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
+        if (ec.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
         {
             AbstractClassMetaData acmd = ec.getMetaDataManager().getMetaDataForClass(cls, ec.getClassLoaderResolver());
             if (acmd != null && acmd.getIdentityType() == IdentityType.APPLICATION)
@@ -2374,7 +2374,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         Map<String, Object> ecProps = ec.getProperties();
         Iterator<Map.Entry<String, Object>> propertiesIter = ecProps.entrySet().iterator();
-        PersistenceConfiguration conf = ec.getNucleusContext().getPersistenceConfiguration();
+        Configuration conf = ec.getNucleusContext().getConfiguration();
         while (propertiesIter.hasNext())
         {
             Map.Entry<String, Object> entry = propertiesIter.next();

@@ -119,7 +119,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         cmd.setSchema(getAttr(attrs,"schema"));
         cmd.setRequiresExtent(getAttr(attrs,"requires-extent"));
         String detachableStr = getAttr(attrs, "detachable");
-        if (mgr.getNucleusContext().getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+        if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
             cmd.setDetachable(true);
         }
@@ -164,7 +164,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         imd.setCatalog(getAttr(attrs,"catalog"));
         imd.setSchema(getAttr(attrs,"schema"));
         String detachableStr = getAttr(attrs, "detachable");
-        if (mgr.getNucleusContext().getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+        if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
             imd.setDetachable(true);
         }

@@ -146,7 +146,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 cmd.setCatalog((String)annotationValues.get("catalog"));
                 cmd.setSchema((String)annotationValues.get("schema"));
                 String detachableStr = (String)annotationValues.get("detachable");
-                if (mgr.getNucleusContext().getPersistenceConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+                if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
                 {
                     cmd.setDetachable(true);
                 }

@@ -21,6 +21,7 @@ package org.datanucleus.api.jdo.metadata.xml;
 import junit.framework.TestCase;
 
 import org.datanucleus.NucleusContext;
+import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.xml.MetaDataParser;
@@ -29,7 +30,7 @@ public class JDOMetaDataHandlerTest extends TestCase
 {
     public void testParseDefaultNamespace()
     {
-        NucleusContext nucCtx = new NucleusContext("JDO", null);
+        NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
         MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
         MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package1.jdo"), "jdo");
         assertNotNull(md);
@@ -37,7 +38,7 @@ public class JDOMetaDataHandlerTest extends TestCase
 
     public void testParseNamespace()
     {
-        NucleusContext nucCtx = new NucleusContext("JDO", null);
+        NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
         MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
         MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), "jdo");
         assertNotNull(md);
