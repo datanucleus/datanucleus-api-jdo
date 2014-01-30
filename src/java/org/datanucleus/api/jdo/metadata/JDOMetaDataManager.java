@@ -45,7 +45,7 @@ import org.datanucleus.metadata.DiscriminatorStrategy;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.ImplementsMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
-import org.datanucleus.metadata.MetaDataManager;
+import org.datanucleus.metadata.MetaDataManagerImpl;
 import org.datanucleus.metadata.MetaDataMerger;
 import org.datanucleus.metadata.MetadataFileType;
 import org.datanucleus.metadata.PackageMetaData;
@@ -83,7 +83,7 @@ import org.datanucleus.util.StringUtils;
  * suffices to be specifiable at construction.
  * </P>
  */
-public class JDOMetaDataManager extends MetaDataManager
+public class JDOMetaDataManager extends MetaDataManagerImpl
 {
     /** MetaData files will be searched in all possible locations defined in JDO1.0, JDO1.0.1, JDO2.0 or later */
     public static final int ALL_JDO_LOCATIONS = 1;
