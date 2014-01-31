@@ -204,9 +204,9 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     {
         public void registerClass(RegisterClassEvent ev)
         {
-            // register the class / interface in metadata
+            // register the class / interface in metadata, and make sure it is initialised
             NucleusLogger.METADATA.debug("Listener found initialisation for persistable class " + ev.getRegisteredClass().getName());
-            getMetaDataForClassInternal(ev.getRegisteredClass(),
+            getMetaDataForClass(ev.getRegisteredClass(),
                 nucleusContext.getClassLoaderResolver(ev.getRegisteredClass().getClassLoader()));
         }
     }
