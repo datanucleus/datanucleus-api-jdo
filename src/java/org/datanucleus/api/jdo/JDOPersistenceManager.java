@@ -1454,7 +1454,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             if (!ec.getStoreManager().managesClass(cls.getName()))
             {
                 // Load the candidate class since not yet managed
-                ec.getStoreManager().addClass(cls.getName(), clr);
+                ec.getStoreManager().manageClasses(clr, cls.getName());
             }
         }
 
