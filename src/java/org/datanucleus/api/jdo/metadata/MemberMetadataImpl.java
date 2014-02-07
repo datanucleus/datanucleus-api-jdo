@@ -101,7 +101,12 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
 
     public String getColumn()
     {
-        return getInternal().getColumn();
+        ColumnMetaData[] colmds = getInternal().getColumnMetaData();
+        if (colmds != null && colmds.length > 0)
+        {
+            return colmds[0].getName();
+        }
+        return null;
     }
 
     public String getCustomStrategy()
