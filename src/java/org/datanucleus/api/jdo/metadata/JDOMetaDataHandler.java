@@ -762,12 +762,12 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 else if (md instanceof IndexMetaData)
                 {
                     IndexMetaData idxmd = (IndexMetaData)md;
-                    idxmd.addColumn(colmd);
+                    idxmd.addColumn(colmd.getName());
                 }
                 else if (md instanceof UniqueMetaData)
                 {
                     UniqueMetaData unimd = (UniqueMetaData)md;
-                    unimd.addColumn(colmd);
+                    unimd.addColumn(colmd.getName());
                 }
                 else if (md instanceof OrderMetaData)
                 {

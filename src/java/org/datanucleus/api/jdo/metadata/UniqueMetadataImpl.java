@@ -48,15 +48,17 @@ public class UniqueMetadataImpl extends AbstractMetadataImpl implements UniqueMe
      */
     public ColumnMetadata[] getColumns()
     {
-        ColumnMetaData[] internalColmds = getInternal().getColumnMetaData();
-        if (internalColmds == null)
+        String[] internalColumnNames = getInternal().getColumnNames();
+        if (internalColumnNames == null)
         {
             return null;
         }
-        ColumnMetadataImpl[] colmds = new ColumnMetadataImpl[internalColmds.length];
+        ColumnMetadataImpl[] colmds = new ColumnMetadataImpl[internalColumnNames.length];
         for (int i=0;i<colmds.length;i++)
         {
-            colmds[i] = new ColumnMetadataImpl(internalColmds[i]);
+            ColumnMetaData internalColmd = new ColumnMetaData();
+            internalColmd.setName(internalColumnNames[i]);
+            colmds[i] = new ColumnMetadataImpl(internalColmd);
             colmds[i].parent = this;
         }
         return colmds;
@@ -103,8 +105,7 @@ public class UniqueMetadataImpl extends AbstractMetadataImpl implements UniqueMe
      */
     public int getNumberOfColumns()
     {
-        ColumnMetaData[] colmds = getInternal().getColumnMetaData();
-        return (colmds != null ? colmds.length : 0);
+        return getInternal().getNumberOfColumns();
     }
 
     /* (non-Javadoc)
@@ -112,8 +113,7 @@ public class UniqueMetadataImpl extends AbstractMetadataImpl implements UniqueMe
      */
     public int getNumberOfMembers()
     {
-        String[] memberNames = getInternal().getMemberNames();
-        return (memberNames != null ? memberNames.length : 0);
+        return getInternal().getNumberOfMembers();
     }
 
     /* (non-Javadoc)
@@ -129,7 +129,8 @@ public class UniqueMetadataImpl extends AbstractMetadataImpl implements UniqueMe
      */
     public ColumnMetadata newColumnMetadata()
     {
-        ColumnMetaData internalColmd = getInternal().newColumnMetaData();
+        ColumnMetaData internalColmd = new ColumnMetaData();
+        internalColmd.setParent(getInternal());
         ColumnMetadataImpl colmd = new ColumnMetadataImpl(internalColmd);
         colmd.parent = this;
         return colmd;

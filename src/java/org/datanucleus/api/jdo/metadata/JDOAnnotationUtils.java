@@ -553,8 +553,7 @@ public class JDOAnnotationUtils
         {
             for (int j=0;j<columns.length;j++)
             {
-                ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]);
-                idxmd.addColumn(colmd);
+                idxmd.addColumn(columns[j].name());
             }
         }
 
@@ -592,8 +591,7 @@ public class JDOAnnotationUtils
         {
             for (int j=0;j<columns.length;j++)
             {
-                ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]);
-                unimd.addColumn(colmd);
+                unimd.addColumn(columns[j].name());
             }
         }
 
