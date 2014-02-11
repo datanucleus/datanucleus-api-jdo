@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.datanucleus</groupId>
         <artifactId>datanucleus-maven-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </parent>
     
     <artifactId>datanucleus-api-jdo</artifactId>
@@ -32,7 +32,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Xmx128m</argLine>
+                    <argLine>${argLine} -Xmx128m</argLine>
                 </configuration>
             </plugin>
             <plugin>
