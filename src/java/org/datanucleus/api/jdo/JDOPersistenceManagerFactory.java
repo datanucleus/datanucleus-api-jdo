@@ -2346,8 +2346,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         MetaDataManager mmgr = nucleusContext.getMetaDataManager();
         mmgr.unloadMetaDataForClass(className);
 
-        // TODO Unmanage from the store
-//        nucleusContext.getStoreManager();
+        // Unmanage from the store
+        nucleusContext.getStoreManager().unmanageClass(nucleusContext.getClassLoaderResolver(null), className, false);
     }
 
     private void checkJDOPermission(JDOPermission jdoPermission)
