@@ -2222,6 +2222,15 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
     }
 
+    private synchronized Set<JDOFetchGroup> getJDOFetchGroups(boolean createIfNull)
+    {
+        if (jdoFetchGroups == null && createIfNull)
+        {
+            jdoFetchGroups = new HashSet<JDOFetchGroup>();
+        }
+        return jdoFetchGroups;
+    }
+
     /**
      * Method to return a new metadata object that can be subsequently modified
      * and registered with the persistence process using the method {@link #registerMetadata}.
@@ -2325,6 +2334,22 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         return classes;
     }
 
+    /**
+     * Method to remove the specified class from the classes that are being managed.
+     * In practical terms this means remove all knowledge of the class from the metadata service, and also from
+     * the StoreManager service. It doesn't mean to remove the datastore representation (i.e table) of this class.
+     * @param className Name of the class
+     */
+    public void unmanageClass(String className)
+    {
+        // Unload the metadata for this class
+        MetaDataManager mmgr = nucleusContext.getMetaDataManager();
+        mmgr.unloadMetaDataForClass(className);
+
+        // TODO Unmanage from the store
+//        nucleusContext.getStoreManager();
+    }
+
     private void checkJDOPermission(JDOPermission jdoPermission)
     {
         SecurityManager secmgr = System.getSecurityManager();
@@ -2335,17 +2360,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
     }
 
-    private synchronized Set<JDOFetchGroup> getJDOFetchGroups(boolean createIfNull)
-    {
-        if (jdoFetchGroups == null && createIfNull)
-        {
-            jdoFetchGroups = new HashSet<JDOFetchGroup>();
-        }
-        return jdoFetchGroups;
-    }
-
     /**
-     * Check on serialisation of the EMF.
+     * Check on serialisation of the PMF.
      * @param oos The output stream to serialise to
      * @throws IOException Exception thrown if error
      */
