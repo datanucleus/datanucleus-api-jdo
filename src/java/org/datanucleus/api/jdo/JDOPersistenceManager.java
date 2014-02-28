@@ -92,6 +92,7 @@ import org.datanucleus.state.DetachState;
 import org.datanucleus.state.FetchPlanState;
 import org.datanucleus.store.NucleusConnection;
 import org.datanucleus.store.NucleusSequence;
+import org.datanucleus.store.StoreManager;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
@@ -302,7 +303,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void setDatastoreReadTimeoutMillis(Integer timeout)
     {
         assertIsOpen();
-        if (!ec.getStoreManager().getSupportedOptions().contains("Datastore.Timeout"))
+        if (!ec.getStoreManager().getSupportedOptions().contains(StoreManager.OPTION_DATASTORE_TIMEOUT))
         {
             throw new JDOUnsupportedOptionException("This datastore doesn't support read timeouts");
         }
@@ -326,7 +327,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void setDatastoreWriteTimeoutMillis(Integer timeout)
     {
         assertIsOpen();
-        if (!ec.getStoreManager().getSupportedOptions().contains("Datastore.Timeout"))
+        if (!ec.getStoreManager().getSupportedOptions().contains(StoreManager.OPTION_DATASTORE_TIMEOUT))
         {
             throw new JDOUnsupportedOptionException("This datastore doesn't support write timeouts");
         }

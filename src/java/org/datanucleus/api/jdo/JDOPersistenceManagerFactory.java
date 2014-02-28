@@ -1103,15 +1103,15 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (storeMgr != null)
         {
             Collection storeMgrOptions = storeMgr.getSupportedOptions();
-            if (!storeMgrOptions.contains("NonDurableIdentity"))
+            if (!storeMgrOptions.contains(StoreManager.OPTION_NONDURABLE_ID))
             {
                 options.remove("javax.jdo.option.NonDurableIdentity");
             }
-            if (!storeMgrOptions.contains("DatastoreIdentity"))
+            if (!storeMgrOptions.contains(StoreManager.OPTION_DATASTORE_ID))
             {
                 options.remove("javax.jdo.option.DatastoreIdentity");
             }
-            if (!storeMgrOptions.contains("ApplicationIdentity"))
+            if (!storeMgrOptions.contains(StoreManager.OPTION_APPLICATION_ID))
             {
                 options.remove("javax.jdo.option.ApplicationIdentity");
             }
@@ -1125,19 +1125,19 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 options.remove("javax.jdo.query.SQL");
             }
 
-            if (storeMgrOptions.contains("TransactionIsolationLevel.read-committed"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_TXN_ISOLATION_READ_COMMITTED))
             {
                 options.add("javax.jdo.option.TransactionIsolationLevel.read-committed");
             }
-            if (storeMgrOptions.contains("TransactionIsolationLevel.read-uncommitted"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_TXN_ISOLATION_READ_UNCOMMITTED))
             {
                 options.add("javax.jdo.option.TransactionIsolationLevel.read-uncommitted");
             }
-            if (storeMgrOptions.contains("TransactionIsolationLevel.repeatable-read"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_TXN_ISOLATION_REPEATABLE_READ))
             {
                 options.add("javax.jdo.option.TransactionIsolationLevel.repeatable-read");
             }
-            if (storeMgrOptions.contains("TransactionIsolationLevel.serializable"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_TXN_ISOLATION_SERIALIZABLE))
             {
                 options.add("javax.jdo.option.TransactionIsolationLevel.serializable");
             }
@@ -1145,11 +1145,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 options.add("javax.jdo.option.TransactionIsolationLevel.snapshot");
             }
-            if (storeMgrOptions.contains("Query.Cancel"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_QUERY_CANCEL))
             {
                 options.add("javax.jdo.option.QueryCancel");
             }
-            if (storeMgrOptions.contains("Datastore.Timeout"))
+            if (storeMgrOptions.contains(StoreManager.OPTION_DATASTORE_TIMEOUT))
             {
                 options.add("javax.jdo.option.DatastoreTimeout");
             }
@@ -1611,7 +1611,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         assertConfigurable();
 
         if (nucleusContext.getStoreManager() != null &&
-            !nucleusContext.getStoreManager().getSupportedOptions().contains("TransactionIsolationLevel." + level))
+            !nucleusContext.getStoreManager().getSupportedOptions().contains("TransactionIsolationLevel." + level)) // TODO Match this to StoreManager.OPTION_TXN_???
         {
             throw new JDOUnsupportedOptionException("Isolation level \"" + level + "\" is not supported for this datastore");
         }
