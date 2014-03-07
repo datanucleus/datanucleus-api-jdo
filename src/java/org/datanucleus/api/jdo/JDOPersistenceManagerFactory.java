@@ -1242,6 +1242,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     protected void finalize() throws Throwable 
     {
         close();
+        super.finalize();
     }
 
     /**

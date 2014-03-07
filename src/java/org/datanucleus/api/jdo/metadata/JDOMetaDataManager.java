@@ -554,7 +554,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             Enumeration resources;
             try
             {
-                resources = clr.getResources(location, cls != null ? cls.getClassLoader() : null);
+                resources = clr.getResources(location, null);
             } 
             catch (IOException e) 
             {
