@@ -220,7 +220,7 @@ public class NucleusJDOHelper extends JDOHelper
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
 
             // Temporarily attach a StateManager to access the detached field information
-            ObjectProvider op = ec.newObjectProviderForDetached(pc, getObjectId(pc), null);
+            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
             pc.jdoReplaceStateManager((javax.jdo.spi.StateManager) op);
             op.retrieveDetachState(op);
             String[] dirtyFieldNames = op.getDirtyFieldNames();
@@ -258,7 +258,7 @@ public class NucleusJDOHelper extends JDOHelper
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.newObjectProviderForDetached(pc, getObjectId(pc), null);
+            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
             pc.jdoReplaceStateManager((javax.jdo.spi.StateManager) op);
             op.retrieveDetachState(op);
             String[] loadedFieldNames = op.getLoadedFieldNames();
@@ -297,7 +297,7 @@ public class NucleusJDOHelper extends JDOHelper
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.newObjectProviderForDetached(pc, getObjectId(pc), null);
+            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
             pc.jdoReplaceStateManager((javax.jdo.spi.StateManager)op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
@@ -338,7 +338,7 @@ public class NucleusJDOHelper extends JDOHelper
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.newObjectProviderForDetached(pc, getObjectId(pc), null);
+            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
             pc.jdoReplaceStateManager((javax.jdo.spi.StateManager)op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
