@@ -65,7 +65,7 @@ public class ColumnMetadataImpl extends AbstractMetadataImpl implements ColumnMe
      */
     public String getJDBCType()
     {
-        return getInternal().getJdbcType();
+        return getInternal().getJdbcTypeName();
     }
 
     /* (non-Javadoc)
