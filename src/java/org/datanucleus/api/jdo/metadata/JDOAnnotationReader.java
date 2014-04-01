@@ -824,6 +824,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     /**
      * Convenience method to process @Queries, @Query.
      * @param cmd Metadata for the class, to which any queries will be added
+     * @param cls Class that the named queries are registered against
      * @param annotations Annotations specified on the class
      */
     protected void processNamedQueries(AbstractClassMetaData cmd, Class cls, AnnotationObject[] annotations)

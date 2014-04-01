@@ -34,10 +34,6 @@ public class TransactionCommitingException extends JDOUserException
     private static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
         org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
 
-    /**
-     * Constructor.
-     * @param failedObject
-     */
     public TransactionCommitingException(Object failedObject)
     {
         super(LOCALISER.msg("015036"),failedObject);

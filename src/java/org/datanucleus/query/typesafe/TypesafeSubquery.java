@@ -23,7 +23,7 @@ package org.datanucleus.query.typesafe;
  * Users should call methods on the subquery instance and end with a select of what the subquery returns; this
  * returns the expression that they use to link it with the owning query.
  * 
- * <T> (Candidate) type being represented
+ * @param <T> (Candidate) type being represented
  */
 public interface TypesafeSubquery<T>
 {
@@ -59,6 +59,7 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (numeric) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
+     * @param <S> numeric type
      */
     <S> NumericExpression<S> selectUnique(NumericExpression<S> expr);
 
@@ -73,6 +74,7 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (date) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
+     * @param <S> date type
      */
     <S> DateExpression<S> selectUnique(DateExpression<S> expr);
 
@@ -80,6 +82,7 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (datetime) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
+     * @param <S> datetime type
      */
     <S> DateTimeExpression<S> selectUnique(DateTimeExpression<S> expr);
 
@@ -87,6 +90,7 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (time) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
+     * @param <S> time type
      */
     <S> TimeExpression<S> selectUnique(TimeExpression<S> expr);
 

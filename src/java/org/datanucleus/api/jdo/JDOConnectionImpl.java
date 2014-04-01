@@ -63,7 +63,7 @@ public class JDOConnectionImpl implements JDOConnection
 
     /**
      * Accessor for the native connection for this datastore.
-     * For RDBMS this would be a java.sql.Connection, or for db4o an ObjectContainer etc.
+     * For RDBMS this would be a java.sql.Connection, for Cassandra a Session etc.
      * @return The native connection
      */
     public Object getNativeConnection()
@@ -79,8 +79,7 @@ public class JDOConnectionImpl implements JDOConnection
     }
 
     /**
-     * Throw a JDOUserException that the connection is no longer available
-     * @throws JDOUserException
+     * Throw a JDOUserException that the connection is no longer available.
      */
     protected void throwExceptionNotAvailable()
     {

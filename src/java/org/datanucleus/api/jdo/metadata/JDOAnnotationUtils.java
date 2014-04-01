@@ -604,6 +604,8 @@ public class JDOAnnotationUtils
      * @param table Name of the table (optional)
      * @param unique Whether the constraint is unique
      * @param deferred Whether the constraint is deferred
+     * @param deleteAction Any delete action
+     * @param updateAction Any update action
      * @param fields Fields to apply the constraint across (optional)
      * @param columns Columns to apply the constraint across (optional)
      * @return The ForeignKeyMetaData

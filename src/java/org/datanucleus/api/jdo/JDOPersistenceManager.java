@@ -1535,6 +1535,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * Method to return a "typesafe" query object, for the specified query type.
      * @param cls candidate class
      * @return The typesafe query object
+     * @param <T> candidate type
      */
     public <T> TypesafeQuery<T> newTypesafeQuery(Class cls)
     {
@@ -1554,6 +1555,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @return returns an Extent that contains all of the instances in the
      * parameter class, and if the subclasses flag is true, all of the instances
      * of the parameter class and its subclasses.
+     * @param <T> candidate type
      */
     public <T> Extent<T> getExtent(Class<T> pcClass, boolean subclasses)
     {
@@ -2225,7 +2227,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
     /**
      * Method to assert if the current transaction is active or non transactional writes are allowed.
-     * @throws a TransactionNotWritableException if not active and non transactional writes are disabled
+     * Throws a TransactionNotWritableException if not active and non transactional writes are disabled
      */
     protected void assertWritable()
     {
@@ -2237,7 +2239,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
     /**
      * Method to assert if no active transaction and nontransactionalRead is not set.
-     * @throws JDOUserException if the tx is not active and no non-transactional read is available
+     * Throws JDOUserException if the tx is not active and no non-transactional read is available
+     * @param operation The operation
      */
     protected void assertReadable(String operation)
     {

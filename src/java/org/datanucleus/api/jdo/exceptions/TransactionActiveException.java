@@ -34,10 +34,6 @@ public class TransactionActiveException extends JDOUserException
     private static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
         org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
 
-    /**
-     * Constructor.
-     * @param failedObject
-     */
     public TransactionActiveException(Object failedObject)
     {
         super(LOCALISER.msg("015032"),failedObject);

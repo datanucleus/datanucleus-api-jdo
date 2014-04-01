@@ -398,8 +398,7 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
     }
 
     /**
-     * Assert the JDOConnection is available
-     * @throws Exception if the connection is no longer available
+     * Assert the JDOConnection is available. Throws a JDOException if not available
      */
     public void assertAvailable()
     {

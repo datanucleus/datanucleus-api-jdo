@@ -28,6 +28,7 @@ import javax.jdo.PersistenceManager;
 /**
  * Interface for a type-safe query, using a fluent API.
  * Designed to handle JDO query requirements as a whole.
+ * @param <T> candidate type for this query
  */
 public interface TypesafeQuery<T>
 {
@@ -257,6 +258,7 @@ public interface TypesafeQuery<T>
      * @param candidate Candidate for the subquery
      * @param candidateAlias Alias for the candidate
      * @return The subquery
+     * @param <S> candidate type for subquery
      */
     <S> TypesafeSubquery<S> subquery(Class<S> candidate, String candidateAlias);
 
@@ -297,6 +299,7 @@ public interface TypesafeQuery<T>
      * Method to execute the query where there are (potentially) multiple rows and we are returning
      * the candidate type.
      * @return The results
+     * @param <T> result type
      */
     @SuppressWarnings("hiding")
     <T> List<T> executeList();
@@ -304,6 +307,7 @@ public interface TypesafeQuery<T>
     /**
      * Method to execute the query where there is a single row and we are returning the candidate type.
      * @return The result
+     * @param <T> result type
      */
     @SuppressWarnings("hiding")
     <T> T executeUnique();
@@ -315,6 +319,7 @@ public interface TypesafeQuery<T>
      * @param distinct Whether to provide distinct results
      * @param exprs Result expression(s)
      * @return The results
+     * @param <R> result type
      */
     <R> List<R> executeResultList(Class<R> resultCls, boolean distinct, Expression... exprs);
 
@@ -325,6 +330,7 @@ public interface TypesafeQuery<T>
      * @param distinct Whether to provide distinct results
      * @param exprs Result expression(s)
      * @return The result
+     * @param <R> result type
      */
     <R> R executeResultUnique(Class<R> resultCls, boolean distinct, Expression... exprs);
 
