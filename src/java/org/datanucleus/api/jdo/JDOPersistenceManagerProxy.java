@@ -56,9 +56,6 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
 {
     protected JDOPersistenceManagerFactory pmf;
 
-    /**
-     * Constructor for a PM proxy.
-     */
     public JDOPersistenceManagerProxy(JDOPersistenceManagerFactory pmf)
     {
         this.pmf = pmf;

@@ -99,10 +99,9 @@ import org.datanucleus.util.StringUtils;
  * Implementation of a JDO PersistenceManagerFactory, used to obtain PersistenceManager instances.
  * The factory is configurable up to a point when it is frozen. Thereafter nothing can be changed.
  * <p>
- * <b>Serialisation</b><br/>
+ * <b>Serialisation</b>
  * When a PMF is serialised its persistence properties are serialised with it, but dynamic state
  * (fetch groups, listeners, L2 cache, etc) are not serialised with it.
- * </p>
  */
 public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable, Serializable
 {
@@ -839,27 +838,16 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         return pm;
     }
 
-    /**
-     * Construct a {@link JDOPersistenceManager}. Override if you want to construct a subclass instead.
-     */
     protected JDOPersistenceManager newPM(JDOPersistenceManagerFactory jdoPmf, String userName, String password)
     {
         return new JDOPersistenceManager(jdoPmf, userName, password);
     }
 
-    /**
-     * Gets the context for this PMF
-     * @return Returns the context.
-     */
     public PersistenceNucleusContext getNucleusContext()
     {
         return nucleusContext;
     }
 
-    /**
-     * Accessor for the persistence configuration.
-     * @return Returns the configuration.
-     */
     protected Configuration getConfiguration()
     {
         return nucleusContext.getConfiguration();
@@ -2382,7 +2370,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /**
      * Control deserialisation of the PMF where we have a singleton (in pmfByName).
      * @return The PMF
-     * @throws InvalidObjectException 
+     * @throws InvalidObjectException if an error occurs
      */
     private Object readResolve() throws InvalidObjectException 
     {
