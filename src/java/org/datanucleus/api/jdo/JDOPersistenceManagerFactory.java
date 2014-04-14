@@ -928,7 +928,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
         else
         {
-            NucleusLogger.PERSISTENCE.warn(LOCALISER.msg("012008", (obj.getClass().getName())));
+            NucleusLogger.PERSISTENCE.warn(LOCALISER.msg("012008", (obj != null ? obj.getClass().getName() : null)));
         }
         return pmf;
     }
