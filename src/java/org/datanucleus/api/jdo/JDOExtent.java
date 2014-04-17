@@ -33,7 +33,7 @@ public class JDOExtent<E> implements Extent<E>
     PersistenceManager pm;
 
     /** Underlying Extent. */
-    org.datanucleus.store.Extent extent;
+    org.datanucleus.store.Extent<E> extent;
 
     /** JDO Fetch Plan. */
     JDOFetchPlan fetchPlan = null;
@@ -54,7 +54,7 @@ public class JDOExtent<E> implements Extent<E>
      * Method to close the Extent iterator.
      * @param iterator Iterator for the extent.
      */
-    public void close(Iterator iterator)
+    public void close(Iterator<E> iterator)
     {
         extent.close(iterator);
     }
@@ -107,7 +107,7 @@ public class JDOExtent<E> implements Extent<E>
      * Accessor for the real extent.
      * @return The Underlying extent
      */
-    public org.datanucleus.store.Extent getExtent()
+    public org.datanucleus.store.Extent<E> getExtent()
     {
         return extent;
     }
