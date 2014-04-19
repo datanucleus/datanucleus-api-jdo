@@ -1160,7 +1160,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         "javax.jdo.option.ApplicationIdentity",
         "javax.jdo.option.DatastoreIdentity",
         "javax.jdo.option.NonDurableIdentity",
-        "javax.jdo.option.BinaryCompatibility",
+        "javax.jdo.option.BinaryCompatibility", // TODO Drop this when we have DN enhancement contract
         "javax.jdo.option.GetDataStoreConnection",
         "javax.jdo.option.GetJDBCConnection",
         "javax.jdo.option.version.DateTime",
