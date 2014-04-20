@@ -132,7 +132,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         cmd.setPersistenceModifier(
             ClassPersistenceModifier.getClassPersistenceModifier(getAttr(attrs,"persistence-modifier")));
         cmd.setIdentityType(IdentityType.getIdentityType(getAttr(attrs,"identity-type")));
-        cmd.setPersistenceCapableSuperclass(getAttr(attrs,"persistence-capable-superclass"));
+        cmd.setPersistableSuperclass(getAttr(attrs,"persistence-capable-superclass"));
         String cacheableAttr = getAttr(attrs, "cacheable");
         if (cacheableAttr != null)
         {

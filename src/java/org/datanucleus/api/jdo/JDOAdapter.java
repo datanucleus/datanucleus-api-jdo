@@ -271,7 +271,7 @@ public class JDOAdapter implements ApiAdapter
 
     /**
      * Method to return if the passed object is persistable using this API.
-     * Returns whether the object is an instance of javax.jdo.spi.PersistenceCapable.
+     * Returns whether the object is an instance of persistable.
      * @param obj The object
      * @return Whether it is persistable
      */
@@ -287,7 +287,7 @@ public class JDOAdapter implements ApiAdapter
 
     /**
      * Utility method to check if the specified class is of a type that can be persisted for this API.
-     * Checks that it implements javax.jdo.spi.PersistenceCapable.
+     * Checks that it implements persistable.
      * @param cls The class to check
      * @return Whether the class is persistable
      */
@@ -374,7 +374,7 @@ public class JDOAdapter implements ApiAdapter
      * Utility to check if a primary-key class is valid.
      * Will throw a InvalidPrimaryKeyException if it is invalid, otherwise returning true.
      * @param pkClass The Primary Key class
-     * @param cmd AbstractClassMetaData for the PersistenceCapable class
+     * @param cmd AbstractClassMetaData for the persistable class
      * @param clr the ClassLoaderResolver
      * @param noOfPkFields Number of primary key fields
      * @param mmgr MetaData manager
@@ -564,7 +564,7 @@ public class JDOAdapter implements ApiAdapter
                 }
 
                 // check if the field in objectid-class has the same type as the
-                // Type declared in the PersistenceCapable class
+                // Type declared in the persistable class
                 if (fieldInPcClass.getTypeName().equals(fieldsInPkClass[i].getType().getName()))
                 {
                     found_field = true;
@@ -805,9 +805,9 @@ public class JDOAdapter implements ApiAdapter
 
     /**
      * Utility to create a new SingleFieldIdentity using reflection when you know the
-     * type of the PersistenceCapable, and also which SingleFieldIdentity, and the value of the key.
+     * type of the persistable, and also which SingleFieldIdentity, and the value of the key.
      * @param idType Type of SingleFieldIdentity
-     * @param pcType Type of the PersistenceCapable
+     * @param pcType Type of the persistable
      * @param value The value for the identity (the Long, or Int, or ... etc).
      * @return Single field identity
      * @throws NucleusException if invalid input is received

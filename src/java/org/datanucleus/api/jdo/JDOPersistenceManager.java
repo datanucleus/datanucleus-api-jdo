@@ -1611,7 +1611,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * It has 2 modes of operation. Where SingleFieldIdentity is being used the key is the
      * value of the key field. For all other cases the key is the String form of the
      * object id instance.
-     * @param pcClass Class of the PersistenceCapable to create the OID for.
+     * @param pcClass Class of the persistable to create the OID for.
      * @param key Value of the key for SingleFieldIdentity, or toString() for other cases
      * @return The new object-id instance
      */
@@ -1736,7 +1736,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     /**
      * Convenience method that exactly matches the behavior of calling 
      * pm.getObjectById (pm.newObjectIdInstance (cls, key), true).
-     * @param cls Class of the PersistenceCapable
+     * @param cls Class of the persistable
      * @param key Value of the key field for SingleFieldIdentity, or the string value of the key otherwise
      * @return The object for this id.
      */
