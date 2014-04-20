@@ -127,10 +127,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
         if (annotations != null && annotations.length > 0)
         {
-            AnnotationObject pcAnnotation = isClassPersistenceCapable(cls);
+            AnnotationObject pcAnnotation = isClassPersistable(cls);
             if (pcAnnotation != null)
             {
-                // PersistenceCapable class
+                // persistable class
                 if (cls.isInterface())
                 {
                     cmd = pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls));
@@ -2138,11 +2138,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Check if class is persistence capable, by looking at annotations
+     * Check if class is persistable, by looking at annotations
      * @param cls the Class
      * @return The annotationObject for PersistenceCapable
      */
-    protected AnnotationObject isClassPersistenceCapable(Class cls)
+    protected AnnotationObject isClassPersistable(Class cls)
     {
         AnnotationObject[] annotations = getClassAnnotationsForClass(cls);
         for (int i = 0; i < annotations.length; i++)
