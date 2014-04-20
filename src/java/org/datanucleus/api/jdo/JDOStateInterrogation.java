@@ -39,7 +39,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getObjectId(Object pc)
     {
-        return ((Persistable)pc).jdoGetObjectId();
+        return ((Persistable)pc).dnGetObjectId();
     }
 
     /* (non-Javadoc)
@@ -48,7 +48,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public PersistenceManager getPersistenceManager(Object pc)
     {
-        return (PersistenceManager) ((Persistable)pc).jdoGetExecutionContext().getOwner();
+        return (PersistenceManager) ((Persistable)pc).dnGetExecutionContext().getOwner();
     }
 
     /* (non-Javadoc)
@@ -57,7 +57,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getTransactionalObjectId(Object pc)
     {
-        return ((Persistable)pc).jdoGetTransactionalObjectId();
+        return ((Persistable)pc).dnGetTransactionalObjectId();
     }
 
     /* (non-Javadoc)
@@ -66,7 +66,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getVersion(Object pc)
     {
-        return ((Persistable)pc).jdoGetVersion();
+        return ((Persistable)pc).dnGetVersion();
     }
 
     /* (non-Javadoc)
@@ -75,7 +75,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isDeleted(Object pc)
     {
-        return ((Persistable)pc).jdoIsDeleted();
+        return ((Persistable)pc).dnIsDeleted();
     }
 
     /* (non-Javadoc)
@@ -84,7 +84,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isDetached(Object pc)
     {
-        return ((Persistable)pc).jdoIsDetached();
+        return ((Persistable)pc).dnIsDetached();
     }
 
     /* (non-Javadoc)
@@ -93,7 +93,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isDirty(Object pc)
     {
-        return ((Persistable)pc).jdoIsDirty();
+        return ((Persistable)pc).dnIsDirty();
     }
 
     /* (non-Javadoc)
@@ -102,7 +102,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isNew(Object pc)
     {
-        return ((Persistable)pc).jdoIsNew();
+        return ((Persistable)pc).dnIsNew();
     }
 
     /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isPersistent(Object pc)
     {
-        return ((Persistable)pc).jdoIsPersistent();
+        return ((Persistable)pc).dnIsPersistent();
     }
 
     /* (non-Javadoc)
@@ -120,7 +120,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Boolean isTransactional(Object pc)
     {
-        return ((Persistable)pc).jdoIsTransactional();
+        return ((Persistable)pc).dnIsTransactional();
     }
 
     /* (non-Javadoc)
@@ -129,7 +129,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public boolean makeDirty(Object pc, String fieldName)
     {
-        ((Persistable)pc).jdoMakeDirty(fieldName);
+        ((Persistable)pc).dnMakeDirty(fieldName);
         return true;
     }
 }
