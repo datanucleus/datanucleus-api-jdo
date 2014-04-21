@@ -20,96 +20,56 @@ Contributors:
     <!-- PERSISTENCE PROPERTIES -->
     <extension point="org.datanucleus.persistence_properties">
         <persistence-property name="javax.jdo.PersistenceManagerFactoryClass"/>
-        <persistence-property name="javax.jdo.option.ConnectionDriverName"
-            internal-name="datanucleus.ConnectionDriverName"/>
-        <persistence-property name="javax.jdo.option.ConnectionURL"
-            internal-name="datanucleus.ConnectionURL"/>
-        <persistence-property name="javax.jdo.option.ConnectionUserName"
-            internal-name="datanucleus.ConnectionUserName"/>
-        <persistence-property name="javax.jdo.option.ConnectionPassword"
-            internal-name="datanucleus.ConnectionPassword"/>
-        <persistence-property name="javax.jdo.option.ConnectionFactoryName"
-            internal-name="datanucleus.ConnectionFactoryName"/>
-        <persistence-property name="javax.jdo.option.ConnectionFactory2Name"
-            internal-name="datanucleus.ConnectionFactory2Name"/>
-        <persistence-property name="javax.jdo.option.ConnectionFactory"
-            internal-name="datanucleus.ConnectionFactory"/>
-        <persistence-property name="javax.jdo.option.ConnectionFactory2"
-            internal-name="datanucleus.ConnectionFactory2"/>
-        <persistence-property name="javax.jdo.option.IgnoreCache"
-            internal-name="datanucleus.IgnoreCache"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.Optimistic"
-            internal-name="datanucleus.Optimistic"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.Multithreaded"
-            internal-name="datanucleus.Multithreaded"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.RetainValues"
-            internal-name="datanucleus.RetainValues"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.RestoreValues"
-            internal-name="datanucleus.RestoreValues"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.NontransactionalRead"
-            internal-name="datanucleus.NontransactionalRead"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.NontransactionalWrite"
-            internal-name="datanucleus.NontransactionalWrite"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.DetachAllOnCommit"
-            internal-name="datanucleus.DetachAllOnCommit"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.CopyOnAttach"
-            internal-name="datanucleus.CopyOnAttach"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.TransactionType"
-            internal-name="datanucleus.TransactionType"
+        <persistence-property name="javax.jdo.option.ConnectionDriverName" internal-name="datanucleus.ConnectionDriverName"/>
+        <persistence-property name="javax.jdo.option.ConnectionURL" internal-name="datanucleus.ConnectionURL"/>
+        <persistence-property name="javax.jdo.option.ConnectionUserName" internal-name="datanucleus.ConnectionUserName"/>
+        <persistence-property name="javax.jdo.option.ConnectionPassword" internal-name="datanucleus.ConnectionPassword"/>
+        <persistence-property name="javax.jdo.option.ConnectionFactoryName" internal-name="datanucleus.ConnectionFactoryName"/>
+        <persistence-property name="javax.jdo.option.ConnectionFactory2Name" internal-name="datanucleus.ConnectionFactory2Name"/>
+        <persistence-property name="javax.jdo.option.ConnectionFactory" internal-name="datanucleus.ConnectionFactory"/>
+        <persistence-property name="javax.jdo.option.ConnectionFactory2" internal-name="datanucleus.ConnectionFactory2"/>
+        <persistence-property name="javax.jdo.option.IgnoreCache" internal-name="datanucleus.IgnoreCache"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.Optimistic" internal-name="datanucleus.Optimistic"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.Multithreaded" internal-name="datanucleus.Multithreaded"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.RetainValues" internal-name="datanucleus.RetainValues"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.RestoreValues" internal-name="datanucleus.RestoreValues"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.NontransactionalRead" internal-name="datanucleus.NontransactionalRead"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.NontransactionalWrite" internal-name="datanucleus.NontransactionalWrite"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.DetachAllOnCommit" internal-name="datanucleus.DetachAllOnCommit"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.CopyOnAttach" internal-name="datanucleus.CopyOnAttach"
+            manager-overrideable="true" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.TransactionType" internal-name="datanucleus.TransactionType"
             validator="org.datanucleus.properties.CorePropertyValidator"/>
-        <persistence-property name="javax.jdo.option.Name"
-            internal-name="datanucleus.Name"
+        <persistence-property name="javax.jdo.option.Name" internal-name="datanucleus.Name"
             validator="org.datanucleus.properties.StringPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.PersistenceUnitName"
-            internal-name="datanucleus.PersistenceUnitName"
+        <persistence-property name="javax.jdo.option.PersistenceUnitName" internal-name="datanucleus.PersistenceUnitName"
             validator="org.datanucleus.properties.StringPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.ServerTimeZoneID"
-            internal-name="datanucleus.ServerTimeZoneID"
+        <persistence-property name="javax.jdo.option.ServerTimeZoneID" internal-name="datanucleus.ServerTimeZoneID"
             validator="org.datanucleus.properties.CorePropertyValidator"/>
-        <persistence-property name="javax.jdo.option.ReadOnly"
-            internal-name="datanucleus.readOnlyDatastore"
+        <persistence-property name="javax.jdo.option.ReadOnly" internal-name="datanucleus.readOnlyDatastore"
             validator="org.datanucleus.properties.BooleanPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.TransactionIsolationLevel"
-            internal-name="datanucleus.transactionIsolation"
+        <persistence-property name="javax.jdo.option.TransactionIsolationLevel" internal-name="datanucleus.transactionIsolation"
             validator="org.datanucleus.properties.CorePropertyValidator"/>
-        <persistence-property name="javax.jdo.option.Mapping"
-            internal-name="datanucleus.Mapping"
+        <persistence-property name="javax.jdo.option.Mapping" internal-name="datanucleus.Mapping"
             validator="org.datanucleus.properties.StringPropertyValidator"/>
-        <persistence-property name="javax.jdo.mapping.Catalog"
-            internal-name="datanucleus.mapping.Catalog"
+        <persistence-property name="javax.jdo.mapping.Catalog" internal-name="datanucleus.mapping.Catalog"
             validator="org.datanucleus.properties.StringPropertyValidator"/>
-        <persistence-property name="javax.jdo.mapping.Schema"
-            internal-name="datanucleus.mapping.Schema"
+        <persistence-property name="javax.jdo.mapping.Schema" internal-name="datanucleus.mapping.Schema"
             validator="org.datanucleus.properties.StringPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.DatastoreReadTimeoutMillis"
-            internal-name="datanucleus.datastoreReadTimeout" value="0"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.IntegerPropertyValidator"/>
-        <persistence-property name="javax.jdo.option.DatastoreWriteTimeoutMillis"
-            internal-name="datanucleus.datastoreWriteTimeout" value="0"
-            manager-overrideable="true"
-            validator="org.datanucleus.properties.IntegerPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.DatastoreReadTimeoutMillis" internal-name="datanucleus.datastoreReadTimeout" value="0"
+            manager-overrideable="true" validator="org.datanucleus.properties.IntegerPropertyValidator"/>
+        <persistence-property name="javax.jdo.option.DatastoreWriteTimeoutMillis" internal-name="datanucleus.datastoreWriteTimeout" value="0"
+            manager-overrideable="true" validator="org.datanucleus.properties.IntegerPropertyValidator"/>
         <persistence-property name="javax.jdo.option.spi.ResourceName"/> <!-- JDOHelper nonsense -->
-        <persistence-property name="javax.jdo.option.Multitenancy"
-            internal-name="datanucleus.tenantID"/>
+        <persistence-property name="javax.jdo.option.Multitenancy" internal-name="datanucleus.tenantID"/>
 
         <persistence-property name="datanucleus.allowListenerUpdateAfterInit" value="false"
             validator="org.datanucleus.properties.BooleanPropertyValidator"/>
@@ -140,6 +100,12 @@ Contributors:
     <!-- METADATA MANAGER -->
     <extension point="org.datanucleus.metadata_manager">
        <metadata-manager class="org.datanucleus.api.jdo.metadata.JDOMetaDataManager" name="JDO"/>
+    </extension>
+
+    <!-- QUERY METHODS (IN-MEMORY) -->
+    <extension point="org.datanucleus.query_method_evaluators">
+        <query-method-evaluator method="JDOHelper.getObjectId" evaluator="org.datanucleus.api.jdo.query.inmemory.JDOHelperGetObjectIdFunction"/>
+        <query-method-evaluator method="JDOHelper.getVersion" evaluator="org.datanucleus.api.jdo.query.inmemory.JDOHelperGetVersionFunction"/>
     </extension>
 
     <!-- PERSISTENCE API -->

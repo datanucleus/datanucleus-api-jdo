@@ -21,16 +21,15 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.spi.StateInterrogation;
 
 import org.datanucleus.enhancer.Persistable;
+import org.datanucleus.identity.SingleFieldId;
 
 /**
- * Hook for providing JDOHelper support for non-JDO-bytecode-enhanced classes, for when we dump the JDO bytecode contract.
- * TODO Register this with JDOImplHelper.
+ * Hook for providing JDOHelper support for none "binary compatible" enhanced classes.
  */
 public class JDOStateInterrogation implements StateInterrogation
 {
     public JDOStateInterrogation()
     {
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)
@@ -39,7 +38,12 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getObjectId(Object pc)
     {
-        return ((Persistable)pc).dnGetObjectId();
+        Object id = ((Persistable)pc).dnGetObjectId();
+        if (id != null && id instanceof SingleFieldId)
+        {
+            return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+        }
+        return id;
     }
 
     /* (non-Javadoc)
@@ -57,7 +61,12 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getTransactionalObjectId(Object pc)
     {
-        return ((Persistable)pc).dnGetTransactionalObjectId();
+        Object id = ((Persistable)pc).dnGetTransactionalObjectId();
+        if (id != null && id instanceof SingleFieldId)
+        {
+            return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+        }
+        return id;
     }
 
     /* (non-Javadoc)

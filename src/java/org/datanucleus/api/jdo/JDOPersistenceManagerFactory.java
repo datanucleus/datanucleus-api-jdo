@@ -139,6 +139,13 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /** Flag for whether this object is still configurable. */
     private boolean configurable = true;
 
+    static
+    {
+        // Add StateInterrogation for JDOHelper to call through so that it finds the right methods in our bytecode enhancement
+        // TODO Is there a better place for this?
+        JDOImplHelper.getInstance().addStateInterrogation(new JDOStateInterrogation());
+    }
+
     /**
      * Thread-specific state information (instances of {@link OperationInfo}) for the PM proxy.
      */
@@ -1160,7 +1167,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         "javax.jdo.option.ApplicationIdentity",
         "javax.jdo.option.DatastoreIdentity",
         "javax.jdo.option.NonDurableIdentity",
-        "javax.jdo.option.BinaryCompatibility", // TODO Drop this when we have DN enhancement contract
+//        "javax.jdo.option.BinaryCompatibility", // Now using DN bytecode enhancement contract
         "javax.jdo.option.GetDataStoreConnection",
         "javax.jdo.option.GetJDBCConnection",
         "javax.jdo.option.version.DateTime",

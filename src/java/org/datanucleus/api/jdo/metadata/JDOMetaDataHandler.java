@@ -20,8 +20,8 @@ package org.datanucleus.api.jdo.metadata;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
-
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractElementMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
@@ -127,7 +127,11 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             cmd.setDetachable(detachableStr);
         }
-        cmd.setObjectIdClass(getAttr(attrs,"objectid-class"));
+        String objIdCls = getAttr(attrs,"objectid-class");
+        if (!StringUtils.isWhitespace(objIdCls))
+        {
+            cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
+        }
         cmd.setEmbeddedOnly(getAttr(attrs,"embedded-only"));
         cmd.setPersistenceModifier(
             ClassPersistenceModifier.getClassPersistenceModifier(getAttr(attrs,"persistence-modifier")));
@@ -173,7 +177,11 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             imd.setDetachable(detachableStr);
         }
         imd.setRequiresExtent(getAttr(attrs, "requires-extent"));
-        imd.setObjectIdClass(getAttr(attrs, "objectid-class"));
+        String objIdCls = getAttr(attrs,"objectid-class");
+        if (!StringUtils.isWhitespace(objIdCls))
+        {
+            imd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
+        }
         imd.setEmbeddedOnly(getAttr(attrs, "embedded-only"));
         imd.setIdentityType(IdentityType.getIdentityType(getAttr(attrs, "identity-type")));
         imd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);

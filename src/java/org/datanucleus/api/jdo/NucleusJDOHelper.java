@@ -18,8 +18,6 @@ Contributors:
 package org.datanucleus.api.jdo;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -37,12 +35,20 @@ import javax.jdo.JDOUnsupportedOptionException;
 import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.spi.JDOImplHelper;
-import javax.jdo.spi.PersistenceCapable;
+import javax.jdo.identity.ByteIdentity;
+import javax.jdo.identity.CharIdentity;
+import javax.jdo.identity.IntIdentity;
+import javax.jdo.identity.LongIdentity;
+import javax.jdo.identity.ObjectIdentity;
+import javax.jdo.identity.ShortIdentity;
+import javax.jdo.identity.SingleFieldIdentity;
+import javax.jdo.identity.StringIdentity;
 
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.ClassNameConstants;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.api.jdo.exceptions.ClassNotPersistenceCapableException;
+import org.datanucleus.enhancer.Persistable;
 import org.datanucleus.exceptions.ClassNotPersistableException;
 import org.datanucleus.exceptions.NucleusCanRetryException;
 import org.datanucleus.exceptions.NucleusDataStoreException;
@@ -55,9 +61,18 @@ import org.datanucleus.exceptions.NoPersistenceInformationException;
 import org.datanucleus.exceptions.TransactionNotActiveException;
 import org.datanucleus.exceptions.TransactionNotReadableException;
 import org.datanucleus.exceptions.TransactionNotWritableException;
+import org.datanucleus.identity.ByteId;
+import org.datanucleus.identity.CharId;
+import org.datanucleus.identity.IntId;
+import org.datanucleus.identity.LongId;
+import org.datanucleus.identity.ObjectId;
+import org.datanucleus.identity.ShortId;
+import org.datanucleus.identity.SingleFieldId;
+import org.datanucleus.identity.StringId;
 import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.StateManager;
 import org.datanucleus.store.exceptions.DatastoreReadOnlyException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
@@ -82,6 +97,100 @@ public class NucleusJDOHelper extends JDOHelper
     public static JDOQueryCache getQueryResultCache(PersistenceManagerFactory pmf)
     {
         return ((JDOPersistenceManagerFactory)pmf).getQueryCache();
+    }
+
+    public static SingleFieldIdentity getSingleFieldIdentityForDataNucleusIdentity(SingleFieldId dnid)
+    {
+        if (dnid instanceof LongId)
+        {
+            return new LongIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        else if (dnid instanceof IntId)
+        {
+            return new IntIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        else if (dnid instanceof ShortId)
+        {
+            return new ShortIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        else if (dnid instanceof ByteId)
+        {
+            return new ByteIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        else if (dnid instanceof StringId)
+        {
+            return new StringIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        else if (dnid instanceof CharId)
+        {
+            return new CharIdentity(dnid.getTargetClass(), dnid.toString());
+        }
+        return new ObjectIdentity(dnid.getTargetClass(), dnid.getKeyAsObject());
+    }
+
+    public static SingleFieldId getDataNucleusIdentityForSingleFieldIdentity(SingleFieldIdentity sfid)
+    {
+        if (sfid instanceof javax.jdo.identity.LongIdentity)
+        {
+            return new LongId(sfid.getTargetClass(), sfid.toString());
+        }
+        else if (sfid instanceof javax.jdo.identity.IntIdentity)
+        {
+            return new IntId(sfid.getTargetClass(), sfid.toString());
+        }
+        else if (sfid instanceof javax.jdo.identity.ShortIdentity)
+        {
+            return new ShortId(sfid.getTargetClass(), sfid.toString());
+        }
+        else if (sfid instanceof javax.jdo.identity.ByteIdentity)
+        {
+            return new ByteId(sfid.getTargetClass(), sfid.toString());
+        }
+        else if (sfid instanceof javax.jdo.identity.StringIdentity)
+        {
+            return new StringId(sfid.getTargetClass(), sfid.toString());
+        }
+        else if (sfid instanceof javax.jdo.identity.CharIdentity)
+        {
+            return new CharId(sfid.getTargetClass(), sfid.toString());
+        }
+        return new ObjectId(sfid.getTargetClass(), sfid.getKeyAsObject());
+    }
+
+    public static String getObjectIdClassForInputIdClass(String objectIdClass)
+    {
+        if (objectIdClass != null && objectIdClass.startsWith("javax.jdo.identity"))
+        {
+            if (objectIdClass.equals("javax.jdo.identity.ByteIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_BYTE;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.CharIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_CHAR;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.IntIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_INT;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.LongIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_LONG;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.ShortIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_SHORT;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.StringIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_STRING;
+            }
+            else if (objectIdClass.equals("javax.jdo.identity.ObjectIdentity"))
+            {
+                return ClassNameConstants.IDENTITY_SINGLEFIELD_OBJECT;
+            }
+        }
+        return objectIdClass;
     }
 
     // ---------------------------------- Replication -------------------------------
@@ -191,13 +300,13 @@ public class NucleusJDOHelper extends JDOHelper
         }
         try
         {
-            Field fld = ClassUtils.getFieldForClass(obj.getClass(), "jdoDetachedState");
+            Field fld = ClassUtils.getFieldForClass(obj.getClass(), "dnDetachedState");
             fld.setAccessible(true);
             return (Object[]) fld.get(obj);
         }
         catch (Exception e)
         {
-            throw new NucleusException("Exception accessing jdoDetachedState field", e);
+            throw new NucleusException("Exception accessing dnDetachedState field", e);
         }
     }
 
@@ -209,11 +318,11 @@ public class NucleusJDOHelper extends JDOHelper
      */
     public static String[] getDirtyFields(Object obj, PersistenceManager pm)
     {
-        if (obj == null || !(obj instanceof PersistenceCapable))
+        if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        PersistenceCapable pc = (PersistenceCapable)obj;
+        Persistable pc = (Persistable)obj;
 
         if (isDetached(pc))
         {
@@ -221,10 +330,10 @@ public class NucleusJDOHelper extends JDOHelper
 
             // Temporarily attach a StateManager to access the detached field information
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.jdoReplaceStateManager((javax.jdo.spi.StateManager) op);
+            pc.dnReplaceStateManager((StateManager) op);
             op.retrieveDetachState(op);
             String[] dirtyFieldNames = op.getDirtyFieldNames();
-            pc.jdoReplaceStateManager(null);
+            pc.dnReplaceStateManager(null);
 
             return dirtyFieldNames;
         }
@@ -248,21 +357,21 @@ public class NucleusJDOHelper extends JDOHelper
      */
     public static String[] getLoadedFields(Object obj, PersistenceManager pm)
     {
-        if (obj == null || !(obj instanceof PersistenceCapable))
+        if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        PersistenceCapable pc = (PersistenceCapable)obj;
+        Persistable pc = (Persistable)obj;
 
         if (isDetached(pc))
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.jdoReplaceStateManager((javax.jdo.spi.StateManager) op);
+            pc.dnReplaceStateManager((StateManager) op);
             op.retrieveDetachState(op);
             String[] loadedFieldNames = op.getLoadedFieldNames();
-            pc.jdoReplaceStateManager(null);
+            pc.dnReplaceStateManager(null);
 
             return loadedFieldNames;
         }
@@ -287,28 +396,28 @@ public class NucleusJDOHelper extends JDOHelper
      */
     public static Boolean isLoaded(Object obj, String memberName, PersistenceManager pm)
     {
-        if (obj == null || !(obj instanceof PersistenceCapable))
+        if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        PersistenceCapable pc = (PersistenceCapable)obj;
+        Persistable pc = (Persistable)obj;
 
         if (isDetached(pc))
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.jdoReplaceStateManager((javax.jdo.spi.StateManager)op);
+            pc.dnReplaceStateManager((StateManager)op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
             boolean loaded = op.isFieldLoaded(position);
-            pc.jdoReplaceStateManager(null);
+            pc.dnReplaceStateManager(null);
 
             return loaded;
         }
         else
         {
-            ExecutionContext ec = ((JDOPersistenceManager)pc.jdoGetPersistenceManager()).getExecutionContext();
+            ExecutionContext ec = pc.dnGetExecutionContext();
             ObjectProvider sm = ec.findObjectProvider(pc);
             if (sm == null)
             {
@@ -328,28 +437,28 @@ public class NucleusJDOHelper extends JDOHelper
      */
     public static Boolean isDirty(Object obj, String memberName, PersistenceManager pm)
     {
-        if (obj == null || !(obj instanceof PersistenceCapable))
+        if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        PersistenceCapable pc = (PersistenceCapable)obj;
+        Persistable pc = (Persistable)obj;
 
         if (isDetached(pc))
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.jdoReplaceStateManager((javax.jdo.spi.StateManager)op);
+            pc.dnReplaceStateManager((StateManager)op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
             boolean[] dirtyFieldNumbers = op.getDirtyFields();
-            pc.jdoReplaceStateManager(null);
+            pc.dnReplaceStateManager(null);
 
             return dirtyFieldNumbers[position];
         }
         else
         {
-            ExecutionContext ec = ((JDOPersistenceManager)pc.jdoGetPersistenceManager()).getExecutionContext();
+            ExecutionContext ec = pc.dnGetExecutionContext();
             ObjectProvider sm = ec.findObjectProvider(pc);
             if (sm == null)
             {
@@ -600,28 +709,5 @@ public class NucleusJDOHelper extends JDOHelper
                 return new JDOException(ne.getMessage(), ne);
             }
         }
-    }
-
-    /**
-     * Get the JDOImplHelper instance.
-     * This must be done in a doPrivileged block.
-     * @return The JDOImplHelper.
-     */
-    public static JDOImplHelper getJDOImplHelper() 
-    {
-        return (JDOImplHelper) AccessController.doPrivileged(new PrivilegedAction()
-            {
-                public Object run()
-                {
-                    try
-                    {
-                        return JDOImplHelper.getInstance();
-                    }
-                    catch (SecurityException e)
-                    {
-                        throw new JDOFatalUserException(LOCALISER.msg("026000"), e);
-                    }
-                }
-            });
     }
 }

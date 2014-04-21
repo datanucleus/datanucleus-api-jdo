@@ -57,8 +57,8 @@ import javax.jdo.ObjectState;
 import javax.jdo.Query;
 import javax.jdo.datastore.JDOConnection;
 import javax.jdo.datastore.Sequence;
+import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.listener.InstanceLifecycleListener;
-import javax.jdo.spi.PersistenceCapable;
 
 import org.datanucleus.ClassConstants;
 import org.datanucleus.ClassLoaderResolver;
@@ -70,12 +70,14 @@ import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionNotActiveException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.api.jdo.query.JDOTypesafeQuery;
+import org.datanucleus.enhancer.Persistable;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusOptimisticException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.exceptions.TransactionActiveOnCloseException;
 import org.datanucleus.identity.SCOID;
+import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ExtensionMetaData;
@@ -99,14 +101,12 @@ import org.datanucleus.util.StringUtils;
 import org.datanucleus.util.TypeConversionHelper;
 
 /**
- * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the
- * actual persistence.
+ * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
  */
 public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 {
     /** Localisation utility for output messages from core. */
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        ClassConstants.NUCLEUS_CONTEXT_LOADER);
+    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation", ClassConstants.NUCLEUS_CONTEXT_LOADER);
 
     /** Localisation utility for output messages from jdo. */
     protected static final Localiser LOCALISER_JDO = Localiser.getInstance("org.datanucleus.api.jdo.Localisation",
@@ -1079,12 +1079,12 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
 
         // if !transactional and !persistent
-        if (!((PersistenceCapable) pc).jdoIsTransactional() && !((PersistenceCapable) pc).jdoIsPersistent())
+        if (!((Persistable) pc).dnIsTransactional() && !((Persistable) pc).dnIsPersistent())
         {
             throw new JDOUserException(LOCALISER_JDO.msg("011004"));
         }
         // if !transactional and persistent, do nothing
-        if (!((PersistenceCapable) pc).jdoIsTransactional() && ((PersistenceCapable) pc).jdoIsPersistent())
+        if (!((Persistable) pc).dnIsTransactional() && ((Persistable) pc).dnIsPersistent())
         {
             return;
         }
@@ -1724,7 +1724,13 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         try
         {
-            return ec.findObject(id, validate, validate, null);
+            Object theId = id;
+            if (id instanceof javax.jdo.identity.SingleFieldIdentity)
+            {
+                // Convert to DN own internal types
+                theId = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
+            }
+            return ec.findObject(theId, validate, validate, null);
         }
         catch (NucleusException ne)
         {
@@ -1791,6 +1797,19 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             throw new JDOUserException(LOCALISER_JDO.msg("011002"));
         }
 
+        // Convert any explicit JDO single field ids to DN single field id
+        for (int i=0;i<oids.length;i++)
+        {
+            if (oids[i] != null)
+            {
+                if (oids[i] instanceof javax.jdo.identity.SingleFieldIdentity)
+                {
+                    // Convert to DN own internal types
+                    oids[i] = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)oids[i]);
+                }
+            }
+        }
+
         return ec.findObjects(oids, validate);
     }
 
@@ -1832,8 +1851,26 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             return Collections.EMPTY_LIST;
         }
 
+        // Convert any explicit JDO single field ids to DN single field id
+        Object[] oidArray = new Object[oids.size()];
+        int j = 0;
+        for (Object oid : oids)
+        {
+            Object id = oid;
+            if (id != null)
+            {
+                if (id instanceof javax.jdo.identity.SingleFieldIdentity)
+                {
+                    // Convert to DN own internal types
+                    id = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
+                }
+            }
+            oidArray[j++] = id;
+        }
+
+        Object[] objs = ec.findObjects(oidArray, validate);
+
         Collection objects = new ArrayList(oids.size());
-        Object[] objs = ec.findObjects(oids.toArray(), validate);
         for (int i=0;i<objs.length;i++)
         {
             objects.add(objs[i]);
@@ -1849,12 +1886,18 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public Object getObjectId(Object pc)
     {
         assertIsOpen();
-        if (pc != null && pc instanceof PersistenceCapable)
+        if (pc != null && pc instanceof Persistable)
         {
-            PersistenceCapable p = (PersistenceCapable) pc;
-            if (p.jdoIsPersistent() || p.jdoIsDetached())
+            Persistable p = (Persistable) pc;
+            if (p.dnIsPersistent() || p.dnIsDetached())
             {
-                return p.jdoGetObjectId();
+                Object id = p.dnGetObjectId();
+                if (id != null && id instanceof SingleFieldId)
+                {
+                    // Convert to javax.jdo.identity.*
+                    id = NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId)id);
+                }
+                return id;
             }
         }
         return null;
@@ -1868,7 +1911,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public Object getTransactionalObjectId(Object pc)
     {
         assertIsOpen();
-        return ((PersistenceCapable) pc).jdoGetTransactionalObjectId();
+        return ((Persistable) pc).dnGetTransactionalObjectId();
     }
 
     /**

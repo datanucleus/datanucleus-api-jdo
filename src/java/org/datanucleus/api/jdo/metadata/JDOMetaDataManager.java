@@ -27,15 +27,14 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.jdo.spi.RegisterClassEvent;
-import javax.jdo.spi.RegisterClassListener;
-
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.NucleusContext;
 import org.datanucleus.Configuration;
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.PropertyNames;
-import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.enhancer.EnhancementHelper;
+import org.datanucleus.enhancer.EnhancementHelper.RegisterClassEvent;
+import org.datanucleus.enhancer.EnhancementHelper.RegisterClassListener;
 import org.datanucleus.enhancer.EnhancementNucleusContextImpl;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -193,7 +192,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             // Register listener for persistent class initialisations
             NucleusLogger.METADATA.debug("Registering listener for metadata initialisation");
             registerListener = new MetaDataRegisterClassListener();
-            NucleusJDOHelper.getJDOImplHelper().addRegisterClassListener(registerListener);
+            EnhancementHelper.getInstance().addRegisterClassListener(registerListener);
         }
     }
 
@@ -219,7 +218,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         if (registerListener != null)
         {
             NucleusLogger.METADATA.debug("Deregistering listener for metadata initialisation");
-            NucleusJDOHelper.getJDOImplHelper().removeRegisterClassListener(registerListener);
+            EnhancementHelper.getInstance().removeRegisterClassListener(registerListener);
         }
 
         super.close();

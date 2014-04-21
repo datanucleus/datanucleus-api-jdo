@@ -38,6 +38,7 @@ import javax.jdo.metadata.TypeMetadata;
 import javax.jdo.metadata.UniqueMetadata;
 import javax.jdo.metadata.VersionMetadata;
 
+import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ColumnMetaData;
@@ -54,6 +55,7 @@ import org.datanucleus.metadata.PropertyMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.UniqueMetaData;
 import org.datanucleus.metadata.VersionMetaData;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Superclass for ClassMetadataImpl/InterfaceMetadataImpl so we don't duplicate.
@@ -509,7 +511,10 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public TypeMetadata setObjectIdClass(String clsName)
     {
-        getInternal().setObjectIdClass(clsName);
+        if (!StringUtils.isWhitespace(clsName))
+        {
+            getInternal().setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(clsName));
+        }
         return this;
     }
 

@@ -38,21 +38,23 @@ import javax.jdo.identity.IntIdentity;
 import javax.jdo.identity.LongIdentity;
 import javax.jdo.identity.ObjectIdentity;
 import javax.jdo.identity.ShortIdentity;
-import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.identity.StringIdentity;
-import javax.jdo.spi.Detachable;
-import javax.jdo.spi.PersistenceCapable;
-import javax.jdo.spi.PersistenceCapable.ObjectIdFieldConsumer;
 
+import org.datanucleus.ClassConstants;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ClassNameConstants;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.ApiAdapter;
 import org.datanucleus.api.jdo.state.LifeCycleStateFactory;
+import org.datanucleus.enhancer.Detachable;
+import org.datanucleus.enhancer.EnhancementHelper;
+import org.datanucleus.enhancer.Persistable;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.identity.OID;
+import org.datanucleus.identity.ObjectId;
+import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.IdentityType;
@@ -61,6 +63,7 @@ import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.state.AppIdObjectIdFieldConsumer;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.StateManager;
 import org.datanucleus.store.fieldmanager.FieldManager;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
@@ -71,8 +74,7 @@ import org.datanucleus.util.NucleusLogger;
  */
 public class JDOAdapter implements ApiAdapter
 {
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
+    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation", org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
 
     protected static Set<String> defaultPersistentTypeNames = new HashSet<String>();
 
@@ -176,14 +178,9 @@ public class JDOAdapter implements ApiAdapter
             return null;
         }
 
-        if (obj instanceof PersistenceCapable)
+        if (obj instanceof Persistable)
         {
-            PersistenceManager pm = JDOHelper.getPersistenceManager(obj);
-            if (pm == null)
-            {
-                return null;
-            }
-            return ((JDOPersistenceManager)pm).getExecutionContext();
+            return ((Persistable)obj).dnGetExecutionContext();
         }
         else if (obj instanceof PersistenceManager)
         {
@@ -282,7 +279,7 @@ public class JDOAdapter implements ApiAdapter
             return false;
         }
 
-        return (obj instanceof PersistenceCapable);
+        return (obj instanceof Persistable);
     }
 
     /**
@@ -297,7 +294,7 @@ public class JDOAdapter implements ApiAdapter
         {
             return false;
         }
-        return (PersistenceCapable.class.isAssignableFrom(cls));
+        return (Persistable.class.isAssignableFrom(cls));
     }
 
     /**
@@ -335,7 +332,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public void makeDirty(Object obj, String member)
     {
-        ((PersistenceCapable)obj).jdoMakeDirty(member);
+        ((Persistable)obj).dnMakeDirty(member);
     }
 
     // ------------------------------ Object Identity  --------------------------------
@@ -352,7 +349,7 @@ public class JDOAdapter implements ApiAdapter
         {
             return null;
         }
-        return ((PersistenceCapable)obj).jdoGetObjectId();
+        return ((Persistable)obj).dnGetObjectId();
     }
 
     /**
@@ -367,7 +364,7 @@ public class JDOAdapter implements ApiAdapter
         {
             return null;
         }
-        return ((PersistenceCapable)obj).jdoGetVersion();
+        return ((Persistable)obj).dnGetVersion();
     }
 
     /**
@@ -380,29 +377,24 @@ public class JDOAdapter implements ApiAdapter
      * @param mmgr MetaData manager
      * @return Whether it is valid
      */
-    public boolean isValidPrimaryKeyClass(Class pkClass, AbstractClassMetaData cmd, ClassLoaderResolver clr,
-            int noOfPkFields, MetaDataManager mmgr)
+    public boolean isValidPrimaryKeyClass(Class pkClass, AbstractClassMetaData cmd, ClassLoaderResolver clr, int noOfPkFields, MetaDataManager mmgr)
     {
         // When using inner class, must be static
-        if (ClassUtils.isInnerClass(pkClass.getName()) &&
-            !Modifier.isStatic(pkClass.getModifiers()))
+        if (ClassUtils.isInnerClass(pkClass.getName()) && !Modifier.isStatic(pkClass.getModifiers()))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019000",
-                    cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException(LOCALISER, "019000", cmd.getFullClassName(), pkClass.getName());
         }
 
         // Must be public
         if (!Modifier.isPublic(pkClass.getModifiers()))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019001",
-                    cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException(LOCALISER, "019001", cmd.getFullClassName(), pkClass.getName());
         }
 
         // Must implement Serializable
         if (!Serializable.class.isAssignableFrom(pkClass))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019002",
-                    cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException(LOCALISER, "019002", cmd.getFullClassName(), pkClass.getName());
         }
 
         // a). JDO's SingleFieldIdentity class
@@ -410,8 +402,7 @@ public class JDOAdapter implements ApiAdapter
         {
             if (noOfPkFields != 1)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019003",
-                    cmd.getFullClassName());
+                throw new InvalidPrimaryKeyException(LOCALISER, "019003", cmd.getFullClassName());
             }
         }
         // b). Users own primary key class
@@ -424,26 +415,22 @@ public class JDOAdapter implements ApiAdapter
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019004",
-                        cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019004", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException ex)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019004",
-                    cmd.getFullClassName(), pkClass.getName());
+                throw new InvalidPrimaryKeyException(LOCALISER, "019004", cmd.getFullClassName(), pkClass.getName());
             }
 
             // Must have public String arg constructor
             try
             {
-                Constructor constructor=
-                    pkClass.getConstructor(new Class[] {String.class});
+                Constructor constructor = pkClass.getConstructor(new Class[] {String.class});
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019005",
-                        cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019005", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -458,8 +445,7 @@ public class JDOAdapter implements ApiAdapter
                     !Modifier.isPublic(method.getModifiers()) ||
                     method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019006",
-                        cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019006", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -470,11 +456,9 @@ public class JDOAdapter implements ApiAdapter
             try
             {
                 java.lang.reflect.Method method=pkClass.getMethod("hashCode",new Class[0]);
-                if (method == null ||
-                    method.getDeclaringClass().equals(Object.class))
+                if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019007",
-                        cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019007", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -485,11 +469,9 @@ public class JDOAdapter implements ApiAdapter
             try
             {
                 java.lang.reflect.Method method=pkClass.getMethod("equals",new Class[] {Object.class});
-                if (method == null ||
-                    method.getDeclaringClass().equals(Object.class))
+                if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019008",
-                        cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019008", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -508,9 +490,7 @@ public class JDOAdapter implements ApiAdapter
             if (noOfPkFields != noPkFields &&
                 cmd.getIdentityType() == IdentityType.APPLICATION)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019015",
-                    cmd.getFullClassName(), pkClass.getName(),
-                    "" + noOfPkFields, "" + noPkFields);
+                throw new InvalidPrimaryKeyException(LOCALISER, "019015", cmd.getFullClassName(), pkClass.getName(), "" + noOfPkFields, "" + noPkFields);
             }
         }
 
@@ -539,17 +519,13 @@ public class JDOAdapter implements ApiAdapter
                 if (!fieldsInPkClass[i].getType().isPrimitive() &&
                     !(Serializable.class).isAssignableFrom(fieldsInPkClass[i].getType()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019009",
-                        cmd.getFullClassName(), pkClass.getName(),
-                        fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019009", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // All non-static fields must be public
                 if (!Modifier.isPublic(fieldsInPkClass[i].getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019010",
-                        cmd.getFullClassName(), pkClass.getName(),
-                        fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019010", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // non-static fields of objectid-class include
@@ -558,9 +534,7 @@ public class JDOAdapter implements ApiAdapter
                 boolean found_field = false;
                 if (fieldInPcClass == null)
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019011",
-                        cmd.getFullClassName(), pkClass.getName(),
-                        fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // check if the field in objectid-class has the same type as the
@@ -577,8 +551,7 @@ public class JDOAdapter implements ApiAdapter
                     AbstractClassMetaData ref_cmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
                     if (ref_cmd == null)
                     {
-                        throw new InvalidPrimaryKeyException(LOCALISER, "019012",
-                            cmd.getFullClassName(), pkClass.getName(),
+                        throw new InvalidPrimaryKeyException(LOCALISER, "019012", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                     }
                     if (ref_cmd.getObjectidClass() == null)
@@ -586,23 +559,20 @@ public class JDOAdapter implements ApiAdapter
                         //Single Field Identity
                         if (isSingleFieldIdentityClass(fieldTypePkClass))
                         {
-                            throw new InvalidPrimaryKeyException(LOCALISER, "019014",
-                                cmd.getFullClassName(), pkClass.getName(),
+                            throw new InvalidPrimaryKeyException(LOCALISER, "019014", cmd.getFullClassName(), pkClass.getName(),
                                 fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getFullClassName());
                         }
                     }
                     if (!fieldTypePkClass.equals(ref_cmd.getObjectidClass()))
                     {
-                        throw new InvalidPrimaryKeyException(LOCALISER, "019013",
-                            cmd.getFullClassName(), pkClass.getName(),
+                        throw new InvalidPrimaryKeyException(LOCALISER, "019013", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getObjectidClass());
                     }
                     found_field=true;
                 }
                 if (!found_field)
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019012",
-                        cmd.getFullClassName(), pkClass.getName(),
+                    throw new InvalidPrimaryKeyException(LOCALISER, "019012", cmd.getFullClassName(), pkClass.getName(),
                         fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                 }
 
@@ -619,7 +589,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isSingleFieldIdentity(Object id)
     {
-        return (id instanceof SingleFieldIdentity);
+        return (id instanceof SingleFieldId);
     }
 
     /* (non-Javadoc)
@@ -642,76 +612,20 @@ public class JDOAdapter implements ApiAdapter
             return false;
         }
 
-        return (className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_BYTE_IDENTITY) || 
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_CHAR_IDENTITY) || 
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_INT_IDENTITY) ||
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_LONG_IDENTITY) || 
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_OBJECT_IDENTITY) || 
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_SHORT_IDENTITY) ||
-                className.equals(JDOClassNameConstants.JAVAX_JDO_IDENTITY_STRING_IDENTITY));
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Long/long field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForLong()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_LONG_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Integer/int field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForInt()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_INT_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Short/short field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForShort()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_SHORT_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Byte/byte field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForByte()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_BYTE_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Character/char field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForChar()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_CHAR_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single String field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForString()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_STRING_IDENTITY;
-    }
-
-    /**
-     * Accessor for the class name to use for identities when there is a single Object field.
-     * @return Class name of identity class
-     */
-    public String getSingleFieldIdentityClassNameForObject()
-    {
-        return JDOClassNameConstants.JAVAX_JDO_IDENTITY_OBJECT_IDENTITY;
+        return (className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_BYTE) || 
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_CHAR) || 
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_INT) ||
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_LONG) || 
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_OBJECT) || 
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_SHORT) ||
+                className.equals(ClassNameConstants.IDENTITY_SINGLEFIELD_STRING) ||
+                className.equals(ByteIdentity.class.getName()) ||
+                className.equals(CharIdentity.class.getName()) ||
+                className.equals(IntIdentity.class.getName()) ||
+                className.equals(LongIdentity.class.getName()) ||
+                className.equals(ShortIdentity.class.getName()) ||
+                className.equals(StringIdentity.class.getName()) ||
+                className.equals(ObjectIdentity.class.getName()));
     }
 
     /**
@@ -721,9 +635,9 @@ public class JDOAdapter implements ApiAdapter
      */
     public Class getTargetClassForSingleFieldIdentity(Object id)
     {
-        if (id instanceof SingleFieldIdentity)
+        if (id instanceof SingleFieldId)
         {
-            return ((SingleFieldIdentity)id).getTargetClass();
+            return ((SingleFieldId)id).getTargetClass();
         }
         return null;
     }
@@ -735,9 +649,9 @@ public class JDOAdapter implements ApiAdapter
      */
     public String getTargetClassNameForSingleFieldIdentity(Object id)
     {
-        if (id instanceof SingleFieldIdentity)
+        if (id instanceof SingleFieldId)
         {
-            return ((SingleFieldIdentity)id).getTargetClassName();
+            return ((SingleFieldId)id).getTargetClassName();
         }
         return null;
     }
@@ -749,9 +663,9 @@ public class JDOAdapter implements ApiAdapter
      */
     public Object getTargetKeyForSingleFieldIdentity(Object id)
     {
-        if (id instanceof SingleFieldIdentity)
+        if (id instanceof SingleFieldId)
         {
-            return ((SingleFieldIdentity)id).getKeyAsObject();
+            return ((SingleFieldId)id).getKeyAsObject();
         }
         return null;
     }
@@ -772,31 +686,31 @@ public class JDOAdapter implements ApiAdapter
             return null;
         }
 
-        if (LongIdentity.class.isAssignableFrom(idType))
+        if (ClassConstants.IDENTITY_SINGLEFIELD_LONG.isAssignableFrom(idType))
         {
             return Long.class;
         }
-        else if (IntIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_INT.isAssignableFrom(idType))
         {
             return Integer.class;
         }
-        else if (ShortIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_SHORT.isAssignableFrom(idType))
         {
             return Short.class;
         }
-        else if (ByteIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_BYTE.isAssignableFrom(idType))
         {
             return Byte.class;
         }
-        else if (CharIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_CHAR.isAssignableFrom(idType))
         {
             return Character.class;
         }
-        else if (StringIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_STRING.isAssignableFrom(idType))
         {
             return String.class;
         }
-        else if (ObjectIdentity.class.isAssignableFrom(idType))
+        else if (ClassConstants.IDENTITY_SINGLEFIELD_OBJECT.isAssignableFrom(idType))
         {
             return Object.class;
         }
@@ -826,14 +740,14 @@ public class JDOAdapter implements ApiAdapter
         {
             throw new NucleusException(LOCALISER.msg("029003", idType, pcType)).setFatal();
         }
-        if (!SingleFieldIdentity.class.isAssignableFrom(idType))
+        if (!SingleFieldId.class.isAssignableFrom(idType))
         {
             throw new NucleusException(LOCALISER.msg("029002", idType.getName(), pcType.getName())).setFatal();
         }
 
-        SingleFieldIdentity id = null;
+        SingleFieldId id = null;
         Class keyType = null;
-        if (idType == LongIdentity.class)
+        if (idType == ClassConstants.IDENTITY_SINGLEFIELD_LONG)
         {
             keyType = Long.class;
             if (!(value instanceof Long))
@@ -842,7 +756,7 @@ public class JDOAdapter implements ApiAdapter
                     pcType.getName(), value.getClass().getName(), "Long")).setFatal();
             }
         }
-        else if (idType == IntIdentity.class)
+        else if (idType == ClassConstants.IDENTITY_SINGLEFIELD_INT)
         {
             keyType = Integer.class;
             if (!(value instanceof Integer))
@@ -851,7 +765,7 @@ public class JDOAdapter implements ApiAdapter
                     pcType.getName(), value.getClass().getName(), "Integer")).setFatal();
             }
         }
-        else if (idType == StringIdentity.class)
+        else if (idType == ClassConstants.IDENTITY_SINGLEFIELD_STRING)
         {
             keyType = String.class;
             if (!(value instanceof String))
@@ -860,7 +774,7 @@ public class JDOAdapter implements ApiAdapter
                     pcType.getName(), value.getClass().getName(), "String")).setFatal();
             }
         }
-        else if (idType == ByteIdentity.class)
+        else if (idType == ClassConstants.IDENTITY_SINGLEFIELD_BYTE)
         {
             keyType = Byte.class;
             if (!(value instanceof Byte))
@@ -869,7 +783,7 @@ public class JDOAdapter implements ApiAdapter
                     pcType.getName(), value.getClass().getName(), "Byte")).setFatal();
             }
         }
-        else if (idType == ShortIdentity.class)
+        else if (idType == ClassConstants.IDENTITY_SINGLEFIELD_SHORT)
         {
             keyType = Short.class;
             if (!(value instanceof Short))
@@ -878,7 +792,7 @@ public class JDOAdapter implements ApiAdapter
                     pcType.getName(), value.getClass().getName(), "Short")).setFatal();
             }
         }
-        else if (idType == CharIdentity.class)
+        else if (idType == ClassConstants.IDENTITY_SINGLEFIELD_CHAR)
         {
             keyType = Character.class;
             if (!(value instanceof Character))
@@ -899,7 +813,7 @@ public class JDOAdapter implements ApiAdapter
             Constructor ctr = idType.getConstructor(ctrArgs);
 
             Object[] args = new Object[] {pcType, value};
-            id = (SingleFieldIdentity)ctr.newInstance(args);
+            id = (SingleFieldId)ctr.newInstance(args);
         }
         catch (Exception e)
         {
@@ -921,14 +835,12 @@ public class JDOAdapter implements ApiAdapter
      * @return The identity
      * @throws NucleusException if invalid input is received
      */
-    public Object getNewApplicationIdentityObjectId(ClassLoaderResolver clr, AbstractClassMetaData acmd, 
-            String value)
+    public Object getNewApplicationIdentityObjectId(ClassLoaderResolver clr, AbstractClassMetaData acmd, String value)
     {
         if (acmd.getIdentityType() != IdentityType.APPLICATION)
         {
             // TODO Localise this
-            throw new NucleusException("This class (" + acmd.getFullClassName() + 
-                ") doesn't use application-identity!");
+            throw new NucleusException("This class (" + acmd.getFullClassName() + ") doesn't use application-identity!");
         }
 
         Class targetClass = clr.classForName(acmd.getFullClassName());
@@ -939,7 +851,7 @@ public class JDOAdapter implements ApiAdapter
             try
             {
                 Class[] ctrArgs;
-                if (ObjectIdentity.class.isAssignableFrom(idType))
+                if (ObjectId.class.isAssignableFrom(idType))
                 {
                     ctrArgs = new Class[] {Class.class, Object.class};
                 }
@@ -980,7 +892,7 @@ public class JDOAdapter implements ApiAdapter
             else
             {
                 clr.classForName(targetClass.getName(), true);
-                id = NucleusJDOHelper.getJDOImplHelper().newObjectIdInstance(targetClass, value);
+                id = EnhancementHelper.getInstance().newObjectIdInstance(targetClass, value);
             }
         }
 
@@ -1003,10 +915,10 @@ public class JDOAdapter implements ApiAdapter
 
         try
         {
-            Object id = ((PersistenceCapable)pc).jdoNewObjectIdInstance();
+            Object id = ((Persistable)pc).dnNewObjectIdInstance();
             if (!cmd.usesSingleFieldIdentityClass())
             {
-                ((PersistenceCapable)pc).jdoCopyKeyFieldsToObjectId(id);
+                ((Persistable)pc).dnCopyKeyFieldsToObjectId(id);
             }
             return id;
         }
@@ -1024,7 +936,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public Object getNewApplicationIdentityObjectId(Class cls, Object key)
     {
-        return NucleusJDOHelper.getJDOImplHelper().newObjectIdInstance(cls, key);
+        return EnhancementHelper.getInstance().newObjectIdInstance(cls, key);
     }
 
     // ------------------------------ Persistence --------------------------------
@@ -1163,9 +1075,9 @@ public class JDOAdapter implements ApiAdapter
      */
     public Object getCopyOfPersistableObject(Object obj, ObjectProvider op, int[] fieldNumbers)
     {
-        PersistenceCapable pc = (PersistenceCapable)obj;
-        PersistenceCapable copy = pc.jdoNewInstance((javax.jdo.spi.StateManager)op);
-        copy.jdoCopyFields(pc, fieldNumbers);
+        Persistable pc = (Persistable)obj;
+        Persistable copy = pc.dnNewInstance((StateManager)op);
+        copy.dnCopyFields(pc, fieldNumbers);
         return copy;
     }
 
@@ -1174,12 +1086,12 @@ public class JDOAdapter implements ApiAdapter
      */
     public void copyFieldsFromPersistableObject(Object pc, int[] fieldNumbers, Object pc2)
     {
-        ((PersistenceCapable)pc2).jdoCopyFields(pc, fieldNumbers);
+        ((Persistable)pc2).dnCopyFields(pc, fieldNumbers);
     }
 
     public void copyPkFieldsToPersistableObjectFromId(Object pc, Object id, FieldManager fm)
     {
-        ObjectIdFieldConsumer consumer = new AppIdObjectIdFieldConsumer(this, fm);
-        ((PersistenceCapable)pc).jdoCopyKeyFieldsFromObjectId(consumer, id);
+        Persistable.ObjectIdFieldConsumer consumer = new AppIdObjectIdFieldConsumer(this, fm);
+        ((Persistable)pc).dnCopyKeyFieldsFromObjectId(consumer, id);
     }
 }

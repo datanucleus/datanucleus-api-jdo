@@ -47,6 +47,7 @@ import javax.jdo.annotations.VersionStrategy;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ArrayMetaData;
@@ -161,7 +162,8 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     idClassName = idClass.getName();
                 }
-                cmd.setObjectIdClass(idClassName);
+                cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(idClassName));
+
                 // PersistenceCapable class
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
                 cmd.setEmbeddedOnly((String)annotationValues.get("embeddedOnly"));
