@@ -1931,7 +1931,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         AbstractClassMetaData cmd = ec.getMetaDataManager().getMetaDataForClass(cls, clr);
         if (cmd.getIdentityType() == IdentityType.DATASTORE)
         {
-            return ec.getNucleusContext().getDatastoreIdentityClass();
+            return ec.getNucleusContext().getIdentityManager().getDatastoreIdClass();
         }
         else if (cmd.getIdentityType() == IdentityType.APPLICATION)
         {
@@ -1951,7 +1951,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         {
             if (cmd.isRequiresExtent())
             {
-                return ec.getNucleusContext().getDatastoreIdentityClass();
+                return ec.getNucleusContext().getIdentityManager().getDatastoreIdClass();
             }
             else
             {
