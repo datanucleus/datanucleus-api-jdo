@@ -20,6 +20,7 @@ package org.datanucleus.api.jdo;
 import javax.jdo.PersistenceManager;
 import javax.jdo.spi.StateInterrogation;
 
+import org.datanucleus.ExecutionContext;
 import org.datanucleus.enhancer.Persistable;
 import org.datanucleus.identity.SingleFieldId;
 
@@ -52,7 +53,8 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public PersistenceManager getPersistenceManager(Object pc)
     {
-        return (PersistenceManager) ((Persistable)pc).dnGetExecutionContext().getOwner();
+        ExecutionContext ec = ((Persistable)pc).dnGetExecutionContext();
+        return ec != null ? (PersistenceManager) ((Persistable)pc).dnGetExecutionContext().getOwner() : null;
     }
 
     /* (non-Javadoc)
