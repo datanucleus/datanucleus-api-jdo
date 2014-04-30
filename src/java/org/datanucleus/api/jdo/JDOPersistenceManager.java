@@ -1537,7 +1537,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @return The typesafe query object
      * @param <T> candidate type
      */
-    public <T> TypesafeQuery<T> newTypesafeQuery(Class cls)
+    public <T> TypesafeQuery<T> newTypesafeQuery(Class<T> cls)
     {
         return new JDOTypesafeQuery<T>(this, cls);
     }
