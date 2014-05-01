@@ -47,11 +47,7 @@ import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.InvalidPrimaryKeyException;
 import org.datanucleus.metadata.MetaDataManager;
-import org.datanucleus.state.AppIdObjectIdFieldConsumer;
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
-import org.datanucleus.state.StateManager;
-import org.datanucleus.store.fieldmanager.FieldManager;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 
@@ -697,30 +693,5 @@ public class JDOAdapter implements ApiAdapter
     public RuntimeException getApiExceptionForNucleusException(NucleusException ne)
     {
         return NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getCopyOfPersistableObject(java.lang.Object, org.datanucleus.store.ObjectProvider, int[])
-     */
-    public Object getCopyOfPersistableObject(Object obj, ObjectProvider op, int[] fieldNumbers)
-    {
-        Persistable pc = (Persistable)obj;
-        Persistable copy = pc.dnNewInstance((StateManager)op);
-        copy.dnCopyFields(pc, fieldNumbers);
-        return copy;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#copyFieldsFromPersistableObject(java.lang.Object, int[], java.lang.Object)
-     */
-    public void copyFieldsFromPersistableObject(Object pc, int[] fieldNumbers, Object pc2)
-    {
-        ((Persistable)pc2).dnCopyFields(pc, fieldNumbers);
-    }
-
-    public void copyPkFieldsToPersistableObjectFromId(Object pc, Object id, FieldManager fm)
-    {
-        Persistable.ObjectIdFieldConsumer consumer = new AppIdObjectIdFieldConsumer(this, fm);
-        ((Persistable)pc).dnCopyKeyFieldsFromObjectId(consumer, id);
     }
 }
