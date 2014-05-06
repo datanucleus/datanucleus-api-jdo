@@ -54,7 +54,7 @@ public class JDOStateInterrogation implements StateInterrogation
     public PersistenceManager getPersistenceManager(Object pc)
     {
         ExecutionContext ec = ((Persistable)pc).dnGetExecutionContext();
-        return ec != null ? (PersistenceManager) ((Persistable)pc).dnGetExecutionContext().getOwner() : null;
+        return ec != null ? (PersistenceManager) ec.getOwner() : null;
     }
 
     /* (non-Javadoc)
