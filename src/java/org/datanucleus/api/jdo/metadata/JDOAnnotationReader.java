@@ -82,6 +82,7 @@ import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.PrimaryKeyMetaData;
 import org.datanucleus.metadata.PropertyMetaData;
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
 import org.datanucleus.metadata.UniqueMetaData;
@@ -849,6 +850,21 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 for (int j=0;j<queries.length;j++)
                 {
                     String lang = JDOAnnotationUtils.getQueryLanguageName(qs[j].language());
+                    if (!StringUtils.isWhitespace(lang))
+                    {
+                        if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                        {
+                            lang = QueryLanguage.JDOQL.toString();
+                        }
+                        else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                        {
+                            lang = QueryLanguage.SQL.toString();
+                        }
+                        else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                        {
+                            lang = QueryLanguage.JPQL.toString();
+                        }
+                    }
                     String resultClassName = (qs[j].resultClass() != null && qs[j].resultClass() != void.class ? 
                             qs[j].resultClass().getName() : null);
                     if (StringUtils.isWhitespace(qs[j].name()))
@@ -878,6 +894,21 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String resultClassName = 
                     (resultClassValue != null && resultClassValue != void.class ? resultClassValue.getName() : null);
                 String lang = JDOAnnotationUtils.getQueryLanguageName((String)annotationValues.get("language"));
+                if (!StringUtils.isWhitespace(lang))
+                {
+                    if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                    {
+                        lang = QueryLanguage.JDOQL.toString();
+                    }
+                    else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                    {
+                        lang = QueryLanguage.SQL.toString();
+                    }
+                    else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                    {
+                        lang = QueryLanguage.JPQL.toString();
+                    }
+                }
                 if (StringUtils.isWhitespace((String)annotationValues.get("name")))
                 {
                     throw new InvalidClassMetaDataException(LOCALISER, "044154", cmd.getFullClassName());

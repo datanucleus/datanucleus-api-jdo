@@ -62,6 +62,7 @@ import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.PrimaryKeyMetaData;
 import org.datanucleus.metadata.PropertyMetaData;
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
 import org.datanucleus.metadata.UniqueMetaData;
@@ -494,17 +495,33 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             else if (localName.equals("query"))
             {
                 MetaData emd = getStack();
+                String name = getAttr(attrs, "name");
+                String lang = getAttr(attrs, "language");
+                if (!StringUtils.isWhitespace(lang))
+                {
+                    if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                    {
+                        lang = QueryLanguage.JDOQL.toString();
+                    }
+                    else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                    {
+                        lang = QueryLanguage.SQL.toString();
+                    }
+                    else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                    {
+                        lang = QueryLanguage.JPQL.toString();
+                    }
+                }
                 if (emd instanceof ClassMetaData)
                 {
                     ClassMetaData cmd = (ClassMetaData)emd;
-                    String name = getAttr(attrs, "name");
                     if (StringUtils.isWhitespace(name))
                     {
                         throw new InvalidClassMetaDataException(LOCALISER, "044154", cmd.getFullClassName());
                     }
                     QueryMetaData qmd = new QueryMetaData(name);
                     qmd.setScope(cmd.getFullClassName());
-                    qmd.setLanguage(getAttr(attrs, "language"));
+                    qmd.setLanguage(lang);
                     qmd.setUnmodifiable(getAttr(attrs, "unmodifiable"));
                     qmd.setResultClass(getAttr(attrs, "result-class"));
                     qmd.setUnique(getAttr(attrs, "unique"));
@@ -515,14 +532,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 else if (emd instanceof InterfaceMetaData)
                 {
                     InterfaceMetaData imd = (InterfaceMetaData)emd;
-                    String name = getAttr(attrs, "name");
                     if (StringUtils.isWhitespace(name))
                     {
                         throw new InvalidClassMetaDataException(LOCALISER, "044154", imd.getFullClassName());
                     }
                     QueryMetaData qmd = new QueryMetaData(name);
                     qmd.setScope(imd.getFullClassName());
-                    qmd.setLanguage(getAttr(attrs, "language"));
+                    qmd.setLanguage(lang);
                     qmd.setUnmodifiable(getAttr(attrs, "unmodifiable"));
                     qmd.setResultClass(getAttr(attrs, "result-class"));
                     qmd.setUnique(getAttr(attrs, "unique"));
@@ -533,8 +549,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 else if (emd instanceof FileMetaData)
                 {
                     FileMetaData filemd = (FileMetaData)emd;
-                    QueryMetaData qmd = filemd.newQueryMetadata(getAttr(attrs, "name"));
-                    qmd.setLanguage(getAttr(attrs, "language"));
+                    QueryMetaData qmd = filemd.newQueryMetadata(name);
+                    qmd.setLanguage(lang);
                     qmd.setUnmodifiable(getAttr(attrs, "unmodifiable"));
                     qmd.setResultClass(getAttr(attrs, "result-class"));
                     qmd.setUnique(getAttr(attrs, "unique"));

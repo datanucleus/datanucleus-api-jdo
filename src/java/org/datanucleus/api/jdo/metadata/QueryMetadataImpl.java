@@ -19,7 +19,9 @@ package org.datanucleus.api.jdo.metadata;
 
 import javax.jdo.metadata.QueryMetadata;
 
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Implementation of JDO QueryMetadata object.
@@ -106,6 +108,21 @@ public class QueryMetadataImpl extends AbstractMetadataImpl implements QueryMeta
      */
     public QueryMetadata setLanguage(String lang)
     {
+        if (!StringUtils.isWhitespace(lang))
+        {
+            if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+            {
+                lang = QueryLanguage.JDOQL.toString();
+            }
+            else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+            {
+                lang = QueryLanguage.SQL.toString();
+            }
+            else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+            {
+                lang = QueryLanguage.JPQL.toString();
+            }
+        }
         getInternal().setLanguage(lang);
         return this;
     }
