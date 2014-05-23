@@ -92,6 +92,7 @@ import org.datanucleus.metadata.annotations.AbstractAnnotationReader;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.Member;
 import org.datanucleus.util.ClassUtils;
+import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.StringUtils;
 
@@ -317,7 +318,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (joins != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044210", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044210", cmd.getFullClassName()));
                     }
                     Join[] js = (Join[])annotationValues.get("value");
                     if (js != null && js.length > 0)
@@ -339,7 +340,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (joins != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044210", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044210", cmd.getFullClassName()));
                     }
                     joins = new JoinMetaData[1];
                     joins[0] = new JoinMetaData();
@@ -389,7 +390,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (fetchPlans != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044207", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044207", cmd.getFullClassName()));
                     }
                     FetchPlan[] plans = (FetchPlan[])annotationValues.get("value");
                     fetchPlans = new FetchPlanMetaData[plans.length];
@@ -410,7 +411,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (fetchPlans != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044207", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044207", cmd.getFullClassName()));
                     }
                     fetchPlans = new FetchPlanMetaData[1];
                     int maxFetchDepth = ((Integer)annotationValues.get("maxFetchDepth")).intValue();
@@ -423,7 +424,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (fetchGroups != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044208", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044208", cmd.getFullClassName()));
                     }
                     FetchGroup[] groups = (FetchGroup[])annotationValues.get("value");
                     fetchGroups = new FetchGroupMetaData[groups.length];
@@ -453,7 +454,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     if (fetchGroups != null)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044208", cmd.getFullClassName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044208", cmd.getFullClassName()));
                     }
                     fetchGroups = new FetchGroupMetaData[1];
                     fetchGroups[0] = new FetchGroupMetaData((String)annotationValues.get("name"));
@@ -490,7 +491,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                     if (StringUtils.isWhitespace(seqName))
                     {
-                        throw new InvalidClassMetaDataException(LOCALISER, "044155", cmd.getFullClassName());
+                        throw new InvalidClassMetaDataException("044155", cmd.getFullClassName());
                     }
                     seqmd = new SequenceMetaData(seqName, seqStrategy);
                     seqmd.setFactoryClass(seqFactoryClassName);
@@ -518,7 +519,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                                 "" + values[j].unique(), values[j].members(), values[j].columns());
                             if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                             {
-                                NucleusLogger.METADATA.warn(LOCALISER.msg("044204", cls.getName()));
+                                NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
                             }
                             else
                             {
@@ -540,7 +541,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[])annotationValues.get("extensions"));
                     if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044204", cls.getName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
                     }
                     else
                     {
@@ -561,7 +562,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                                 values[j].table(), "" + values[j].deferred(), values[j].members(), values[j].columns());
                             if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                             {
-                                NucleusLogger.METADATA.warn(LOCALISER.msg("044205", cls.getName()));
+                                NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
                             }
                             else
                             {
@@ -583,7 +584,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[])annotationValues.get("extensions"));
                     if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044205", cls.getName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
                     }
                     else
                     {
@@ -607,7 +608,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                                 deleteAction, updateAction, values[j].members(), values[j].columns());
                             if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                             {
-                                NucleusLogger.METADATA.warn(LOCALISER.msg("044206", cls.getName()));
+                                NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
                             }
                             else
                             {
@@ -635,7 +636,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[])annotationValues.get("extensions"));
                     if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                     {
-                        NucleusLogger.METADATA.warn(LOCALISER.msg("044206", cls.getName()));
+                        NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
                     }
                     else
                     {
@@ -694,13 +695,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         !annName.equals(JDOAnnotationUtils.QUERIES) &&
                         !annName.equals(JDOAnnotationUtils.QUERY))
                     {
-                        NucleusLogger.METADATA.debug(LOCALISER.msg("044203", cls.getName(), annotations[i].getName()));
+                        NucleusLogger.METADATA.debug(Localiser.msg("044203", cls.getName(), annotations[i].getName()));
                     }
                 }
             }
 
             // Either PersistenceCapable, PersistenceAware or PersistentInterface so build up the metadata
-            NucleusLogger.METADATA.debug(LOCALISER.msg("044200", cls.getName(), "JDO"));
+            NucleusLogger.METADATA.debug(Localiser.msg("044200", cls.getName(), "JDO"));
 
             if (embeddedOnly)
             {
@@ -843,7 +844,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             {
                 if (queries != null)
                 {
-                    NucleusLogger.METADATA.warn(LOCALISER.msg("044209", cmd.getFullClassName()));
+                    NucleusLogger.METADATA.warn(Localiser.msg("044209", cmd.getFullClassName()));
                 }
                 Query[] qs = (Query[])annotationValues.get("value");
                 queries = new QueryMetaData[qs.length];
@@ -869,7 +870,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             qs[j].resultClass().getName() : null);
                     if (StringUtils.isWhitespace(qs[j].name()))
                     {
-                        throw new InvalidClassMetaDataException(LOCALISER, "044154", cmd.getFullClassName());
+                        throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
                     }
                     queries[j] = new QueryMetaData(qs[j].name());
                     queries[j].setScope(cls.getName());
@@ -886,7 +887,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             {
                 if (queries != null)
                 {
-                    NucleusLogger.METADATA.warn(LOCALISER.msg("044209", cmd.getFullClassName()));
+                    NucleusLogger.METADATA.warn(Localiser.msg("044209", cmd.getFullClassName()));
                 }
                 queries = new QueryMetaData[1];
                 String unmodifiable = "" + annotationValues.get("unmodifiable");
@@ -911,7 +912,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 if (StringUtils.isWhitespace((String)annotationValues.get("name")))
                 {
-                    throw new InvalidClassMetaDataException(LOCALISER, "044154", cmd.getFullClassName());
+                    throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
                 }
                 queries[0] = new QueryMetaData((String)annotationValues.get("name"));
                 queries[0].setScope(cls.getName());
@@ -1679,7 +1680,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else 
                 {
-                    NucleusLogger.METADATA.debug(LOCALISER.msg("044211", cmd.getFullClassName(), member.getName(),
+                    NucleusLogger.METADATA.debug(Localiser.msg("044211", cmd.getFullClassName(), member.getName(),
                         annotations[i].getName()));
                 }
             }

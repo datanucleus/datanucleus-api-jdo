@@ -105,9 +105,10 @@ import org.datanucleus.util.StringUtils;
  */
 public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable, Serializable
 {
-    /** Localisation utility for output messages from jdo. */
-    protected static final Localiser LOCALISER = Localiser.getInstance(
-        "org.datanucleus.api.jdo.Localisation", JDOPersistenceManagerFactory.class.getClassLoader());
+    static
+    {
+        Localiser.registerBundle("org.datanucleus.api.jdo.Localisation", JDOPersistenceManagerFactory.class.getClassLoader());
+    }
 
     /** Cache of PMF keyed by the name. Only used when having single-PMF property enabled. */
     private static ConcurrentHashMap<String, JDOPersistenceManagerFactory> pmfByName;
@@ -453,12 +454,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     }
                     else
                     {
-                        throw new JDOUserException(LOCALISER.msg("012004", persistenceUnitName));
+                        throw new JDOUserException(Localiser.msg("012004", persistenceUnitName));
                     }
                 }
                 catch (NucleusException ne)
                 {
-                    throw new JDOUserException(LOCALISER.msg("012005", persistenceUnitName), ne);
+                    throw new JDOUserException(Localiser.msg("012005", persistenceUnitName), ne);
                 }
             }
         }
@@ -562,7 +563,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
             if (!exceptions.isEmpty())
             {
-                throw new JDOUserException(LOCALISER.msg("012002"), exceptions.toArray(new Throwable[exceptions.size()]));
+                throw new JDOUserException(Localiser.msg("012002"), exceptions.toArray(new Throwable[exceptions.size()]));
             }
 
             // Close all PMs
@@ -656,7 +657,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     }
                     catch (ClassNotResolvedException cnre)
                     {
-                        throw new JDOUserException(LOCALISER.msg("012022", listenerClsName));
+                        throw new JDOUserException(Localiser.msg("012022", listenerClsName));
                     }
 
                     InstanceLifecycleListener listener = null;
@@ -672,7 +673,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                         }
                         catch (Exception e)
                         {
-                            throw new JDOUserException(LOCALISER.msg("012021", listenerClsName), e);
+                            throw new JDOUserException(Localiser.msg("012021", listenerClsName), e);
                         }
                     }
                     else
@@ -684,7 +685,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                         }
                         catch (Exception e)
                         {
-                            throw new JDOUserException(LOCALISER.msg("012020", listenerClsName), e);
+                            throw new JDOUserException(Localiser.msg("012020", listenerClsName), e);
                         }
                     }
 
@@ -924,18 +925,18 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
                 if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                 {
-                    NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012006", name.toString()));
+                    NucleusLogger.PERSISTENCE.debug(Localiser.msg("012006", name.toString()));
                 }
             }
             else
             {
-                NucleusLogger.PERSISTENCE.warn(LOCALISER.msg("012007", 
+                NucleusLogger.PERSISTENCE.warn(Localiser.msg("012007", 
                     ref.getClassName(), JDOClassNameConstants.JDOPersistenceManagerFactory));
             }
         }
         else
         {
-            NucleusLogger.PERSISTENCE.warn(LOCALISER.msg("012008", (obj != null ? obj.getClass().getName() : null)));
+            NucleusLogger.PERSISTENCE.warn(Localiser.msg("012008", (obj != null ? obj.getClass().getName() : null)));
         }
         return pmf;
     }
@@ -968,7 +969,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     rc.add(new StringRefAddr(key, value));
                     if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                     {
-                        NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012009", key, value));
+                        NucleusLogger.PERSISTENCE.debug(Localiser.msg("012009", key, value));
                     }
                 }
                 else if (valueObj instanceof Long)
@@ -977,7 +978,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     rc.add(new StringRefAddr(key, value));
                     if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                     {
-                        NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012009", key, value));
+                        NucleusLogger.PERSISTENCE.debug(Localiser.msg("012009", key, value));
                     }
                 }
                 else if (valueObj instanceof Integer)
@@ -986,7 +987,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     rc.add(new StringRefAddr(key, value));
                     if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                     {
-                        NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012009", key, value));
+                        NucleusLogger.PERSISTENCE.debug(Localiser.msg("012009", key, value));
                     }
                 }
                 else if (valueObj instanceof Boolean)
@@ -995,19 +996,19 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     rc.add(new StringRefAddr(key, value));
                     if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                     {
-                        NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012009", key, value));
+                        NucleusLogger.PERSISTENCE.debug(Localiser.msg("012009", key, value));
                     }
                 }
                 else
                 {
-                    NucleusLogger.PERSISTENCE.warn(LOCALISER.msg("012010", key));
+                    NucleusLogger.PERSISTENCE.warn(Localiser.msg("012010", key));
                 }
             }
             if (NucleusLogger.PERSISTENCE.isDebugEnabled())
             {
                 if (p.isEmpty())
                 {
-                    NucleusLogger.PERSISTENCE.debug(LOCALISER.msg("012011"));
+                    NucleusLogger.PERSISTENCE.debug(Localiser.msg("012011"));
                 }
             }
         }
@@ -1236,7 +1237,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (isClosed())
         {
             // Comply with Section 11.4 of the JDO spec (throw JDOUserException if already closed)
-            throw new JDOUserException(LOCALISER.msg("012025"));
+            throw new JDOUserException(Localiser.msg("012025"));
         }
     }
 
@@ -1538,7 +1539,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
         else
         {
-            throw new JDOUserException(LOCALISER.msg("012026", "javax.jdo.option.TransactionType", type));
+            throw new JDOUserException(Localiser.msg("012026", "javax.jdo.option.TransactionType", type));
         }
     }
 
@@ -1946,7 +1947,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         if (!isConfigurable())
         {
-            throw new JDOUserException(LOCALISER.msg("012023"));
+            throw new JDOUserException(Localiser.msg("012023"));
         }
     }
 

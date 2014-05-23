@@ -60,7 +60,6 @@ import javax.jdo.datastore.Sequence;
 import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.listener.InstanceLifecycleListener;
 
-import org.datanucleus.ClassConstants;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.FetchGroup;
@@ -105,13 +104,6 @@ import org.datanucleus.util.TypeConversionHelper;
  */
 public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 {
-    /** Localisation utility for output messages from core. */
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation", ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
-    /** Localisation utility for output messages from jdo. */
-    protected static final Localiser LOCALISER_JDO = Localiser.getInstance("org.datanucleus.api.jdo.Localisation",
-        JDOPersistenceManagerFactory.class.getClassLoader());
-
     /** Logger for JDO. */
     public static final NucleusLogger LOGGER = NucleusLogger.getLoggerInstance("DataNucleus.JDO");
 
@@ -470,7 +462,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010036"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010036"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -546,7 +538,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010037"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010037"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -702,7 +694,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010038"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010038"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -787,7 +779,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusUserException nue)
         {
             Throwable[] failures = nue.getNestedExceptions();
-            throw new JDOUserException(LOCALISER.msg("010039"), failures);
+            throw new JDOUserException(Localiser.msg("010039"), failures);
         }
     }
 
@@ -851,7 +843,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusUserException nue)
         {
             Throwable[] failures = nue.getNestedExceptions();
-            throw new JDOUserException(LOCALISER.msg("010040"), failures);
+            throw new JDOUserException(Localiser.msg("010040"), failures);
         }
     }
 
@@ -963,7 +955,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010041"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010041"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -1042,7 +1034,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010042"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010042"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -1081,7 +1073,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         // if !transactional and !persistent
         if (!((Persistable) pc).dnIsTransactional() && !((Persistable) pc).dnIsPersistent())
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011004"));
+            throw new JDOUserException(Localiser.msg("011004"));
         }
         // if !transactional and persistent, do nothing
         if (!((Persistable) pc).dnIsTransactional() && ((Persistable) pc).dnIsPersistent())
@@ -1125,7 +1117,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(LOCALISER.msg("010043"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010043"), (Exception[]) failures.toArray(new Exception[failures.size()]));
         }
     }
 
@@ -1307,7 +1299,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         // Check that our store supports the language
         if (!ec.getStoreManager().supportsQueryLanguage(queryLanguage))
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011006", queryLanguage));
+            throw new JDOUserException(Localiser.msg("011006", queryLanguage));
         }
 
         org.datanucleus.store.query.Query internalQuery = null;
@@ -1436,7 +1428,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         // Throw exception on incomplete input
         if (queryName == null)
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011005", queryName, cls));
+            throw new JDOUserException(Localiser.msg("011005", queryName, cls));
         }
 
         // Find the Query for the specified class
@@ -1444,7 +1436,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         QueryMetaData qmd = ec.getMetaDataManager().getMetaDataForQuery(cls, clr, queryName);
         if (qmd == null)
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011005", queryName, cls));
+            throw new JDOUserException(Localiser.msg("011005", queryName, cls));
         }
 
         // Create the Query
@@ -1463,7 +1455,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         if (qmd.getLanguage().equals(QueryLanguage.JDOQL.toString()) && 
             (qmd.isUnique() || qmd.getResultClass() != null))
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011007", queryName));
+            throw new JDOUserException(Localiser.msg("011007", queryName));
         }
         if (qmd.isUnique())
         {
@@ -1486,7 +1478,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 }
                 catch (ClassNotResolvedException cnre2)
                 {
-                    throw new JDOUserException(LOCALISER_JDO.msg("011008", queryName, qmd.getResultClass()));
+                    throw new JDOUserException(Localiser.msg("011008", queryName, qmd.getResultClass()));
                 }
             }
             query.setResultClass(resultCls);
@@ -1719,7 +1711,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         if (id == null)
         {
-            throw new JDONullIdentityException(LOCALISER.msg("010044"));
+            throw new JDONullIdentityException(Localiser.msg("010044"));
         }
 
         try
@@ -1794,7 +1786,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         if (oids == null)
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011002"));
+            throw new JDOUserException(Localiser.msg("011002"));
         }
 
         // Convert any explicit JDO single field ids to DN single field id
@@ -1844,7 +1836,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         if (oids == null)
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011002"));
+            throw new JDOUserException(Localiser.msg("011002"));
         }
         else if (oids.size() == 0)
         {
@@ -1942,7 +1934,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             }
             catch (ClassNotResolvedException e)
             {
-                String msg = LOCALISER_JDO.msg("011009", cls.getName());
+                String msg = Localiser.msg("011009", cls.getName());
                 LOGGER.error(msg);
                 throw new JDOException(msg);
             }
@@ -2148,7 +2140,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         SequenceMetaData seqmd = ec.getMetaDataManager().getMetaDataForSequence(ec.getClassLoaderResolver(),sequenceName);
         if (seqmd == null)
         {
-            throw new JDOUserException(LOCALISER.msg("017000", sequenceName));
+            throw new JDOUserException(Localiser.msg("017000", sequenceName));
         }
 
         Sequence seq = null;
@@ -2162,7 +2154,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 Class factory = ec.getClassLoaderResolver().classForName(seqmd.getFactoryClass());
                 if (factory == null)
                 {
-                    throw new JDOUserException(LOCALISER.msg("017001", sequenceName, seqmd.getFactoryClass()));
+                    throw new JDOUserException(Localiser.msg("017001", sequenceName, seqmd.getFactoryClass()));
                 }
 
                 Class[] argTypes = null;
@@ -2193,7 +2185,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 }
                 catch (Exception e)
                 {
-                    throw new JDOUserException(LOCALISER.msg("017002", seqmd.getFactoryClass(), e.getMessage()));
+                    throw new JDOUserException(Localiser.msg("017002", seqmd.getFactoryClass(), e.getMessage()));
                 }
 
                 // Register the sequence with the PMF
@@ -2252,7 +2244,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         if (isClosed())
         {
-            throw new JDOFatalUserException(LOCALISER_JDO.msg("011000"));
+            throw new JDOFatalUserException(Localiser.msg("011000"));
         }
     }
 
@@ -2289,7 +2281,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         if (!ec.getTransaction().isActive() && !ec.getTransaction().getNontransactionalRead())
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("011001", operation));
+            throw new JDOUserException(Localiser.msg("011001", operation));
         }
     }
 

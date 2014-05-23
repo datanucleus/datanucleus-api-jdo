@@ -25,6 +25,7 @@ import org.datanucleus.Transaction;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.util.Localiser;
 
 /**
  * Class representing the life cycle state of PersistentDirty.
@@ -60,7 +61,7 @@ class PersistentDirty extends LifeCycleState
      **/
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {
-        throw new NucleusUserException(LOCALISER.msg("027011"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027011"),op.getInternalObjectId());
     }
 
     /**
@@ -75,7 +76,7 @@ class PersistentDirty extends LifeCycleState
         {
             return changeState(op, TRANSIENT);
         }
-        throw new NucleusUserException(LOCALISER.msg("027012"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027012"),op.getInternalObjectId());
     }
 
     /**

@@ -77,7 +77,6 @@ import org.datanucleus.store.exceptions.DatastoreReadOnlyException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
 import org.datanucleus.util.ClassUtils;
-import org.datanucleus.util.Localiser;
 
 /**
  * Helper for persistence operations with DataNucleus.
@@ -85,10 +84,6 @@ import org.datanucleus.util.Localiser;
  */
 public class NucleusJDOHelper extends JDOHelper
 {
-    /** Localisation utility for output messages */
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     /**
      * Convenience accessor for the query results cache.
      * @param pmf The PMF

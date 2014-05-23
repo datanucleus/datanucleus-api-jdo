@@ -31,15 +31,12 @@ import org.datanucleus.util.Localiser;
  */
 public class TransactionNotActiveException extends JDOUserException
 {
-    private static final Localiser LOCALISER=Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     /**
      * Constructor.
      */
     public TransactionNotActiveException()
     {
-        super(LOCALISER.msg("015035"));
+        super(Localiser.msg("015035"));
     }
 
     /**

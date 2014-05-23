@@ -32,14 +32,11 @@ import org.datanucleus.util.Localiser;
  */
 public class ConnectionInUseException extends JDOUserException
 {
-    private static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     /**
      * Constructor.
      */
     public ConnectionInUseException()
     {
-        super(LOCALISER.msg("009003"));
+        super(Localiser.msg("009003"));
     }
 }

@@ -22,6 +22,7 @@ import javax.jdo.JDOUserException;
 import org.datanucleus.Transaction;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.util.Localiser;
 
 /**
  * Class representing the life cycle state of PersistentNontransactionalDirty
@@ -117,7 +118,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
         Transaction tx = op.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
 		{
-	        throw new JDOUserException(LOCALISER.msg("027002"),op.getInternalObjectId());
+	        throw new JDOUserException(Localiser.msg("027002"),op.getInternalObjectId());
 		}
         return this;
     }

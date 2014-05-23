@@ -69,6 +69,7 @@ import org.datanucleus.metadata.UniqueMetaData;
 import org.datanucleus.metadata.ValueMetaData;
 import org.datanucleus.metadata.VersionMetaData;
 import org.datanucleus.metadata.xml.AbstractMetaDataHandler;
+import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.StringUtils;
 
@@ -112,7 +113,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         String name = getAttr(attrs, "name");
         if (StringUtils.isWhitespace(name))
         {
-            throw new InvalidClassMetaDataException(LOCALISER, "044061", pmd.getName());
+            throw new InvalidClassMetaDataException("044061", pmd.getName());
         }
         ClassMetaData cmd = new ClassMetaData(pmd, name);
         cmd.setTable(getAttr(attrs,"table"));
@@ -162,7 +163,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         String name = getAttr(attrs, "name");
         if (StringUtils.isWhitespace(name))
         {
-            throw new InvalidClassMetaDataException(LOCALISER, "044061", pmd.getName());
+            throw new InvalidClassMetaDataException("044061", pmd.getName());
         }
         InterfaceMetaData imd = new InterfaceMetaData(pmd, name);
         imd.setTable(getAttr(attrs,"table"));
@@ -517,7 +518,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     ClassMetaData cmd = (ClassMetaData)emd;
                     if (StringUtils.isWhitespace(name))
                     {
-                        throw new InvalidClassMetaDataException(LOCALISER, "044154", cmd.getFullClassName());
+                        throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
                     }
                     QueryMetaData qmd = new QueryMetaData(name);
                     qmd.setScope(cmd.getFullClassName());
@@ -534,7 +535,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     InterfaceMetaData imd = (InterfaceMetaData)emd;
                     if (StringUtils.isWhitespace(name))
                     {
-                        throw new InvalidClassMetaDataException(LOCALISER, "044154", imd.getFullClassName());
+                        throw new InvalidClassMetaDataException("044154", imd.getFullClassName());
                     }
                     QueryMetaData qmd = new QueryMetaData(name);
                     qmd.setScope(imd.getFullClassName());
@@ -1060,14 +1061,14 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else
             {
-                String message = LOCALISER.msg("044037",qName);
+                String message = Localiser.msg("044037",qName);
                 NucleusLogger.METADATA.error(message);
                 throw new RuntimeException(message);
             }
         }
         catch(RuntimeException ex)
         {
-            NucleusLogger.METADATA.error(LOCALISER.msg("044042", qName, getStack(), uri), ex);
+            NucleusLogger.METADATA.error(Localiser.msg("044042", qName, getStack(), uri), ex);
             throw ex;
         }
     }

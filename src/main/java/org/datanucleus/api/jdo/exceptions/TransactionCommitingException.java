@@ -31,11 +31,8 @@ import org.datanucleus.util.Localiser;
  */
 public class TransactionCommitingException extends JDOUserException
 {
-    private static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     public TransactionCommitingException(Object failedObject)
     {
-        super(LOCALISER.msg("015036"),failedObject);
+        super(Localiser.msg("015036"),failedObject);
     }
 }

@@ -28,6 +28,7 @@ import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.state.IllegalStateTransitionException;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.util.Localiser;
 
 /**
  * Class representing the life cycle state of PersistentNontransactional.
@@ -146,7 +147,7 @@ class PersistentNontransactional extends LifeCycleState
         Transaction tx = op.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
 		{
-	        throw new TransactionNotReadableException(LOCALISER.msg("027002"), op.getInternalObjectId());
+	        throw new TransactionNotReadableException(Localiser.msg("027002"), op.getInternalObjectId());
 		}
         if (tx.isActive() && !tx.getOptimistic())
         {
@@ -171,7 +172,7 @@ class PersistentNontransactional extends LifeCycleState
         Transaction tx = op.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalWrite())
         {
-            throw new TransactionNotWritableException(LOCALISER.msg("027001"), op.getInternalObjectId());
+            throw new TransactionNotWritableException(Localiser.msg("027001"), op.getInternalObjectId());
         }
         if (tx.isActive())
         {

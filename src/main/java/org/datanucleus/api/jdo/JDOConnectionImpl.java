@@ -30,10 +30,6 @@ import org.datanucleus.util.Localiser;
  */
 public class JDOConnectionImpl implements JDOConnection
 {
-    /** Localisation utility for output messages */
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.api.jdo.Localisation",
-        JDOPersistenceManagerFactory.class.getClassLoader());
-
     /** Underlying NucleusConnection providing the connection. */
     protected NucleusConnection nucConn = null;
 
@@ -83,7 +79,7 @@ public class JDOConnectionImpl implements JDOConnection
      */
     protected void throwExceptionNotAvailable()
     {
-        throw new JDOUserException(LOCALISER.msg("046001"));
+        throw new JDOUserException(Localiser.msg("046001"));
     }
 
     /**
@@ -92,6 +88,6 @@ public class JDOConnectionImpl implements JDOConnection
      */
     protected void throwExceptionUnsupportedOperation(String methodName)
     {
-        throw new JDOUserException(LOCALISER.msg("046000", methodName));
+        throw new JDOUserException(Localiser.msg("046000", methodName));
     }
 }

@@ -51,6 +51,7 @@ import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
 import org.datanucleus.metadata.xml.MetaDataParser;
+import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.StringUtils;
 
@@ -430,7 +431,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             // Not found, so add to known classes/interfaces without MetaData
             if (NucleusLogger.METADATA.isDebugEnabled())
             {
-                NucleusLogger.METADATA.debug(LOCALISER.msg("044043", className)); 
+                NucleusLogger.METADATA.debug(Localiser.msg("044043", className)); 
             }
             classesWithoutPersistenceInfo.add(className);
 
@@ -526,13 +527,13 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         {
                             if (NucleusLogger.METADATA.isDebugEnabled())
                             {
-                                NucleusLogger.METADATA.debug(LOCALISER.msg("044053",query_key,location));
+                                NucleusLogger.METADATA.debug(Localiser.msg("044053",query_key,location));
                             }
                             return qmd;
                         }
                         if (NucleusLogger.METADATA.isDebugEnabled())
                         {
-                            NucleusLogger.METADATA.debug(LOCALISER.msg("044050",query_key,location));
+                            NucleusLogger.METADATA.debug(Localiser.msg("044050",query_key,location));
                         }
                     }
                 }
@@ -580,14 +581,14 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 {
                     if (NucleusLogger.METADATA.isDebugEnabled())
                     {
-                        NucleusLogger.METADATA.debug(LOCALISER.msg("044053",query_key,location));
+                        NucleusLogger.METADATA.debug(Localiser.msg("044053",query_key,location));
                     }
                     return qmd;
                 }
             }
             if (NucleusLogger.METADATA.isDebugEnabled())
             {
-                NucleusLogger.METADATA.debug(LOCALISER.msg("044050",query_key,location));
+                NucleusLogger.METADATA.debug(Localiser.msg("044050",query_key,location));
             }
         }
         return null;
@@ -656,13 +657,13 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             {
                 if (NucleusLogger.METADATA.isDebugEnabled())
                 {
-                    NucleusLogger.METADATA.debug(LOCALISER.msg("044053", packageSequenceName, location));
+                    NucleusLogger.METADATA.debug(Localiser.msg("044053", packageSequenceName, location));
                 }
                 return seqmd;
             }
             if (NucleusLogger.METADATA.isDebugEnabled())
             {
-                NucleusLogger.METADATA.debug(LOCALISER.msg("044051", packageSequenceName, location));
+                NucleusLogger.METADATA.debug(Localiser.msg("044051", packageSequenceName, location));
             }
         }
         return null;
@@ -770,7 +771,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             }
             if (!resources.hasMoreElements() && NucleusLogger.METADATA.isDebugEnabled())
             {
-                NucleusLogger.METADATA.debug(LOCALISER.msg("044049", 
+                NucleusLogger.METADATA.debug(Localiser.msg("044049", 
                     metadataFileExtension, pc_class.getName(), location));
             }
             while (resources.hasMoreElements())
@@ -787,7 +788,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         if (filemd.getType() != metadataType)
                         {
                             // Wrong type of file so ignore it
-                            NucleusLogger.METADATA.warn(LOCALISER.msg("044045", url, filemd.getType(), metadataType));
+                            NucleusLogger.METADATA.warn(Localiser.msg("044045", url, filemd.getType(), metadataType));
                             filemd = null;
                             break;
                         }
@@ -806,7 +807,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         // We now have the class, so it must have been in this file
                         if (NucleusLogger.METADATA.isDebugEnabled())
                         {
-                            NucleusLogger.METADATA.debug(LOCALISER.msg("044052", metadataFileExtension, pc_class.getName(), url));
+                            NucleusLogger.METADATA.debug(Localiser.msg("044052", metadataFileExtension, pc_class.getName(), url));
                         }
                         return filemd;
                     }
@@ -816,7 +817,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
         if (NucleusLogger.METADATA.isDebugEnabled())
         {
-            NucleusLogger.METADATA.debug(LOCALISER.msg("044048", metadataFileExtension, pc_class.getName()));
+            NucleusLogger.METADATA.debug(Localiser.msg("044048", metadataFileExtension, pc_class.getName()));
         }
         return null;
     }
@@ -1131,7 +1132,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         // Deregister the metadata for the implementation from those "not found"
         if (NucleusLogger.METADATA.isDebugEnabled())
         {
-            NucleusLogger.METADATA.debug(LOCALISER.msg("044044",implClass.getName())); 
+            NucleusLogger.METADATA.debug(Localiser.msg("044044",implClass.getName())); 
         }
         classesWithoutPersistenceInfo.remove(implClass.getName());
     }
@@ -1153,7 +1154,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         // Deregister the metadata for the implementation from those "not found"
         if (NucleusLogger.METADATA.isDebugEnabled())
         {
-            NucleusLogger.METADATA.debug(LOCALISER.msg("044044", implClass.getName())); 
+            NucleusLogger.METADATA.debug(Localiser.msg("044044", implClass.getName())); 
         }
         classesWithoutPersistenceInfo.remove(implClass.getName());
     }

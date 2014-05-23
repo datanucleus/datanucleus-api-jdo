@@ -43,10 +43,6 @@ import org.datanucleus.util.StringUtils;
  */
 public class JDOReplicationManager
 {
-    /** Localisation utility for output messages from jdo. */
-    protected static final Localiser LOCALISER_JDO = Localiser.getInstance(
-        "org.datanucleus.api.jdo.Localisation", JDOPersistenceManagerFactory.class.getClassLoader());
-
     /** PMF for the source datastore. */
     final PersistenceManagerFactory pmfSource;
 
@@ -65,11 +61,11 @@ public class JDOReplicationManager
     {
         if (pmf1 == null || pmf1.isClosed())
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("012050"));
+            throw new JDOUserException(Localiser.msg("012050"));
         }
         else if (pmf2 == null || pmf2.isClosed())
         {
-            throw new JDOUserException(LOCALISER_JDO.msg("012050"));
+            throw new JDOUserException(Localiser.msg("012050"));
         }
 
         pmfSource = pmf1;
@@ -123,7 +119,7 @@ public class JDOReplicationManager
     {
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012052", pmfSource, pmfTarget, 
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012052", pmfSource, pmfTarget, 
                 StringUtils.objectArrayToString(types)));
         }
 
@@ -145,7 +141,7 @@ public class JDOReplicationManager
         // Detach from datastore 1
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012053"));
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012053"));
         }
         PersistenceManager pm1 = pmfSource.getPersistenceManager();
         Transaction tx1 = pm1.currentTransaction();
@@ -198,7 +194,7 @@ public class JDOReplicationManager
     {
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012052", pmfSource, pmfTarget, 
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012052", pmfSource, pmfTarget, 
                 StringUtils.objectArrayToString(classNames)));
         }
 
@@ -220,7 +216,7 @@ public class JDOReplicationManager
         // Detach from datastore 1
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012053"));
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012053"));
         }
         PersistenceManager pm1 = pmfSource.getPersistenceManager();
         Transaction tx1 = pm1.currentTransaction();
@@ -275,7 +271,7 @@ public class JDOReplicationManager
     {
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012051", pmfSource, pmfTarget,
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012051", pmfSource, pmfTarget,
                 StringUtils.objectArrayToString(oids)));
         }
 
@@ -284,7 +280,7 @@ public class JDOReplicationManager
         // Detach from datastore 1
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012053"));
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012053"));
         }
         PersistenceManager pm1 = pmfSource.getPersistenceManager();
         Transaction tx1 = pm1.currentTransaction();
@@ -347,7 +343,7 @@ public class JDOReplicationManager
         // Attach to datastore 2
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012054"));
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012054"));
         }
         JDOPersistenceManager pm2 = (JDOPersistenceManager)pmfTarget.getPersistenceManager();
         Transaction tx2 = pm2.currentTransaction();
@@ -367,7 +363,7 @@ public class JDOReplicationManager
         }
         if (NucleusLogger.PERSISTENCE.isDebugEnabled())
         {
-            NucleusLogger.PERSISTENCE.debug(LOCALISER_JDO.msg("012055"));
+            NucleusLogger.PERSISTENCE.debug(Localiser.msg("012055"));
         }
     }
 }

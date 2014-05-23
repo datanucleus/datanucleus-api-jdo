@@ -25,6 +25,7 @@ import javax.jdo.JDOUserException;
 import org.datanucleus.Transaction;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.util.Localiser;
 
 /**
  * Class representing the life cycle state of PersistentDeleted.
@@ -50,7 +51,7 @@ class PersistentDeleted extends LifeCycleState
      **/
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {
-        throw new JDOUserException(LOCALISER.msg("027007"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027007"),op.getInternalObjectId());
     }
 
     /**
@@ -61,7 +62,7 @@ class PersistentDeleted extends LifeCycleState
      **/
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
-        throw new JDOUserException(LOCALISER.msg("027008"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027008"),op.getInternalObjectId());
     }
 
     /**
@@ -113,7 +114,7 @@ class PersistentDeleted extends LifeCycleState
      **/
     public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
     {
-        throw new JDOUserException(LOCALISER.msg("027009"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027009"),op.getInternalObjectId());
     }
 
     /**
@@ -123,7 +124,7 @@ class PersistentDeleted extends LifeCycleState
      **/
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
-        throw new JDOUserException(LOCALISER.msg("027010"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027010"),op.getInternalObjectId());
     }
 
     /**

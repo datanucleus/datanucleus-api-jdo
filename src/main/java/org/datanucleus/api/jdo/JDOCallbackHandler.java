@@ -52,10 +52,6 @@ import org.datanucleus.util.Localiser;
  */
 public class JDOCallbackHandler implements CallbackHandler
 {
-    /** Localiser for messages. */
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation",
-        org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     NucleusContext nucleusCtx;
 
     private final Map<InstanceLifecycleListener, LifecycleListenerForClass> listeners =
@@ -135,7 +131,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPreStore"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPreStore"), e);
             }
         }
 
@@ -182,7 +178,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPreClear"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPreClear"), e);
             }
         }
     }
@@ -224,7 +220,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPreDelete"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPreDelete"), e);
             }
         }
 
@@ -293,7 +289,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPostLoad"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPostLoad"), e);
             }
         }
 
@@ -337,7 +333,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPreDetach"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPreDetach"), e);
             }
         }        
     }
@@ -357,7 +353,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPostDetach"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPostDetach"), e);
             }
         }
 
@@ -392,7 +388,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPreAttach"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPreAttach"), e);
             }
         }
     }
@@ -412,7 +408,7 @@ public class JDOCallbackHandler implements CallbackHandler
             }
             catch (Exception e)
             {
-                throw new JDOUserCallbackException(LOCALISER.msg("025001", "jdoPostAttach"), e);
+                throw new JDOUserCallbackException(Localiser.msg("025001", "jdoPostAttach"), e);
             }
         }
 

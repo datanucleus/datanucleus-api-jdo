@@ -49,15 +49,12 @@ import org.datanucleus.metadata.InvalidPrimaryKeyException;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.util.ClassUtils;
-import org.datanucleus.util.Localiser;
 
 /**
  * Adapter for the JDO API, to allow the DataNucleus core runtime to expose multiple APIs to clients.
  */
 public class JDOAdapter implements ApiAdapter
 {
-    protected static final Localiser LOCALISER = Localiser.getInstance("org.datanucleus.Localisation", org.datanucleus.ClassConstants.NUCLEUS_CONTEXT_LOADER);
-
     protected static Set<String> defaultPersistentTypeNames = new HashSet<String>();
 
     static
@@ -364,19 +361,19 @@ public class JDOAdapter implements ApiAdapter
         // When using inner class, must be static
         if (ClassUtils.isInnerClass(pkClass.getName()) && !Modifier.isStatic(pkClass.getModifiers()))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019000", cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException("019000", cmd.getFullClassName(), pkClass.getName());
         }
 
         // Must be public
         if (!Modifier.isPublic(pkClass.getModifiers()))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019001", cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException("019001", cmd.getFullClassName(), pkClass.getName());
         }
 
         // Must implement Serializable
         if (!Serializable.class.isAssignableFrom(pkClass))
         {
-            throw new InvalidPrimaryKeyException(LOCALISER, "019002", cmd.getFullClassName(), pkClass.getName());
+            throw new InvalidPrimaryKeyException("019002", cmd.getFullClassName(), pkClass.getName());
         }
 
         // a). SingleFieldIdentity class
@@ -384,7 +381,7 @@ public class JDOAdapter implements ApiAdapter
         {
             if (noOfPkFields != 1)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019003", cmd.getFullClassName());
+                throw new InvalidPrimaryKeyException("019003", cmd.getFullClassName());
             }
         }
         // b). Users own primary key class
@@ -397,12 +394,12 @@ public class JDOAdapter implements ApiAdapter
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019004", cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException("019004", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException ex)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019004", cmd.getFullClassName(), pkClass.getName());
+                throw new InvalidPrimaryKeyException("019004", cmd.getFullClassName(), pkClass.getName());
             }
 
             // Must have public String arg constructor
@@ -412,7 +409,7 @@ public class JDOAdapter implements ApiAdapter
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019005", cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException("019005", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -427,7 +424,7 @@ public class JDOAdapter implements ApiAdapter
                     !Modifier.isPublic(method.getModifiers()) ||
                     method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019006", cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException("019006", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -440,7 +437,7 @@ public class JDOAdapter implements ApiAdapter
                 java.lang.reflect.Method method=pkClass.getMethod("hashCode",new Class[0]);
                 if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019007", cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException("019007", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -453,7 +450,7 @@ public class JDOAdapter implements ApiAdapter
                 java.lang.reflect.Method method=pkClass.getMethod("equals",new Class[] {Object.class});
                 if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019008", cmd.getFullClassName(), pkClass.getName());
+                    throw new InvalidPrimaryKeyException("019008", cmd.getFullClassName(), pkClass.getName());
                 }
             }
             catch (NoSuchMethodException nsme)
@@ -472,7 +469,7 @@ public class JDOAdapter implements ApiAdapter
             if (noOfPkFields != noPkFields &&
                 cmd.getIdentityType() == IdentityType.APPLICATION)
             {
-                throw new InvalidPrimaryKeyException(LOCALISER, "019015", cmd.getFullClassName(), pkClass.getName(), "" + noOfPkFields, "" + noPkFields);
+                throw new InvalidPrimaryKeyException("019015", cmd.getFullClassName(), pkClass.getName(), "" + noOfPkFields, "" + noPkFields);
             }
         }
 
@@ -500,13 +497,13 @@ public class JDOAdapter implements ApiAdapter
                 if (!fieldsInPkClass[i].getType().isPrimitive() &&
                     !(Serializable.class).isAssignableFrom(fieldsInPkClass[i].getType()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019009", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException("019009", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // All non-static fields must be public
                 if (!Modifier.isPublic(fieldsInPkClass[i].getModifiers()))
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019010", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException("019010", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // non-static fields of objectid-class include
@@ -515,7 +512,7 @@ public class JDOAdapter implements ApiAdapter
                 boolean found_field = false;
                 if (fieldInPcClass == null)
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
+                    throw new InvalidPrimaryKeyException("019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
                 // check if the field in objectid-class has the same type as the
@@ -532,7 +529,7 @@ public class JDOAdapter implements ApiAdapter
                     AbstractClassMetaData ref_cmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
                     if (ref_cmd == null)
                     {
-                        throw new InvalidPrimaryKeyException(LOCALISER, "019012", cmd.getFullClassName(), pkClass.getName(),
+                        throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                     }
                     if (ref_cmd.getObjectidClass() == null)
@@ -540,20 +537,20 @@ public class JDOAdapter implements ApiAdapter
                         //Single Field Identity
                         if (IdentityUtils.isSingleFieldIdentityClass(fieldTypePkClass))
                         {
-                            throw new InvalidPrimaryKeyException(LOCALISER, "019014", cmd.getFullClassName(), pkClass.getName(),
+                            throw new InvalidPrimaryKeyException("019014", cmd.getFullClassName(), pkClass.getName(),
                                 fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getFullClassName());
                         }
                     }
                     if (!fieldTypePkClass.equals(ref_cmd.getObjectidClass()))
                     {
-                        throw new InvalidPrimaryKeyException(LOCALISER, "019013", cmd.getFullClassName(), pkClass.getName(),
+                        throw new InvalidPrimaryKeyException("019013", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getObjectidClass());
                     }
                     found_field=true;
                 }
                 if (!found_field)
                 {
-                    throw new InvalidPrimaryKeyException(LOCALISER, "019012", cmd.getFullClassName(), pkClass.getName(),
+                    throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
                         fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                 }
 
