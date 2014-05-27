@@ -2221,7 +2221,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             return;
         }
 
-        ec.addListener(listener, classes);
+        ec.getCallbackHandler().addListener(listener, classes);
     }
 
     /**
@@ -2231,7 +2231,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void removeInstanceLifecycleListener(InstanceLifecycleListener listener)
     {
         assertIsOpen();
-        ec.removeListener(listener);
+        ec.getCallbackHandler().removeListener(listener);
     }
 
     // -------------------------------------- Utility methods ----------------------------------------
