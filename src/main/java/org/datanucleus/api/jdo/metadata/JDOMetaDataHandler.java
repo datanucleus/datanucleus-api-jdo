@@ -97,11 +97,11 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
     {
         super(mgr, filename, resolver);
         metadata = new FileMetaData();
-        ((FileMetaData)metadata).setFilename(filename);
-        ((FileMetaData)metadata).setMetaDataManager(mgr); // Parsing via this manager, so set it
+        ((FileMetaData) metadata).setFilename(filename);
+        ((FileMetaData) metadata).setMetaDataManager(mgr); // Parsing via this manager, so set it
         pushStack(metadata);
     }
-    
+
     /**
      * Utility to create a new class component.
      * @param pmd The parent PackageMetaData
@@ -116,10 +116,10 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             throw new InvalidClassMetaDataException("044061", pmd.getName());
         }
         ClassMetaData cmd = new ClassMetaData(pmd, name);
-        cmd.setTable(getAttr(attrs,"table"));
-        cmd.setCatalog(getAttr(attrs,"catalog"));
-        cmd.setSchema(getAttr(attrs,"schema"));
-        cmd.setRequiresExtent(getAttr(attrs,"requires-extent"));
+        cmd.setTable(getAttr(attrs, "table"));
+        cmd.setCatalog(getAttr(attrs, "catalog"));
+        cmd.setSchema(getAttr(attrs, "schema"));
+        cmd.setRequiresExtent(getAttr(attrs, "requires-extent"));
         String detachableStr = getAttr(attrs, "detachable");
         if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
@@ -129,16 +129,15 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             cmd.setDetachable(detachableStr);
         }
-        String objIdCls = getAttr(attrs,"objectid-class");
+        String objIdCls = getAttr(attrs, "objectid-class");
         if (!StringUtils.isWhitespace(objIdCls))
         {
             cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
         }
-        cmd.setEmbeddedOnly(getAttr(attrs,"embedded-only"));
-        cmd.setPersistenceModifier(
-            ClassPersistenceModifier.getClassPersistenceModifier(getAttr(attrs,"persistence-modifier")));
-        cmd.setIdentityType(IdentityType.getIdentityType(getAttr(attrs,"identity-type")));
-        cmd.setPersistableSuperclass(getAttr(attrs,"persistence-capable-superclass"));
+        cmd.setEmbeddedOnly(getAttr(attrs, "embedded-only"));
+        cmd.setPersistenceModifier(ClassPersistenceModifier.getClassPersistenceModifier(getAttr(attrs, "persistence-modifier")));
+        cmd.setIdentityType(IdentityType.getIdentityType(getAttr(attrs, "identity-type")));
+        cmd.setPersistableSuperclass(getAttr(attrs, "persistence-capable-superclass"));
         String cacheableAttr = getAttr(attrs, "cacheable");
         if (cacheableAttr != null)
         {
@@ -166,9 +165,9 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             throw new InvalidClassMetaDataException("044061", pmd.getName());
         }
         InterfaceMetaData imd = new InterfaceMetaData(pmd, name);
-        imd.setTable(getAttr(attrs,"table"));
-        imd.setCatalog(getAttr(attrs,"catalog"));
-        imd.setSchema(getAttr(attrs,"schema"));
+        imd.setTable(getAttr(attrs, "table"));
+        imd.setCatalog(getAttr(attrs, "catalog"));
+        imd.setSchema(getAttr(attrs, "schema"));
         String detachableStr = getAttr(attrs, "detachable");
         if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
@@ -179,7 +178,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             imd.setDetachable(detachableStr);
         }
         imd.setRequiresExtent(getAttr(attrs, "requires-extent"));
-        String objIdCls = getAttr(attrs,"objectid-class");
+        String objIdCls = getAttr(attrs, "objectid-class");
         if (!StringUtils.isWhitespace(objIdCls))
         {
             imd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
@@ -203,50 +202,50 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
      */
     protected FieldMetaData newFieldObject(MetaData md, Attributes attrs)
     {
-        FieldMetaData fmd = new FieldMetaData(md, getAttr(attrs,"name"));
+        FieldMetaData fmd = new FieldMetaData(md, getAttr(attrs, "name"));
         String modStr = getAttr(attrs, "persistence-modifier");
         FieldPersistenceModifier modifier = FieldPersistenceModifier.getFieldPersistenceModifier(modStr);
         if (modifier != null)
         {
             fmd.setPersistenceModifier(modifier);
         }
-        fmd.setDeleteAction(getAttr(attrs,"delete-action"));
+        fmd.setDeleteAction(getAttr(attrs, "delete-action"));
         String pkStr = getAttr(attrs, "primary-key");
         if (!StringUtils.isWhitespace(pkStr))
         {
-        	fmd.setPrimaryKey(Boolean.valueOf(pkStr));
+            fmd.setPrimaryKey(Boolean.valueOf(pkStr));
         }
         String dfgStr = getAttr(attrs, "default-fetch-group");
         if (!StringUtils.isWhitespace(dfgStr))
         {
-        	fmd.setDefaultFetchGroup(Boolean.valueOf(dfgStr));
+            fmd.setDefaultFetchGroup(Boolean.valueOf(dfgStr));
         }
         String embStr = getAttr(attrs, "embedded");
         if (!StringUtils.isWhitespace(embStr))
         {
-        	fmd.setEmbedded(Boolean.valueOf(embStr));
+            fmd.setEmbedded(Boolean.valueOf(embStr));
         }
         String serStr = getAttr(attrs, "serialized");
         if (!StringUtils.isWhitespace(serStr))
         {
-        	fmd.setSerialised(Boolean.valueOf(serStr));
+            fmd.setSerialised(Boolean.valueOf(serStr));
         }
         String depStr = getAttr(attrs, "dependent");
         if (!StringUtils.isWhitespace(depStr))
         {
-        	fmd.setDependent(Boolean.valueOf(depStr));
+            fmd.setDependent(Boolean.valueOf(depStr));
         }
-        fmd.setNullValue(NullValue.getNullValue(getAttr(attrs,"null-value")));
-        fmd.setMappedBy(getAttr(attrs,"mapped-by"));
-        fmd.setColumn(getAttr(attrs,"column"));
-        fmd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs,"indexed")));
-        fmd.setUnique(getAttr(attrs,"unique"));
-        fmd.setTable(getAttr(attrs,"table"));
-        fmd.setLoadFetchGroup(getAttr(attrs,"load-fetch-group"));
-        fmd.setRecursionDepth(getAttr(attrs,"recursion-depth"));
-        fmd.setValueStrategy(getAttr(attrs,"value-strategy"));
-        fmd.setSequence(getAttr(attrs,"sequence"));
-        fmd.setFieldTypes(getAttr(attrs,"field-type"));
+        fmd.setNullValue(NullValue.getNullValue(getAttr(attrs, "null-value")));
+        fmd.setMappedBy(getAttr(attrs, "mapped-by"));
+        fmd.setColumn(getAttr(attrs, "column"));
+        fmd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
+        fmd.setUnique(getAttr(attrs, "unique"));
+        fmd.setTable(getAttr(attrs, "table"));
+        fmd.setLoadFetchGroup(getAttr(attrs, "load-fetch-group"));
+        fmd.setRecursionDepth(getAttr(attrs, "recursion-depth"));
+        fmd.setValueStrategy(getAttr(attrs, "value-strategy"));
+        fmd.setSequence(getAttr(attrs, "sequence"));
+        fmd.setFieldTypes(getAttr(attrs, "field-type"));
         String cacheableAttr = getAttr(attrs, "cacheable");
         if (cacheableAttr != null)
         {
@@ -263,81 +262,81 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
      */
     protected PropertyMetaData newPropertyObject(MetaData md, Attributes attrs)
     {
-        PropertyMetaData pmd = new PropertyMetaData(md, getAttr(attrs,"name"));
+        PropertyMetaData pmd = new PropertyMetaData(md, getAttr(attrs, "name"));
         String modStr = getAttr(attrs, "persistence-modifier");
         FieldPersistenceModifier modifier = FieldPersistenceModifier.getFieldPersistenceModifier(modStr);
         if (modifier != null)
         {
             pmd.setPersistenceModifier(modifier);
         }
-        pmd.setDeleteAction(getAttr(attrs,"delete-action"));
+        pmd.setDeleteAction(getAttr(attrs, "delete-action"));
         String pkStr = getAttr(attrs, "primary-key");
         if (!StringUtils.isWhitespace(pkStr))
         {
-        	pmd.setPrimaryKey(Boolean.valueOf(pkStr));
+            pmd.setPrimaryKey(Boolean.valueOf(pkStr));
         }
         String dfgStr = getAttr(attrs, "default-fetch-group");
         if (!StringUtils.isWhitespace(dfgStr))
         {
-        	pmd.setDefaultFetchGroup(Boolean.valueOf(dfgStr));
+            pmd.setDefaultFetchGroup(Boolean.valueOf(dfgStr));
         }
         String embStr = getAttr(attrs, "embedded");
         if (!StringUtils.isWhitespace(embStr))
         {
-        	pmd.setEmbedded(Boolean.valueOf(embStr));
+            pmd.setEmbedded(Boolean.valueOf(embStr));
         }
         String serStr = getAttr(attrs, "serialized");
         if (!StringUtils.isWhitespace(serStr))
         {
-        	pmd.setSerialised(Boolean.valueOf(serStr));
+            pmd.setSerialised(Boolean.valueOf(serStr));
         }
         String depStr = getAttr(attrs, "dependent");
         if (!StringUtils.isWhitespace(depStr))
         {
-        	pmd.setDependent(Boolean.valueOf(depStr));
+            pmd.setDependent(Boolean.valueOf(depStr));
         }
-        pmd.setNullValue(NullValue.getNullValue(getAttr(attrs,"null-value")));
-        pmd.setMappedBy(getAttr(attrs,"mapped-by"));
-        pmd.setColumn(getAttr(attrs,"column"));
-        pmd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs,"indexed")));
-        pmd.setUnique(getAttr(attrs,"unique"));
+        pmd.setNullValue(NullValue.getNullValue(getAttr(attrs, "null-value")));
+        pmd.setMappedBy(getAttr(attrs, "mapped-by"));
+        pmd.setColumn(getAttr(attrs, "column"));
+        pmd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
+        pmd.setUnique(getAttr(attrs, "unique"));
         pmd.setTable(getAttr(attrs, "table"));
-        pmd.setLoadFetchGroup(getAttr(attrs,"load-fetch-group"));
-        pmd.setRecursionDepth(getAttr(attrs,"recursion-depth"));
-        pmd.setValueStrategy(getAttr(attrs,"value-strategy"));
-        pmd.setSequence(getAttr(attrs,"sequence"));
-        pmd.setFieldTypes(getAttr(attrs,"field-type"));
-        pmd.setFieldName(getAttr(attrs,"field-name"));
+        pmd.setLoadFetchGroup(getAttr(attrs, "load-fetch-group"));
+        pmd.setRecursionDepth(getAttr(attrs, "recursion-depth"));
+        pmd.setValueStrategy(getAttr(attrs, "value-strategy"));
+        pmd.setSequence(getAttr(attrs, "sequence"));
+        pmd.setFieldTypes(getAttr(attrs, "field-type"));
+        pmd.setFieldName(getAttr(attrs, "field-name"));
         String cacheableAttr = getAttr(attrs, "cacheable");
         if (cacheableAttr != null)
         {
             pmd.setCacheable(cacheableAttr.equalsIgnoreCase("false") ? false : true);
         }
         return pmd;
-    }    
-    
+    }
+
     /**
      * Handler method called at the start of an element.
      * @param uri URI of the tag
      * @param localName Local name
      * @param qName Element name
-     * @param attrs Attributes for this element 
+     * @param attrs Attributes for this element
      * @throws SAXException in parsing errors
      */
-    public void startElement(String uri, String localName, String qName, Attributes attrs)
-    throws SAXException 
+    public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
     {
         if (charactersBuffer.length() > 0)
         {
-            // Cater for subelements that appear before the end of the body text (save the body text with the parent)
+            // Cater for subelements that appear before the end of the body text (save the body text with the
+            // parent)
             String currentString = getString().trim();
             if (getStack() instanceof QueryMetaData)
             {
-                ((QueryMetaData)getStack()).setQuery(currentString.trim());
+                ((QueryMetaData) getStack()).setQuery(currentString.trim());
             }
         }
 
-        if (localName.length()<1)
+        if (localName.length() < 1)
         {
             localName = qName;
         }
@@ -345,26 +344,26 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             if (localName.equals("jdo"))
             {
-                FileMetaData filemd = (FileMetaData)getStack();
+                FileMetaData filemd = (FileMetaData) getStack();
                 filemd.setType(MetadataFileType.JDO_FILE);
                 filemd.setCatalog(getAttr(attrs, "catalog"));
                 filemd.setSchema(getAttr(attrs, "schema"));
             }
             else if (localName.equals("orm"))
             {
-                FileMetaData filemd = (FileMetaData)getStack();
+                FileMetaData filemd = (FileMetaData) getStack();
                 filemd.setType(MetadataFileType.JDO_ORM_FILE);
                 filemd.setCatalog(getAttr(attrs, "catalog"));
                 filemd.setSchema(getAttr(attrs, "schema"));
             }
             else if (localName.equals("jdoquery"))
             {
-                FileMetaData filemd = (FileMetaData)getStack();
+                FileMetaData filemd = (FileMetaData) getStack();
                 filemd.setType(MetadataFileType.JDO_QUERY_FILE);
             }
             else if (localName.equals("fetch-plan"))
             {
-                FileMetaData filemd = (FileMetaData)metadata;
+                FileMetaData filemd = (FileMetaData) metadata;
                 FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata(getAttr(attrs, "name"));
                 fpmd.setMaxFetchDepth(getAttr(attrs, "max-fetch-depth"));
                 fpmd.setFetchSize(getAttr(attrs, "fetch-size"));
@@ -372,7 +371,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("package"))
             {
-                FileMetaData filemd = (FileMetaData)getStack();
+                FileMetaData filemd = (FileMetaData) getStack();
                 PackageMetaData pmd = filemd.newPackageMetadata(getAttr(attrs, "name"));
                 pmd.setCatalog(getAttr(attrs, "catalog"));
                 pmd.setSchema(getAttr(attrs, "schema"));
@@ -380,15 +379,15 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("class"))
             {
-                PackageMetaData pmd = (PackageMetaData)getStack();
-                ClassMetaData cmd = newClassObject(pmd,attrs);
+                PackageMetaData pmd = (PackageMetaData) getStack();
+                ClassMetaData cmd = newClassObject(pmd, attrs);
                 pmd.addClass(cmd);
-    
+
                 pushStack(cmd);
             }
             else if (localName.equals("interface"))
             {
-                PackageMetaData pmd = (PackageMetaData)getStack();
+                PackageMetaData pmd = (PackageMetaData) getStack();
                 InterfaceMetaData imd = newInterfaceObject(pmd, attrs);
                 pmd.addInterface(imd);
                 pushStack(imd);
@@ -397,22 +396,22 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
-                pkmd.setName(getAttr(attrs,"name"));
+                pkmd.setName(getAttr(attrs, "name"));
                 pkmd.setColumnName(getAttr(attrs, "column"));
                 if (md instanceof AbstractClassMetaData)
                 {
-                    ((AbstractClassMetaData)md).setPrimaryKeyMetaData(pkmd);
+                    ((AbstractClassMetaData) md).setPrimaryKeyMetaData(pkmd);
                 }
                 else if (md instanceof JoinMetaData)
                 {
-                    ((JoinMetaData)md).setPrimaryKeyMetaData(pkmd);
+                    ((JoinMetaData) md).setPrimaryKeyMetaData(pkmd);
                 }
                 pushStack(pkmd);
             }
             else if (localName.equals("implements"))
             {
-                ClassMetaData cmd = (ClassMetaData)getStack();
-                ImplementsMetaData imd = new ImplementsMetaData(getAttr(attrs,"name"));
+                ClassMetaData cmd = (ClassMetaData) getStack();
+                ImplementsMetaData imd = new ImplementsMetaData(getAttr(attrs, "name"));
                 cmd.addImplements(imd);
                 pushStack(imd);
             }
@@ -421,28 +420,28 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 MetaData parent = getStack();
                 if (parent instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData acmd = (AbstractClassMetaData)parent;
+                    AbstractClassMetaData acmd = (AbstractClassMetaData) parent;
                     PropertyMetaData propmd = newPropertyObject(acmd, attrs);
                     acmd.addMember(propmd);
                     pushStack(propmd);
                 }
                 else if (parent instanceof EmbeddedMetaData)
                 {
-                    EmbeddedMetaData emd = (EmbeddedMetaData)parent;
+                    EmbeddedMetaData emd = (EmbeddedMetaData) parent;
                     PropertyMetaData propmd = newPropertyObject(emd, attrs);
                     emd.addMember(propmd);
                     pushStack(propmd);
                 }
                 else if (parent instanceof ImplementsMetaData)
                 {
-                    ImplementsMetaData implmd = (ImplementsMetaData)parent;
+                    ImplementsMetaData implmd = (ImplementsMetaData) parent;
                     PropertyMetaData propmd = newPropertyObject(implmd, attrs);
                     implmd.addProperty(propmd);
                     pushStack(propmd);
                 }
                 else if (parent instanceof FetchGroupMetaData)
                 {
-                    FetchGroupMetaData fgmd = (FetchGroupMetaData)parent;
+                    FetchGroupMetaData fgmd = (FetchGroupMetaData) parent;
                     FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, getAttr(attrs, "name"));
                     fgmmd.setRecursionDepth(getAttr(attrs, "recursion-depth"));
                     fgmmd.setProperty();
@@ -452,20 +451,20 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("datastore-identity"))
             {
-                AbstractClassMetaData acmd = (AbstractClassMetaData)getStack();
+                AbstractClassMetaData acmd = (AbstractClassMetaData) getStack();
                 IdentityMetaData idmd = new IdentityMetaData();
-                idmd.setColumnName(getAttr(attrs,"column"));
-                idmd.setValueStrategy(IdentityStrategy.getIdentityStrategy(getAttr(attrs,"strategy")));
-                idmd.setSequence(getAttr(attrs,"sequence"));
+                idmd.setColumnName(getAttr(attrs, "column"));
+                idmd.setValueStrategy(IdentityStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
+                idmd.setSequence(getAttr(attrs, "sequence"));
                 acmd.setIdentityMetaData(idmd);
                 pushStack(idmd);
             }
             else if (localName.equals("inheritance"))
             {
                 MetaData parent = getStack();
-                AbstractClassMetaData acmd = (AbstractClassMetaData)parent;
+                AbstractClassMetaData acmd = (AbstractClassMetaData) parent;
                 InheritanceMetaData inhmd = new InheritanceMetaData();
-                inhmd.setStrategy(getAttr(attrs,"strategy"));
+                inhmd.setStrategy(getAttr(attrs, "strategy"));
                 acmd.setInheritanceMetaData(inhmd);
                 pushStack(inhmd);
             }
@@ -474,22 +473,22 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 MetaData md = getStack();
                 if (md instanceof InheritanceMetaData)
                 {
-                    InheritanceMetaData inhmd = (InheritanceMetaData)md;
+                    InheritanceMetaData inhmd = (InheritanceMetaData) md;
                     DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetadata();
-                    dismd.setColumnName(getAttr(attrs,"column"));
-                    dismd.setValue(getAttr(attrs,"value"));
-                    dismd.setStrategy(getAttr(attrs,"strategy"));
-                    dismd.setIndexed(getAttr(attrs,"indexed"));
+                    dismd.setColumnName(getAttr(attrs, "column"));
+                    dismd.setValue(getAttr(attrs, "value"));
+                    dismd.setStrategy(getAttr(attrs, "strategy"));
+                    dismd.setIndexed(getAttr(attrs, "indexed"));
                     pushStack(dismd);
                 }
                 else if (md instanceof EmbeddedMetaData)
                 {
-                    EmbeddedMetaData embmd = (EmbeddedMetaData)md;
+                    EmbeddedMetaData embmd = (EmbeddedMetaData) md;
                     DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
-                    dismd.setColumnName(getAttr(attrs,"column"));
-                    dismd.setValue(getAttr(attrs,"value"));
-                    dismd.setStrategy(getAttr(attrs,"strategy"));
-                    dismd.setIndexed(getAttr(attrs,"indexed"));
+                    dismd.setColumnName(getAttr(attrs, "column"));
+                    dismd.setValue(getAttr(attrs, "value"));
+                    dismd.setStrategy(getAttr(attrs, "strategy"));
+                    dismd.setIndexed(getAttr(attrs, "indexed"));
                     pushStack(dismd);
                 }
             }
@@ -515,7 +514,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 if (emd instanceof ClassMetaData)
                 {
-                    ClassMetaData cmd = (ClassMetaData)emd;
+                    ClassMetaData cmd = (ClassMetaData) emd;
                     if (StringUtils.isWhitespace(name))
                     {
                         throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
@@ -532,7 +531,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 else if (emd instanceof InterfaceMetaData)
                 {
-                    InterfaceMetaData imd = (InterfaceMetaData)emd;
+                    InterfaceMetaData imd = (InterfaceMetaData) emd;
                     if (StringUtils.isWhitespace(name))
                     {
                         throw new InvalidClassMetaDataException("044154", imd.getFullClassName());
@@ -549,7 +548,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 else if (emd instanceof FileMetaData)
                 {
-                    FileMetaData filemd = (FileMetaData)emd;
+                    FileMetaData filemd = (FileMetaData) emd;
                     QueryMetaData qmd = filemd.newQueryMetadata(name);
                     qmd.setLanguage(lang);
                     qmd.setUnmodifiable(getAttr(attrs, "unmodifiable"));
@@ -561,11 +560,10 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("sequence"))
             {
-                PackageMetaData pmd = (PackageMetaData)getStack();
-                SequenceMetaData seqmd = 
-                    pmd.newSequenceMetadata(getAttr(attrs,"name"), getAttr(attrs,"strategy"));
-                seqmd.setFactoryClass(getAttr(attrs,"factory-class"));
-                seqmd.setDatastoreSequence(getAttr(attrs,"datastore-sequence"));
+                PackageMetaData pmd = (PackageMetaData) getStack();
+                SequenceMetaData seqmd = pmd.newSequenceMetadata(getAttr(attrs, "name"), getAttr(attrs, "strategy"));
+                seqmd.setFactoryClass(getAttr(attrs, "factory-class"));
+                seqmd.setDatastoreSequence(getAttr(attrs, "datastore-sequence"));
                 String seqSize = getAttr(attrs, "allocation-size");
                 if (seqSize != null)
                 {
@@ -583,7 +581,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 MetaData md = getStack();
                 if (md instanceof FetchGroupMetaData)
                 {
-                    FetchGroupMetaData fgmd = (FetchGroupMetaData)md;
+                    FetchGroupMetaData fgmd = (FetchGroupMetaData) md;
                     FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(md, getAttr(attrs, "name"));
                     fgmmd.setRecursionDepth(getAttr(attrs, "recursion-depth"));
                     fgmd.addMember(fgmmd);
@@ -591,30 +589,30 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     return;
                 }
 
-                FieldMetaData fmd = newFieldObject(md,attrs);
+                FieldMetaData fmd = newFieldObject(md, attrs);
                 if (md instanceof ClassMetaData)
                 {
-                    ClassMetaData cmd = (ClassMetaData)md;
+                    ClassMetaData cmd = (ClassMetaData) md;
                     cmd.addMember(fmd);
                 }
                 else if (md instanceof EmbeddedMetaData)
                 {
-                    EmbeddedMetaData emd = (EmbeddedMetaData)md;
+                    EmbeddedMetaData emd = (EmbeddedMetaData) md;
                     emd.addMember(fmd);
                 }
                 else if (md instanceof ForeignKeyMetaData)
                 {
-                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData)md;
+                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData) md;
                     fkmd.addMember(fmd.getName());
                 }
                 else if (md instanceof IndexMetaData)
                 {
-                    IndexMetaData imd = (IndexMetaData)md;
+                    IndexMetaData imd = (IndexMetaData) md;
                     imd.addMember(fmd.getName());
                 }
                 else if (md instanceof UniqueMetaData)
                 {
-                    UniqueMetaData umd = (UniqueMetaData)md;
+                    UniqueMetaData umd = (UniqueMetaData) md;
                     umd.addMember(fmd.getName());
                 }
                 pushStack(fmd);
@@ -632,18 +630,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 JoinMetaData joinmd = null;
                 if (parent instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)parent;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) parent;
                     joinmd = fmd.newJoinMetadata();
                 }
                 else if (parent instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)parent;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) parent;
                     joinmd = new JoinMetaData();
                     cmd.addJoin(joinmd);
                 }
                 else if (parent instanceof InheritanceMetaData)
                 {
-                    InheritanceMetaData inhmd = (InheritanceMetaData)parent;
+                    InheritanceMetaData inhmd = (InheritanceMetaData) parent;
                     joinmd = inhmd.newJoinMetadata();
                 }
                 joinmd.setTable(tableName);
@@ -656,10 +654,10 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("map"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 MapMetaData mapmd = fmd.newMapMetaData();
 
-                mapmd.setKeyType(getAttr(attrs,"key-type"));
+                mapmd.setKeyType(getAttr(attrs, "key-type"));
                 String embKeyStr = getAttr(attrs, "embedded-key");
                 if (!StringUtils.isWhitespace(embKeyStr))
                 {
@@ -676,7 +674,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     mapmd.setDependentKey(Boolean.valueOf(depKeyStr));
                 }
 
-                mapmd.setValueType(getAttr(attrs,"value-type"));
+                mapmd.setValueType(getAttr(attrs, "value-type"));
                 String embValStr = getAttr(attrs, "embedded-value");
                 if (!StringUtils.isWhitespace(embValStr))
                 {
@@ -697,7 +695,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("array"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 ArrayMetaData arrmd = fmd.newArrayMetaData();
                 arrmd.setElementType(getAttr(attrs, "element-type"));
                 String embElemStr = getAttr(attrs, "embedded-element");
@@ -719,9 +717,9 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("collection"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 CollectionMetaData collmd = fmd.newCollectionMetaData();
-                collmd.setElementType(getAttr(attrs,"element-type"));
+                collmd.setElementType(getAttr(attrs, "element-type"));
                 String embElemStr = getAttr(attrs, "embedded-element");
                 if (!StringUtils.isWhitespace(embElemStr))
                 {
@@ -743,16 +741,16 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 ColumnMetaData colmd = new ColumnMetaData();
-                colmd.setName(getAttr(attrs,"name"));
-                colmd.setTarget(getAttr(attrs,"target"));
-                colmd.setTargetMember(getAttr(attrs,"target-field"));
-                colmd.setJdbcType(getAttr(attrs,"jdbc-type"));
-                colmd.setSqlType(getAttr(attrs,"sql-type"));
-                colmd.setLength(getAttr(attrs,"length"));
-                colmd.setScale(getAttr(attrs,"scale"));
-                colmd.setAllowsNull(getAttr(attrs,"allows-null"));
-                colmd.setDefaultValue(getAttr(attrs,"default-value"));
-                colmd.setInsertValue(getAttr(attrs,"insert-value"));
+                colmd.setName(getAttr(attrs, "name"));
+                colmd.setTarget(getAttr(attrs, "target"));
+                colmd.setTargetMember(getAttr(attrs, "target-field"));
+                colmd.setJdbcType(getAttr(attrs, "jdbc-type"));
+                colmd.setSqlType(getAttr(attrs, "sql-type"));
+                colmd.setLength(getAttr(attrs, "length"));
+                colmd.setScale(getAttr(attrs, "scale"));
+                colmd.setAllowsNull(getAttr(attrs, "allows-null"));
+                colmd.setDefaultValue(getAttr(attrs, "default-value"));
+                colmd.setInsertValue(getAttr(attrs, "insert-value"));
                 String pos = getAttr(attrs, "position"); // JDO 3.1+
                 if (pos != null)
                 {
@@ -761,69 +759,69 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                 if (md instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)md;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) md;
                     fmd.addColumn(colmd);
                 }
                 else if (md instanceof AbstractElementMetaData)
                 {
-                    AbstractElementMetaData elemd = (AbstractElementMetaData)md;
+                    AbstractElementMetaData elemd = (AbstractElementMetaData) md;
                     elemd.addColumn(colmd);
                 }
                 else if (md instanceof JoinMetaData)
                 {
-                    JoinMetaData jnmd = (JoinMetaData)md;
+                    JoinMetaData jnmd = (JoinMetaData) md;
                     jnmd.addColumn(colmd);
                 }
                 else if (md instanceof IdentityMetaData)
                 {
-                    IdentityMetaData idmd = (IdentityMetaData)md;
+                    IdentityMetaData idmd = (IdentityMetaData) md;
                     idmd.setColumnMetaData(colmd);
                 }
                 else if (md instanceof ForeignKeyMetaData)
                 {
-                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData)md;
+                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData) md;
                     fkmd.addColumn(colmd);
                 }
                 else if (md instanceof IndexMetaData)
                 {
-                    IndexMetaData idxmd = (IndexMetaData)md;
+                    IndexMetaData idxmd = (IndexMetaData) md;
                     idxmd.addColumn(colmd.getName());
                 }
                 else if (md instanceof UniqueMetaData)
                 {
-                    UniqueMetaData unimd = (UniqueMetaData)md;
+                    UniqueMetaData unimd = (UniqueMetaData) md;
                     unimd.addColumn(colmd.getName());
                 }
                 else if (md instanceof OrderMetaData)
                 {
-                    OrderMetaData ormd = (OrderMetaData)md;
+                    OrderMetaData ormd = (OrderMetaData) md;
                     ormd.addColumn(colmd);
                 }
                 else if (md instanceof DiscriminatorMetaData)
                 {
-                    DiscriminatorMetaData dismd = (DiscriminatorMetaData)md;
+                    DiscriminatorMetaData dismd = (DiscriminatorMetaData) md;
                     dismd.setColumnMetaData(colmd);
                 }
                 else if (md instanceof VersionMetaData)
                 {
-                    VersionMetaData vermd = (VersionMetaData)md;
+                    VersionMetaData vermd = (VersionMetaData) md;
                     vermd.setColumnMetaData(colmd);
                 }
                 else if (md instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) md;
                     cmd.addUnmappedColumn(colmd);
                 }
                 else if (md instanceof PrimaryKeyMetaData)
                 {
-                    PrimaryKeyMetaData pkmd = (PrimaryKeyMetaData)md;
+                    PrimaryKeyMetaData pkmd = (PrimaryKeyMetaData) md;
                     pkmd.addColumn(colmd);
                 }
                 pushStack(colmd);
             }
             else if (localName.equals("element"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 ElementMetaData elemmd = new ElementMetaData();
                 elemmd.setColumnName(getAttr(attrs, "column"));
                 elemmd.setDeleteAction(getAttr(attrs, "delete-action"));
@@ -842,7 +840,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             }
             else if (localName.equals("key"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 KeyMetaData keymd = new KeyMetaData();
                 keymd.setColumnName(getAttr(attrs, "column"));
                 keymd.setDeleteAction(getAttr(attrs, "delete-action"));
@@ -856,7 +854,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             // New value
             else if (localName.equals("value"))
             {
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 ValueMetaData valuemd = new ValueMetaData();
                 valuemd.setColumnName(getAttr(attrs, "column"));
                 valuemd.setDeleteAction(getAttr(attrs, "delete-action"));
@@ -871,7 +869,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             else if (localName.equals("fetch-group"))
             {
                 MetaData md = getStack();
-                FetchGroupMetaData fgmd = new FetchGroupMetaData(getAttr(attrs,"name"));
+                FetchGroupMetaData fgmd = new FetchGroupMetaData(getAttr(attrs, "name"));
                 String postLoadStr = getAttr(attrs, "post-load");
                 if (!StringUtils.isWhitespace(postLoadStr))
                 {
@@ -879,17 +877,17 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 if (md instanceof FetchGroupMetaData)
                 {
-                    FetchGroupMetaData fgmdParent = (FetchGroupMetaData)md;
+                    FetchGroupMetaData fgmdParent = (FetchGroupMetaData) md;
                     fgmdParent.addFetchGroup(fgmd);
                 }
                 else if (md instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) md;
                     cmd.addFetchGroup(fgmd);
                 }
                 else if (md instanceof FetchPlanMetaData)
                 {
-                    FetchPlanMetaData fpmd = (FetchPlanMetaData)md;
+                    FetchPlanMetaData fpmd = (FetchPlanMetaData) md;
                     fpmd.addFetchGroup(fgmd);
                 }
                 pushStack(fgmd);
@@ -897,22 +895,22 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             else if (localName.equals("extension"))
             {
                 MetaData md = getStack();
-                md.addExtension(getAttr(attrs,"vendor-name"), getAttr(attrs,"key"), getAttr(attrs,"value"));
+                md.addExtension(getAttr(attrs, "vendor-name"), getAttr(attrs, "key"), getAttr(attrs, "value"));
             }
             else if (localName.equals("version"))
             {
-                AbstractClassMetaData cmd = (AbstractClassMetaData)getStack();
+                AbstractClassMetaData cmd = (AbstractClassMetaData) getStack();
                 VersionMetaData vermd = cmd.newVersionMetadata();
-                vermd.setStrategy(getAttr(attrs,"strategy")).setColumnName(getAttr(attrs,"column"));
-                vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs,"indexed")));
+                vermd.setStrategy(getAttr(attrs, "strategy")).setColumnName(getAttr(attrs, "column"));
+                vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                 pushStack(vermd);
             }
             else if (localName.equals("index"))
             {
                 MetaData md = getStack();
                 IndexMetaData idxmd = new IndexMetaData();
-                idxmd.setName(getAttr(attrs,"name"));
-                idxmd.setTable(getAttr(attrs,"table"));
+                idxmd.setName(getAttr(attrs, "name"));
+                idxmd.setTable(getAttr(attrs, "table"));
                 String uniStr = getAttr(attrs, "unique");
                 if (!StringUtils.isWhitespace(uniStr))
                 {
@@ -920,37 +918,37 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 if (md instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) md;
                     cmd.addIndex(idxmd);
                 }
                 else if (md instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)md;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) md;
                     fmd.setIndexMetaData(idxmd);
                 }
                 else if (md instanceof JoinMetaData)
                 {
-                    JoinMetaData jmd = (JoinMetaData)md;
+                    JoinMetaData jmd = (JoinMetaData) md;
                     jmd.setIndexMetaData(idxmd);
                 }
                 else if (md instanceof AbstractElementMetaData)
                 {
-                    AbstractElementMetaData elmd = (AbstractElementMetaData)md;
+                    AbstractElementMetaData elmd = (AbstractElementMetaData) md;
                     elmd.setIndexMetaData(idxmd);
                 }
                 else if (md instanceof OrderMetaData)
                 {
-                    OrderMetaData omd = (OrderMetaData)md;
+                    OrderMetaData omd = (OrderMetaData) md;
                     omd.setIndexMetaData(idxmd);
                 }
                 else if (md instanceof VersionMetaData)
                 {
-                    VersionMetaData vermd = (VersionMetaData)md;
+                    VersionMetaData vermd = (VersionMetaData) md;
                     vermd.setIndexMetaData(idxmd);
                 }
                 else if (md instanceof DiscriminatorMetaData)
                 {
-                    DiscriminatorMetaData dismd = (DiscriminatorMetaData)md;
+                    DiscriminatorMetaData dismd = (DiscriminatorMetaData) md;
                     dismd.setIndexMetaData(idxmd);
                 }
                 pushStack(idxmd);
@@ -959,31 +957,31 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 UniqueMetaData unimd = new UniqueMetaData();
-                unimd.setName(getAttr(attrs,"name"));
-                unimd.setTable(getAttr(attrs,"table"));
-                String defStr = getAttr(attrs,"deferred");
+                unimd.setName(getAttr(attrs, "name"));
+                unimd.setTable(getAttr(attrs, "table"));
+                String defStr = getAttr(attrs, "deferred");
                 if (!StringUtils.isWhitespace(defStr))
                 {
                     unimd.setDeferred(Boolean.valueOf(defStr));
                 }
                 if (md instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) md;
                     cmd.addUniqueConstraint(unimd);
                 }
                 else if (md instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)md;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) md;
                     fmd.setUniqueMetaData(unimd);
                 }
                 else if (md instanceof JoinMetaData)
                 {
-                    JoinMetaData jmd = (JoinMetaData)md;
+                    JoinMetaData jmd = (JoinMetaData) md;
                     jmd.setUniqueMetaData(unimd);
                 }
                 else if (md instanceof AbstractElementMetaData)
                 {
-                    AbstractElementMetaData elmd = (AbstractElementMetaData)md;
+                    AbstractElementMetaData elmd = (AbstractElementMetaData) md;
                     elmd.setUniqueMetaData(unimd);
                 }
                 pushStack(unimd);
@@ -992,30 +990,30 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 ForeignKeyMetaData fkmd = new ForeignKeyMetaData();
-                fkmd.setName(getAttr(attrs,"name"));
-                fkmd.setTable(getAttr(attrs,"table"));
-                fkmd.setUnique(getAttr(attrs,"unique"));
-                fkmd.setDeferred(getAttr(attrs,"deferred"));
-                fkmd.setDeleteAction(ForeignKeyAction.getForeignKeyAction(getAttr(attrs,"delete-action")));
-                fkmd.setUpdateAction(ForeignKeyAction.getForeignKeyAction(getAttr(attrs,"update-action")));
+                fkmd.setName(getAttr(attrs, "name"));
+                fkmd.setTable(getAttr(attrs, "table"));
+                fkmd.setUnique(getAttr(attrs, "unique"));
+                fkmd.setDeferred(getAttr(attrs, "deferred"));
+                fkmd.setDeleteAction(ForeignKeyAction.getForeignKeyAction(getAttr(attrs, "delete-action")));
+                fkmd.setUpdateAction(ForeignKeyAction.getForeignKeyAction(getAttr(attrs, "update-action")));
                 if (md instanceof AbstractClassMetaData)
                 {
-                    AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                    AbstractClassMetaData cmd = (AbstractClassMetaData) md;
                     cmd.addForeignKey(fkmd);
                 }
                 else if (md instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)md;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) md;
                     fmd.setForeignKeyMetaData(fkmd);
                 }
                 else if (md instanceof JoinMetaData)
                 {
-                    JoinMetaData jmd = (JoinMetaData)md;
+                    JoinMetaData jmd = (JoinMetaData) md;
                     jmd.setForeignKeyMetaData(fkmd);
                 }
                 else if (md instanceof AbstractElementMetaData)
                 {
-                    AbstractElementMetaData elmd = (AbstractElementMetaData)md;
+                    AbstractElementMetaData elmd = (AbstractElementMetaData) md;
                     elmd.setForeignKeyMetaData(fkmd);
                 }
                 pushStack(fkmd);
@@ -1026,7 +1024,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 ordmd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                 ordmd.setColumnName(getAttr(attrs, "column"));
                 ordmd.setMappedBy(getAttr(attrs, "mapped-by"));
-                AbstractMemberMetaData fmd = (AbstractMemberMetaData)getStack();
+                AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 fmd.setOrderMetaData(ordmd);
                 pushStack(ordmd);
             }
@@ -1034,39 +1032,39 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 EmbeddedMetaData embmd = new EmbeddedMetaData();
-                embmd.setOwnerMember(getAttr(attrs,"owner-field"));
-                embmd.setNullIndicatorColumn(getAttr(attrs,"null-indicator-column"));
-                embmd.setNullIndicatorValue(getAttr(attrs,"null-indicator-value"));
+                embmd.setOwnerMember(getAttr(attrs, "owner-field"));
+                embmd.setNullIndicatorColumn(getAttr(attrs, "null-indicator-column"));
+                embmd.setNullIndicatorValue(getAttr(attrs, "null-indicator-value"));
                 if (md instanceof AbstractMemberMetaData)
                 {
-                    AbstractMemberMetaData fmd = (AbstractMemberMetaData)md;
+                    AbstractMemberMetaData fmd = (AbstractMemberMetaData) md;
                     fmd.setEmbeddedMetaData(embmd);
                 }
                 else if (md instanceof KeyMetaData)
                 {
-                    KeyMetaData kmd = (KeyMetaData)md;
+                    KeyMetaData kmd = (KeyMetaData) md;
                     kmd.setEmbeddedMetaData(embmd);
                 }
                 else if (md instanceof ValueMetaData)
                 {
-                    ValueMetaData vmd = (ValueMetaData)md;
+                    ValueMetaData vmd = (ValueMetaData) md;
                     vmd.setEmbeddedMetaData(embmd);
                 }
                 else if (md instanceof ElementMetaData)
                 {
-                    ElementMetaData elmd = (ElementMetaData)md;
+                    ElementMetaData elmd = (ElementMetaData) md;
                     elmd.setEmbeddedMetaData(embmd);
                 }
                 pushStack(embmd);
             }
             else
             {
-                String message = Localiser.msg("044037",qName);
+                String message = Localiser.msg("044037", qName);
                 NucleusLogger.METADATA.error(message);
                 throw new RuntimeException(message);
             }
         }
-        catch(RuntimeException ex)
+        catch (RuntimeException ex)
         {
             NucleusLogger.METADATA.error(Localiser.msg("044042", qName, getStack(), uri), ex);
             throw ex;
@@ -1080,8 +1078,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
      * @param qName Name of element just ending
      * @throws SAXException in parsing errors
      */
-    public void endElement(String uri, String localName, String qName)
-    throws SAXException
+    public void endElement(String uri, String localName, String qName) throws SAXException
     {
         if (localName.length() < 1)
         {
@@ -1095,41 +1092,19 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             MetaData md = getStack();
             if (localName.equals("query"))
             {
-                ((QueryMetaData)md).setQuery(currentString);
+                ((QueryMetaData) md).setQuery(currentString);
             }
         }
 
         // Pop the tag
         // If startElement pushes an element onto the stack need a remove here for that type
-        if (localName.equals("package") ||
-            localName.equals("fetch-plan") ||
-            localName.equals("class") ||
-            localName.equals("interface") ||
-            localName.equals("implements") ||
-            localName.equals("property") ||
-            localName.equals("datastore-identity") ||
-            localName.equals("inheritance") ||
-            localName.equals("primary-key") ||
-            localName.equals("version") ||
-            localName.equals("unmapped") ||
-            localName.equals("query") ||
-            localName.equals("sequence") ||
-            localName.equals("field") ||
-            localName.equals("map") ||
-            localName.equals("element") ||
-            localName.equals("embedded") ||
-            localName.equals("key") ||
-            localName.equals("value") ||
-            localName.equals("array") ||
-            localName.equals("collection") ||
-            localName.equals("join") ||
-            localName.equals("index") ||
-            localName.equals("unique") ||
-            localName.equals("foreign-key") ||
-            localName.equals("order") ||
-            localName.equals("fetch-group") ||
-            localName.equals("column") ||
-            localName.equals("discriminator"))
+        if (localName.equals("package") || localName.equals("fetch-plan") || localName.equals("class") || localName.equals("interface") || localName
+                .equals("implements") || localName.equals("property") || localName.equals("datastore-identity") || localName.equals("inheritance") || localName
+                .equals("primary-key") || localName.equals("version") || localName.equals("unmapped") || localName.equals("query") || localName
+                .equals("sequence") || localName.equals("field") || localName.equals("map") || localName.equals("element") || localName.equals("embedded") || localName
+                .equals("key") || localName.equals("value") || localName.equals("array") || localName.equals("collection") || localName.equals("join") || localName
+                .equals("index") || localName.equals("unique") || localName.equals("foreign-key") || localName.equals("order") || localName
+                .equals("fetch-group") || localName.equals("column") || localName.equals("discriminator"))
         {
             popStack();
         }

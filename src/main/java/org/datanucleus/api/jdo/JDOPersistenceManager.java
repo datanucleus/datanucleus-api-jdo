@@ -1428,7 +1428,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         // Throw exception on incomplete input
         if (queryName == null)
         {
-            throw new JDOUserException(Localiser.msg("011005", queryName, cls));
+            throw new JDOUserException(Localiser.msg("011005", null, cls));
         }
 
         // Find the Query for the specified class

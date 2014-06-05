@@ -678,8 +678,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         discardCompiled();
 
         ParameterExpression internalParamExpr = (ParameterExpression) ((ExpressionImpl)paramExpr).getQueryExpression();
-        if (parameterExprByName == null || 
-                (parameterExprByName != null && !parameterExprByName.containsKey(internalParamExpr.getAlias())))
+        if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(internalParamExpr.getAlias())))
         {
             throw new JDOUserException("Parameter with name " + internalParamExpr.getAlias() + " doesnt exist for this query");
         }
@@ -699,8 +698,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     {
         discardCompiled();
 
-        if (parameterExprByName == null || 
-                (parameterExprByName != null && !parameterExprByName.containsKey(paramName)))
+        if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(paramName)))
         {
             throw new JDOUserException("Parameter with name " + paramName + " doesnt exist for this query");
         }
@@ -1037,6 +1035,11 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         int numParams = (parameterExprByName != null ? parameterExprByName.size() : 0);
         int numValues = (parameterValuesByName != null ? parameterValuesByName.size() : 0);
 
+        if (numParams == 0 && numValues == 0)
+        {
+            return;
+        }
+
         // Validate the defined parameters and the provided values
         if (numParams != numValues)
         {
@@ -1050,8 +1053,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
             String paramName = paramIter.next();
             if (!parameterValuesByName.containsKey(paramName))
             {
-                throw new JDOUserException("Query has a parameter " + paramName +
-                    " defined but no value supplied");
+                throw new JDOUserException("Query has a parameter " + paramName + " defined but no value supplied");
             }
         }
     }

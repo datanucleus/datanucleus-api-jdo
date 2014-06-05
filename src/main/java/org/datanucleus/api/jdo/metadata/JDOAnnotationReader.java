@@ -110,21 +110,20 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         super(mgr);
 
         // We support JDO and DataNucleus annotations in this reader.
-        setSupportedAnnotationPackages(new String[] {"javax.jdo", "org.datanucleus"});
+        setSupportedAnnotationPackages(new String[]{"javax.jdo", "org.datanucleus"});
     }
 
     /**
-     * Method to process the "class" level annotations and create the outline ClassMetaData object.
-     * Supports classes annotated with @PersistenceCapable, classes annotated with @PersistenceAware, and
-     * classes which have neither of those but have @Queries or @Query.
+     * Method to process the "class" level annotations and create the outline ClassMetaData object. Supports
+     * classes annotated with @PersistenceCapable, classes annotated with @PersistenceAware, and classes which
+     * have neither of those but have @Queries or @Query.
      * @param pmd Parent PackageMetaData
      * @param cls The class
      * @param annotations Annotations for this class
      * @param clr ClassLoader resolver
      * @return The ClassMetaData/InterfaceMetaData (or null if no annotations)
      */
-    protected AbstractClassMetaData processClassAnnotations(PackageMetaData pmd, Class cls, 
-            AnnotationObject[] annotations, ClassLoaderResolver clr)
+    protected AbstractClassMetaData processClassAnnotations(PackageMetaData pmd, Class cls, AnnotationObject[] annotations, ClassLoaderResolver clr)
     {
         AbstractClassMetaData cmd = null;
 
@@ -145,10 +144,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
                 HashMap<String, Object> annotationValues = pcAnnotation.getNameValueMap();
 
-                cmd.setTable((String)annotationValues.get("table"));
-                cmd.setCatalog((String)annotationValues.get("catalog"));
-                cmd.setSchema((String)annotationValues.get("schema"));
-                String detachableStr = (String)annotationValues.get("detachable");
+                cmd.setTable((String) annotationValues.get("table"));
+                cmd.setCatalog((String) annotationValues.get("catalog"));
+                cmd.setSchema((String) annotationValues.get("schema"));
+                String detachableStr = (String) annotationValues.get("detachable");
                 if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
                 {
                     cmd.setDetachable(true);
@@ -157,9 +156,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     cmd.setDetachable(detachableStr);
                 }
-                cmd.setRequiresExtent((String)annotationValues.get("requiresExtent"));
+                cmd.setRequiresExtent((String) annotationValues.get("requiresExtent"));
                 String idClassName = null;
-                Class idClass = (Class)annotationValues.get("objectIdClass");
+                Class idClass = (Class) annotationValues.get("objectIdClass");
                 if (idClass != null && idClass != void.class)
                 {
                     idClassName = idClass.getName();
@@ -168,31 +167,30 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                 // PersistenceCapable class
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
-                cmd.setEmbeddedOnly((String)annotationValues.get("embeddedOnly"));
-                javax.jdo.annotations.IdentityType idTypeVal = (javax.jdo.annotations.IdentityType)annotationValues.get("identityType");
+                cmd.setEmbeddedOnly((String) annotationValues.get("embeddedOnly"));
+                javax.jdo.annotations.IdentityType idTypeVal = (javax.jdo.annotations.IdentityType) annotationValues.get("identityType");
                 String identityType = JDOAnnotationUtils.getIdentityTypeString(idTypeVal);
                 cmd.setIdentityType(IdentityType.getIdentityType(identityType));
-                cmd.setCacheable((String)annotationValues.get("cacheable"));
-                String serializeRead = (String)annotationValues.get("serializeRead");
+                cmd.setCacheable((String) annotationValues.get("cacheable"));
+                String serializeRead = (String) annotationValues.get("serializeRead");
                 if (serializeRead != null)
                 {
                     cmd.setSerializeRead(serializeRead.equals("true") ? true : false);
                 }
 
-                JDOAnnotationUtils.addExtensionsToMetaData(cmd, 
-                    (Extension[])annotationValues.get("extensions"));
+                JDOAnnotationUtils.addExtensionsToMetaData(cmd, (Extension[]) annotationValues.get("extensions"));
 
                 // Members typically providing specification of overridden fields/properties
-                Persistent[] members = (Persistent[])annotationValues.get("members");
+                Persistent[] members = (Persistent[]) annotationValues.get("members");
                 if (members != null)
                 {
                     // Add on the fields/properties direct to the metadata for the class/interface
-                    for (int j=0;j<members.length;j++)
+                    for (int j = 0; j < members.length; j++)
                     {
                         String memberName = members[j].name();
                         if (memberName.indexOf('.') > 0)
                         {
-                            memberName = memberName.substring(memberName.lastIndexOf('.')+1);
+                            memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                         }
                         boolean isField = isMemberOfClassAField(cls, memberName);
                         AbstractMemberMetaData fmd = getFieldMetaDataForPersistent(cmd, members[j], isField);
@@ -243,7 +241,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             HashSet<ForeignKeyMetaData> fks = null;
             HashSet<ExtensionMetaData> extensions = null;
 
-            for (int i=0;i<annotations.length;i++)
+            for (int i = 0; i < annotations.length; i++)
             {
                 HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
                 String annName = annotations[i].getName();
@@ -253,11 +251,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.VERSION))
                 {
-                    VersionStrategy versionStrategy = (VersionStrategy)annotationValues.get("strategy");
+                    VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
                     String strategy = JDOAnnotationUtils.getVersionStrategyString(versionStrategy);
-                    String indexed = (String)annotationValues.get("indexed");
-                    String column = (String)annotationValues.get("column");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String column = (String) annotationValues.get("column");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
                     vermd = new VersionMetaData();
                     vermd.setStrategy(strategy);
                     vermd.setColumnName(column);
@@ -265,25 +263,23 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (columns != null && columns.length > 0)
                     {
                         // Only use the first column
-                        ColumnMetaData colmd = 
-                            JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
                         vermd.setColumnMetaData(colmd);
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
                 {
-                    String strategy = JDOAnnotationUtils.getIdentityStrategyString(
-                        (IdGeneratorStrategy)annotationValues.get("strategy"));
-                    String customStrategy = (String)annotationValues.get("customStrategy");
+                    String strategy = JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("strategy"));
+                    String customStrategy = (String) annotationValues.get("customStrategy");
                     if (!StringUtils.isWhitespace(customStrategy))
                     {
                         // User has provided an extension strategy
                         strategy = customStrategy;
                     }
-                    String sequence = (String)annotationValues.get("sequence");
-                    String column = (String)annotationValues.get("column");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String sequence = (String) annotationValues.get("sequence");
+                    String column = (String) annotationValues.get("column");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
                     idmd = new IdentityMetaData();
                     idmd.setColumnName(column);
                     idmd.setValueStrategy(IdentityStrategy.getIdentityStrategy(strategy));
@@ -291,28 +287,27 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (columns != null && columns.length > 0)
                     {
                         // Only use the first column
-                        ColumnMetaData colmd = 
-                            JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
                         idmd.setColumnMetaData(colmd);
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
                 {
-                    String pkName = (String)annotationValues.get("name");
-                    String pkColumn = (String)annotationValues.get("column");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String pkName = (String) annotationValues.get("name");
+                    String pkColumn = (String) annotationValues.get("column");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
                     pkmd = new PrimaryKeyMetaData();
                     pkmd.setName(pkName);
                     pkmd.setColumnName(pkColumn);
                     if (columns != null && columns.length > 0)
                     {
-                        for (int j=0;j<columns.length;j++)
+                        for (int j = 0; j < columns.length; j++)
                         {
                             pkmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.JOINS))
                 {
@@ -320,11 +315,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044210", cmd.getFullClassName()));
                     }
-                    Join[] js = (Join[])annotationValues.get("value");
+                    Join[] js = (Join[]) annotationValues.get("value");
                     if (js != null && js.length > 0)
                     {
                         joins = new JoinMetaData[js.length];
-                        for (int j=0;j<js.length;j++)
+                        for (int j = 0; j < js.length; j++)
                         {
                             joins[j] = new JoinMetaData();
                             joins[j].setTable(js[j].table());
@@ -344,19 +339,18 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     joins = new JoinMetaData[1];
                     joins[0] = new JoinMetaData();
-                    joins[0].setTable((String)annotationValues.get("table"));
-                    joins[0].setColumnName((String)annotationValues.get("column"));
-                    joins[0].setIndexed(IndexedValue.getIndexedValue((String)annotationValues.get("indexed")));
-                    joins[0].setOuter(MetaDataUtils.getBooleanForString((String)annotationValues.get("outer"), false));
-                    joins[0].setUnique((String)annotationValues.get("unique"));
-                    joins[0].setDeleteAction(((ForeignKeyAction)annotationValues.get("deleteAction")).toString());
-                    JDOAnnotationUtils.addExtensionsToMetaData(joins[0], (Extension[])annotationValues.get("extensions"));
+                    joins[0].setTable((String) annotationValues.get("table"));
+                    joins[0].setColumnName((String) annotationValues.get("column"));
+                    joins[0].setIndexed(IndexedValue.getIndexedValue((String) annotationValues.get("indexed")));
+                    joins[0].setOuter(MetaDataUtils.getBooleanForString((String) annotationValues.get("outer"), false));
+                    joins[0].setUnique((String) annotationValues.get("unique"));
+                    joins[0].setDeleteAction(((ForeignKeyAction) annotationValues.get("deleteAction")).toString());
+                    JDOAnnotationUtils.addExtensionsToMetaData(joins[0], (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.INHERITANCE))
                 {
-                    String strategy = JDOAnnotationUtils.getInheritanceStrategyString(
-                        (InheritanceStrategy)annotationValues.get("strategy"));
-                    String customStrategy = (String)annotationValues.get("customStrategy");
+                    String strategy = JDOAnnotationUtils.getInheritanceStrategyString((InheritanceStrategy) annotationValues.get("strategy"));
+                    String customStrategy = (String) annotationValues.get("customStrategy");
                     if (!StringUtils.isWhitespace(customStrategy))
                     {
                         // User has provided an extension strategy
@@ -367,12 +361,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.DISCRIMINATOR))
                 {
-                    DiscriminatorStrategy discriminatorStrategy = (DiscriminatorStrategy)annotationValues.get("strategy");
+                    DiscriminatorStrategy discriminatorStrategy = (DiscriminatorStrategy) annotationValues.get("strategy");
                     String strategy = JDOAnnotationUtils.getDiscriminatorStrategyString(discriminatorStrategy);
-                    String column = (String)annotationValues.get("column");
-                    String indexed = (String)annotationValues.get("indexed");
-                    String value = (String)annotationValues.get("value");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String column = (String) annotationValues.get("column");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String value = (String) annotationValues.get("value");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
                     dismd = new DiscriminatorMetaData();
                     dismd.setColumnName(column);
                     dismd.setValue(value);
@@ -381,8 +375,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (columns != null && columns.length > 0)
                     {
                         // Only use the first column
-                        ColumnMetaData colmd = 
-                            JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
                         dismd.setColumnMetaData(colmd);
                     }
                 }
@@ -392,15 +385,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044207", cmd.getFullClassName()));
                     }
-                    FetchPlan[] plans = (FetchPlan[])annotationValues.get("value");
+                    FetchPlan[] plans = (FetchPlan[]) annotationValues.get("value");
                     fetchPlans = new FetchPlanMetaData[plans.length];
-                    for (int j=0;j<plans.length;j++)
+                    for (int j = 0; j < plans.length; j++)
                     {
                         fetchPlans[j] = new FetchPlanMetaData(plans[j].name());
                         fetchPlans[j].setMaxFetchDepth(plans[j].maxFetchDepth());
                         fetchPlans[j].setFetchSize(plans[j].fetchSize());
                         int numGroups = plans[j].fetchGroups().length;
-                        for (int k=0;k<numGroups;k++)
+                        for (int k = 0; k < numGroups; k++)
                         {
                             FetchGroupMetaData fgmd = new FetchGroupMetaData(plans[j].fetchGroups()[k]);
                             fetchPlans[j].addFetchGroup(fgmd);
@@ -414,9 +407,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         NucleusLogger.METADATA.warn(Localiser.msg("044207", cmd.getFullClassName()));
                     }
                     fetchPlans = new FetchPlanMetaData[1];
-                    int maxFetchDepth = ((Integer)annotationValues.get("maxFetchDepth")).intValue();
-                    int fetchSize = ((Integer)annotationValues.get("fetchSize")).intValue();
-                    fetchPlans[0] = new FetchPlanMetaData((String)annotationValues.get("name"));
+                    int maxFetchDepth = ((Integer) annotationValues.get("maxFetchDepth")).intValue();
+                    int fetchSize = ((Integer) annotationValues.get("fetchSize")).intValue();
+                    fetchPlans[0] = new FetchPlanMetaData((String) annotationValues.get("name"));
                     fetchPlans[0].setMaxFetchDepth(maxFetchDepth);
                     fetchPlans[0].setFetchSize(fetchSize);
                 }
@@ -426,9 +419,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044208", cmd.getFullClassName()));
                     }
-                    FetchGroup[] groups = (FetchGroup[])annotationValues.get("value");
+                    FetchGroup[] groups = (FetchGroup[]) annotationValues.get("value");
                     fetchGroups = new FetchGroupMetaData[groups.length];
-                    for (int j=0;j<groups.length;j++)
+                    for (int j = 0; j < groups.length; j++)
                     {
                         fetchGroups[j] = new FetchGroupMetaData(groups[j].name());
                         if (!StringUtils.isWhitespace(groups[j].postLoad()))
@@ -436,14 +429,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             fetchGroups[j].setPostLoad(Boolean.valueOf(groups[j].postLoad()));
                         }
                         int numFields = groups[j].members().length;
-                        for (int k=0;k<numFields;k++)
+                        for (int k = 0; k < numFields; k++)
                         {
                             FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fetchGroups[j], groups[j].members()[k].name());
                             fgmmd.setRecursionDepth(groups[j].members()[k].recursionDepth());
                             fetchGroups[j].addMember(fgmmd);
                         }
                         int numGroups = groups[j].fetchGroups().length;
-                        for (int k=0;k<numGroups;k++)
+                        for (int k = 0; k < numGroups; k++)
                         {
                             FetchGroupMetaData subgrp = new FetchGroupMetaData(groups[j].fetchGroups()[k]);
                             fetchGroups[j].addFetchGroup(subgrp);
@@ -457,16 +450,16 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         NucleusLogger.METADATA.warn(Localiser.msg("044208", cmd.getFullClassName()));
                     }
                     fetchGroups = new FetchGroupMetaData[1];
-                    fetchGroups[0] = new FetchGroupMetaData((String)annotationValues.get("name"));
-                    String postLoadStr = (String)annotationValues.get("postLoad");
+                    fetchGroups[0] = new FetchGroupMetaData((String) annotationValues.get("name"));
+                    String postLoadStr = (String) annotationValues.get("postLoad");
                     if (!StringUtils.isWhitespace(postLoadStr))
                     {
                         fetchGroups[0].setPostLoad(Boolean.valueOf(postLoadStr));
                     }
-                    Persistent[] fields = (Persistent[])annotationValues.get("members");
+                    Persistent[] fields = (Persistent[]) annotationValues.get("members");
                     if (fields != null)
                     {
-                        for (int j=0;j<fields.length;j++)
+                        for (int j = 0; j < fields.length; j++)
                         {
                             FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fetchGroups[0], fields[j].name());
                             fgmmd.setRecursionDepth(fields[j].recursionDepth());
@@ -476,18 +469,17 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.SEQUENCE))
                 {
-                    String seqName = (String)annotationValues.get("name");
-                    String seqStrategy = JDOAnnotationUtils.getSequenceStrategyString(
-                        (SequenceStrategy)annotationValues.get("strategy"));
-                    String seqSeq = (String)annotationValues.get("datastoreSequence");
-                    Class seqFactory = (Class)annotationValues.get("factoryClass");
+                    String seqName = (String) annotationValues.get("name");
+                    String seqStrategy = JDOAnnotationUtils.getSequenceStrategyString((SequenceStrategy) annotationValues.get("strategy"));
+                    String seqSeq = (String) annotationValues.get("datastoreSequence");
+                    Class seqFactory = (Class) annotationValues.get("factoryClass");
                     String seqFactoryClassName = null;
                     if (seqFactory != null && seqFactory != void.class)
                     {
                         seqFactoryClassName = seqFactory.getName();
                     }
-                    Integer seqSize = (Integer)annotationValues.get("allocationSize");
-                    Integer seqStart = (Integer)annotationValues.get("initialValue");
+                    Integer seqSize = (Integer) annotationValues.get("allocationSize");
+                    Integer seqStart = (Integer) annotationValues.get("initialValue");
 
                     if (StringUtils.isWhitespace(seqName))
                     {
@@ -504,19 +496,19 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         seqmd.setInitialValue(seqStart);
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(seqmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(seqmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.INDICES))
                 {
                     // Multiple Indices for the class
-                    Index[] values = (Index[])annotationValues.get("value");
+                    Index[] values = (Index[]) annotationValues.get("value");
                     if (values != null && values.length > 0)
                     {
                         indices = new HashSet<IndexMetaData>(values.length);
-                        for (int j=0;j<values.length;j++)
+                        for (int j = 0; j < values.length; j++)
                         {
-                            IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(values[j].name(), values[j].table(),
-                                "" + values[j].unique(), values[j].members(), values[j].columns());
+                            IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(values[j].name(), values[j].table(), "" + values[j].unique(),
+                                values[j].members(), values[j].columns());
                             if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                             {
                                 NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
@@ -531,14 +523,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.INDEX))
                 {
                     // Single Index for the class
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String unique = (String)annotationValues.get("unique");
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String unique = (String) annotationValues.get("unique");
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
                     IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
                     if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
@@ -552,14 +544,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.UNIQUES))
                 {
                     // Multiple Unique Constraints for the class
-                    Unique[] values = (Unique[])annotationValues.get("value");
+                    Unique[] values = (Unique[]) annotationValues.get("value");
                     if (values != null && values.length > 0)
                     {
                         uniqueKeys = new HashSet<UniqueMetaData>(values.length);
-                        for (int j=0;j<values.length;j++)
+                        for (int j = 0; j < values.length; j++)
                         {
-                            UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(values[j].name(), 
-                                values[j].table(), "" + values[j].deferred(), values[j].members(), values[j].columns());
+                            UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(values[j].name(), values[j].table(), "" + values[j].deferred(),
+                                values[j].members(), values[j].columns());
                             if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                             {
                                 NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
@@ -574,14 +566,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.UNIQUE))
                 {
                     // Single Unique constraint for the class
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String deferred = (String)annotationValues.get("deferred");
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String deferred = (String) annotationValues.get("deferred");
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
                     UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
                     if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
@@ -595,17 +587,16 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.FOREIGNKEYS))
                 {
                     // Multiple FKs for the class
-                    ForeignKey[] values = (ForeignKey[])annotationValues.get("value");
+                    ForeignKey[] values = (ForeignKey[]) annotationValues.get("value");
                     if (values != null && values.length > 0)
                     {
                         fks = new HashSet<ForeignKeyMetaData>(values.length);
-                        for (int j=0;j<values.length;j++)
+                        for (int j = 0; j < values.length; j++)
                         {
                             String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].deleteAction());
                             String updateAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].updateAction());
-                            ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(values[j].name(), 
-                                values[j].table(), values[j].unique(), "" + values[j].deferred(), 
-                                deleteAction, updateAction, values[j].members(), values[j].columns());
+                            ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(values[j].name(), values[j].table(), values[j].unique(),
+                                "" + values[j].deferred(), deleteAction, updateAction, values[j].members(), values[j].columns());
                             if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                             {
                                 NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
@@ -620,20 +611,17 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
                 {
                     // Single FK constraint for the class
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String unique = (String)annotationValues.get("unique");
-                    String deferred = (String)annotationValues.get("deferred");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("updateAction"));
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String unique = (String) annotationValues.get("unique");
+                    String deferred = (String) annotationValues.get("deferred");
+                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
-                    ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, 
-                        deleteAction, updateAction, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[])annotationValues.get("extensions"));
+                    ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
                     if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                     {
                         NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
@@ -647,21 +635,20 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.COLUMNS))
                 {
                     // Unmapped column specification
-                    Column[] cols = (Column[])annotationValues.get("value");
+                    Column[] cols = (Column[]) annotationValues.get("value");
                     if (cols != null && cols.length > 0)
                     {
                         unmappedColumns = new ColumnMetaData[cols.length];
-                        for (int j=0;j<cols.length;j++)
+                        for (int j = 0; j < cols.length; j++)
                         {
-                            unmappedColumns[j] =
-                                JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
+                            unmappedColumns[j] = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
                             JDOAnnotationUtils.addExtensionsToMetaData(unmappedColumns[j], cols[j].extensions());
                         }
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
                 {
-                    String cache = (String)annotationValues.get("value");
+                    String cache = (String) annotationValues.get("value");
                     if (cache != null)
                     {
                         cacheable = cache;
@@ -669,31 +656,28 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
                 {
-                    Extension[] values = (Extension[])annotationValues.get("value");
+                    Extension[] values = (Extension[]) annotationValues.get("value");
                     if (values != null && values.length > 0)
                     {
                         extensions = new HashSet<ExtensionMetaData>(values.length);
-                        for (int j=0;j<values.length;j++)
+                        for (int j = 0; j < values.length; j++)
                         {
-                            ExtensionMetaData extmd = new ExtensionMetaData(values[j].vendorName(),
-                                values[j].key().toString(), values[j].value().toString());
+                            ExtensionMetaData extmd = new ExtensionMetaData(values[j].vendorName(), values[j].key().toString(), values[j].value().toString());
                             extensions.add(extmd);
                         }
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSION))
                 {
-                    ExtensionMetaData extmd = new ExtensionMetaData((String)annotationValues.get("vendorName"), 
-                        (String)annotationValues.get("key"), (String)annotationValues.get("value"));
+                    ExtensionMetaData extmd = new ExtensionMetaData((String) annotationValues.get("vendorName"), (String) annotationValues.get("key"),
+                            (String) annotationValues.get("value"));
                     extensions = new HashSet<ExtensionMetaData>(1);
                     extensions.add(extmd);
                 }
-                else 
+                else
                 {
-                    if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE) &&
-                        !annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) &&
-                        !annName.equals(JDOAnnotationUtils.QUERIES) &&
-                        !annName.equals(JDOAnnotationUtils.QUERY))
+                    if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE) && !annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) && !annName
+                            .equals(JDOAnnotationUtils.QUERIES) && !annName.equals(JDOAnnotationUtils.QUERY))
                     {
                         NucleusLogger.METADATA.debug(Localiser.msg("044203", cls.getName(), annotations[i].getName()));
                     }
@@ -747,7 +731,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             if (joins != null && joins.length > 0)
             {
                 // Joins
-                for (int i=0;i<joins.length;i++)
+                for (int i = 0; i < joins.length; i++)
                 {
                     cmd.addJoin(joins[i]);
                 }
@@ -755,7 +739,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             if (fetchGroups != null && fetchGroups.length > 0)
             {
                 // Fetch Groups
-                for (int i=0;i<fetchGroups.length;i++)
+                for (int i = 0; i < fetchGroups.length; i++)
                 {
                     fetchGroups[i].setParent(cmd);
                     cmd.addFetchGroup(fetchGroups[i]);
@@ -773,7 +757,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 Iterator iter = indices.iterator();
                 while (iter.hasNext())
                 {
-                    IndexMetaData idxmd = (IndexMetaData)iter.next();
+                    IndexMetaData idxmd = (IndexMetaData) iter.next();
                     idxmd.setParent(cmd);
                     cmd.addIndex(idxmd);
                 }
@@ -783,7 +767,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 Iterator iter = uniqueKeys.iterator();
                 while (iter.hasNext())
                 {
-                    UniqueMetaData unimd = (UniqueMetaData)iter.next();
+                    UniqueMetaData unimd = (UniqueMetaData) iter.next();
                     unimd.setParent(cmd);
                     cmd.addUniqueConstraint(unimd);
                 }
@@ -793,14 +777,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 Iterator iter = fks.iterator();
                 while (iter.hasNext())
                 {
-                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData)iter.next();
+                    ForeignKeyMetaData fkmd = (ForeignKeyMetaData) iter.next();
                     fkmd.setParent(cmd);
                     cmd.addForeignKey(fkmd);
                 }
             }
             if (unmappedColumns != null)
             {
-                for (int i=0;i<unmappedColumns.length;i++)
+                for (int i = 0; i < unmappedColumns.length; i++)
                 {
                     ColumnMetaData colmd = unmappedColumns[i];
                     colmd.setParent(cmd);
@@ -835,7 +819,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     {
         QueryMetaData[] queries = null;
 
-        for (int i=0;i<annotations.length;i++)
+        for (int i = 0; i < annotations.length; i++)
         {
             HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
             String annName = annotations[i].getName();
@@ -846,9 +830,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     NucleusLogger.METADATA.warn(Localiser.msg("044209", cmd.getFullClassName()));
                 }
-                Query[] qs = (Query[])annotationValues.get("value");
+                Query[] qs = (Query[]) annotationValues.get("value");
                 queries = new QueryMetaData[qs.length];
-                for (int j=0;j<queries.length;j++)
+                for (int j = 0; j < queries.length; j++)
                 {
                     String lang = JDOAnnotationUtils.getQueryLanguageName(qs[j].language());
                     if (!StringUtils.isWhitespace(lang))
@@ -866,8 +850,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             lang = QueryLanguage.JPQL.toString();
                         }
                     }
-                    String resultClassName = (qs[j].resultClass() != null && qs[j].resultClass() != void.class ? 
-                            qs[j].resultClass().getName() : null);
+                    String resultClassName = (qs[j].resultClass() != null && qs[j].resultClass() != void.class ? qs[j].resultClass().getName() : null);
                     if (StringUtils.isWhitespace(qs[j].name()))
                     {
                         throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
@@ -891,10 +874,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 queries = new QueryMetaData[1];
                 String unmodifiable = "" + annotationValues.get("unmodifiable");
-                Class resultClassValue = (Class)annotationValues.get("resultClass");
-                String resultClassName = 
-                    (resultClassValue != null && resultClassValue != void.class ? resultClassValue.getName() : null);
-                String lang = JDOAnnotationUtils.getQueryLanguageName((String)annotationValues.get("language"));
+                Class resultClassValue = (Class) annotationValues.get("resultClass");
+                String resultClassName = (resultClassValue != null && resultClassValue != void.class ? resultClassValue.getName() : null);
+                String lang = JDOAnnotationUtils.getQueryLanguageName((String) annotationValues.get("language"));
                 if (!StringUtils.isWhitespace(lang))
                 {
                     if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
@@ -910,26 +892,26 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         lang = QueryLanguage.JPQL.toString();
                     }
                 }
-                if (StringUtils.isWhitespace((String)annotationValues.get("name")))
+                if (StringUtils.isWhitespace((String) annotationValues.get("name")))
                 {
                     throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
                 }
-                queries[0] = new QueryMetaData((String)annotationValues.get("name"));
+                queries[0] = new QueryMetaData((String) annotationValues.get("name"));
                 queries[0].setScope(cls.getName());
                 queries[0].setLanguage(lang);
                 queries[0].setUnmodifiable(unmodifiable);
                 queries[0].setResultClass(resultClassName);
-                queries[0].setUnique((String)annotationValues.get("unique"));
-                queries[0].setFetchPlanName((String)annotationValues.get("fetchPlan"));
-                queries[0].setQuery((String)annotationValues.get("value"));
-                JDOAnnotationUtils.addExtensionsToMetaData(queries[0], (Extension[])annotationValues.get("extensions"));
+                queries[0].setUnique((String) annotationValues.get("unique"));
+                queries[0].setFetchPlanName((String) annotationValues.get("fetchPlan"));
+                queries[0].setQuery((String) annotationValues.get("value"));
+                JDOAnnotationUtils.addExtensionsToMetaData(queries[0], (Extension[]) annotationValues.get("extensions"));
             }
         }
 
         if (queries != null && queries.length > 0)
         {
             // Named Queries
-            for (int i=0;i<queries.length;i++)
+            for (int i = 0; i < queries.length; i++)
             {
                 queries[i].setParent(cmd);
                 cmd.addQuery(queries[i]);
@@ -938,16 +920,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Convenience method to process the annotations for a field/property.
-     * The passed annotations may have been specified on the field or on the getter methods.
+     * Convenience method to process the annotations for a field/property. The passed annotations may have
+     * been specified on the field or on the getter methods.
      * @param cmd The ClassMetaData/InterfaceMetaData to update
      * @param member The field/property
      * @param annotations Annotations for the field/property
      * @param propertyAccessor if there are properties for this class
      * @return The FieldMetaData/PropertyMetaData that was added (if any)
      */
-    protected AbstractMemberMetaData processMemberAnnotations(AbstractClassMetaData cmd, Member member,
-            AnnotationObject[] annotations, boolean propertyAccessor)
+    protected AbstractMemberMetaData processMemberAnnotations(AbstractClassMetaData cmd, Member member, AnnotationObject[] annotations, boolean propertyAccessor)
     {
         AbstractMemberMetaData mmd = null;
         if (annotations != null && annotations.length > 0)
@@ -992,7 +973,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             ForeignKeyMetaData fkmd = null;
             HashSet<ExtensionMetaData> extensions = null;
 
-            for (int i=0;i<annotations.length;i++)
+            for (int i = 0; i < annotations.length; i++)
             {
                 String annName = annotations[i].getName();
                 HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
@@ -1002,60 +983,59 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Boolean pk = null;
                     if (!StringUtils.isWhitespace(pkStr))
                     {
-                    	pk = Boolean.valueOf(pkStr);
+                        pk = Boolean.valueOf(pkStr);
                     }
-                    String dfgStr = (String)annotationValues.get("defaultFetchGroup");
+                    String dfgStr = (String) annotationValues.get("defaultFetchGroup");
                     Boolean dfg = null;
                     if (!StringUtils.isWhitespace(dfgStr))
                     {
-                    	dfg = Boolean.valueOf(dfgStr);
+                        dfg = Boolean.valueOf(dfgStr);
                     }
-                    String nullValue = JDOAnnotationUtils.getNullValueString((NullValue)annotationValues.get("nullValue"));
-                    String embStr = (String)annotationValues.get("embedded");
+                    String nullValue = JDOAnnotationUtils.getNullValueString((NullValue) annotationValues.get("nullValue"));
+                    String embStr = (String) annotationValues.get("embedded");
                     Boolean embedded = null;
                     if (!StringUtils.isWhitespace(embStr))
                     {
-                    	embedded = Boolean.valueOf(embStr);
+                        embedded = Boolean.valueOf(embStr);
                     }
-                    String serStr = (String)annotationValues.get("serialized");
+                    String serStr = (String) annotationValues.get("serialized");
                     Boolean serialized = null;
                     if (!StringUtils.isWhitespace(serStr))
                     {
-                    	serialized = Boolean.valueOf(serStr);
+                        serialized = Boolean.valueOf(serStr);
                     }
-                    String depStr = (String)annotationValues.get("dependent");
+                    String depStr = (String) annotationValues.get("dependent");
                     Boolean dependent = null;
                     if (!StringUtils.isWhitespace(depStr))
                     {
-                    	dependent = Boolean.valueOf(depStr);
+                        dependent = Boolean.valueOf(depStr);
                     }
-                    String valueStrategy = JDOAnnotationUtils.getIdentityStrategyString(
-                        (IdGeneratorStrategy)annotationValues.get("valueStrategy"));
-                    String customValueStrategy = (String)annotationValues.get("customValueStrategy");
+                    String valueStrategy = JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
+                    String customValueStrategy = (String) annotationValues.get("customValueStrategy");
                     if (!StringUtils.isWhitespace(customValueStrategy))
                     {
                         // User has provided an extension strategy
                         valueStrategy = customValueStrategy;
                     }
-                    FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier(
-                        (PersistenceModifier)annotationValues.get("persistenceModifier"));
+                    FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier((PersistenceModifier) annotationValues
+                            .get("persistenceModifier"));
                     if (modifier == null)
                     {
                         modifier = FieldPersistenceModifier.PERSISTENT;
                     }
-                    String sequence = (String)annotationValues.get("sequence");
-                    String mappedBy = (String)annotationValues.get("mappedBy");
-                    String table = (String)annotationValues.get("table");
-                    String column = (String)annotationValues.get("column");
-                    String loadFetchGroup = (String)annotationValues.get("loadFetchGroup");
+                    String sequence = (String) annotationValues.get("sequence");
+                    String mappedBy = (String) annotationValues.get("mappedBy");
+                    String table = (String) annotationValues.get("table");
+                    String column = (String) annotationValues.get("column");
+                    String loadFetchGroup = (String) annotationValues.get("loadFetchGroup");
                     String fieldTypeName = null;
-                    int recursionDepth = ((Integer)annotationValues.get("recursionDepth")).intValue();
-                    cacheable = (String)annotationValues.get("cacheable");
-                    Class[] fieldTypes = (Class[])annotationValues.get("types");
+                    int recursionDepth = ((Integer) annotationValues.get("recursionDepth")).intValue();
+                    cacheable = (String) annotationValues.get("cacheable");
+                    Class[] fieldTypes = (Class[]) annotationValues.get("types");
                     if (fieldTypes != null && fieldTypes.length > 0)
                     {
                         StringBuilder typeStr = new StringBuilder();
-                        for (int j=0;j<fieldTypes.length;j++)
+                        for (int j = 0; j < fieldTypes.length; j++)
                         {
                             if (typeStr.length() > 0)
                             {
@@ -1068,15 +1048,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                         fieldTypeName = typeStr.toString();
                     }
-                    dependentElement = (String)annotationValues.get("dependentElement");
-                    serializedElement = (String)annotationValues.get("serializedElement");
-                    embeddedElement = (String)annotationValues.get("embeddedElement");
-                    dependentKey = (String)annotationValues.get("dependentKey");
-                    serializedKey = (String)annotationValues.get("serializedKey");
-                    embeddedKey = (String)annotationValues.get("embeddedKey");
-                    dependentValue = (String)annotationValues.get("dependentValue");
-                    serializedValue = (String)annotationValues.get("serializedValue");
-                    embeddedValue = (String)annotationValues.get("embeddedValue");
+                    dependentElement = (String) annotationValues.get("dependentElement");
+                    serializedElement = (String) annotationValues.get("serializedElement");
+                    embeddedElement = (String) annotationValues.get("embeddedElement");
+                    dependentKey = (String) annotationValues.get("dependentKey");
+                    serializedKey = (String) annotationValues.get("serializedKey");
+                    embeddedKey = (String) annotationValues.get("embeddedKey");
+                    dependentValue = (String) annotationValues.get("dependentValue");
+                    serializedValue = (String) annotationValues.get("serializedValue");
+                    embeddedValue = (String) annotationValues.get("embeddedValue");
 
                     if (member.isProperty())
                     {
@@ -1094,23 +1074,23 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (dfg != null)
                     {
-                    	mmd.setDefaultFetchGroup(dfg);
+                        mmd.setDefaultFetchGroup(dfg);
                     }
                     if (pk != null)
                     {
-                    	mmd.setPrimaryKey(pk);
+                        mmd.setPrimaryKey(pk);
                     }
                     if (embedded != null)
                     {
-                    	mmd.setEmbedded(embedded);
+                        mmd.setEmbedded(embedded);
                     }
                     if (serialized != null)
                     {
-                    	mmd.setSerialised(serialized);
+                        mmd.setSerialised(serialized);
                     }
                     if (dependent != null)
                     {
-                    	mmd.setDependent(dependent);
+                        mmd.setDependent(dependent);
                     }
                     mmd.setNullValue(org.datanucleus.metadata.NullValue.getNullValue(nullValue));
                     mmd.setMappedBy(mappedBy);
@@ -1123,15 +1103,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     mmd.setFieldTypes(fieldTypeName);
 
                     // Add any columns defined on the @Persistent
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
                     if (columns != null && columns.length > 0)
                     {
-                        for (int j=0;j<columns.length;j++)
+                        for (int j = 0; j < columns.length; j++)
                         {
                             mmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(mmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(mmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
                 {
@@ -1157,11 +1137,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.COLUMNS))
                 {
                     // Multiple column specification
-                    Column[] cols = (Column[])annotationValues.get("value");
+                    Column[] cols = (Column[]) annotationValues.get("value");
                     if (cols != null && cols.length > 0)
                     {
                         colmds = new ColumnMetaData[cols.length];
-                        for (int j=0;j<cols.length;j++)
+                        for (int j = 0; j < cols.length; j++)
                         {
                             colmds[j] = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
                             JDOAnnotationUtils.addExtensionsToMetaData(colmds[j], cols[j].extensions());
@@ -1173,22 +1153,21 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     // Single column specification
                     colmds = new ColumnMetaData[1];
                     colmds[0] = JDOAnnotationUtils.getColumnMetaDataForAnnotations(annotationValues);
-                    JDOAnnotationUtils.addExtensionsToMetaData(colmds[0], (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(colmds[0], (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.JOIN))
                 {
-                    String joinColumn = (String)annotationValues.get("column");
-                    String joinOuter = (String)annotationValues.get("outer");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String pkName = (String)annotationValues.get("primaryKey");
-                    String fkName = (String)annotationValues.get("foreignKey");
-                    String generateFK = (String)annotationValues.get("generateForeignKey");
-                    String indexed = (String)annotationValues.get("indexed");
-                    String indexName = (String)annotationValues.get("index");
-                    String unique = (String)annotationValues.get("unique");
-                    String uniqueName = (String)annotationValues.get("uniqueKey");
-                    String generatePK = (String)annotationValues.get("generatePrimaryKey");
+                    String joinColumn = (String) annotationValues.get("column");
+                    String joinOuter = (String) annotationValues.get("outer");
+                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String pkName = (String) annotationValues.get("primaryKey");
+                    String fkName = (String) annotationValues.get("foreignKey");
+                    String generateFK = (String) annotationValues.get("generateForeignKey");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String indexName = (String) annotationValues.get("index");
+                    String unique = (String) annotationValues.get("unique");
+                    String uniqueName = (String) annotationValues.get("uniqueKey");
+                    String generatePK = (String) annotationValues.get("generatePrimaryKey");
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1197,7 +1176,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         indexed = "true";
                     }
-                    Column[] joinColumns = (Column[])annotationValues.get("columns");
+                    Column[] joinColumns = (Column[]) annotationValues.get("columns");
                     joinmd = new JoinMetaData();
                     joinmd.setColumnName(joinColumn);
                     joinmd.setOuter(MetaDataUtils.getBooleanForString(joinOuter, false));
@@ -1258,33 +1237,31 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (joinColumns != null && joinColumns.length > 0)
                     {
-                        for (int j=0;j<joinColumns.length;j++)
+                        for (int j = 0; j < joinColumns.length; j++)
                         {
                             joinmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(joinColumns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.ELEMENT))
                 {
                     // Element of a Collection/Array
-                    elementTypes = (Class[])annotationValues.get("types");
-                    embeddedElement = (String)annotationValues.get("embedded");
-                    serializedElement = (String)annotationValues.get("serialized");
-                    dependentElement = (String)annotationValues.get("dependent");
-                    String elementColumn = (String)annotationValues.get("column");
-                    String elementDeleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String elementUpdateAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("updateAction"));
-                    String elementMappedBy = (String)annotationValues.get("mappedBy");
-                    Column[] elementColumns = (Column[])annotationValues.get("columns");
-                    String fkName = (String)annotationValues.get("foreignKey");
-                    String generateFK = (String)annotationValues.get("generateForeignKey");
-                    String indexed = (String)annotationValues.get("indexed");
-                    String indexName = (String)annotationValues.get("index");
-                    String unique = (String)annotationValues.get("unique");
-                    String uniqueName = (String)annotationValues.get("uniqueKey");
+                    elementTypes = (Class[]) annotationValues.get("types");
+                    embeddedElement = (String) annotationValues.get("embedded");
+                    serializedElement = (String) annotationValues.get("serialized");
+                    dependentElement = (String) annotationValues.get("dependent");
+                    String elementColumn = (String) annotationValues.get("column");
+                    String elementDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String elementUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                    String elementMappedBy = (String) annotationValues.get("mappedBy");
+                    Column[] elementColumns = (Column[]) annotationValues.get("columns");
+                    String fkName = (String) annotationValues.get("foreignKey");
+                    String generateFK = (String) annotationValues.get("generateForeignKey");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String indexName = (String) annotationValues.get("index");
+                    String unique = (String) annotationValues.get("unique");
+                    String uniqueName = (String) annotationValues.get("uniqueKey");
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1342,14 +1319,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (elementColumns != null && elementColumns.length > 0)
                     {
-                        for (int j=0;j<elementColumns.length;j++)
+                        for (int j = 0; j < elementColumns.length; j++)
                         {
                             elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementColumns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[]) annotationValues.get("extensions"));
 
-                    Embedded[] embeddedMappings = (Embedded[])annotationValues.get("embeddedMapping");
+                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
                     if (embeddedMappings != null && embeddedMappings.length > 0)
                     {
                         // Embedded element
@@ -1364,8 +1341,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             {
                                 DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
                                 dismd.setColumnName(disc.column());
-                                dismd.setStrategy(
-                                    JDOAnnotationUtils.getDiscriminatorStrategyString(disc.strategy()));
+                                dismd.setStrategy(JDOAnnotationUtils.getDiscriminatorStrategyString(disc.strategy()));
                                 // TODO Support other attributes of discriminator?
                             }
                         }
@@ -1375,34 +1351,33 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                         elemmd.setEmbeddedMetaData(embmd);
                         embeddedElementMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedElementMembers til completion of this loop so we have the element type
+                        // Delay addition of embeddedElementMembers til completion of this loop so we have the
+                        // element type
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.KEY))
                 {
                     // Key of a Map
-                    Class[] keyTypes = (Class[])annotationValues.get("types");
+                    Class[] keyTypes = (Class[]) annotationValues.get("types");
                     if (keyTypes != null && keyTypes.length > 0)
                     {
                         // TODO Support more than 1 value
                         keyType = keyTypes[0];
                     }
-                    embeddedKey = (String)annotationValues.get("embedded");
-                    serializedKey = (String)annotationValues.get("serialized");
-                    dependentKey = (String)annotationValues.get("dependent");
-                    String keyColumn = (String)annotationValues.get("column");
-                    String keyDeleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String keyUpdateAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("updateAction"));
-                    String keyMappedBy = (String)annotationValues.get("mappedBy");
-                    Column[] keyColumns = (Column[])annotationValues.get("columns");
-                    String fkName = (String)annotationValues.get("foreignKey");
-                    String generateFK = (String)annotationValues.get("generateForeignKey");
-                    String indexed = (String)annotationValues.get("indexed");
-                    String indexName = (String)annotationValues.get("index");
-                    String unique = (String)annotationValues.get("unique");
-                    String uniqueName = (String)annotationValues.get("uniqueKey");
+                    embeddedKey = (String) annotationValues.get("embedded");
+                    serializedKey = (String) annotationValues.get("serialized");
+                    dependentKey = (String) annotationValues.get("dependent");
+                    String keyColumn = (String) annotationValues.get("column");
+                    String keyDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String keyUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                    String keyMappedBy = (String) annotationValues.get("mappedBy");
+                    Column[] keyColumns = (Column[]) annotationValues.get("columns");
+                    String fkName = (String) annotationValues.get("foreignKey");
+                    String generateFK = (String) annotationValues.get("generateForeignKey");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String indexName = (String) annotationValues.get("index");
+                    String unique = (String) annotationValues.get("unique");
+                    String uniqueName = (String) annotationValues.get("uniqueKey");
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1460,14 +1435,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (keyColumns != null && keyColumns.length > 0)
                     {
-                        for (int j=0;j<keyColumns.length;j++)
+                        for (int j = 0; j < keyColumns.length; j++)
                         {
                             keymd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(keyColumns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[]) annotationValues.get("extensions"));
 
-                    Embedded[] embeddedMappings = (Embedded[])annotationValues.get("embeddedMapping");
+                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
                     if (embeddedMappings != null && embeddedMappings.length > 0)
                     {
                         // Embedded key
@@ -1477,34 +1452,33 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
                         keymd.setEmbeddedMetaData(embmd);
                         embeddedKeyMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedKeyMembers til completion of this loop so we have the key type
+                        // Delay addition of embeddedKeyMembers til completion of this loop so we have the key
+                        // type
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.VALUE))
                 {
                     // Value of a Map
-                    Class[] valueTypes = (Class[])annotationValues.get("types");
+                    Class[] valueTypes = (Class[]) annotationValues.get("types");
                     if (valueTypes != null && valueTypes.length > 0)
                     {
                         // TODO Support more than 1 value
                         valueType = valueTypes[0];
                     }
-                    embeddedValue = (String)annotationValues.get("embedded");
-                    serializedValue = (String)annotationValues.get("serialized");
-                    dependentValue = (String)annotationValues.get("dependent");
-                    String valueColumn = (String)annotationValues.get("column");
-                    String valueDeleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String valueUpdateAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("updateAction"));
-                    String valueMappedBy = (String)annotationValues.get("mappedBy");
-                    Column[] valueColumns = (Column[])annotationValues.get("columns");
-                    String fkName = (String)annotationValues.get("foreignKey");
-                    String generateFK = (String)annotationValues.get("generateForeignKey");
-                    String indexed = (String)annotationValues.get("indexed");
-                    String indexName = (String)annotationValues.get("index");
-                    String unique = (String)annotationValues.get("unique");
-                    String uniqueName = (String)annotationValues.get("uniqueKey");
+                    embeddedValue = (String) annotationValues.get("embedded");
+                    serializedValue = (String) annotationValues.get("serialized");
+                    dependentValue = (String) annotationValues.get("dependent");
+                    String valueColumn = (String) annotationValues.get("column");
+                    String valueDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String valueUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                    String valueMappedBy = (String) annotationValues.get("mappedBy");
+                    Column[] valueColumns = (Column[]) annotationValues.get("columns");
+                    String fkName = (String) annotationValues.get("foreignKey");
+                    String generateFK = (String) annotationValues.get("generateForeignKey");
+                    String indexed = (String) annotationValues.get("indexed");
+                    String indexName = (String) annotationValues.get("index");
+                    String unique = (String) annotationValues.get("unique");
+                    String uniqueName = (String) annotationValues.get("uniqueKey");
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1562,14 +1536,14 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (valueColumns != null && valueColumns.length > 0)
                     {
-                        for (int j=0;j<valueColumns.length;j++)
+                        for (int j = 0; j < valueColumns.length; j++)
                         {
                             valuemd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(valueColumns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[]) annotationValues.get("extensions"));
 
-                    Embedded[] embeddedMappings = (Embedded[])annotationValues.get("embeddedMapping");
+                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
                     if (embeddedMappings != null && embeddedMappings.length > 0)
                     {
                         // Embedded value
@@ -1579,79 +1553,77 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
                         valuemd.setEmbeddedMetaData(embmd);
                         embeddedValueMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedValueMembers til completion of this loop so we have the value type
+                        // Delay addition of embeddedValueMembers til completion of this loop so we have the
+                        // value type
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.ORDER))
                 {
-                    String orderColumn = (String)annotationValues.get("column");
-                    String orderMappedBy = (String)annotationValues.get("mappedBy");
-                    Column[] orderColumns = (Column[])annotationValues.get("columns");
+                    String orderColumn = (String) annotationValues.get("column");
+                    String orderMappedBy = (String) annotationValues.get("mappedBy");
+                    Column[] orderColumns = (Column[]) annotationValues.get("columns");
                     ordermd = new OrderMetaData();
                     ordermd.setColumnName(orderColumn);
                     ordermd.setMappedBy(orderMappedBy);
                     if (orderColumns != null && orderColumns.length > 0)
                     {
-                        for (int j=0;j<orderColumns.length;j++)
+                        for (int j = 0; j < orderColumns.length; j++)
                         {
                             ordermd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(orderColumns[j]));
                         }
                     }
-                    JDOAnnotationUtils.addExtensionsToMetaData(ordermd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(ordermd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.EMBEDDED))
                 {
-                    embeddedOwnerField = (String)annotationValues.get("ownerMember");
-                    embeddedNullIndicatorColumn = (String)annotationValues.get("nullIndicatorColumn");
-                    embeddedNullIndicatorValue = (String)annotationValues.get("nullIndicatorValue");
-                    embeddedMembers = (Persistent[])annotationValues.get("members");
+                    embeddedOwnerField = (String) annotationValues.get("ownerMember");
+                    embeddedNullIndicatorColumn = (String) annotationValues.get("nullIndicatorColumn");
+                    embeddedNullIndicatorValue = (String) annotationValues.get("nullIndicatorValue");
+                    embeddedMembers = (Persistent[]) annotationValues.get("members");
                     // TODO Support discriminator
                 }
                 else if (annName.equals(JDOAnnotationUtils.INDEX))
                 {
                     // Index for the field
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String unique = (String)annotationValues.get("unique");
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String unique = (String) annotationValues.get("unique");
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
                     idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.UNIQUE))
                 {
                     // Unique for the field
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String deferred = (String)annotationValues.get("deferred");
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String deferred = (String) annotationValues.get("deferred");
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
                     unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[])annotationValues.get("extensions"));
+                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
                 {
                     // ForeignKey for field
-                    String name = (String)annotationValues.get("name");
-                    String table = (String)annotationValues.get("table");
-                    String unique = (String)annotationValues.get("unique");
-                    String deferred = (String)annotationValues.get("deferred");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("deleteAction"));
-                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString(
-                        (ForeignKeyAction)annotationValues.get("updateAction"));
-                    String[] members = (String[])annotationValues.get("members");
-                    Column[] columns = (Column[])annotationValues.get("columns");
+                    String name = (String) annotationValues.get("name");
+                    String table = (String) annotationValues.get("table");
+                    String unique = (String) annotationValues.get("unique");
+                    String deferred = (String) annotationValues.get("deferred");
+                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                    String[] members = (String[]) annotationValues.get("members");
+                    Column[] columns = (Column[]) annotationValues.get("columns");
 
-                    fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction,
-                        members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[])annotationValues.get("extensions"));
+                    fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
+                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
                 }
                 else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
                 {
-                    String cache = (String)annotationValues.get("value");
+                    String cache = (String) annotationValues.get("value");
                     if (cache != null)
                     {
                         cacheable = cache;
@@ -1659,41 +1631,34 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
                 {
-                    Extension[] values = (Extension[])annotationValues.get("value");
+                    Extension[] values = (Extension[]) annotationValues.get("value");
                     if (values != null && values.length > 0)
                     {
                         extensions = new HashSet<ExtensionMetaData>(values.length);
-                        for (int j=0;j<values.length;j++)
+                        for (int j = 0; j < values.length; j++)
                         {
-                            ExtensionMetaData extmd = new ExtensionMetaData(values[j].vendorName(),
-                                values[j].key().toString(), values[j].value().toString());
+                            ExtensionMetaData extmd = new ExtensionMetaData(values[j].vendorName(), values[j].key().toString(), values[j].value().toString());
                             extensions.add(extmd);
                         }
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSION))
                 {
-                    ExtensionMetaData extmd = new ExtensionMetaData((String)annotationValues.get("vendorName"), 
-                        (String)annotationValues.get("key"), (String)annotationValues.get("value"));
+                    ExtensionMetaData extmd = new ExtensionMetaData((String) annotationValues.get("vendorName"), (String) annotationValues.get("key"),
+                            (String) annotationValues.get("value"));
                     extensions = new HashSet<ExtensionMetaData>(1);
                     extensions.add(extmd);
                 }
-                else 
+                else
                 {
-                    NucleusLogger.METADATA.debug(Localiser.msg("044211", cmd.getFullClassName(), member.getName(),
-                        annotations[i].getName()));
+                    NucleusLogger.METADATA.debug(Localiser.msg("044211", cmd.getFullClassName(), member.getName(), annotations[i].getName()));
                 }
             }
 
-            if (mmd == null && 
-                (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised ||
-                 embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null ||
-                 embeddedMembers != null ||
-                 elemmd != null || keymd != null || valuemd != null || ordermd != null || 
-                 idxmd != null || unimd != null || fkmd != null || joinmd != null ||
-                 extensions != null))
+            if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null))
             {
-                // @Persistent not supplied but other relevant annotations defined, so add default metadata element
+                // @Persistent not supplied but other relevant annotations defined, so add default metadata
+                // element
                 if (member.isProperty())
                 {
                     mmd = new PropertyMetaData(cmd, member.getName());
@@ -1735,8 +1700,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
 
                 // Add any embedded info
-                if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null ||
-                    embeddedNullIndicatorValue != null || embeddedMembers != null)
+                if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null)
                 {
                     EmbeddedMetaData embmd = new EmbeddedMetaData();
                     embmd.setOwnerMember(embeddedOwnerField);
@@ -1745,15 +1709,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     mmd.setEmbeddedMetaData(embmd);
                     if (embeddedMembers != null && embeddedMembers.length > 0)
                     {
-                        for (int j=0;j<embeddedMembers.length;j++)
+                        for (int j = 0; j < embeddedMembers.length; j++)
                         {
                             // Add the metadata for the embedded field/property to the embedded metadata
                             String memberName = embeddedMembers[j].name();
                             if (memberName.indexOf('.') > 0)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.')+1);
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedMembers[j], 
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedMembers[j],
                                 isMemberOfClassAField(member.getType(), memberName));
                             embmd.addMember(embfmd);
                         }
@@ -1769,7 +1733,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
                     {
                         // User-specified element type(s)
-                        for (int j=0;j<elementTypes.length;j++)
+                        for (int j = 0; j < elementTypes.length; j++)
                         {
                             if (elementTypeStr.length() > 0)
                             {
@@ -1782,12 +1746,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     else
                     {
                         // Try to derive element type from generics info
-                        collectionElementType =
-                            ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
+                        collectionElementType = ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
                     }
 
                     contmd = new CollectionMetaData();
-                    CollectionMetaData collmd = (CollectionMetaData)contmd;
+                    CollectionMetaData collmd = (CollectionMetaData) contmd;
                     collmd.setElementType(elementTypeStr.toString());
                     if (!StringUtils.isWhitespace(embeddedElement))
                     {
@@ -1816,16 +1779,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         // Add any embedded element mappings
                         EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
-                        for (int j=0;j<embeddedElementMembers.length;j++)
+                        for (int j = 0; j < embeddedElementMembers.length; j++)
                         {
                             // Add the metadata for the embedded element to the embedded metadata
                             String memberName = embeddedElementMembers[j].name();
                             if (memberName.indexOf('.') > 0)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.')+1);
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, 
-                                embeddedElementMembers[j], 
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedElementMembers[j],
                                 isMemberOfClassAField(collectionElementType, memberName));
                             embmd.addMember(embfmd);
                         }
@@ -1837,7 +1799,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
                     {
                         // User-specified element type(s)
-                        for (int j=0;j<elementTypes.length;j++)
+                        for (int j = 0; j < elementTypes.length; j++)
                         {
                             if (elementTypeStr.length() > 0)
                             {
@@ -1853,7 +1815,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     contmd = new ArrayMetaData();
-                    ArrayMetaData arrmd = (ArrayMetaData)contmd;
+                    ArrayMetaData arrmd = (ArrayMetaData) contmd;
                     arrmd.setElementType(elementTypeStr.toString());
                     if (!StringUtils.isWhitespace(embeddedElement))
                     {
@@ -1895,7 +1857,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     contmd = new MapMetaData();
-                    MapMetaData mapmd = (MapMetaData)contmd;
+                    MapMetaData mapmd = (MapMetaData) contmd;
 
                     mapmd.setKeyType((mapKeyType != null ? mapKeyType.getName() : null));
                     if (!StringUtils.isWhitespace(embeddedKey))
@@ -1939,15 +1901,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         // Add any embedded key mappings
                         EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
-                        for (int j=0;j<embeddedKeyMembers.length;j++)
+                        for (int j = 0; j < embeddedKeyMembers.length; j++)
                         {
                             // Add the metadata for the embedded key to the embedded metadata
                             String memberName = embeddedKeyMembers[j].name();
                             if (memberName.indexOf('.') > 0)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.')+1);
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMembers[j], 
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMembers[j],
                                 isMemberOfClassAField(mapKeyType, memberName));
                             embmd.addMember(embfmd);
                         }
@@ -1967,15 +1929,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         // Add any embedded value mappings
                         EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
-                        for (int j=0;j<embeddedValueMembers.length;j++)
+                        for (int j = 0; j < embeddedValueMembers.length; j++)
                         {
                             // Add the metadata for the embedded value to the embedded metadata
                             String memberName = embeddedValueMembers[j].name();
                             if (memberName.indexOf('.') > 0)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.')+1);
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMembers[j], 
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMembers[j],
                                 isMemberOfClassAField(mapValueType, memberName));
                             embmd.addMember(embfmd);
                         }
@@ -1984,7 +1946,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 if (contmd != null)
                 {
                     mmd.setContainer(contmd);
-                    
+
                     if (elemmd != null)
                     {
                         elemmd.setParent(mmd);
@@ -2017,7 +1979,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 if (colmds != null)
                 {
-                    for (int i=0;i<colmds.length;i++)
+                    for (int i = 0; i < colmds.length; i++)
                     {
                         mmd.addColumn(colmds[i]);
                     }
@@ -2054,19 +2016,18 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Method to take the passed in outline ClassMetaData and process the annotations for
-     * method adding any necessary MetaData to the ClassMetaData.
+     * Method to take the passed in outline ClassMetaData and process the annotations for method adding any
+     * necessary MetaData to the ClassMetaData.
      * @param cmd The ClassMetaData/InterfaceMetaData (to be updated)
      * @param method The method
      */
     protected void processMethodAnnotations(AbstractClassMetaData cmd, Method method)
     {
-        //do nothing
+        // do nothing
     }
 
     /**
-     * Convenience method to create MetaData for a @Persistent annotation
-     * representing a field or property.
+     * Convenience method to create MetaData for a @Persistent annotation representing a field or property.
      * @param parent Parent MetaData
      * @param member The @Persistent annotation
      * @param isField Whether this is a field (otherwise is a property)
@@ -2083,7 +2044,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         if (fieldTypes != null && fieldTypes.length > 0)
         {
             StringBuilder typeStr = new StringBuilder();
-            for (int j=0;j<fieldTypes.length;j++)
+            for (int j = 0; j < fieldTypes.length; j++)
             {
                 if (typeStr.length() > 0)
                 {
@@ -2112,23 +2073,23 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         }
         if (!StringUtils.isWhitespace(member.defaultFetchGroup()))
         {
-        	fmd.setDefaultFetchGroup(Boolean.valueOf(member.defaultFetchGroup()));
+            fmd.setDefaultFetchGroup(Boolean.valueOf(member.defaultFetchGroup()));
         }
         if (!StringUtils.isWhitespace(member.primaryKey()))
         {
-        	fmd.setPrimaryKey(Boolean.valueOf(member.primaryKey()));
+            fmd.setPrimaryKey(Boolean.valueOf(member.primaryKey()));
         }
         if (!StringUtils.isWhitespace(member.embedded()))
         {
-        	fmd.setEmbedded(Boolean.valueOf(member.embedded()));
+            fmd.setEmbedded(Boolean.valueOf(member.embedded()));
         }
         if (!StringUtils.isWhitespace(member.serialized()))
         {
-        	fmd.setSerialised(Boolean.valueOf(member.serialized()));
+            fmd.setSerialised(Boolean.valueOf(member.serialized()));
         }
         if (!StringUtils.isWhitespace(member.dependent()))
         {
-        	fmd.setDependent(Boolean.valueOf(member.dependent()));
+            fmd.setDependent(Boolean.valueOf(member.dependent()));
         }
         fmd.setNullValue(org.datanucleus.metadata.NullValue.getNullValue(nullValue));
         fmd.setMappedBy(member.mappedBy());
@@ -2143,7 +2104,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         Column[] columns = member.columns();
         if (columns != null && columns.length > 0)
         {
-            for (int j=0;j<columns.length;j++)
+            for (int j = 0; j < columns.length; j++)
             {
                 fmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
             }
@@ -2210,8 +2171,8 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Check if class has Query annotations (for classes that are not persistable but provide
-     * named query definitions.
+     * Check if class has Query annotations (for classes that are not persistable but provide named query
+     * definitions.
      * @param cls the Class
      * @return true if the class has Named query annotations
      */
@@ -2221,8 +2182,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         for (int i = 0; i < annotations.length; i++)
         {
             String annClassName = annotations[i].getName();
-            if (annClassName.equals(JDOAnnotationUtils.QUERIES) ||
-                annClassName.equals(JDOAnnotationUtils.QUERY))
+            if (annClassName.equals(JDOAnnotationUtils.QUERIES) || annClassName.equals(JDOAnnotationUtils.QUERY))
             {
                 return true;
             }
