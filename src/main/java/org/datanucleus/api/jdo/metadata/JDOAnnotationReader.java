@@ -19,7 +19,6 @@ package org.datanucleus.api.jdo.metadata;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -142,7 +141,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
                 }
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
-                HashMap<String, Object> annotationValues = pcAnnotation.getNameValueMap();
+                Map<String, Object> annotationValues = pcAnnotation.getNameValueMap();
 
                 cmd.setTable((String) annotationValues.get("table"));
                 cmd.setCatalog((String) annotationValues.get("catalog"));
@@ -243,7 +242,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
             for (int i = 0; i < annotations.length; i++)
             {
-                HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
+                Map<String, Object> annotationValues = annotations[i].getNameValueMap();
                 String annName = annotations[i].getName();
                 if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
                 {
@@ -821,7 +820,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
         for (int i = 0; i < annotations.length; i++)
         {
-            HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
+            Map<String, Object> annotationValues = annotations[i].getNameValueMap();
             String annName = annotations[i].getName();
 
             if (annName.equals(JDOAnnotationUtils.QUERIES))
@@ -976,7 +975,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             for (int i = 0; i < annotations.length; i++)
             {
                 String annName = annotations[i].getName();
-                HashMap<String, Object> annotationValues = annotations[i].getNameValueMap();
+                Map<String, Object> annotationValues = annotations[i].getNameValueMap();
                 if (annName.equals(JDOAnnotationUtils.PERSISTENT))
                 {
                     String pkStr = "" + annotationValues.get("primaryKey");

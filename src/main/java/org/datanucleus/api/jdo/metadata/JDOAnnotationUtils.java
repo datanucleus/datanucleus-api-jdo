@@ -18,7 +18,7 @@ Contributors:
 package org.datanucleus.api.jdo.metadata;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Columns;
@@ -457,7 +457,7 @@ public class JDOAnnotationUtils
      * @param annotationValues The values for the annotation
      * @return The MetaData for the column
      */
-    public static ColumnMetaData getColumnMetaDataForAnnotations(HashMap<String, Object> annotationValues)
+    public static ColumnMetaData getColumnMetaDataForAnnotations(Map<String, Object> annotationValues)
     {
         ColumnMetaData colmd = new ColumnMetaData();
         colmd.setName((String)annotationValues.get("name"));
