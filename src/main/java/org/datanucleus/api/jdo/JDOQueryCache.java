@@ -30,6 +30,7 @@ import org.datanucleus.store.query.cache.QueryResultsCache;
  */
 public class JDOQueryCache implements Serializable
 {
+    private static final long serialVersionUID = -6836991171780739390L;
     QueryResultsCache resultsCache;
 
     /**

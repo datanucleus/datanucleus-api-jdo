@@ -29,6 +29,8 @@ import javax.jdo.JDOUserException;
  */
 public class ClassNotPersistenceCapableException extends JDOUserException
 {
+    private static final long serialVersionUID = -32361409923511910L;
+
     /**
      * Constructs a class-not-persistence-capable exception with the specified detail message.
      * @param msg The message

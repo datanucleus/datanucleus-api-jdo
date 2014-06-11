@@ -31,6 +31,7 @@ import org.datanucleus.exceptions.NucleusException;
  */
 public class JDOFetchPlan implements FetchPlan, Serializable
 {
+    private static final long serialVersionUID = 862722192165984633L;
     org.datanucleus.FetchPlan fp = null;
 
     /**

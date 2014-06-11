@@ -25,6 +25,7 @@ import javax.jdo.listener.InstanceLifecycleEvent;
  */
 public class FieldInstanceLifecycleEvent extends InstanceLifecycleEvent
 {
+    private static final long serialVersionUID = 4518746566556032678L;
     /** Names of the fields affected. */
     private String[] fieldNames;
 

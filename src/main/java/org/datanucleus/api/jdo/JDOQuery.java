@@ -43,6 +43,8 @@ import org.datanucleus.store.query.QueryTimeoutException;
  */
 public class JDOQuery implements Query
 {
+    private static final long serialVersionUID = -204134873012573162L;
+
     /** PersistenceManager for the query. */
     transient PersistenceManager pm;
 

@@ -105,6 +105,8 @@ import org.datanucleus.util.StringUtils;
  */
 public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable, Serializable
 {
+    private static final long serialVersionUID = -575257641123665920L;
+
     static
     {
         Localiser.registerBundle("org.datanucleus.api.jdo.Localisation", JDOPersistenceManagerFactory.class.getClassLoader());

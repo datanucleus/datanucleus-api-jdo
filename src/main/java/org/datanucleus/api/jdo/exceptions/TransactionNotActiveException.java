@@ -31,6 +31,8 @@ import org.datanucleus.util.Localiser;
  */
 public class TransactionNotActiveException extends JDOUserException
 {
+    private static final long serialVersionUID = -5645432840786957250L;
+
     /**
      * Constructor.
      */

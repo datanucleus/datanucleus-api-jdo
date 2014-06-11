@@ -25,6 +25,8 @@ import javax.jdo.JDOUserException;
  */
 public class NoPersistenceInformationException extends JDOUserException
 {
+    private static final long serialVersionUID = 8218822469557539549L;
+
     /**
      * Constructs an exception for the specified class with the supplied nested exception.
      * @param msg The message

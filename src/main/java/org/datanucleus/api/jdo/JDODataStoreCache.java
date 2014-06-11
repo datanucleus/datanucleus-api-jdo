@@ -30,6 +30,7 @@ import org.datanucleus.cache.Level2Cache;
  */
 public class JDODataStoreCache implements DataStoreCache, Serializable
 {
+    private static final long serialVersionUID = 620081773711702087L;
     /** Underlying Level 2 cache. */
     Level2Cache cache = null;
 

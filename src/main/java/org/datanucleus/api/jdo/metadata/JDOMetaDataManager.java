@@ -85,6 +85,8 @@ import org.datanucleus.util.StringUtils;
  */
 public class JDOMetaDataManager extends MetaDataManagerImpl
 {
+    private static final long serialVersionUID = -2276240352978344222L;
+
     /** MetaData files will be searched in all possible locations defined in JDO1.0, JDO1.0.1, JDO2.0 or later */
     public static final int ALL_JDO_LOCATIONS = 1;
 

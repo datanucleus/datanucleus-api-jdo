@@ -31,6 +31,7 @@ import org.datanucleus.exceptions.NucleusUserException;
  */
 public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
 {
+    private static final long serialVersionUID = 8496393232964294401L;
     org.datanucleus.FetchGroup fg = null;
 
     /**
