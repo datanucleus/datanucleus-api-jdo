@@ -2140,14 +2140,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 // Return existing internal group since still modifiable
                 return new JDOFetchGroup(internalGrp);
             }
-            else
-            {
-                // Create a new internal group (modifiable) and return a JDO group based on that
-                internalGrp = nucleusContext.createInternalFetchGroup(cls, name);
-                nucleusContext.addInternalFetchGroup(internalGrp);
-                JDOFetchGroup jdoGrp = new JDOFetchGroup(internalGrp);
-                return jdoGrp;
-            }
+
+            // Create a new internal group (modifiable) and return a JDO group based on that
+            internalGrp = nucleusContext.createInternalFetchGroup(cls, name);
+            nucleusContext.addInternalFetchGroup(internalGrp);
+            JDOFetchGroup jdoGrp = new JDOFetchGroup(internalGrp);
+            return jdoGrp;
         }
         catch (NucleusException ne)
         {
@@ -2296,17 +2294,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             return null;
         }
-        else
+
+        if (acmd instanceof ClassMetaData)
         {
-            if (acmd instanceof ClassMetaData)
-            {
-                return new ClassMetadataImpl((ClassMetaData)acmd);
-            }
-            else
-            {
-                return new InterfaceMetadataImpl((InterfaceMetaData)acmd);
-            }
+            return new ClassMetadataImpl((ClassMetaData)acmd);
         }
+        return new InterfaceMetadataImpl((InterfaceMetaData)acmd);
     }
 
     /**

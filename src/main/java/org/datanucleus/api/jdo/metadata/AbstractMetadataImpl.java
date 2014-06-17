@@ -52,15 +52,13 @@ public class AbstractMetadataImpl implements Metadata
         {
             return null;
         }
-        else
+
+        ExtensionMetadata[] extensions = new ExtensionMetadata[exts.length];
+        for (int i=0;i<extensions.length;i++)
         {
-            ExtensionMetadata[] extensions = new ExtensionMetadata[exts.length];
-            for (int i=0;i<extensions.length;i++)
-            {
-                extensions[i] = new ExtensionMetadataImpl(exts[i]);
-            }
-            return extensions;
+            extensions[i] = new ExtensionMetadataImpl(exts[i]);
         }
+        return extensions;
     }
 
     public int getNumberOfExtensions()

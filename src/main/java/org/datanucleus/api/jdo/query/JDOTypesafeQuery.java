@@ -883,7 +883,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         this.resultDistinct = distinct;
         this.unique = true;
 
-        return (Object)executeInternalQuery(getInternalQuery());
+        return executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
@@ -973,10 +973,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
 
                 return internalQuery.executeWithMap(parameterValuesByName);
             }
-            else
-            {
-                return internalQuery.execute();
-            }
+            return internalQuery.execute();
         }
         catch (NoQueryResultsException nqre)
         {
@@ -1014,10 +1011,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
 
                 return internalQuery.deletePersistentAll(parameterValuesByName);
             }
-            else
-            {
-                return internalQuery.deletePersistentAll();
-            }
+            return internalQuery.deletePersistentAll();
         }
         catch (NucleusException jpe)
         {

@@ -102,10 +102,7 @@ class TransientClean extends LifeCycleState
             op.saveFields();
             return changeTransientState(op,T_DIRTY);
         }
-        else
-        {
-            return this;
-        }
+        return this;
     }
 
     /**

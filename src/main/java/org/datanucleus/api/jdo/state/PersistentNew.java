@@ -94,12 +94,10 @@ class PersistentNew extends LifeCycleState
         {
             return changeState(op, P_NONTRANS);
         }
-        else
-        {
-            op.clearNonPrimaryKeyFields();
-			//op.restoreFields();
-            return changeState(op, HOLLOW);
-        }
+
+        op.clearNonPrimaryKeyFields();
+        //op.restoreFields();
+        return changeState(op, HOLLOW);
     }
 
     /**

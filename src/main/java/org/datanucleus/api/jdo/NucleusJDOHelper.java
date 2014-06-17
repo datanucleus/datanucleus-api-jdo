@@ -332,16 +332,14 @@ public class NucleusJDOHelper extends JDOHelper
 
             return dirtyFieldNames;
         }
-        else
+
+        ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
-            ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider sm = ec.findObjectProvider(pc);
-            if (sm == null)
-            {
-                return null;
-            }
-            return sm.getDirtyFieldNames();
+            return null;
         }
+        return sm.getDirtyFieldNames();
     }
 
     /**
@@ -370,16 +368,14 @@ public class NucleusJDOHelper extends JDOHelper
 
             return loadedFieldNames;
         }
-        else
+
+        ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
-            ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider sm = ec.findObjectProvider(pc);
-            if (sm == null)
-            {
-                return null;
-            }
-            return sm.getLoadedFieldNames();
+            return null;
         }
+        return sm.getLoadedFieldNames();
     }
 
     /**
@@ -410,17 +406,15 @@ public class NucleusJDOHelper extends JDOHelper
 
             return loaded;
         }
-        else
+
+        ExecutionContext ec = pc.dnGetExecutionContext();
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
-            ExecutionContext ec = pc.dnGetExecutionContext();
-            ObjectProvider sm = ec.findObjectProvider(pc);
-            if (sm == null)
-            {
-                return null;
-            }
-            int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
-            return sm.isFieldLoaded(position);
+            return null;
         }
+        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        return sm.isFieldLoaded(position);
     }
 
     /**
@@ -451,18 +445,16 @@ public class NucleusJDOHelper extends JDOHelper
 
             return dirtyFieldNumbers[position];
         }
-        else
+
+        ExecutionContext ec = pc.dnGetExecutionContext();
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
-            ExecutionContext ec = pc.dnGetExecutionContext();
-            ObjectProvider sm = ec.findObjectProvider(pc);
-            if (sm == null)
-            {
-                return null;
-            }
-            int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
-            boolean[] dirtyFieldNumbers = sm.getDirtyFields();
-            return dirtyFieldNumbers[position];
+            return null;
         }
+        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        boolean[] dirtyFieldNumbers = sm.getDirtyFields();
+        return dirtyFieldNumbers[position];
     }
 
     // ------------------------------ Convenience --------------------------------
@@ -544,26 +536,24 @@ public class NucleusJDOHelper extends JDOHelper
                     return new JDOFatalDataStoreException(ne.getMessage(), ne);
                 }
             }
+
+            if (ne.getNestedExceptions() != null)
+            {
+                if (ne.getFailedObject() != null)
+                {
+                    return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
+                }
+                return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions());
+            }
+            else if (ne.getFailedObject() != null)
+            {
+                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
+                return new JDODataStoreException(ne.getMessage(), ne.getFailedObject());
+            }
             else
             {
-                if (ne.getNestedExceptions() != null)
-                {
-                    if (ne.getFailedObject() != null)
-                    {
-                        return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                    }
-                    return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions());
-                }
-                else if (ne.getFailedObject() != null)
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDODataStoreException(ne.getMessage(), ne.getFailedObject());
-                }
-                else
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDODataStoreException(ne.getMessage(), ne);
-                }
+                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
+                return new JDODataStoreException(ne.getMessage(), ne);
             }
         }
         else if (ne instanceof NucleusObjectNotFoundException)
@@ -574,10 +564,7 @@ public class NucleusJDOHelper extends JDOHelper
                 {
                     return new JDOObjectNotFoundException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
                 }
-                else
-                {
-                    return new JDOObjectNotFoundException(ne.getMessage(), ne, ne.getFailedObject());
-                }
+                return new JDOObjectNotFoundException(ne.getMessage(), ne, ne.getFailedObject());
             }
             else if (ne.getNestedExceptions() != null)
             {
@@ -632,26 +619,24 @@ public class NucleusJDOHelper extends JDOHelper
                     return new JDOFatalUserException(ne.getMessage(), ne);
                 }
             }
+
+            if (ne.getNestedExceptions() != null)
+            {
+                if (ne.getFailedObject() != null)
+                {
+                    return new JDOUserException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
+                }
+                return new JDOUserException(ne.getMessage(), ne.getNestedExceptions());
+            }
+            else if (ne.getFailedObject() != null)
+            {
+                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
+                return new JDOUserException(ne.getMessage(), ne.getFailedObject());
+            }
             else
             {
-                if (ne.getNestedExceptions() != null)
-                {
-                    if (ne.getFailedObject() != null)
-                    {
-                        return new JDOUserException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                    }
-                    return new JDOUserException(ne.getMessage(), ne.getNestedExceptions());
-                }
-                else if (ne.getFailedObject() != null)
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDOUserException(ne.getMessage(), ne.getFailedObject());
-                }
-                else
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDOUserException(ne.getMessage(), ne);
-                }
+                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
+                return new JDOUserException(ne.getMessage(), ne);
             }
         }
         else if (ne instanceof NucleusOptimisticException)
@@ -690,10 +675,7 @@ public class NucleusJDOHelper extends JDOHelper
                 {
                     return new JDOFatalInternalException(ne.getMessage(), ne.getNestedExceptions());
                 }
-                else
-                {
-                    return new JDOFatalInternalException(ne.getMessage(), ne);
-                }
+                return new JDOFatalInternalException(ne.getMessage(), ne);
             }
             else if (ne.getNestedExceptions() != null)
             {

@@ -64,16 +64,14 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
         {
             return null;
         }
-        else
+
+        FetchPlanMetadataImpl[] fps = new FetchPlanMetadataImpl[baseFps.length];
+        for (int i=0;i<fps.length;i++)
         {
-            FetchPlanMetadataImpl[] fps = new FetchPlanMetadataImpl[baseFps.length];
-            for (int i=0;i<fps.length;i++)
-            {
-                fps[i] = new FetchPlanMetadataImpl(baseFps[i]);
-                fps[i].parent = this;
-            }
-            return fps;
+            fps[i] = new FetchPlanMetadataImpl(baseFps[i]);
+            fps[i].parent = this;
         }
+        return fps;
     }
 
     /* (non-Javadoc)
@@ -105,16 +103,14 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
         {
             return null;
         }
-        else
+
+        QueryMetadataImpl[] queries = new QueryMetadataImpl[getInternal().getNoOfQueries()];
+        for (int i=0;i<queries.length;i++)
         {
-            QueryMetadataImpl[] queries = new QueryMetadataImpl[getInternal().getNoOfQueries()];
-            for (int i=0;i<queries.length;i++)
-            {
-                queries[i] = new QueryMetadataImpl(baseQueries[i]);
-                queries[i].parent = this;
-            }
-            return queries;
+            queries[i] = new QueryMetadataImpl(baseQueries[i]);
+            queries[i].parent = this;
         }
+        return queries;
     }
 
     /* (non-Javadoc)

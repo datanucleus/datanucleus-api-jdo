@@ -156,10 +156,7 @@ class PersistentNontransactional extends LifeCycleState
             op.refreshLoadedFields();
             return changeState(op, P_CLEAN);
         }
-        else
-        {
-            return this;
-        }
+        return this;
     }
 
     /**
@@ -180,12 +177,10 @@ class PersistentNontransactional extends LifeCycleState
             op.saveFields();
             return changeState(op, P_DIRTY);
         }
-        else
-        {
-            // Save the fields for rollback.
-            op.saveFields();
-            return changeState(op, P_NONTRANS_DIRTY);
-        }
+
+        // Save the fields for rollback.
+        op.saveFields();
+        return changeState(op, P_NONTRANS_DIRTY);
     }
 
     /**

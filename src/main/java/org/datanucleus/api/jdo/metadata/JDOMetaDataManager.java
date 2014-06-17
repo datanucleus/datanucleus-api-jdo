@@ -423,10 +423,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                     {
                         return annFilemd.getPackage(0).getInterface(0);
                     }
-                    else
-                    {
-                        return annFilemd.getPackage(0).getClass(0);
-                    }
+                    return annFilemd.getPackage(0).getClass(0);
                 }
             }
 

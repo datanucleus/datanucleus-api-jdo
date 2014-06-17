@@ -48,16 +48,14 @@ public class FetchPlanMetadataImpl extends AbstractMetadataImpl implements Fetch
         {
             return null;
         }
-        else
+
+        FetchGroupMetadataImpl[] fgs = new FetchGroupMetadataImpl[baseData.length];
+        for (int i=0;i<fgs.length;i++)
         {
-            FetchGroupMetadataImpl[] fgs = new FetchGroupMetadataImpl[baseData.length];
-            for (int i=0;i<fgs.length;i++)
-            {
-                fgs[i] = new FetchGroupMetadataImpl(baseData[i]);
-                fgs[i].parent = this;
-            }
-            return fgs;
+            fgs[i] = new FetchGroupMetadataImpl(baseData[i]);
+            fgs[i].parent = this;
         }
+        return fgs;
     }
 
     /* (non-Javadoc)

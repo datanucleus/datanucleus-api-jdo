@@ -719,7 +719,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         try
         {
-            return (T) ec.persistObject(obj, false);
+            return ec.persistObject(obj, false);
         }
         catch (NucleusException ne)
         {
@@ -1134,7 +1134,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         ec.assertClassPersistable(obj.getClass());
         try
         {
-            return (T) ec.detachObjectCopy(obj, state);
+            return ec.detachObjectCopy(obj, state);
         }
         catch (NucleusException ne)
         {
@@ -1249,11 +1249,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             String language = ((JDOQuery)obj).getLanguage();
             return newQuery(language, obj);
         }
-        else
-        {
-            // TODO What situation is this ?
-            return newQuery(null, obj);
-        }
+
+        // TODO What situation is this ?
+        return newQuery(null, obj);
     }
 
     /**
@@ -1590,7 +1588,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         try
         {
-            return (T) ec.newInstance(pc);
+            return ec.newInstance(pc);
         }
         catch (NucleusException ne)
         {
@@ -1945,10 +1943,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             {
                 return ec.getNucleusContext().getIdentityManager().getDatastoreIdClass();
             }
-            else
-            {
-                return SCOID.class;
-            }
+            return SCOID.class;
         }
     }
 
@@ -1978,11 +1973,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             // Remove the object
             return userObjectMap.remove(key);
         }
-        else
-        {
-            // Put the object
-            return userObjectMap.put(key, value);
-        }
+        // Put the object
+        return userObjectMap.put(key, value);
     }
 
     /**
@@ -2084,11 +2076,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 }
                 throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
             }
-            else
-            {
-                // Convert any DataNucleus exceptions into what JDO expects
-                throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-            }
+
+            // Convert any DataNucleus exceptions into what JDO expects
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -2119,10 +2109,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             // TODO Implement checkConsistency() for optimistic transactions
             throw new JDOUserException("checkConsistency() not yet implemented for optimistic transactions");
         }
-        else
-        {
-            flush();
-        }
+
+        flush();
     }
 
     // ------------------------------------- Sequence Management --------------------------------------
@@ -2310,11 +2298,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 // JDO spec, if the datastore supports JDBC then the JDOConnection must implement Connection
                 return new JDOConnectionJDBCImpl(nconn);
             }
-            else
-            {
-                // Wrap the NucleusConnection with a JDOConnectionImpl
-                return new JDOConnectionImpl(nconn);
-            }
+
+            // Wrap the NucleusConnection with a JDOConnectionImpl
+            return new JDOConnectionImpl(nconn);
         }
         catch (NucleusException ne)
         {

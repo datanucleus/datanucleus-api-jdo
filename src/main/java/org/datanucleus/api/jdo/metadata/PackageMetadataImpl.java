@@ -193,16 +193,14 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
         {
             return null;
         }
-        else
+
+        SequenceMetadataImpl[] seqmds = new SequenceMetadataImpl[internalSeqmds.length];
+        for (int i=0;i<seqmds.length;i++)
         {
-            SequenceMetadataImpl[] seqmds = new SequenceMetadataImpl[internalSeqmds.length];
-            for (int i=0;i<seqmds.length;i++)
-            {
-                seqmds[i] = new SequenceMetadataImpl(internalSeqmds[i]);
-                seqmds[i].parent = this;
-            }
-            return seqmds;
+            seqmds[i] = new SequenceMetadataImpl(internalSeqmds[i]);
+            seqmds[i].parent = this;
         }
+        return seqmds;
     }
 
     /* (non-Javadoc)

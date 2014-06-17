@@ -117,42 +117,8 @@ public class JDOTransaction implements Transaction
                         }
                         throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                     }
-                    else
-                    {
-                        // Exception with nested wrapper optimistic exception, with subnested optimistic exception(s)
-                        NucleusException ex;
-                        if (ne.getNestedExceptions()[0] instanceof NucleusException)
-                        {
-                            ex = (NucleusException)ne.getNestedExceptions()[0];
-                        }
-                        else
-                        {
-                            ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(),ne.getNestedExceptions()[0]);                        
-                        }
 
-                        // Optimistic exceptions - return a single JDOOptimisticVerificationException
-                        // with all individual exceptions nested
-                        Throwable[] nested = ex.getNestedExceptions();
-                        JDOOptimisticVerificationException[] jdoNested = new JDOOptimisticVerificationException[nested.length];
-                        for (int i=0;i<nested.length;i++)
-                        {
-                            NucleusException nestedEx;
-                            if (nested[i] instanceof NucleusException)
-                            {
-                                nestedEx = (NucleusException)nested[i];
-                            }
-                            else
-                            {
-                                nestedEx = new NucleusException(nested[i].getMessage(),nested[i]);                        
-                            }
-                            jdoNested[i] =
-                                (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException(nestedEx);
-                        }
-                        throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
-                    }
-                }
-                else
-                {
+                    // Exception with nested wrapper optimistic exception, with subnested optimistic exception(s)
                     NucleusException ex;
                     if (ne.getNestedExceptions()[0] instanceof NucleusException)
                     {
@@ -162,13 +128,41 @@ public class JDOTransaction implements Transaction
                     {
                         ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(),ne.getNestedExceptions()[0]);                        
                     }
-                    throw NucleusJDOHelper.getJDOExceptionForNucleusException(ex);
+
+                    // Optimistic exceptions - return a single JDOOptimisticVerificationException
+                    // with all individual exceptions nested
+                    Throwable[] nested = ex.getNestedExceptions();
+                    JDOOptimisticVerificationException[] jdoNested = new JDOOptimisticVerificationException[nested.length];
+                    for (int i=0;i<nested.length;i++)
+                    {
+                        NucleusException nestedEx;
+                        if (nested[i] instanceof NucleusException)
+                        {
+                            nestedEx = (NucleusException)nested[i];
+                        }
+                        else
+                        {
+                            nestedEx = new NucleusException(nested[i].getMessage(),nested[i]);                        
+                        }
+                        jdoNested[i] =
+                                (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException(nestedEx);
+                    }
+                    throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                 }
+
+                NucleusException ex;
+                if (ne.getNestedExceptions()[0] instanceof NucleusException)
+                {
+                    ex = (NucleusException)ne.getNestedExceptions()[0];
+                }
+                else
+                {
+                    ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(),ne.getNestedExceptions()[0]);                        
+                }
+                throw NucleusJDOHelper.getJDOExceptionForNucleusException(ex);
             }
-            else
-            {
-                throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-            }
+
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
     }
 

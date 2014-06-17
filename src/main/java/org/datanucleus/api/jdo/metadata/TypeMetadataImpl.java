@@ -331,16 +331,14 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
         {
             return null;
         }
-        else
+
+        QueryMetadataImpl[] queries = new QueryMetadataImpl[getInternal().getNoOfQueries()];
+        for (int i=0;i<queries.length;i++)
         {
-            QueryMetadataImpl[] queries = new QueryMetadataImpl[getInternal().getNoOfQueries()];
-            for (int i=0;i<queries.length;i++)
-            {
-                queries[i] = new QueryMetadataImpl(baseQueries[i]);
-                queries[i].parent = this;
-            }
-            return queries;
+            queries[i] = new QueryMetadataImpl(baseQueries[i]);
+            queries[i].parent = this;
         }
+        return queries;
     }
 
     public boolean getRequiresExtent()

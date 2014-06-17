@@ -131,10 +131,7 @@ class Hollow extends LifeCycleState
         {
             return changeState(op, P_CLEAN);
         }
-        else 
-        {
-            return changeState(op, P_NONTRANS);
-        }
+        return changeState(op, P_NONTRANS);
     }
 
     /**

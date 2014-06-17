@@ -93,11 +93,9 @@ class PersistentClean extends LifeCycleState
         {
             return changeState(op, P_NONTRANS);
         }
-        else
-        {
-            op.clearNonPrimaryKeyFields();
-            return changeState(op, HOLLOW);
-        }
+
+        op.clearNonPrimaryKeyFields();
+        return changeState(op, HOLLOW);
     }
 
     /**
@@ -113,12 +111,10 @@ class PersistentClean extends LifeCycleState
             op.restoreFields();
             return changeState(op, P_NONTRANS);
         }
-        else
-        {
-            op.clearNonPrimaryKeyFields();
-            op.clearSavedFields();
-            return changeState(op, HOLLOW);
-        }
+
+        op.clearNonPrimaryKeyFields();
+        op.clearSavedFields();
+        return changeState(op, HOLLOW);
     }
 
     /**
