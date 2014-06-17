@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -103,7 +102,7 @@ import org.datanucleus.util.StringUtils;
  * When a PMF is serialised its persistence properties are serialised with it, but dynamic state
  * (fetch groups, listeners, L2 cache, etc) are not serialised with it.
  */
-public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable, Serializable
+public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable
 {
     private static final long serialVersionUID = -575257641123665920L;
 
