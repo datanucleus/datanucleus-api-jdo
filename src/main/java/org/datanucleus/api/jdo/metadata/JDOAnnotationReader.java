@@ -1769,26 +1769,29 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         elemmd = new ElementMetaData();
                         mmd.setElementMetaData(elemmd);
                     }
-                    if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
+                    if (elemmd != null)
                     {
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        elemmd.setEmbeddedMetaData(embmd);
-                    }
-                    if (embeddedElementMembers != null)
-                    {
-                        // Add any embedded element mappings
-                        EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
-                        for (int j = 0; j < embeddedElementMembers.length; j++)
+                        if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
                         {
-                            // Add the metadata for the embedded element to the embedded metadata
-                            String memberName = embeddedElementMembers[j].name();
-                            if (memberName.indexOf('.') > 0)
+                            EmbeddedMetaData embmd = new EmbeddedMetaData();
+                            elemmd.setEmbeddedMetaData(embmd);
+                        }
+                        if (embeddedElementMembers != null)
+                        {
+                            // Add any embedded element mappings
+                            EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
+                            for (int j = 0; j < embeddedElementMembers.length; j++)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                // Add the metadata for the embedded element to the embedded metadata
+                                String memberName = embeddedElementMembers[j].name();
+                                if (memberName.indexOf('.') > 0)
+                                {
+                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                }
+                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedElementMembers[j],
+                                    isMemberOfClassAField(collectionElementType, memberName));
+                                embmd.addMember(embfmd);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedElementMembers[j],
-                                isMemberOfClassAField(collectionElementType, memberName));
-                            embmd.addMember(embfmd);
                         }
                     }
                 }
@@ -1891,26 +1894,29 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         keymd = new KeyMetaData();
                         mmd.setKeyMetaData(keymd);
                     }
-                    if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
+                    if (keymd != null)
                     {
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        keymd.setEmbeddedMetaData(embmd);
-                    }
-                    if (embeddedKeyMembers != null)
-                    {
-                        // Add any embedded key mappings
-                        EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
-                        for (int j = 0; j < embeddedKeyMembers.length; j++)
+                        if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
                         {
-                            // Add the metadata for the embedded key to the embedded metadata
-                            String memberName = embeddedKeyMembers[j].name();
-                            if (memberName.indexOf('.') > 0)
+                            EmbeddedMetaData embmd = new EmbeddedMetaData();
+                            keymd.setEmbeddedMetaData(embmd);
+                        }
+                        if (embeddedKeyMembers != null)
+                        {
+                            // Add any embedded key mappings
+                            EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
+                            for (int j = 0; j < embeddedKeyMembers.length; j++)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                // Add the metadata for the embedded key to the embedded metadata
+                                String memberName = embeddedKeyMembers[j].name();
+                                if (memberName.indexOf('.') > 0)
+                                {
+                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                }
+                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMembers[j],
+                                    isMemberOfClassAField(mapKeyType, memberName));
+                                embmd.addMember(embfmd);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMembers[j],
-                                isMemberOfClassAField(mapKeyType, memberName));
-                            embmd.addMember(embfmd);
                         }
                     }
 
@@ -1919,26 +1925,29 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         valuemd = new ValueMetaData();
                         mmd.setValueMetaData(valuemd);
                     }
-                    if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
+                    if (valuemd != null)
                     {
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        valuemd.setEmbeddedMetaData(embmd);
-                    }
-                    if (embeddedValueMembers != null)
-                    {
-                        // Add any embedded value mappings
-                        EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
-                        for (int j = 0; j < embeddedValueMembers.length; j++)
+                        if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
                         {
-                            // Add the metadata for the embedded value to the embedded metadata
-                            String memberName = embeddedValueMembers[j].name();
-                            if (memberName.indexOf('.') > 0)
+                            EmbeddedMetaData embmd = new EmbeddedMetaData();
+                            valuemd.setEmbeddedMetaData(embmd);
+                        }
+                        if (embeddedValueMembers != null)
+                        {
+                            // Add any embedded value mappings
+                            EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
+                            for (int j = 0; j < embeddedValueMembers.length; j++)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                // Add the metadata for the embedded value to the embedded metadata
+                                String memberName = embeddedValueMembers[j].name();
+                                if (memberName.indexOf('.') > 0)
+                                {
+                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                }
+                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMembers[j],
+                                    isMemberOfClassAField(mapValueType, memberName));
+                                embmd.addMember(embfmd);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMembers[j],
-                                isMemberOfClassAField(mapValueType, memberName));
-                            embmd.addMember(embfmd);
                         }
                     }
                 }

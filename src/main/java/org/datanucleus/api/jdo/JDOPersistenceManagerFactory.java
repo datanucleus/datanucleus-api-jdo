@@ -926,7 +926,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
                 if (NucleusLogger.PERSISTENCE.isDebugEnabled())
                 {
-                    NucleusLogger.PERSISTENCE.debug(Localiser.msg("012006", name.toString()));
+                    NucleusLogger.PERSISTENCE.debug(Localiser.msg("012006", name != null ? name.toString() : null));
                 }
             }
             else

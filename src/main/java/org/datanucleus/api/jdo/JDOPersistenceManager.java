@@ -1469,14 +1469,17 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             }
             catch (ClassNotResolvedException cnre)
             {
-                try
+                if (cls != null)
                 {
-                    String resultClassName = cls.getPackage().getName() + "." + qmd.getResultClass();
-                    resultCls = clr.classForName(resultClassName);
-                }
-                catch (ClassNotResolvedException cnre2)
-                {
-                    throw new JDOUserException(Localiser.msg("011008", queryName, qmd.getResultClass()));
+                    try
+                    {
+                        String resultClassName = cls.getPackage().getName() + "." + qmd.getResultClass();
+                        resultCls = clr.classForName(resultClassName);
+                    }
+                    catch (ClassNotResolvedException cnre2)
+                    {
+                        throw new JDOUserException(Localiser.msg("011008", queryName, qmd.getResultClass()));
+                    }
                 }
             }
             query.setResultClass(resultCls);

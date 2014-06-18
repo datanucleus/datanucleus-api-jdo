@@ -22,6 +22,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractElementMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
@@ -643,6 +644,10 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 {
                     InheritanceMetaData inhmd = (InheritanceMetaData) parent;
                     joinmd = inhmd.newJoinMetadata();
+                }
+                else
+                {
+                    throw new NucleusUserException("Error processing JDO XML metadata. Found \"join\" with parent " + StringUtils.toJVMIDString(parent) + " - not supported");
                 }
                 joinmd.setTable(tableName);
                 joinmd.setColumnName(columnName);
