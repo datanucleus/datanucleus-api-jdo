@@ -17,11 +17,13 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo;
 
+import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.spi.StateInterrogation;
 
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.enhancer.Persistable;
+import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.SingleFieldId;
 
 /**
@@ -39,12 +41,19 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public Object getObjectId(Object pc)
     {
-        Object id = ((Persistable)pc).dnGetObjectId();
-        if (id != null && id instanceof SingleFieldId)
+        try
         {
-            return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+            Object id = ((Persistable)pc).dnGetObjectId();
+            if (id != null && id instanceof SingleFieldId)
+            {
+                return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+            }
+            return id;
         }
-        return id;
+        catch (NucleusException ne)
+        {
+            throw new JDOUserException("Exception thrown getting object id", ne);
+        }
     }
 
     /* (non-Javadoc)
