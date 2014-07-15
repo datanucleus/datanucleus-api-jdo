@@ -51,6 +51,7 @@ import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
 import org.datanucleus.metadata.xml.MetaDataParser;
+import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.StringUtils;
@@ -1117,7 +1118,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     public void registerPersistentInterface(InterfaceMetaData imd, Class implClass, ClassLoaderResolver clr)
     {
         // Create ClassMetaData for the implementation
-        ClassMetaData cmd = new ClassMetaData(imd, implClass.getName(), true);
+        ClassMetaData cmd = new ClassMetaData(imd, ClassUtils.getClassNameForClass(implClass), true);
         cmd.addImplements(new ImplementsMetaData(imd.getFullClassName()));
 
         // Register the ClassMetaData for the implementation
@@ -1144,7 +1145,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      */
     public void registerImplementationOfAbstractClass(ClassMetaData cmd, Class implClass, ClassLoaderResolver clr)
     {
-        ClassMetaData implCmd = new ClassMetaData(cmd, implClass.getName());
+        ClassMetaData implCmd = new ClassMetaData(cmd, ClassUtils.getClassNameForClass(implClass));
 
         // Register the ClassMetaData for the implementation
         registerMetaDataForClass(implCmd.getFullClassName(), implCmd);
