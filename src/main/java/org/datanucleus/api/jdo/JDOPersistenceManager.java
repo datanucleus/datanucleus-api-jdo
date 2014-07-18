@@ -131,21 +131,21 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
     /**
      * Constructor.
-     * @param apmf Persistence Manager Factory
-     * @param userName Username for the datastore
-     * @param password Password for the datastore
+     * @param pmf Persistence Manager Factory
+     * @param userName Username for the datastore. Note that this is currently ignored
+     * @param password Password for the datastore. Note that this is currently ignored
      */
-    public JDOPersistenceManager(JDOPersistenceManagerFactory apmf, String userName, String password)
+    public JDOPersistenceManager(JDOPersistenceManagerFactory pmf, String userName, String password)
     {
         Map<String, Object> options = new HashMap();
         options.put(ExecutionContext.OPTION_USERNAME, userName);
         options.put(ExecutionContext.OPTION_PASSWORD, password);
-        ec = apmf.getNucleusContext().getExecutionContext(this, options);
-        pmf = apmf;
-        fetchPlan = new JDOFetchPlan(ec.getFetchPlan());
-        jdotx = new JDOTransaction(this, ec.getTransaction());
+        this.ec = pmf.getNucleusContext().getExecutionContext(this, options);
+        this.pmf = pmf;
+        this.fetchPlan = new JDOFetchPlan(ec.getFetchPlan());
+        this.jdotx = new JDOTransaction(this, ec.getTransaction());
 
-        CallbackHandler beanValidator = apmf.getNucleusContext().getValidationHandler(ec);
+        CallbackHandler beanValidator = pmf.getNucleusContext().getValidationHandler(ec);
         if (beanValidator != null)
         {
             ec.getCallbackHandler().setValidationListener(beanValidator);
