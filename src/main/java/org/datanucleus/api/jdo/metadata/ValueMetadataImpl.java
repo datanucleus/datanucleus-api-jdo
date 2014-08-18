@@ -317,8 +317,7 @@ public class ValueMetadataImpl extends AbstractMetadataImpl implements ValueMeta
      */
     public String getTable()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getInternal().getTable();
     }
 
     /* (non-Javadoc)
@@ -326,7 +325,7 @@ public class ValueMetadataImpl extends AbstractMetadataImpl implements ValueMeta
      */
     public ValueMetadata setTable(String name)
     {
-        // TODO Auto-generated method stub
-        return null;
+        getInternal().setTable(name);
+        return this;
     }
 }

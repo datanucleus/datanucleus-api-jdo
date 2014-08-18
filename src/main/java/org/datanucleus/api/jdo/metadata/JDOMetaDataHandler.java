@@ -827,6 +827,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 ElementMetaData elemmd = new ElementMetaData();
+                elemmd.setTable(getAttr(attrs, "table"));
                 elemmd.setColumnName(getAttr(attrs, "column"));
                 elemmd.setDeleteAction(getAttr(attrs, "delete-action"));
                 elemmd.setUpdateAction(getAttr(attrs, "update-action"));
@@ -846,6 +847,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 KeyMetaData keymd = new KeyMetaData();
+                keymd.setTable(getAttr(attrs, "table"));
                 keymd.setColumnName(getAttr(attrs, "column"));
                 keymd.setDeleteAction(getAttr(attrs, "delete-action"));
                 keymd.setUpdateAction(getAttr(attrs, "update-action"));
@@ -860,6 +862,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 AbstractMemberMetaData fmd = (AbstractMemberMetaData) getStack();
                 ValueMetaData valuemd = new ValueMetaData();
+                valuemd.setTable(getAttr(attrs, "table"));
                 valuemd.setColumnName(getAttr(attrs, "column"));
                 valuemd.setDeleteAction(getAttr(attrs, "delete-action"));
                 valuemd.setUpdateAction(getAttr(attrs, "update-action"));

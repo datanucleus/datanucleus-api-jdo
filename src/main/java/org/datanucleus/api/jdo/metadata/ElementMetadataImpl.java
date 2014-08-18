@@ -326,8 +326,7 @@ public class ElementMetadataImpl extends AbstractMetadataImpl implements Element
      */
     public String getTable()
     {
-        // TODO Implement this
-        return null;
+        return getInternal().getTable();
     }
 
     /* (non-Javadoc)
@@ -335,7 +334,7 @@ public class ElementMetadataImpl extends AbstractMetadataImpl implements Element
      */
     public ElementMetadata setTable(String name)
     {
-        // TODO Auto-generated method stub
-        return null;
+        getInternal().setTable(name);
+        return this;
     }
 }

@@ -326,8 +326,7 @@ public class KeyMetadataImpl extends AbstractMetadataImpl implements KeyMetadata
      */
     public String getTable()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getInternal().getTable();
     }
 
     /* (non-Javadoc)
@@ -335,7 +334,7 @@ public class KeyMetadataImpl extends AbstractMetadataImpl implements KeyMetadata
      */
     public KeyMetadata setTable(String name)
     {
-        // TODO Auto-generated method stub
-        return null;
+        getInternal().setTable(name);
+        return this;
     }
 }

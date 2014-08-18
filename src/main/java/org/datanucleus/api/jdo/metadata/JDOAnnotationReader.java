@@ -1250,6 +1250,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     embeddedElement = (String) annotationValues.get("embedded");
                     serializedElement = (String) annotationValues.get("serialized");
                     dependentElement = (String) annotationValues.get("dependent");
+                    String elementTable = (String) annotationValues.get("table");
                     String elementColumn = (String) annotationValues.get("column");
                     String elementDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
                     String elementUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
@@ -1270,6 +1271,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         indexed = "true";
                     }
                     elemmd = new ElementMetaData();
+                    elemmd.setTable(elementTable);
                     elemmd.setColumnName(elementColumn);
                     elemmd.setDeleteAction(elementDeleteAction);
                     elemmd.setUpdateAction(elementUpdateAction);
@@ -1366,6 +1368,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     embeddedKey = (String) annotationValues.get("embedded");
                     serializedKey = (String) annotationValues.get("serialized");
                     dependentKey = (String) annotationValues.get("dependent");
+                    String keyTable = (String) annotationValues.get("table");
                     String keyColumn = (String) annotationValues.get("column");
                     String keyDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
                     String keyUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
@@ -1386,6 +1389,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         indexed = "true";
                     }
                     keymd = new KeyMetaData();
+                    keymd.setTable(keyTable);
                     keymd.setColumnName(keyColumn);
                     keymd.setDeleteAction(keyDeleteAction);
                     keymd.setUpdateAction(keyUpdateAction);
@@ -1467,6 +1471,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     embeddedValue = (String) annotationValues.get("embedded");
                     serializedValue = (String) annotationValues.get("serialized");
                     dependentValue = (String) annotationValues.get("dependent");
+                    String valueTable = (String) annotationValues.get("table");
                     String valueColumn = (String) annotationValues.get("column");
                     String valueDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
                     String valueUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
@@ -1487,6 +1492,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         indexed = "true";
                     }
                     valuemd = new ValueMetaData();
+                    valuemd.setTable(valueTable);
                     valuemd.setColumnName(valueColumn);
                     valuemd.setDeleteAction(valueDeleteAction);
                     valuemd.setUpdateAction(valueUpdateAction);
