@@ -149,25 +149,25 @@ public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#selectUnique(org.datanucleus.query.typesafe.DateExpression)
      */
-    public <S> DateExpression<S> selectUnique(DateExpression<S> expr)
+    public DateExpression selectUnique(DateExpression expr)
     {
-        return (DateExpression<S>)internalSelect(expr, DateExpressionImpl.class);
+        return (DateExpression)internalSelect(expr, DateExpressionImpl.class);
     }
 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#selectUnique(org.datanucleus.query.typesafe.DateTimeExpression)
      */
-    public <S> DateTimeExpression<S> selectUnique(DateTimeExpression<S> expr)
+    public DateTimeExpression selectUnique(DateTimeExpression expr)
     {
-        return (DateTimeExpression<S>)internalSelect(expr, DateTimeExpressionImpl.class);
+        return (DateTimeExpression)internalSelect(expr, DateTimeExpressionImpl.class);
     }
 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#selectUnique(org.datanucleus.query.typesafe.TimeExpression)
      */
-    public <S> TimeExpression<S> selectUnique(TimeExpression<S> expr)
+    public TimeExpression selectUnique(TimeExpression expr)
     {
-        return (TimeExpression<S>)internalSelect(expr, TimeExpressionImpl.class);
+        return (TimeExpression)internalSelect(expr, TimeExpressionImpl.class);
     }
 
     /* (non-Javadoc)

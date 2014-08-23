@@ -22,7 +22,7 @@ package org.datanucleus.query.typesafe;
  * 
  * @param <T> Date-time type
  */
-public interface DateTimeExpression<T> extends TemporalExpression<T>
+public interface DateTimeExpression extends ComparableExpression<java.util.Date>
 {
     /**
      * Accessor for the year of this date-time.

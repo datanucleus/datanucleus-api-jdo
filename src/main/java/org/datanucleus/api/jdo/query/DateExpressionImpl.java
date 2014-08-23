@@ -17,7 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
-import java.util.Date;
+import java.sql.Date;
 
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;

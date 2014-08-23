@@ -18,7 +18,6 @@ Contributors:
 package org.datanucleus.query.typesafe;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -107,21 +106,21 @@ public interface TypesafeQuery<T>
      * @param name Name of the parameter
      * @return Expression for the parameter
      */
-    DateExpression<java.sql.Date> dateParameter(String name);
+    DateExpression dateParameter(String name);
 
     /**
      * Method to return a time parameter for the query.
      * @param name Name of the parameter
      * @return Expression for the parameter
      */
-    TimeExpression<java.sql.Time> timeParameter(String name);
+    TimeExpression timeParameter(String name);
 
     /**
      * Method to return a datetime parameter for the query.
      * @param name Name of the parameter
      * @return Expression for the parameter
      */
-    DateTimeExpression<Date> datetimeParameter(String name);
+    DateTimeExpression datetimeParameter(String name);
 
     /**
      * Method to return a collection parameter for the query.

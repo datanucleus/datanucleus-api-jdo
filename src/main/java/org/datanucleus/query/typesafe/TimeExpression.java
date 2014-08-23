@@ -22,7 +22,7 @@ package org.datanucleus.query.typesafe;
  * 
  * @param <T> time type
  */
-public interface TimeExpression<T> extends TemporalExpression<T>
+public interface TimeExpression<T> extends ComparableExpression<java.sql.Time>
 {
     /**
      * Accessor for the hour of this time.

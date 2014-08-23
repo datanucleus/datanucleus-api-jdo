@@ -17,7 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
-import java.util.Date;
+import java.sql.Time;
 
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
@@ -28,14 +28,14 @@ import org.datanucleus.query.typesafe.TimeExpression;
 /**
  * Implementation of a Time expression.
  */
-public class TimeExpressionImpl<T> extends ComparableExpressionImpl<Date> implements TimeExpression<Date>
+public class TimeExpressionImpl<T> extends ComparableExpressionImpl<Time> implements TimeExpression<Time>
 {
     public TimeExpressionImpl(PersistableExpression parent, String name)
     {
         super(parent, name);
     }
 
-    public TimeExpressionImpl(Class<Date> cls, String name, ExpressionType type)
+    public TimeExpressionImpl(Class<Time> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

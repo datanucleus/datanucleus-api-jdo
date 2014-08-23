@@ -28,7 +28,7 @@ import org.datanucleus.query.typesafe.PersistableExpression;
 /**
  * Implementation of a DateTime expression.
  */
-public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> implements DateTimeExpression<Date>
+public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> implements DateTimeExpression
 {
     public DateTimeExpressionImpl(PersistableExpression parent, String name)
     {

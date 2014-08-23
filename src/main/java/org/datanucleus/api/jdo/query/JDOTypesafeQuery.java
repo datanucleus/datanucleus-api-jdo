@@ -354,7 +354,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#dateParameter(java.lang.String)
      */
-    public DateExpression<Date> dateParameter(String name)
+    public DateExpression dateParameter(String name)
     {
         DateExpressionImpl paramExpr = new DateExpressionImpl(Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
@@ -368,7 +368,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#timeParameter(java.lang.String)
      */
-    public TimeExpression<Time> timeParameter(String name)
+    public TimeExpression timeParameter(String name)
     {
         TimeExpressionImpl paramExpr = new TimeExpressionImpl(Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
@@ -382,7 +382,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#datetimeParameter(java.lang.String)
      */
-    public DateTimeExpression<java.util.Date> datetimeParameter(String name)
+    public DateTimeExpression datetimeParameter(String name)
     {
         DateTimeExpressionImpl paramExpr = new DateTimeExpressionImpl(java.util.Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
