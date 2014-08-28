@@ -19,8 +19,6 @@ package org.datanucleus.query.typesafe;
 
 /**
  * Representation of a date-time type in a query.
- * 
- * @param <T> Date-time type
  */
 public interface DateTimeExpression extends ComparableExpression<java.util.Date>
 {

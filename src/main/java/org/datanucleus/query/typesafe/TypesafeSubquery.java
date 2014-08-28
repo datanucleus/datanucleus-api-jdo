@@ -74,7 +74,6 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (date) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
-     * @param <S> date type
      */
     DateExpression selectUnique(DateExpression expr);
 
@@ -82,7 +81,6 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (datetime) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
-     * @param <S> datetime type
      */
     DateTimeExpression selectUnique(DateTimeExpression expr);
 
@@ -90,7 +88,6 @@ public interface TypesafeSubquery<T>
      * Accessor for the subquery (time) expression from the subquery when the subquery returns a single value.
      * @param expr The expression
      * @return Expression for the typesafe query
-     * @param <S> time type
      */
     TimeExpression selectUnique(TimeExpression expr);
 
