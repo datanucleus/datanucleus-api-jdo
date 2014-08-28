@@ -40,6 +40,7 @@ import org.datanucleus.api.ApiAdapter;
 import org.datanucleus.api.jdo.state.LifeCycleStateFactory;
 import org.datanucleus.enhancer.Detachable;
 import org.datanucleus.enhancer.Persistable;
+import org.datanucleus.enhancer.Persistable.ObjectIdFieldConsumer;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -691,5 +692,10 @@ public class JDOAdapter implements ApiAdapter
     public RuntimeException getApiExceptionForNucleusException(NucleusException ne)
     {
         return NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+    }
+
+    public void copyKeyFieldsFromIdToObject(Object pc, ObjectIdFieldConsumer fm, Object id)
+    {
+        ((Persistable)pc).dnCopyKeyFieldsFromObjectId(fm, id);
     }
 }
