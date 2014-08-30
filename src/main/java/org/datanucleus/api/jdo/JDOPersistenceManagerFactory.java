@@ -1446,6 +1446,17 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
+     * Set the default for whether to auto-commit non-tx writes for all
+     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * @param flag whether to auto-commit non-tx writes
+     */
+    public void setNontransactionalWriteAutoCommit(boolean flag)
+    {
+        assertConfigurable();
+        getConfiguration().setProperty(PropertyNames.PROPERTY_NONTX_ATOMIC, flag ? Boolean.TRUE : Boolean.FALSE);
+    }
+
+    /**
      * Set the default IgnoreCache setting for all <tt>PersistenceManager</tt>
      * instances obtained from this factory.
      * @param flag the default IgnoreCache setting.
@@ -1758,6 +1769,16 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public boolean getNontransactionalWrite()
     {
         return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_NONTX_WRITE);
+    }
+
+    /**
+     * Get the default auto-commit setting for non-tx writes for all
+     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * @return the default auto-commit non-tx write setting.
+     */
+    public boolean getNontransactionalWriteAutoCommit()
+    {
+        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_NONTX_ATOMIC);
     }
 
     /**

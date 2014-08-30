@@ -59,6 +59,15 @@ public class JDOTransaction implements Transaction
     }
 
     /**
+     * Accessor for the JDO PersistenceManager
+     * @return The JDO PM
+     */
+    public JDOPersistenceManager getPersistenceManager()
+    {
+        return pm;
+    }
+
+    /**
      * Accessor for whether the transaction is active
      * @return Whether it is active
      */
@@ -200,21 +209,21 @@ public class JDOTransaction implements Transaction
     }
 
     /**
+     * Accessor for nontransactionalWrite setting
+     * @return The setting for nontransactionalWrite
+     */
+    public boolean getNontransactionalWriteAutoCommit()
+    {
+        return tx.getNontransactionalWriteAutoCommit();
+    }
+
+    /**
      * Accessor for optimistic setting
      * @return The setting for optimistic
      */
     public boolean getOptimistic()
     {
         return tx.getOptimistic();
-    }
-
-    /**
-     * Accessor for the JDO PersistenceManager
-     * @return The JDO PM
-     */
-    public JDOPersistenceManager getPersistenceManager()
-    {
-        return pm;
     }
 
     /**
@@ -254,7 +263,7 @@ public class JDOTransaction implements Transaction
     }
 
     /**
-     * Mutator for the nontransactionalRead setting
+     * Mutator for the nontransactionalRead setting.
      * @param flag Whether to allow nontransactional read
      */
     public void setNontransactionalRead(boolean flag)
@@ -264,20 +273,23 @@ public class JDOTransaction implements Transaction
     }
 
     /**
-     * Mutator for the nontransactionalWrite setting
+     * Mutator for the nontransactionalWrite setting.
      * @param flag Whether to allow nontransactional write
      */
     public void setNontransactionalWrite(boolean flag)
     {
         assertNotCommitting();
-        try
-        {
-            tx.setNontransactionalWrite(flag);
-        }
-        catch (NucleusException jpe)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        tx.setNontransactionalWrite(flag);
+    }
+
+    /**
+     * Mutator for the nontransactionalWrite auto-commit setting.
+     * @param flag Whether to auto-commit any non-tx writes
+     */
+    public void setNontransactionalWriteAutoCommit(boolean flag)
+    {
+        assertNotCommitting();
+        tx.setNontransactionalWriteAutoCommit(flag);
     }
 
     /**
