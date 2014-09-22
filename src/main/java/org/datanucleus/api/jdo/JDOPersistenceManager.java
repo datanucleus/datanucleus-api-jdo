@@ -78,7 +78,6 @@ import org.datanucleus.exceptions.TransactionActiveOnCloseException;
 import org.datanucleus.identity.SCOID;
 import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
-import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ExtensionMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
@@ -97,7 +96,6 @@ import org.datanucleus.store.StoreManager;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
-import org.datanucleus.util.TypeConversionHelper;
 
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
@@ -1602,8 +1600,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     /**
      * This method returns an object id instance corresponding to the pcClass and key arguments.
      * It has 2 modes of operation. Where SingleFieldIdentity is being used the key is the
-     * value of the key field. For all other cases the key is the String form of the
-     * object id instance.
+     * value of the key field. For all other cases the key is the String form of the object id instance.
      * @param pcClass Class of the persistable to create the OID for.
      * @param key Value of the key for SingleFieldIdentity, or toString() for other cases
      * @return The new object-id instance
@@ -1741,13 +1738,13 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T getObjectById(Class<T> cls, Object key)
     {
-        if (ec.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
+        /*if (ec.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
         {
-            AbstractClassMetaData acmd = ec.getMetaDataManager().getMetaDataForClass(cls, ec.getClassLoaderResolver());
-            if (acmd != null && acmd.getIdentityType() == IdentityType.APPLICATION)
+            AbstractClassMetaData cmd = ec.getMetaDataManager().getMetaDataForClass(cls, ec.getClassLoaderResolver());
+            if (cmd != null && cmd.usesSingleFieldIdentityClass())
             {
-                String[] pkNames = acmd.getPrimaryKeyMemberNames();
-                AbstractMemberMetaData mmd = acmd.getMetaDataForMember(pkNames[0]);
+                String[] pkNames = cmd.getPrimaryKeyMemberNames();
+                AbstractMemberMetaData mmd = cmd.getMetaDataForMember(pkNames[0]);
                 if (key instanceof Long && mmd.getType() != Long.class)
                 {
                     key = TypeConversionHelper.convertTo(key, mmd.getType());
@@ -1761,7 +1758,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                     key = TypeConversionHelper.convertTo(key, mmd.getType());
                 }
             }
-        }
+        }*/
         return (T) getObjectById(newObjectIdInstance (cls, key), true);
     }
 
