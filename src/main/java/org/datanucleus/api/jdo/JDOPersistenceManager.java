@@ -1738,27 +1738,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T getObjectById(Class<T> cls, Object key)
     {
-        /*if (ec.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_FIND_OBJECT_TYPE_CONVERSION))
-        {
-            AbstractClassMetaData cmd = ec.getMetaDataManager().getMetaDataForClass(cls, ec.getClassLoaderResolver());
-            if (cmd != null && cmd.usesSingleFieldIdentityClass())
-            {
-                String[] pkNames = cmd.getPrimaryKeyMemberNames();
-                AbstractMemberMetaData mmd = cmd.getMetaDataForMember(pkNames[0]);
-                if (key instanceof Long && mmd.getType() != Long.class)
-                {
-                    key = TypeConversionHelper.convertTo(key, mmd.getType());
-                }
-                else if (key instanceof Integer && mmd.getType() != Integer.class)
-                {
-                    key = TypeConversionHelper.convertTo(key, mmd.getType());
-                }
-                else if (key instanceof Short && mmd.getType() != Short.class)
-                {
-                    key = TypeConversionHelper.convertTo(key, mmd.getType());
-                }
-            }
-        }*/
         return (T) getObjectById(newObjectIdInstance (cls, key), true);
     }
 
