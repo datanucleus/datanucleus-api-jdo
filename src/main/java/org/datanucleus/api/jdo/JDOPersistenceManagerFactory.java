@@ -170,11 +170,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         // Extract the properties into a Map allowing for a Properties object being used
         Map overridingMap = new HashMap();
+        // Make sure we handle default properties too (SUN Properties class oddness)
         for (Enumeration e = overridingProps.propertyNames() ; e.hasMoreElements() ;)
         {
-            // Make sure we handle default properties too (SUN Properties class oddness)
+            // Use props.get to allow for user misusing Properties class
             String param = (String)e.nextElement();
-            overridingMap.put(param, overridingProps.getProperty(param));
+            overridingMap.put(param, overridingProps.get(param));
         }
 
         // Create the PMF and freeze it (JDO spec $11.7)
@@ -200,8 +201,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             overridingMap = new HashMap();
             for (Enumeration e = ((Properties)overridingProps).propertyNames() ; e.hasMoreElements() ;)
             {
+                // Use props.get to allow for user misusing Properties class
                 String param = (String)e.nextElement();
-                overridingMap.put(param, ((Properties)overridingProps).getProperty(param));
+                overridingMap.put(param, ((Properties)overridingProps).get(param));
             }
         }
         else
@@ -213,8 +215,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Return a new PersistenceManagerFactory with options set according to the given properties and
-     * given overrides.
+     * Return a new PersistenceManagerFactory with options set according to the given properties and given overrides.
      * @param overrides Map of properties to override the supplied props (if any)
      * @param props Map of properties to initialise the PMF with
      * @return A PersistenceManagerFactory with options set according to the given Properties
@@ -229,8 +230,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             propsMap = new HashMap();
             for (Enumeration e = ((Properties)props).propertyNames() ; e.hasMoreElements() ;)
             {
+                // Use props.get to allow for user misusing Properties class
                 String param = (String)e.nextElement();
-                propsMap.put(param, ((Properties)props).getProperty(param));
+                propsMap.put(param, ((Properties)props).get(param));
             }
         }
         else
@@ -246,8 +248,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             overridesMap = new HashMap();
             for (Enumeration e = ((Properties)overrides).propertyNames() ; e.hasMoreElements() ;)
             {
+                // Use props.get to allow for user misusing Properties class
                 String param = (String)e.nextElement();
-                overridesMap.put(param, ((Properties)overrides).getProperty(param));
+                overridesMap.put(param, ((Properties)overrides).get(param));
             }
         }
         else
@@ -274,8 +277,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Convenience method to create the PMF, check whether we should hand out a singleton, and if all
-     * ok then freeze it for use.
+     * Convenience method to create the PMF, check whether we should hand out a singleton, and if all ok then freeze it for use.
      * @param props The properties
      * @return The PMF to use
      */
