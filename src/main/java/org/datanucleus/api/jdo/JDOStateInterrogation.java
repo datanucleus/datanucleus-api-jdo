@@ -22,7 +22,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.spi.StateInterrogation;
 
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.enhancer.Persistable;
+import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.SingleFieldId;
 

@@ -69,7 +69,7 @@ import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionNotActiveException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.api.jdo.query.JDOTypesafeQuery;
-import org.datanucleus.enhancer.Persistable;
+import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusOptimisticException;

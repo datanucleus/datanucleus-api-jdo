@@ -216,8 +216,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
     /* (non-Javadoc)
      * @see java.lang.instrument.ClassFileTransformer#transform(java.lang.ClassLoader, java.lang.String, java.lang.Class, java.security.ProtectionDomain, byte[])
      */
-    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, 
-            ProtectionDomain protectionDomain, byte[] classfileBuffer) 
+    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) 
     throws IllegalClassFormatException
     {
         // TODO Auto-generated method stub
