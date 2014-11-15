@@ -161,7 +161,7 @@ public class JDOAdapter implements ApiAdapter
 
         if (obj instanceof Persistable)
         {
-            return ((Persistable)obj).dnGetExecutionContext();
+            return (ExecutionContext) ((Persistable)obj).dnGetExecutionContext();
         }
         else if (obj instanceof PersistenceManager)
         {

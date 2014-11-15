@@ -21,7 +21,7 @@ import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.spi.StateInterrogation;
 
-import org.datanucleus.ExecutionContext;
+import org.datanucleus.enhancement.ExecutionContextReference;
 import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.SingleFieldId;
@@ -62,7 +62,7 @@ public class JDOStateInterrogation implements StateInterrogation
     @Override
     public PersistenceManager getPersistenceManager(Object pc)
     {
-        ExecutionContext ec = ((Persistable)pc).dnGetExecutionContext();
+        ExecutionContextReference ec = ((Persistable)pc).dnGetExecutionContext();
         return ec != null ? (PersistenceManager) ec.getOwner() : null;
     }
 

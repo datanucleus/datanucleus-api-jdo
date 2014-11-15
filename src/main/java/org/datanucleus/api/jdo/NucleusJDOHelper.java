@@ -407,7 +407,7 @@ public class NucleusJDOHelper extends JDOHelper
             return loaded;
         }
 
-        ExecutionContext ec = pc.dnGetExecutionContext();
+        ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
         ObjectProvider sm = ec.findObjectProvider(pc);
         if (sm == null)
         {
@@ -446,7 +446,7 @@ public class NucleusJDOHelper extends JDOHelper
             return dirtyFieldNumbers[position];
         }
 
-        ExecutionContext ec = pc.dnGetExecutionContext();
+        ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
         ObjectProvider sm = ec.findObjectProvider(pc);
         if (sm == null)
         {
