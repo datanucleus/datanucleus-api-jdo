@@ -408,8 +408,6 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
         }
     }
 
-    // JDK 1.6 methods
-
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException
     {
         return conn.createArrayOf(typeName, elements);
@@ -479,8 +477,6 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
         return conn.createSQLXML();
     }
 
-    // Implementation of JDBC 4.0's Wrapper interface
-
     public boolean isWrapperFor(Class iface) throws SQLException
     {
         return Connection.class.equals(iface);
@@ -498,28 +494,26 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
 
     public void setSchema(String schema) throws SQLException
     {
-//        conn.setSchema(schema);
+        conn.setSchema(schema);
     }
 
     public String getSchema() throws SQLException
     {
-//        return conn.getSchema();
-        return null;
+        return conn.getSchema();
     }
 
     public void abort(Executor executor) throws SQLException
     {
-//        conn.abort(executor);
+        conn.abort(executor);
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
     {
-//        conn.setNetworkTimeout(executor, milliseconds);
+        conn.setNetworkTimeout(executor, milliseconds);
     }
 
     public int getNetworkTimeout() throws SQLException
     {
-//        return conn.getNetworkTimeout();
-        return 0;
+        return conn.getNetworkTimeout();
     }
 }
