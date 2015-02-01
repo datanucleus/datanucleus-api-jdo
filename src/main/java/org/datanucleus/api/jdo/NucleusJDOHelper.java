@@ -79,7 +79,7 @@ import org.datanucleus.store.query.QueryTimeoutException;
 import org.datanucleus.util.ClassUtils;
 
 /**
- * Helper for persistence operations with DataNucleus.
+ * Helper for persistence operations with JDO.
  * Extends JDOHelper so that people can use this class if they wish.
  */
 public class NucleusJDOHelper extends JDOHelper
@@ -94,33 +94,33 @@ public class NucleusJDOHelper extends JDOHelper
         return ((JDOPersistenceManagerFactory)pmf).getQueryCache();
     }
 
-    public static SingleFieldIdentity getSingleFieldIdentityForDataNucleusIdentity(SingleFieldId dnid)
+    public static SingleFieldIdentity getSingleFieldIdentityForDataNucleusIdentity(SingleFieldId dnid, Class targetClass)
     {
         if (dnid instanceof LongId)
         {
-            return new LongIdentity(dnid.getTargetClass(), dnid.toString());
+            return new LongIdentity(targetClass, dnid.toString());
         }
         else if (dnid instanceof IntId)
         {
-            return new IntIdentity(dnid.getTargetClass(), dnid.toString());
+            return new IntIdentity(targetClass, dnid.toString());
         }
         else if (dnid instanceof ShortId)
         {
-            return new ShortIdentity(dnid.getTargetClass(), dnid.toString());
+            return new ShortIdentity(targetClass, dnid.toString());
         }
         else if (dnid instanceof ByteId)
         {
-            return new ByteIdentity(dnid.getTargetClass(), dnid.toString());
+            return new ByteIdentity(targetClass, dnid.toString());
         }
         else if (dnid instanceof StringId)
         {
-            return new StringIdentity(dnid.getTargetClass(), dnid.toString());
+            return new StringIdentity(targetClass, dnid.toString());
         }
         else if (dnid instanceof CharId)
         {
-            return new CharIdentity(dnid.getTargetClass(), dnid.toString());
+            return new CharIdentity(targetClass, dnid.toString());
         }
-        return new ObjectIdentity(dnid.getTargetClass(), dnid.getKeyAsObject());
+        return new ObjectIdentity(targetClass, dnid.getKeyAsObject());
     }
 
     public static SingleFieldId getDataNucleusIdentityForSingleFieldIdentity(SingleFieldIdentity sfid)
@@ -197,8 +197,7 @@ public class NucleusJDOHelper extends JDOHelper
      * @param pmf2 PersistenceManagerFactory for the target of the objects
      * @param oids Identities of the objects to replicate
      */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2,
-            Object... oids)
+    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, Object... oids)
     {
         JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
         replicator.replicate(oids);
@@ -211,8 +210,7 @@ public class NucleusJDOHelper extends JDOHelper
      * @param pmf2 PersistenceManagerFactory for the target of the objects
      * @param types Types of objects to replicate
      */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2,
-            Class... types)
+    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, Class... types)
     {
         JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
         replicator.replicate(types);
@@ -225,8 +223,7 @@ public class NucleusJDOHelper extends JDOHelper
      * @param pmf2 PersistenceManagerFactory for the target of the objects
      * @param classNames Names of classes to replicate
      */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2,
-            String... classNames)
+    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, String... classNames)
     {
         JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
         replicator.replicate(classNames);
@@ -334,12 +331,12 @@ public class NucleusJDOHelper extends JDOHelper
         }
 
         ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
-        if (sm == null)
+        ObjectProvider op = ec.findObjectProvider(pc);
+        if (op == null)
         {
             return null;
         }
-        return sm.getDirtyFieldNames();
+        return op.getDirtyFieldNames();
     }
 
     /**
@@ -370,12 +367,12 @@ public class NucleusJDOHelper extends JDOHelper
         }
 
         ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
-        if (sm == null)
+        ObjectProvider op = ec.findObjectProvider(pc);
+        if (op == null)
         {
             return null;
         }
-        return sm.getLoadedFieldNames();
+        return op.getLoadedFieldNames();
     }
 
     /**
@@ -408,13 +405,13 @@ public class NucleusJDOHelper extends JDOHelper
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
-        if (sm == null)
+        ObjectProvider op = ec.findObjectProvider(pc);
+        if (op == null)
         {
             return null;
         }
-        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
-        return sm.isFieldLoaded(position);
+        int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        return op.isFieldLoaded(position);
     }
 
     /**
@@ -447,13 +444,13 @@ public class NucleusJDOHelper extends JDOHelper
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
-        if (sm == null)
+        ObjectProvider op = ec.findObjectProvider(pc);
+        if (op == null)
         {
             return null;
         }
-        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
-        boolean[] dirtyFieldNumbers = sm.getDirtyFields();
+        int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        boolean[] dirtyFieldNumbers = op.getDirtyFields();
         return dirtyFieldNumbers[position];
     }
 
@@ -655,15 +652,13 @@ public class NucleusJDOHelper extends JDOHelper
                 return new JDOOptimisticVerificationException(ne.getMessage(), ne);
             }
         }
-        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException 
-                && ne.getNestedExceptions().length==1 
-                && ne.getNestedExceptions()[0].getCause() instanceof SQLException) 
+        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException && ne.getNestedExceptions().length == 1 &&
+                ne.getNestedExceptions()[0].getCause() instanceof SQLException) 
         {
             return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions()[0].getCause());
         }
-        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException 
-                && ne.getNestedExceptions().length==1 
-                && ne.getNestedExceptions()[0] instanceof NucleusDataStoreException) 
+        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException && ne.getNestedExceptions().length == 1 &&
+                ne.getNestedExceptions()[0] instanceof NucleusDataStoreException) 
         {
             return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions()[0].getCause());
         }

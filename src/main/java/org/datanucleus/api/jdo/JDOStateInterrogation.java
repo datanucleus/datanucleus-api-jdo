@@ -46,7 +46,7 @@ public class JDOStateInterrogation implements StateInterrogation
             Object id = ((Persistable)pc).dnGetObjectId();
             if (id != null && id instanceof SingleFieldId)
             {
-                return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+                return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id, pc.getClass());
             }
             return id;
         }
@@ -75,7 +75,7 @@ public class JDOStateInterrogation implements StateInterrogation
         Object id = ((Persistable)pc).dnGetTransactionalObjectId();
         if (id != null && id instanceof SingleFieldId)
         {
-            return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id);
+            return NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId) id, pc.getClass());
         }
         return id;
     }

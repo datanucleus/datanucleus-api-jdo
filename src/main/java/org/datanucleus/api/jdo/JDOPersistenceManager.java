@@ -1767,6 +1767,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
 
         // Convert any explicit JDO single field ids to DN single field id
+        Object[] theOids = new Object[oids.length];
         for (int i=0;i<oids.length;i++)
         {
             if (oids[i] != null)
@@ -1774,12 +1775,20 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 if (oids[i] instanceof javax.jdo.identity.SingleFieldIdentity)
                 {
                     // Convert to DN own internal types
-                    oids[i] = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)oids[i]);
+                    theOids[i] = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)oids[i]);
                 }
+                else
+                {
+                    theOids[i] = oids[i];
+                }
+            }
+            else
+            {
+                theOids[i] = null;
             }
         }
 
-        return ec.findObjects(oids, validate);
+        return ec.findObjects(theOids, validate);
     }
 
     /**
@@ -1864,7 +1873,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 if (id != null && id instanceof SingleFieldId)
                 {
                     // Convert to javax.jdo.identity.*
-                    id = NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId)id);
+                    id = NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId)id, pc.getClass());
                 }
                 return id;
             }
