@@ -118,7 +118,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     protected transient PersistenceNucleusContext nucleusContext;
 
     /** The cache of PM's in use. */
-    private transient Set<JDOPersistenceManager> pmCache = new HashSet<JDOPersistenceManager>();
+    private transient Set<JDOPersistenceManager> pmCache = Collections.newSetFromMap(new ConcurrentHashMap());
 
     /** Lifecycle Listeners. */
     protected transient Map<InstanceLifecycleListener, LifecycleListenerForClass> lifecycleListeners;
@@ -259,15 +259,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         // Set the properties of the PMF, taking propsMap+overridesMap
-        Map overallMap = null;
-        if (propsMap != null)
-        {
-            overallMap = new HashMap(propsMap);
-        }
-        else
-        {
-            overallMap = new HashMap();
-        }
+        Map overallMap = (propsMap != null) ? new HashMap(propsMap) : new HashMap();
         if (overridesMap != null)
         {
             overallMap.putAll(overridesMap);
@@ -313,8 +305,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             pmf = new JDOPersistenceManagerFactory(props);
         }
 
-        Boolean singleton =
-            pmf.getConfiguration().getBooleanObjectProperty("datanucleus.singletonPMFForName");
+        Boolean singleton = pmf.getConfiguration().getBooleanObjectProperty("datanucleus.singletonPMFForName");
         if (singleton != null && singleton)
         {
             // Check on singleton pattern. Would be nice to know the name of the PMF before creation
@@ -333,8 +324,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 if (pmfByName.containsKey(name))
                 {
                     pmf.close();
-                    NucleusLogger.PERSISTENCE.warn("Requested PMF of name \"" + name + 
-                        "\" but already exists and using singleton pattern, so returning existing PMF");
+                    NucleusLogger.PERSISTENCE.warn("Requested PMF of name \"" + name + "\" but already exists and using singleton pattern, so returning existing PMF");
                     return pmfByName.get(name);
                 }
             }
@@ -372,8 +362,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     	{
     		props.putAll(overrideProps);
     	}
-        if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && 
-            !props.containsKey("javax.jdo.option.TransactionType"))
+        if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !props.containsKey("javax.jdo.option.TransactionType"))
 	    {
     		// Default to RESOURCE_LOCAL txns
     		props.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
@@ -382,8 +371,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             // let TransactionType.JTA imply ResourceType.JTA
             String transactionType = props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ? 
-                    (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : 
-                    (String) props.get("javax.jdo.option.TransactionType");
+                    (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String) props.get("javax.jdo.option.TransactionType");
             if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
             {
                 props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
@@ -471,8 +459,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (props != null)
         {
             pmfProps.putAll(props);
-            if (!pmfProps.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) &&
-                !pmfProps.containsKey("javax.jdo.option.TransactionType"))
+            if (!pmfProps.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !pmfProps.containsKey("javax.jdo.option.TransactionType"))
             {
                 // Default to RESOURCE_LOCAL txns
                 pmfProps.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
@@ -481,14 +468,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 // let TransactionType.JTA imply ResourceType.JTA
                 String transactionType = pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ? 
-                        (String)pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : 
-                        (String)pmfProps.get("javax.jdo.option.TransactionType");
+                        (String)pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String)pmfProps.get("javax.jdo.option.TransactionType");
                 if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
                 {
-                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE,
-                        ConnectionResourceType.JTA.toString());
-                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE,
-                        ConnectionResourceType.JTA.toString());
+                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
+                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
                 }
             }
         }
@@ -527,8 +511,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Close this PersistenceManagerFactory. Check for JDOPermission("closePersistenceManagerFactory") 
-     * and if not authorized, throw SecurityException.
+     * Close this PersistenceManagerFactory. Check for JDOPermission("closePersistenceManagerFactory") and if not authorized, throw SecurityException.
      * <P>If the authorization check succeeds, check to see that all PersistenceManager instances obtained 
      * from this PersistenceManagerFactory have no active transactions. If any PersistenceManager instances
      * have an active transaction, throw a JDOUserException, with one nested JDOUserException for each 
@@ -550,32 +533,29 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
         setIsNotConfigurable();
 
-        synchronized (pmCache)
+        // Check there are no active transactions before closing any PM
+        Set<JDOUserException> exceptions = new HashSet<JDOUserException>();
+        for (JDOPersistenceManager pm : pmCache)
         {
-            // Check there are no active transactions before closing any PM
-            Set<JDOUserException> exceptions = new HashSet<JDOUserException>();
-            for (JDOPersistenceManager pm : pmCache)
+            ExecutionContext ec = pm.getExecutionContext();
+            if (ec.getTransaction().isActive())
             {
-                ExecutionContext om = pm.getExecutionContext();
-                if (om.getTransaction().isActive())
-                {
-                    // Note: we replicate the exception that would have come from pm.close() when tx active
-                    TransactionActiveOnCloseException tae = new TransactionActiveOnCloseException(om);
-                    exceptions.add(new JDOUserException(tae.getMessage(), pm));
-                }
+                // Note: we replicate the exception that would have come from pm.close() when tx active
+                TransactionActiveOnCloseException tae = new TransactionActiveOnCloseException(ec);
+                exceptions.add(new JDOUserException(tae.getMessage(), pm));
             }
-            if (!exceptions.isEmpty())
-            {
-                throw new JDOUserException(Localiser.msg("012002"), exceptions.toArray(new Throwable[exceptions.size()]));
-            }
-
-            // Close all PMs
-            for (JDOPersistenceManager pm : pmCache)
-            {
-                pm.internalClose();
-            }
-            pmCache.clear();
         }
+        if (!exceptions.isEmpty())
+        {
+            throw new JDOUserException(Localiser.msg("012002"), exceptions.toArray(new Throwable[exceptions.size()]));
+        }
+
+        // Close all PMs
+        for (JDOPersistenceManager pm : pmCache)
+        {
+            pm.internalClose();
+        }
+        pmCache.clear();
 
         if (pmfByName != null)
         {
@@ -712,12 +692,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     protected void initialiseMetaData(PersistenceUnitMetaData pumd)
     {
         // Prepare Metadata manager for use
-        nucleusContext.getMetaDataManager().setAllowXML(
-            getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_XML));
-        nucleusContext.getMetaDataManager().setAllowAnnotations(
-            getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_ANNOTATIONS));
-        nucleusContext.getMetaDataManager().setValidate(
-            getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_VALIDATE));
+        nucleusContext.getMetaDataManager().setAllowXML(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_XML));
+        nucleusContext.getMetaDataManager().setAllowAnnotations(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_ANNOTATIONS));
+        nucleusContext.getMetaDataManager().setValidate(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_VALIDATE));
 
         if (pumd != null)
         {
@@ -841,10 +818,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
         }
 
-        synchronized (pmCache)
-        {
-            pmCache.add(pm);
-        }
+        pmCache.add(pm);
 
         return pm;
     }
@@ -957,9 +931,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(this);
-            rc = new Reference(JDOClassNameConstants.JAVAX_JDO_PersistenceManagerFactory,
-                JDOClassNameConstants.JDOPersistenceManagerFactory, null);
-            
+            rc = new Reference(JDOClassNameConstants.JAVAX_JDO_PersistenceManagerFactory, JDOClassNameConstants.JDOPersistenceManagerFactory, null);
+
             Map p = getConfiguration().getPersistenceProperties();
             for (Iterator<Map.Entry> i = p.entrySet().iterator(); i.hasNext();)
             {
@@ -1171,11 +1144,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         "javax.jdo.option.ApplicationIdentity",
         "javax.jdo.option.DatastoreIdentity",
         "javax.jdo.option.NonDurableIdentity",
-//        "javax.jdo.option.BinaryCompatibility", // Now using DN bytecode enhancement contract
         "javax.jdo.option.GetDataStoreConnection",
         "javax.jdo.option.GetJDBCConnection",
         "javax.jdo.option.version.DateTime",
         "javax.jdo.option.PreDirtyEvent",
+        // "javax.jdo.option.BinaryCompatibility", // Now using DN bytecode enhancement contract
         // "javax.jdo.option.ChangeApplicationIdentity",
 
         // Types
@@ -1211,18 +1184,15 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /**
      * Remove a PersistenceManager from the cache
      * Only the PersistenceManager is allowed to call this method
-     * @param pm  the PersistenceManager to be removed from cache
+     * @param pm the PersistenceManager to be removed from cache
      */
     public void releasePersistenceManager(JDOPersistenceManager pm)
     {
-    	boolean close = false;
-        synchronized (pmCache)
+        boolean close = false;
+        if (pmCache.contains(pm))
         {
-            if (pmCache.contains(pm))
-            {
-                close = true;
-                pmCache.remove(pm);
-            }
+            close = true;
+            pmCache.remove(pm);
         }
         if (close)
         {
@@ -1996,8 +1966,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     // -------------------------------- Lifecycle Listeners -------------------------------
 
     /**
-     * @return Returns either <tt>null</tt> or a <tt>List</tt> with instances of
-     *      <tt>LifecycleListenerSpecification</tt>.
+     * @return Returns either <tt>null</tt> or a <tt>List</tt> with instances of <tt>LifecycleListenerSpecification</tt>.
      * @deprecated
      */
     public List<LifecycleListenerForClass> getLifecycleListenerSpecifications()
@@ -2017,8 +1986,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void addInstanceLifecycleListener(InstanceLifecycleListener listener, Class[] classes)
     {
-        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty(
-            "datanucleus.allowListenerUpdateAfterInit", false);
+        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty("datanucleus.allowListenerUpdateAfterInit", false);
         if (!allowListeners)
         {
             assertConfigurable();
@@ -2310,8 +2278,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public javax.jdo.metadata.TypeMetadata getMetadata(String className)
     {
         MetaDataManager mmgr = nucleusContext.getMetaDataManager();
-        AbstractClassMetaData acmd = mmgr.getMetaDataForClass(className,
-            nucleusContext.getClassLoaderResolver(null));
+        AbstractClassMetaData acmd = mmgr.getMetaDataForClass(className, nucleusContext.getClassLoaderResolver(null));
         if (acmd == null)
         {
             return null;
@@ -2426,7 +2393,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         configurable = true;
         if (pmCache == null)
         {
-            pmCache = new HashSet<JDOPersistenceManager>();
+            pmCache = Collections.newSetFromMap(new ConcurrentHashMap());
         }
         nucleusContext = new PersistenceNucleusContextImpl("JDO", deserialisationProps);
         PersistenceUnitMetaData pumd = null;
