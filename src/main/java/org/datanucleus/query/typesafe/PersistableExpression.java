@@ -25,15 +25,13 @@ package org.datanucleus.query.typesafe;
 public interface PersistableExpression<T> extends Expression<T>
 {
     /**
-     * Method to return an expression for the identity of this persistable object.
-     * TODO Only applicable to JDOQL so move to language specific interface
+     * Method to return an expression for the (JDO) identity of this persistable object.
      * @return The identity expression
      */
     Expression jdoObjectId();
 
     /**
-     * Method to return an expression for the version of this persistable object.
-     * TODO Only applicable to JDOQL so move to language specific interface
+     * Method to return an expression for the (JDO) version of this persistable object.
      * @return The version expression
      */
     Expression jdoVersion();
