@@ -841,7 +841,7 @@ public class JDOQuery implements Query
             while (queryExtsIter.hasNext())
             {
                 Map.Entry<String, Object> queryExtEntry = queryExtsIter.next();
-                qmd.addExtension(queryExtEntry.getKey(), (String)queryExtEntry.getValue()); // TODO Don't cast
+                qmd.addExtension(queryExtEntry.getKey(), "" + queryExtEntry.getValue());
             }
         }
 
