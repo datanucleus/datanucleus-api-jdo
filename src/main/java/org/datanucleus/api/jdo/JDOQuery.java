@@ -19,6 +19,7 @@ package org.datanucleus.api.jdo;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.jdo.Extent;
@@ -31,6 +32,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import org.datanucleus.exceptions.NucleusException;
+import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
@@ -822,6 +824,31 @@ public class JDOQuery implements Query
     }
 
     /**
+     * Save this query as a named query with the specified name.
+     * @param name The name to refer to it under
+     */
+    public void saveAsNamedQuery(String name)
+    {
+        QueryMetaData qmd = new QueryMetaData(name);
+        qmd.setLanguage(language);
+        qmd.setQuery(query.toString());
+        qmd.setResultClass(query.getResultClassName());
+        qmd.setUnique(query.isUnique());
+        Map<String, Object> queryExts = query.getExtensions();
+        if (queryExts != null && !queryExts.isEmpty())
+        {
+            Iterator<Map.Entry<String, Object>> queryExtsIter = queryExts.entrySet().iterator();
+            while (queryExtsIter.hasNext())
+            {
+                Map.Entry<String, Object> queryExtEntry = queryExtsIter.next();
+                qmd.addExtension(queryExtEntry.getKey(), (String)queryExtEntry.getValue()); // TODO Don't cast
+            }
+        }
+
+        query.getExecutionContext().getMetaDataManager().registerNamedQuery(qmd);
+    }
+
+    /**
      * Convenience method to return the query in string form.
      * @return Stringifier method
      */
@@ -831,8 +858,7 @@ public class JDOQuery implements Query
     }
 
     /**
-     * Accessor for the native query invoked by this query (if known at this time and supported by the
-     * store plugin).
+     * Accessor for the native query invoked by this query (if known at this time and supported by the store plugin).
      * @return The native query (e.g for RDBMS this is the SQL).
      */
     public Object getNativeQuery()
