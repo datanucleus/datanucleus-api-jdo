@@ -100,7 +100,7 @@ import org.datanucleus.util.StringUtils;
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
  */
-public class JDOPersistenceManager implements javax.jdo.PersistenceManager
+public class JDOPersistenceManager implements javax.jdo.PersistenceManager, AutoCloseable
 {
     /** Logger for JDO. */
     public static final NucleusLogger LOGGER = NucleusLogger.getLoggerInstance("DataNucleus.JDO");
