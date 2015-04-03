@@ -2312,7 +2312,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
             jdoFetchGroups = new HashSet();
         }
 
-        // Check our local groups
+        // Check our local (dynamic) groups
         Iterator<JDOFetchGroup> iter = jdoFetchGroups.iterator();
         while (iter.hasNext())
         {
@@ -2329,7 +2329,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
         if (jdoGrp != null)
         {
             // PMF returned us a group (maybe newly created) so put a copy in scope here
-            // We actually copy the internal group to the OM, and have our own JDOFetchGroup here
+            // We actually copy the internal group to the EC, and have our own JDOFetchGroup here
             FetchGroup internalGrp = (jdoGrp).getInternalFetchGroup();
             FetchGroup internalCopy = new FetchGroup(internalGrp);
             jdoGrp = new JDOFetchGroup(internalCopy);
@@ -2337,19 +2337,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
             jdoFetchGroups.add(jdoGrp);
             return jdoGrp;
         }
-
-        // Create new FetchGroup - should never happen since PMF always creates one if not existent
-        try
-        {
-            org.datanucleus.FetchGroup internalGrp = ec.getInternalFetchGroup(cls, name);
-            jdoGrp = new JDOFetchGroup(internalGrp);
-            jdoFetchGroups.add(jdoGrp);
-            return jdoGrp;
-        }
-        catch (NucleusException ne)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-        }
+        return null;
     }
 
     /**

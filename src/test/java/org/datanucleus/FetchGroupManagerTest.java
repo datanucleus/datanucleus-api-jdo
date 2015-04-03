@@ -29,7 +29,7 @@ public class FetchGroupManagerTest extends TestCase
         FetchGroupManager fgmgr = new FetchGroupManager(ctx);
         FetchGroup fg = fgmgr.createFetchGroup(FetchGroup.class,"fg1");
         fgmgr.addFetchGroup(fg);
-        assertEquals(fgmgr.getFetchGroup(FetchGroup.class, "fg1"), fg);
+        assertEquals(fgmgr.getFetchGroup(FetchGroup.class, "fg1", true), fg);
     }
 
     public void testRemoveFetchGroup()

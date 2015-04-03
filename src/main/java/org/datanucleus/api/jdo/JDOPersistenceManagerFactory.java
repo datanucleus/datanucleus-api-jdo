@@ -2124,8 +2124,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         // Create new FetchGroup, but don't add to set of groups yet - user should add via addFetchGroups()
         try
         {
-            org.datanucleus.FetchGroup internalGrp = nucleusContext.getInternalFetchGroup(cls, name);
-            if (!internalGrp.isUnmodifiable())
+            org.datanucleus.FetchGroup internalGrp = nucleusContext.getInternalFetchGroup(cls, name, false);
+            if (internalGrp != null && !internalGrp.isUnmodifiable())
             {
                 // Return existing internal group since still modifiable
                 return new JDOFetchGroup(internalGrp);
@@ -2133,7 +2133,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
             // Create a new internal group (modifiable) and return a JDO group based on that
             internalGrp = nucleusContext.createInternalFetchGroup(cls, name);
-            nucleusContext.addInternalFetchGroup(internalGrp);
             JDOFetchGroup jdoGrp = new JDOFetchGroup(internalGrp);
             return jdoGrp;
         }
