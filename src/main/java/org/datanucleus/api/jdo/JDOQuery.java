@@ -835,7 +835,7 @@ public class JDOQuery implements Query, AutoCloseable
      * Save this query as a named query with the specified name.
      * @param name The name to refer to it under
      */
-    public void saveAsNamedQuery(String name)
+    public Query saveAsNamedQuery(String name)
     {
         QueryMetaData qmd = new QueryMetaData(name);
         qmd.setLanguage(language);
@@ -854,6 +854,8 @@ public class JDOQuery implements Query, AutoCloseable
         }
 
         query.getExecutionContext().getMetaDataManager().registerNamedQuery(qmd);
+
+        return this;
     }
 
     /**
