@@ -907,6 +907,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
      * Method to make transient an array of objects.
      * @param pcs The objects
      * @param includeFetchPlan Whether to make transient all objects in the fetch plan
+     * @deprecated
      */
     public void makeTransientAll(Object[] pcs, boolean includeFetchPlan)
     {
@@ -1750,17 +1751,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
      */
     public Object[] getObjectsById(boolean validate, Object... oids)
     {
-        return getObjectsById(oids, validate);
-    }
-
-    /**
-     * Accessor for the objects given the object ids.
-     * @param oids Ids of the objects.
-     * @param validate Whether to validate the object state
-     * @return The Objects with these ids (in the same order)
-     */
-    public Object[] getObjectsById(Object[] oids, boolean validate)
-    {
         assertIsOpen();
         if (oids == null)
         {
@@ -1790,6 +1780,18 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
         }
 
         return ec.findObjects(theOids, validate);
+    }
+
+    /**
+     * Accessor for the objects given the object ids.
+     * @param oids Ids of the objects.
+     * @param validate Whether to validate the object state
+     * @return The Objects with these ids (in the same order)
+     * @deprecated
+     */
+    public Object[] getObjectsById(Object[] oids, boolean validate)
+    {
+        return getObjectsById(validate, oids);
     }
 
     /**
