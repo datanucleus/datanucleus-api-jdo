@@ -1515,9 +1515,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
                 }
                 fp.setMaxFetchDepth(fpmd.getMaxFetchDepth());
                 fp.setFetchSize(fpmd.getFetchSize());
-                @SuppressWarnings("resource")
-                JDOQuery jdoquery = (JDOQuery)query;
-                jdoquery.getInternalQuery().setFetchPlan(fp);
+                ((JDOQuery)query).getInternalQuery().setFetchPlan(fp);
             }
         }
 
