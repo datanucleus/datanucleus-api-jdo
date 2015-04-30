@@ -24,7 +24,7 @@
 
     <properties>
         <jdo.version>3.1</jdo.version>
-        <dn.core.version>4.1.0-m1</dn.core.version>
+        <dn.core.version>4.1.0-m4</dn.core.version>
     </properties>
 
     <build>
