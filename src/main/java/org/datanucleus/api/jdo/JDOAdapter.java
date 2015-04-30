@@ -123,8 +123,7 @@ public class JDOAdapter implements ApiAdapter
         {
             return true;
         }
-        else if (Enum.class.isAssignableFrom(type) ||
-            Serializable.class.isAssignableFrom(type))
+        else if (Enum.class.isAssignableFrom(type) || Serializable.class.isAssignableFrom(type))
         {
             return true;
         }
@@ -188,8 +187,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isPersistent(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isPersistent(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsPersistent() : false;
     }
 
     /**
@@ -199,8 +197,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isNew(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isNew(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsNew() : false;
     }
 
     /**
@@ -210,8 +207,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isDirty(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isDirty(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsDirty() : false;
     }
 
     /**
@@ -221,8 +217,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isDeleted(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isDeleted(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsDeleted() : false;
     }
 
     /**
@@ -232,8 +227,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isDetached(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isDetached(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsDetached() : false;
     }
 
     /**
@@ -243,8 +237,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public boolean isTransactional(Object obj)
     {
-        // Relay through to JDOHelper
-        return JDOHelper.isTransactional(obj);
+        return obj instanceof Persistable ? ((Persistable)obj).dnIsTransactional() : false;
     }
 
     /**
