@@ -30,7 +30,6 @@ import java.util.Set;
 import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOHelper;
 import javax.jdo.JDOUserException;
-import javax.jdo.PersistenceManager;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ClassNameConstants;
@@ -162,7 +161,7 @@ public class JDOAdapter implements ApiAdapter
         {
             return (ExecutionContext) ((Persistable)obj).dnGetExecutionContext();
         }
-        else if (obj instanceof PersistenceManager)
+        else if (obj instanceof JDOPersistenceManager)
         {
             return ((JDOPersistenceManager)obj).getExecutionContext();
         }
@@ -252,7 +251,6 @@ public class JDOAdapter implements ApiAdapter
         {
             return false;
         }
-
         return (obj instanceof Persistable);
     }
 
@@ -283,7 +281,6 @@ public class JDOAdapter implements ApiAdapter
         {
             return false;
         }
-
         return (obj instanceof Detachable);
     }
 
@@ -319,11 +316,8 @@ public class JDOAdapter implements ApiAdapter
      */
     public Object getIdForObject(Object obj)
     {
-        if (!isPersistable(obj))
-        {
-            return null;
-        }
-        return ((Persistable)obj).dnGetObjectId();
+        return obj instanceof Persistable ? ((Persistable)obj).dnGetObjectId() : null;
+
     }
 
     /**
@@ -334,11 +328,7 @@ public class JDOAdapter implements ApiAdapter
      */
     public Object getVersionForObject(Object obj)
     {
-        if (!isPersistable(obj))
-        {
-            return null;
-        }
-        return ((Persistable)obj).dnGetVersion();
+        return obj instanceof Persistable ? ((Persistable)obj).dnGetVersion() : null;
     }
 
     /**
