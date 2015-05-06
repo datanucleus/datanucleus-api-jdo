@@ -224,6 +224,28 @@ public class JDOQuery implements Query, AutoCloseable
 
     /**
      * Execute the query.
+     * @param parameterValues Param values
+     * @return The results
+     */
+    public Object execute(Object... parameterValues)
+    {
+        try
+        {
+            return query.executeWithArray(parameterValues);
+        }
+        catch (NoQueryResultsException nqre)
+        {
+            return null;
+        }
+        catch (NucleusException jpe)
+        {
+            // Convert any exceptions into what JDO expects
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+        }
+    }
+
+    /**
+     * Execute the query.
      * @return The results
      */
     public Object execute()
