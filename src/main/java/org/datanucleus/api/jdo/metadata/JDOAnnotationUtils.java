@@ -20,6 +20,7 @@ package org.datanucleus.api.jdo.metadata;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import javax.jdo.annotations.Cacheable;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Columns;
 import javax.jdo.annotations.DatastoreIdentity;
@@ -153,7 +154,7 @@ public class JDOAnnotationUtils
 
     public static final String EMBEDDED = Embedded.class.getName();
 
-    public static final String CACHEABLE = "javax.jdo.annotations.Cacheable"; // Hardcoded so works with JDO2.1
+    public static final String CACHEABLE = Cacheable.class.getName();
 
     /**
      * Convenience accessor for the query language to a valid internal value.
