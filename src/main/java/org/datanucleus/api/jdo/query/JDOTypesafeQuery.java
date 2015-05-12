@@ -156,7 +156,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#parameter(java.lang.String, java.lang.Class)
      */
-    public Expression parameter(String name, Class type)
+    public <P> Expression<P> parameter(String name, Class<P> type)
     {
         discardCompiled();
 
@@ -175,27 +175,27 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (type == Double.class || type == double.class)
         {
-            paramExpr = new NumericExpressionImpl<Double>(type, name, ExpressionType.PARAMETER);
+            paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
         }
         else if (type == Float.class || type == float.class)
         {
-            paramExpr = new NumericExpressionImpl<Float>(type, name, ExpressionType.PARAMETER);
+            paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
         }
         else if (type == Integer.class || type == int.class)
         {
-            paramExpr = new NumericExpressionImpl<Integer>(type, name, ExpressionType.PARAMETER);
+            paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
         }
         else if (type == Long.class || type == long.class)
         {
-            paramExpr = new NumericExpressionImpl<Long>(type, name, ExpressionType.PARAMETER);
+            paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
         }
         else if (type == Short.class || type == short.class)
         {
-            paramExpr = new NumericExpressionImpl<Short>(type, name, ExpressionType.PARAMETER);
+            paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
         }
         else if (type == String.class)
         {
-            paramExpr = new StringExpressionImpl(type, name, ExpressionType.PARAMETER);
+            paramExpr = new StringExpressionImpl((Class<String>) type, name, ExpressionType.PARAMETER);
         }
         else if (Time.class.isAssignableFrom(type))
         {
@@ -207,7 +207,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (java.util.Date.class.isAssignableFrom(type))
         {
-            paramExpr = new DateTimeExpressionImpl(type, name, ExpressionType.PARAMETER);
+            paramExpr = new DateTimeExpressionImpl((Class<java.util.Date>) type, name, ExpressionType.PARAMETER);
         }
         else if (ec.getApiAdapter().isPersistable(type))
         {
@@ -438,7 +438,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#variable(java.lang.String, java.lang.Class)
      */
-    public Expression variable(String name, Class type)
+    public <V> Expression<V> variable(String name, Class<V> type)
     {
         discardCompiled();
 
@@ -487,27 +487,27 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (type == Double.class || type == double.class)
         {
-            varExpr = new NumericExpressionImpl<Double>(type, name, ExpressionType.VARIABLE);
+            varExpr = new NumericExpressionImpl(type, name, ExpressionType.VARIABLE);
         }
         else if (type == Float.class || type == float.class)
         {
-            varExpr = new NumericExpressionImpl<Float>(type, name, ExpressionType.VARIABLE);
+            varExpr = new NumericExpressionImpl(type, name, ExpressionType.VARIABLE);
         }
         else if (type == Integer.class || type == int.class)
         {
-            varExpr = new NumericExpressionImpl<Integer>(type, name, ExpressionType.VARIABLE);
+            varExpr = new NumericExpressionImpl(type, name, ExpressionType.VARIABLE);
         }
         else if (type == Long.class || type == long.class)
         {
-            varExpr = new NumericExpressionImpl<Long>(type, name, ExpressionType.VARIABLE);
+            varExpr = new NumericExpressionImpl(type, name, ExpressionType.VARIABLE);
         }
         else if (type == Short.class || type == short.class)
         {
-            varExpr = new NumericExpressionImpl<Short>(type, name, ExpressionType.VARIABLE);
+            varExpr = new NumericExpressionImpl(type, name, ExpressionType.VARIABLE);
         }
         else if (type == String.class)
         {
-            varExpr = new StringExpressionImpl(type, name, ExpressionType.VARIABLE);
+            varExpr = new StringExpressionImpl((Class<String>) type, name, ExpressionType.VARIABLE);
         }
         else if (Time.class.isAssignableFrom(type))
         {
@@ -519,7 +519,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (java.util.Date.class.isAssignableFrom(type))
         {
-            varExpr = new DateTimeExpressionImpl(type, name, ExpressionType.VARIABLE);
+            varExpr = new DateTimeExpressionImpl((Class<java.util.Date>) type, name, ExpressionType.VARIABLE);
         }
         else
         {
@@ -730,8 +730,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#executeList()
      */
-    @SuppressWarnings("hiding")
-    public <T> List<T> executeList()
+    public List<T> executeList()
     {
         if (result != null || resultDistinct != null || resultClass != null)
         {
@@ -751,8 +750,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#executeUnique()
      */
-    @SuppressWarnings("hiding")
-    public <T> T executeUnique()
+    public T executeUnique()
     {
         if (result != null || resultDistinct != null || resultClass != null)
         {

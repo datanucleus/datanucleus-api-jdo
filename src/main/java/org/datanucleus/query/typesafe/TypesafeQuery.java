@@ -50,7 +50,7 @@ public interface TypesafeQuery<T>
      * @param type Java type of the parameter
      * @return Expression for the parameter
      */
-    Expression parameter(String name, Class type);
+    <P> Expression<P> parameter(String name, Class<P> type);
 
     /**
      * Method to return a string parameter for the query.
@@ -150,7 +150,7 @@ public interface TypesafeQuery<T>
      * @param type Type of the variable
      * @return Expression for the variable
      */
-    Expression variable(String name, Class type);
+    <V> Expression<V> variable(String name, Class<V> type);
 
     /**
      * Accessor for the PersistenceManager for this query
@@ -300,16 +300,14 @@ public interface TypesafeQuery<T>
      * @return The results
      * @param <T> result type
      */
-    @SuppressWarnings("hiding")
-    <T> List<T> executeList();
+    List<T> executeList();
 
     /**
      * Method to execute the query where there is a single row and we are returning the candidate type.
      * @return The result
      * @param <T> result type
      */
-    @SuppressWarnings("hiding")
-    <T> T executeUnique();
+    T executeUnique();
 
     /**
      * Method to execute the query where there are (potentially) multiple rows and we are returning either a
