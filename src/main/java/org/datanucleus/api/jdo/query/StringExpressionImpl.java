@@ -20,6 +20,7 @@ package org.datanucleus.api.jdo.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.typesafe.BooleanExpression;
@@ -56,8 +57,12 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression add(Expression expr)
     {
-        // TODO Implement this
-        throw new UnsupportedOperationException("String.add() not yet supported");
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
+
+        org.datanucleus.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_ADD, rightQueryExpr);
+        return new StringExpressionImpl(queryExpr);
     }
 
     /* (non-Javadoc)
