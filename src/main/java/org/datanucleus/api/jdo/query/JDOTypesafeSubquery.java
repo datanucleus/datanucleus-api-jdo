@@ -40,7 +40,6 @@ import org.datanucleus.query.typesafe.TypesafeSubquery;
 
 /**
  * Implementation of a typesafe subquery for JDO.
- * TODO JDOQL subqueries only allow result and filter, and JPQL subqueries allow result, filter, grouping, having.
  */
 public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements TypesafeSubquery<T>
 {
