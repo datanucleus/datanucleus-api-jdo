@@ -56,7 +56,8 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression add(Expression expr)
     {
-        return null;
+        // TODO Implement this
+        throw new UnsupportedOperationException("String.add() not yet supported");
     }
 
     /* (non-Javadoc)
