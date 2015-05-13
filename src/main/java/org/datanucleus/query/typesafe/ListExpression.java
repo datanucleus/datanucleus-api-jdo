@@ -32,12 +32,12 @@ public interface ListExpression<T extends List<E>, E> extends CollectionExpressi
      * @param posExpr The position expression
      * @return The element at this position in the List
      */
-    Expression get(NumericExpression<Integer> posExpr);
+    Expression<E> get(NumericExpression<Integer> posExpr);
 
     /**
      * Method returning the element at this position in the List.
      * @param pos The position
      * @return The element at this position in the List
      */
-    Expression get(int pos);
+    Expression<E> get(int pos);
 }

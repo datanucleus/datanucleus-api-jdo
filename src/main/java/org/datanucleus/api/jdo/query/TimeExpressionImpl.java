@@ -28,7 +28,7 @@ import org.datanucleus.query.typesafe.TimeExpression;
 /**
  * Implementation of a Time expression.
  */
-public class TimeExpressionImpl<T> extends ComparableExpressionImpl<Time> implements TimeExpression<Time>
+public class TimeExpressionImpl extends ComparableExpressionImpl<Time> implements TimeExpression
 {
     public TimeExpressionImpl(PersistableExpression parent, String name)
     {

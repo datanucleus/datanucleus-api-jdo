@@ -41,7 +41,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos The position
      * @return Expression for the character
      */
-    CharacterExpression charAt(NumericExpression pos);
+    CharacterExpression charAt(NumericExpression<Integer> pos);
 
     /**
      * Method returning an expression for whether this string expression ends with the passed string expression.
@@ -78,14 +78,14 @@ public interface StringExpression extends ComparableExpression<String>
      * @param expr The other string
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(StringExpression expr);
+    NumericExpression<Integer> indexOf(StringExpression expr);
 
     /**
      * Method to return an expression for the position of the passed string in this string.
      * @param str The other string
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(String str);
+    NumericExpression<Integer> indexOf(String str);
 
     /**
      * Method to return an expression for the position of the passed string in this string after a position.
@@ -93,7 +93,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos Start point of the search
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(StringExpression expr, NumericExpression pos);
+    NumericExpression<Integer> indexOf(StringExpression expr, NumericExpression<Integer> pos);
 
     /**
      * Method to return an expression for the position of the passed string in this string after a position.
@@ -101,7 +101,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos Start point of the search
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(String str, NumericExpression pos);
+    NumericExpression<Integer> indexOf(String str, NumericExpression<Integer> pos);
 
     /**
      * Method to return an expression for the position of the passed string in this string after a position.
@@ -109,7 +109,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos Start point of the search
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(String str, int pos);
+    NumericExpression<Integer> indexOf(String str, int pos);
 
     /**
      * Method to return an expression for the position of the passed string in this string after a position.
@@ -117,13 +117,13 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos Start point of the search
      * @return Expression for the position of the passed string
      */
-    NumericExpression indexOf(StringExpression expr, int pos);
+    NumericExpression<Integer> indexOf(StringExpression expr, int pos);
 
     /**
      * Method returning a expression for the length of this string.
      * @return Expression for the length
      */
-    NumericExpression length();
+    NumericExpression<Integer> length();
 
     /**
      * Method returning an expression for whether this string expression starts with the passed string expression.
@@ -144,7 +144,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param pos The position of the start point of the substring
      * @return Expression for the substring
      */
-    StringExpression substring(NumericExpression pos);
+    StringExpression substring(NumericExpression<Integer> pos);
 
     /**
      * Method to return an expression for the substring of this string expression.
@@ -159,7 +159,7 @@ public interface StringExpression extends ComparableExpression<String>
      * @param endPos The position of the end point of the substring (exclusive, origin 0)
      * @return Expression for the substring
      */
-    StringExpression substring(NumericExpression startPos, NumericExpression endPos);
+    StringExpression substring(NumericExpression<Integer> startPos, NumericExpression<Integer> endPos);
 
     /**
      * Method to return an expression for the substring of this string expression.

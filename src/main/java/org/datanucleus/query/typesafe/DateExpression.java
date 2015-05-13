@@ -19,10 +19,8 @@ package org.datanucleus.query.typesafe;
 
 /**
  * Representation of a date in a query.
- * 
- * @param <T> Date type
  */
-public interface DateExpression<T> extends ComparableExpression<java.sql.Date>
+public interface DateExpression extends ComparableExpression<java.sql.Date>
 {
     /**
      * Accessor for the year of this date.

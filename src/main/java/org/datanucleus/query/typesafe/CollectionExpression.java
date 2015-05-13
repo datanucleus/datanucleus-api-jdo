@@ -32,7 +32,7 @@ public interface CollectionExpression<T extends Collection<E>, E> extends Expres
      * @param expr The element expression
      * @return Whether it is contained here
      */
-    BooleanExpression contains(Expression expr);
+    BooleanExpression contains(Expression<E> expr);
 
     /**
      * Method returning whether the specified element is contained in this collection.

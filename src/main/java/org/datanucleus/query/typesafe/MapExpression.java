@@ -33,7 +33,7 @@ public interface MapExpression<T extends Map<K, V>, K, V> extends Expression<T>
      * @param expr The key expression
      * @return Whether it is contained here
      */
-    BooleanExpression containsKey(Expression expr);
+    BooleanExpression containsKey(Expression<K> expr);
 
     /**
      * Method returning whether the specified key is contained in this map.
@@ -47,7 +47,7 @@ public interface MapExpression<T extends Map<K, V>, K, V> extends Expression<T>
      * @param expr The value expression
      * @return Whether it is contained here
      */
-    BooleanExpression containsValue(Expression expr);
+    BooleanExpression containsValue(Expression<V> expr);
 
     /**
      * Method returning whether the specified value is contained in this map.
@@ -61,7 +61,7 @@ public interface MapExpression<T extends Map<K, V>, K, V> extends Expression<T>
      * @param expr The entry expression
      * @return Whether it is contained here
      */
-    BooleanExpression containsEntry(Expression expr);
+    BooleanExpression containsEntry(Expression<Map.Entry<K, V>> expr);
 
     /**
      * Method returning whether the specified entry is contained in this map.

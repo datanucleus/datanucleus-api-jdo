@@ -199,11 +199,11 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (Time.class.isAssignableFrom(type))
         {
-            paramExpr = new TimeExpressionImpl(type, name, ExpressionType.PARAMETER);
+            paramExpr = new TimeExpressionImpl((Class<Time>) type, name, ExpressionType.PARAMETER);
         }
         else if (Date.class.isAssignableFrom(type))
         {
-            paramExpr = new DateExpressionImpl(type, name, ExpressionType.PARAMETER);
+            paramExpr = new DateExpressionImpl((Class<Date>) type, name, ExpressionType.PARAMETER);
         }
         else if (java.util.Date.class.isAssignableFrom(type))
         {
@@ -370,7 +370,7 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
      */
     public TimeExpression timeParameter(String name)
     {
-        TimeExpressionImpl paramExpr = new TimeExpressionImpl(Date.class, name, ExpressionType.PARAMETER);
+        TimeExpressionImpl paramExpr = new TimeExpressionImpl(Time.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
             parameterExprByName = new HashMap<String, ExpressionImpl>();
@@ -511,11 +511,11 @@ public class JDOTypesafeQuery<T> extends AbstractTypesafeQuery<T> implements Typ
         }
         else if (Time.class.isAssignableFrom(type))
         {
-            varExpr = new TimeExpressionImpl(type, name, ExpressionType.VARIABLE);
+            varExpr = new TimeExpressionImpl((Class<Time>) type, name, ExpressionType.VARIABLE);
         }
         else if (Date.class.isAssignableFrom(type))
         {
-            varExpr = new DateExpressionImpl(type, name, ExpressionType.VARIABLE);
+            varExpr = new DateExpressionImpl((Class<Date>) type, name, ExpressionType.VARIABLE);
         }
         else if (java.util.Date.class.isAssignableFrom(type))
         {

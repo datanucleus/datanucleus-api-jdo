@@ -19,10 +19,8 @@ package org.datanucleus.query.typesafe;
 
 /**
  * Representation of a time in a query.
- * 
- * @param <T> time type
  */
-public interface TimeExpression<T> extends ComparableExpression<java.sql.Time>
+public interface TimeExpression extends ComparableExpression<java.sql.Time>
 {
     /**
      * Accessor for the hour of this time.
