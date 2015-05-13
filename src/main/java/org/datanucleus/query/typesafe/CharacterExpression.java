@@ -22,4 +22,15 @@ package org.datanucleus.query.typesafe;
  */
 public interface CharacterExpression extends ComparableExpression<Character>
 {
+    /**
+     * Method to return a CharacterExpression representing this character expression in lower case.
+     * @return The lower case expression
+     */
+    CharacterExpression toLowerCase();
+
+    /**
+     * Method to return a CharacterExpression representing this character expression in upper case.
+     * @return The upper case expression
+     */
+    CharacterExpression toUpperCase();
 }

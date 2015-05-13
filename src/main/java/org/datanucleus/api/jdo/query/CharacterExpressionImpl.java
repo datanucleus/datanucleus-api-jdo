@@ -18,6 +18,7 @@ Contributors:
 package org.datanucleus.api.jdo.query;
 
 import org.datanucleus.query.expression.Expression;
+import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.typesafe.CharacterExpression;
 import org.datanucleus.query.typesafe.PersistableExpression;
 
@@ -39,5 +40,25 @@ public class CharacterExpressionImpl<T> extends ComparableExpressionImpl<Charact
     public CharacterExpressionImpl(Expression queryExpr)
     {
         super(queryExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.query.typesafe.CharacterExpression#toLowerCase()
+     */
+    @Override
+    public CharacterExpression toLowerCase()
+    {
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toLowerCase", null);
+        return new CharacterExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.query.typesafe.CharacterExpression#toUpperCase()
+     */
+    @Override
+    public CharacterExpression toUpperCase()
+    {
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toUpperCase", null);
+        return new CharacterExpressionImpl(invokeExpr);
     }
 }
