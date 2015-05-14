@@ -40,7 +40,7 @@ public interface TypesafeQuery<T>
      * The preference is to use the "Q{type}.candidate()" method for real type-safe handling.
      * @return Expression for the candidate
      */
-    PersistableExpression candidate();
+    PersistableExpression<T> candidate();
 
     /**
      * Method to return a parameter for the query.
@@ -66,6 +66,7 @@ public interface TypesafeQuery<T>
      */
     CharacterExpression characterParameter(String name);
 
+    // TODO Merge these into numericParameter(String name);
     /**
      * Method to return a numeric parameter for the query.
      * @param name Name of the parameter
@@ -284,7 +285,7 @@ public interface TypesafeQuery<T>
      * @param value the value of the extension
      * @return The query
      */
-    TypesafeQuery<T> addExtension (String key, Object value);
+    TypesafeQuery<T> addExtension(String key, Object value);
 
     /**
      * Set multiple extensions, or use null to clear all extensions. Map keys and values are not standard.
@@ -292,7 +293,7 @@ public interface TypesafeQuery<T>
      * @return The query
      * @see #addExtension
      */
-    TypesafeQuery<T> setExtensions (Map<String, Object> extensions);
+    TypesafeQuery<T> setExtensions(Map<String, Object> extensions);
 
     /**
      * Method to execute the query where there are (potentially) multiple rows and we are returning
