@@ -59,7 +59,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.MapExpression#containsEntry(org.datanucleus.query.typesafe.Expression)
      */
-    public BooleanExpression containsEntry(Expression expr)
+    public BooleanExpression containsEntry(Expression<Entry<K, V>> expr)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
@@ -70,7 +70,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.MapExpression#containsKey(org.datanucleus.query.typesafe.Expression)
      */
-    public BooleanExpression containsKey(Expression expr)
+    public BooleanExpression containsKey(Expression<K> expr)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
@@ -92,7 +92,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.MapExpression#containsValue(org.datanucleus.query.typesafe.Expression)
      */
-    public BooleanExpression containsValue(Expression expr)
+    public BooleanExpression containsValue(Expression<V> expr)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());

@@ -146,7 +146,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(java.lang.String, org.datanucleus.query.typesafe.NumericExpression)
      */
-    public NumericExpression indexOf(String str, NumericExpression pos)
+    public NumericExpression<Integer> indexOf(String str, NumericExpression pos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
@@ -158,7 +158,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(java.lang.String)
      */
-    public NumericExpression indexOf(String str)
+    public NumericExpression<Integer> indexOf(String str)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
@@ -169,7 +169,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(org.datanucleus.query.typesafe.StringExpression, int)
      */
-    public NumericExpression indexOf(StringExpression expr, int pos)
+    public NumericExpression<Integer> indexOf(StringExpression expr, int pos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
@@ -181,7 +181,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(org.datanucleus.query.typesafe.StringExpression, org.datanucleus.query.typesafe.NumericExpression)
      */
-    public NumericExpression indexOf(StringExpression expr, NumericExpression pos)
+    public NumericExpression<Integer> indexOf(StringExpression expr, NumericExpression pos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
@@ -193,7 +193,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(org.datanucleus.query.typesafe.StringExpression)
      */
-    public NumericExpression indexOf(StringExpression expr)
+    public NumericExpression<Integer> indexOf(StringExpression expr)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
@@ -204,7 +204,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#length()
      */
-    public NumericExpression length()
+    public NumericExpression<Integer> length()
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "length", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
@@ -258,7 +258,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#substring(org.datanucleus.query.typesafe.NumericExpression, org.datanucleus.query.typesafe.NumericExpression)
      */
-    public StringExpression substring(NumericExpression startPos, NumericExpression endPos)
+    public StringExpression substring(NumericExpression<Integer> startPos, NumericExpression<Integer> endPos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)startPos).getQueryExpression());
@@ -270,7 +270,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#substring(org.datanucleus.query.typesafe.NumericExpression)
      */
-    public StringExpression substring(NumericExpression pos)
+    public StringExpression substring(NumericExpression<Integer> pos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)pos).getQueryExpression());

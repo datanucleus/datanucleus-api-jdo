@@ -46,7 +46,7 @@ public class EnumExpressionImpl<T> extends ComparableExpressionImpl<Enum> implem
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.EnumExpression#ordinal()
      */
-    public NumericExpression ordinal()
+    public NumericExpression<Integer> ordinal()
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "ordinal", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);

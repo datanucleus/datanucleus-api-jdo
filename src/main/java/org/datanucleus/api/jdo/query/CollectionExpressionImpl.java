@@ -58,7 +58,7 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.CollectionExpression#contains(org.datanucleus.query.typesafe.Expression)
      */
-    public BooleanExpression contains(Expression expr)
+    public BooleanExpression contains(Expression<E> expr)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
