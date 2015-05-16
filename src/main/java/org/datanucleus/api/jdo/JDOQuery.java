@@ -43,6 +43,7 @@ import org.datanucleus.store.query.QueryTimeoutException;
  * The language is stored since it is referenced by the JDO API and so we don't have to embody knowledge
  * of which internal query type is for which language (could be moved to the internal query).
  */
+@SuppressWarnings("unused")
 public class JDOQuery implements Query, AutoCloseable
 {
     private static final long serialVersionUID = -204134873012573162L;
