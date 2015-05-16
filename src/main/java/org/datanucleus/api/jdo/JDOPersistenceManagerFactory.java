@@ -106,6 +106,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 {
     private static final long serialVersionUID = -575257641123665920L;
 
+    private static final String JDO_TYPE_CONVERTER_PROP_PREFIX = "javax.jdo.option.typeconverter.";
+
     static
     {
         Localiser.registerBundle("org.datanucleus.api.jdo.Localisation", JDOPersistenceManagerFactory.class.getClassLoader());
@@ -481,6 +483,24 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             pmfProps.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
         }
 
+        // Split out any properties for type information
+        Map typeProps = null;
+        Iterator<Map.Entry<String, Object>> entryIter = pmfProps.entrySet().iterator();
+        while (entryIter.hasNext())
+        {
+            Map.Entry<String, Object> entry = entryIter.next();
+            String propName = entry.getKey();
+            if (propName.startsWith(JDO_TYPE_CONVERTER_PROP_PREFIX))
+            {
+                if (typeProps == null)
+                {
+                    typeProps = new HashMap();
+                }
+                typeProps.put(propName, entry.getValue());
+                entryIter.remove();
+            }
+        }
+
         // Apply the properties to the PMF
         try
         {
@@ -497,10 +517,72 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             throw new JDOFatalUserException("Exception thrown setting persistence properties", iae);
         }
-        catch (NucleusException jpe)
+        catch (NucleusException ne)
         {
             // Only throw JDOException and subclasses
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+        }
+
+        // Set up any type handling specific to this PMF, such as user-defined TypeConverters
+        if (typeProps != null)
+        {
+            Iterator<Map.Entry<String, Object>> typePropsIter = typeProps.entrySet().iterator();
+            while (typePropsIter.hasNext())
+            {
+                Map.Entry<String, Object> entry = typePropsIter.next();
+                String propName = entry.getKey();
+                String typeName = propName.substring(JDO_TYPE_CONVERTER_PROP_PREFIX.length());
+                String converterName = (String) entry.getValue();
+                try
+                {
+                    // TODO Register this TypeConverter (after checking that it is a valid TypeConverter)
+                    Class converterCls = nucleusContext.getClassLoaderResolver(null).classForName(converterName);
+                    Object converter = ClassUtils.newInstance(converterCls, null, null);
+                    NucleusLogger.GENERAL.debug("TODO Need to register type=" + typeName + " as using converter with name=" + converterName + " conv=" + converter);
+
+                    // Extract field and datastore types for this converter
+                    /*Class javaType = null;
+                    Class dbType = null;
+                    try
+                    {
+                        Method[] methods = attrConv.getClass().getMethods();
+                        if (methods != null)
+                        {
+                            for (int j=0;j<methods.length;j++)
+                            {
+                                if (methods[j].getName().equals("convertToAttribute"))
+                                {
+                                    Class returnCls = methods[j].getReturnType();
+                                    if (returnCls != Object.class)
+                                    {
+                                        javaType = returnCls;
+                                    }
+                                }
+                            }
+                        }
+                        Class returnCls = entityConv.getClass().getMethod("convertToDatastore", javaType).getReturnType();
+                        if (returnCls != Object.class)
+                        {
+                            dbType = returnCls;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                    // Register the TypeConverter under the name of the AttributeConverter class
+                    if (javaType != null)
+                    {
+                        TypeConverter conv = new JDOTypeConverter(attrConv, javaType, dbType);
+                        typeMgr.registerConverter(cls.getName(), conv, autoApply, javaType.getName());
+                    }
+                    nucleusContext.getTypeManager().registerConverter(typeName, converter, true, typeName); */
+                }
+                catch (NucleusException ne)
+                {
+                    throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+                }
+            }
         }
 
         // Initialise any metadata that needs loading + settings
