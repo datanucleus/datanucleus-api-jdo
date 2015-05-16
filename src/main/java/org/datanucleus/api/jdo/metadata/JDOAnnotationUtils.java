@@ -156,6 +156,8 @@ public class JDOAnnotationUtils
 
     public static final String CACHEABLE = Cacheable.class.getName();
 
+    public static final String CONVERT = "javax.jdo.annotations.Convert";/*Convert.class.getName();*/ // TODO Swap this when JDO3.2 is the min requirement
+
     /**
      * Convenience accessor for the query language to a valid internal value.
      * @param value The query language name

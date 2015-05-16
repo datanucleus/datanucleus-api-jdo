@@ -90,6 +90,7 @@ import org.datanucleus.metadata.VersionMetaData;
 import org.datanucleus.metadata.annotations.AbstractAnnotationReader;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.Member;
+import org.datanucleus.store.types.TypeManager;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
@@ -1632,6 +1633,20 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     if (cache != null)
                     {
                         cacheable = cache;
+                    }
+                }
+                else if (annName.equals(JDOAnnotationUtils.CONVERT))
+                {
+                    Class converterCls = (Class) annotationValues.get("value");
+                    Boolean enabled = (Boolean) annotationValues.get("enabled");
+                    if (enabled)
+                    {
+//                        String name = (String) annotationValues.get("name");
+                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // TODO Register this converter for this type under the specified name
+                        }
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
