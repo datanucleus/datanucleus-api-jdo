@@ -73,6 +73,6 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
 
     public String toString()
     {
-        return "JDOTypeConverter<" + memberType.getName() + "," + dbType + ">";
+        return "JDOTypeConverter<" + memberType.getName() + "," + dbType.getName() + ">";
     }
 }
