@@ -191,6 +191,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             imd.setCacheable(cacheableAttr.equalsIgnoreCase("false") ? false : true);
         }
+
+        String converterAttr = getAttr(attrs, "converter");
+        if (converterAttr != null)
+        {
+            // TODO Process converter
+        }
+        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        if (disableConverterAttr != null)
+        {
+            // TODO Process disable-converter
+        }
+
         return imd;
     }
 
@@ -251,6 +263,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             fmd.setCacheable(cacheableAttr.equalsIgnoreCase("false") ? false : true);
         }
+
+        String converterAttr = getAttr(attrs, "converter");
+        if (converterAttr != null)
+        {
+            // TODO Process converter
+        }
+        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        if (disableConverterAttr != null)
+        {
+            // TODO Process disable-converter
+        }
+
         return fmd;
     }
 
@@ -840,6 +864,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     // With collection/array this is the same as mapped-by on the field
                     fmd.setMappedBy(mappedBy);
                 }
+
+                String converterAttr = getAttr(attrs, "converter");
+                if (converterAttr != null)
+                {
+                    // TODO Process converter
+                }
+                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                if (disableConverterAttr != null)
+                {
+                    // TODO Process disable-converter
+                }
+
                 fmd.setElementMetaData(elemmd);
                 pushStack(elemmd);
             }
@@ -854,6 +890,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 keymd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                 keymd.setUnique(MetaDataUtils.getBooleanForString(getAttr(attrs, "unique"), false));
                 keymd.setMappedBy(getAttr(attrs, "mapped-by"));
+
+                String converterAttr = getAttr(attrs, "converter");
+                if (converterAttr != null)
+                {
+                    // TODO Process converter
+                }
+                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                if (disableConverterAttr != null)
+                {
+                    // TODO Process disable-converter
+                }
+
                 fmd.setKeyMetaData(keymd);
                 pushStack(keymd);
             }
@@ -869,6 +917,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 valuemd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                 valuemd.setUnique(MetaDataUtils.getBooleanForString(getAttr(attrs, "unique"), false));
                 valuemd.setMappedBy(getAttr(attrs, "mapped-by"));
+
+                String converterAttr = getAttr(attrs, "converter");
+                if (converterAttr != null)
+                {
+                    // TODO Process converter
+                }
+                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                if (disableConverterAttr != null)
+                {
+                    // TODO Process disable-converter
+                }
+
                 fmd.setValueMetaData(valuemd);
                 pushStack(valuemd);
             }

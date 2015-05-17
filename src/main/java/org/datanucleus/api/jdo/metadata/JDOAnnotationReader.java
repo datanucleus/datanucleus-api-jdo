@@ -1057,6 +1057,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     dependentValue = (String) annotationValues.get("dependentValue");
                     serializedValue = (String) annotationValues.get("serializedValue");
                     embeddedValue = (String) annotationValues.get("embeddedValue");
+                    Class converterCls = (Class) annotationValues.get("converter");
+                    if (converterCls != null)
+                    {
+                        // TODO Support this, also disableConverter
+                        NucleusLogger.GENERAL.debug("TODO Need to process converter class " + converterCls);
+                    }
 
                     if (member.isProperty())
                     {
@@ -1263,6 +1269,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String indexName = (String) annotationValues.get("index");
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
+                    Class converterCls = (Class) annotationValues.get("converter");
+                    if (converterCls != null)
+                    {
+                        // TODO Support this, also disableConverter
+                        NucleusLogger.GENERAL.debug("TODO Need to process element converter class " + converterCls);
+                    }
+
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1381,6 +1394,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String indexName = (String) annotationValues.get("index");
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
+                    Class converterCls = (Class) annotationValues.get("converter");
+                    if (converterCls != null)
+                    {
+                        // TODO Support this, also disableConverter
+                        NucleusLogger.GENERAL.debug("TODO Need to process key converter class " + converterCls);
+                    }
+
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
@@ -1484,6 +1504,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String indexName = (String) annotationValues.get("index");
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
+                    Class converterCls = (Class) annotationValues.get("converter");
+                    if (converterCls != null)
+                    {
+                        // TODO Support this, also disableConverter
+                        NucleusLogger.GENERAL.debug("TODO Need to process value converter class " + converterCls);
+                    }
+
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
                         unique = "true";
