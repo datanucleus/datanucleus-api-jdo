@@ -49,6 +49,7 @@ public interface TypesafeQuery<T>
      * @param name Name of the parameter
      * @param type Java type of the parameter
      * @return Expression for the parameter
+     * @param <P> parameter type
      */
     <P> Expression<P> parameter(String name, Class<P> type);
 
@@ -150,6 +151,7 @@ public interface TypesafeQuery<T>
      * @param name Name of the variable
      * @param type Type of the variable
      * @return Expression for the variable
+     * @param <V> variable type
      */
     <V> Expression<V> variable(String name, Class<V> type);
 
@@ -299,14 +301,12 @@ public interface TypesafeQuery<T>
      * Method to execute the query where there are (potentially) multiple rows and we are returning
      * the candidate type.
      * @return The results
-     * @param <T> result type
      */
     List<T> executeList();
 
     /**
      * Method to execute the query where there is a single row and we are returning the candidate type.
      * @return The result
-     * @param <T> result type
      */
     T executeUnique();
 

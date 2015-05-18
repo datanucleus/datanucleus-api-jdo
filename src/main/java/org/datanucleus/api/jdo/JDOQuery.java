@@ -834,6 +834,7 @@ public class JDOQuery implements Query, AutoCloseable
     /**
      * Save this query as a named query with the specified name.
      * @param name The name to refer to it under
+     * @return This query
      */
     public Query saveAsNamedQuery(String name)
     {
