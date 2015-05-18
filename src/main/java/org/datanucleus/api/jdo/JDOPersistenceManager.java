@@ -100,7 +100,6 @@ import org.datanucleus.util.StringUtils;
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
  */
-@SuppressWarnings("unused")
 public class JDOPersistenceManager implements javax.jdo.PersistenceManager, AutoCloseable
 {
     /** Logger for JDO. */
