@@ -100,7 +100,7 @@ import org.datanucleus.util.StringUtils;
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
  */
-public class JDOPersistenceManager implements javax.jdo.PersistenceManager, AutoCloseable
+public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 {
     /** Logger for JDO. */
     public static final NucleusLogger LOGGER = NucleusLogger.getLoggerInstance("DataNucleus.JDO");
@@ -167,6 +167,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
         }
         catch (TransactionActiveOnCloseException tae)
         {
+            // TODO JDO 3.2 likely will change this to force rollback
             throw new JDOUserException(tae.getMessage(), this);
         }
         catch (NucleusException ne)
