@@ -17,6 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import javax.jdo.AttributeConverter;
 import javax.jdo.annotations.ForeignKeyAction;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
@@ -747,5 +748,45 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
         ColumnMetadataImpl colmd = new ColumnMetadataImpl(internalColmd);
         colmd.parent = this;
         return colmd;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.MemberMetadata#getConverter()
+     */
+    @Override
+    public AttributeConverter<?, ?> getConverter()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.MemberMetadata#setConverter(javax.jdo.AttributeConverter)
+     */
+    @Override
+    public MemberMetadata setConverter(AttributeConverter<?, ?> conv)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.MemberMetadata#getDisableConverter()
+     */
+    @Override
+    public boolean getDisableConverter()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.MemberMetadata#setDisableConverter(boolean)
+     */
+    @Override
+    public MemberMetadata setDisableConverter(boolean disable)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

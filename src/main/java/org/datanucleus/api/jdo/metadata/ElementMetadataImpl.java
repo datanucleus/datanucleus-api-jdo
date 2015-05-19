@@ -17,6 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import javax.jdo.AttributeConverter;
 import javax.jdo.annotations.ForeignKeyAction;
 import javax.jdo.metadata.ColumnMetadata;
 import javax.jdo.metadata.ElementMetadata;
@@ -336,5 +337,45 @@ public class ElementMetadataImpl extends AbstractMetadataImpl implements Element
     {
         getInternal().setTable(name);
         return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.ElementMetadata#getConverter()
+     */
+    @Override
+    public AttributeConverter<?, ?> getConverter()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.ElementMetadata#setConverter(javax.jdo.AttributeConverter)
+     */
+    @Override
+    public ElementMetadata setConverter(AttributeConverter<?, ?> conv)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.ElementMetadata#getDisableConverter()
+     */
+    @Override
+    public boolean getDisableConverter()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.metadata.ElementMetadata#setDisableConverter(boolean)
+     */
+    @Override
+    public ElementMetadata setDisableConverter(boolean disable)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
