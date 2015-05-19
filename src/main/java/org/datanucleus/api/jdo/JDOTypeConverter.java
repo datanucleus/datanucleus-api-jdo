@@ -17,6 +17,8 @@ Contributors:
  **********************************************************************/
 package org.datanucleus.api.jdo;
 
+import javax.jdo.AttributeConverter;
+
 import org.datanucleus.store.types.converters.TypeConverter;
 
 /**
@@ -26,7 +28,7 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
 {
     private static final long serialVersionUID = -4250901331525617340L;
 
-    // AttributeConverter<X, Y> jdoConverter;
+    AttributeConverter<X, Y> jdoConverter;
 
     /** The member type. */
     Class<X> memberType;
@@ -34,9 +36,9 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
     /** The datastore type. */
     Class<Y> dbType;
 
-    public JDOTypeConverter(/* AttributeConverter<X, Y> conv, */ Class<X> memberType, Class<Y> dbType)
+    public JDOTypeConverter(AttributeConverter<X, Y> conv, Class<X> memberType, Class<Y> dbType)
     {
-        // TODO Set jdoConverter
+        this.jdoConverter = conv;
         this.dbType = dbType;
         this.memberType = memberType;
     }
@@ -57,8 +59,7 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
     @Override
     public Y toDatastoreType(X memberValue)
     {
-//        return jdoConverter.convertToDatastore(memberValue);
-        return null;
+        return jdoConverter.convertToDatastore(memberValue);
     }
 
     /* (non-Javadoc)
@@ -67,8 +68,7 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
     @Override
     public X toMemberType(Y datastoreValue)
     {
-//      return jdoConverter.convertToAttribute(datastoreValue);
-        return null;
+      return jdoConverter.convertToAttribute(datastoreValue);
     }
 
     public String toString()

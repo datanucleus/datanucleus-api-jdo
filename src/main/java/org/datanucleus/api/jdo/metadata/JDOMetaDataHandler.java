@@ -17,10 +17,16 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import java.lang.reflect.Method;
+
+import javax.jdo.AttributeConverter;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
+import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -70,6 +76,8 @@ import org.datanucleus.metadata.UniqueMetaData;
 import org.datanucleus.metadata.ValueMetaData;
 import org.datanucleus.metadata.VersionMetaData;
 import org.datanucleus.metadata.xml.AbstractMetaDataHandler;
+import org.datanucleus.store.types.TypeManager;
+import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.StringUtils;
@@ -148,6 +156,18 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             cmd.setSerializeRead(serializeReadAttr.equalsIgnoreCase("true") ? true : false);
         }
+
+        String converterAttr = getAttr(attrs, "converter");
+        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
+        {
+            // TODO Process disable-converter
+        }
+        else if (!StringUtils.isWhitespace(converterAttr))
+        {
+            // TODO Process converter
+        }
+
         return cmd;
     }
 
@@ -193,14 +213,14 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        if (converterAttr != null)
-        {
-            // TODO Process converter
-        }
         String disableConverterAttr = getAttr(attrs, "disable-converter");
-        if (disableConverterAttr != null)
+        if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
             // TODO Process disable-converter
+        }
+        else if (!StringUtils.isWhitespace(converterAttr))
+        {
+            // TODO Process converter
         }
 
         return imd;
@@ -265,14 +285,57 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        if (converterAttr != null)
-        {
-            // TODO Process converter
-        }
         String disableConverterAttr = getAttr(attrs, "disable-converter");
-        if (disableConverterAttr != null)
+        if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
-            // TODO Process disable-converter
+            fmd.setTypeConverterDisabled();
+        }
+        else if (!StringUtils.isWhitespace(converterAttr))
+        {
+            TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+            ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+            Class converterCls = clr.classForName(converterAttr);
+            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+            {
+                // Not yet cached an instance of this converter so create one
+                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                Class attrType = null;
+                Method[] methods = converterCls.getMethods();
+                if (methods != null)
+                {
+                    for (int j=0;j<methods.length;j++)
+                    {
+                        if (methods[j].getName().equals("convertToEntityAttribute"))
+                        {
+                            Class returnCls = methods[j].getReturnType();
+                            if (returnCls != Object.class)
+                            {
+                                attrType = returnCls;
+                                break;
+                            }
+                        }
+                    }
+                }
+                Class dbType = null;
+                try
+                {
+                    Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                    if (returnCls != Object.class)
+                    {
+                        dbType = returnCls;
+                    }
+                }
+                catch (Exception e)
+                {
+                    NucleusLogger.GENERAL.error("Exception in lookup", e);
+                }
+
+                // Register the TypeConverter under the name of the AttributeConverter class
+                JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                typeMgr.registerConverter(converterAttr, typeConv);
+            }
+
+            fmd.setTypeConverterName(converterAttr);
         }
 
         return fmd;
@@ -336,6 +399,61 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         {
             pmd.setCacheable(cacheableAttr.equalsIgnoreCase("false") ? false : true);
         }
+
+        String converterAttr = getAttr(attrs, "converter");
+        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
+        {
+            pmd.setTypeConverterDisabled();
+        }
+        else if (!StringUtils.isWhitespace(converterAttr))
+        {
+            TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+            ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+            Class converterCls = clr.classForName(converterAttr);
+            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+            {
+                // Not yet cached an instance of this converter so create one
+                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                Class attrType = null;
+                Method[] methods = converterCls.getMethods();
+                if (methods != null)
+                {
+                    for (int j=0;j<methods.length;j++)
+                    {
+                        if (methods[j].getName().equals("convertToEntityAttribute"))
+                        {
+                            Class returnCls = methods[j].getReturnType();
+                            if (returnCls != Object.class)
+                            {
+                                attrType = returnCls;
+                                break;
+                            }
+                        }
+                    }
+                }
+                Class dbType = null;
+                try
+                {
+                    Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                    if (returnCls != Object.class)
+                    {
+                        dbType = returnCls;
+                    }
+                }
+                catch (Exception e)
+                {
+                    NucleusLogger.GENERAL.error("Exception in lookup", e);
+                }
+
+                // Register the TypeConverter under the name of the AttributeConverter class
+                JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                typeMgr.registerConverter(converterAttr, typeConv);
+            }
+
+            pmd.setTypeConverterName(converterAttr);
+        }
+
         return pmd;
     }
 
@@ -866,14 +984,57 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
 
                 String converterAttr = getAttr(attrs, "converter");
-                if (converterAttr != null)
-                {
-                    // TODO Process converter
-                }
                 String disableConverterAttr = getAttr(attrs, "disable-converter");
-                if (disableConverterAttr != null)
+                if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
-                    // TODO Process disable-converter
+                    // TODO Disable on the element?
+                }
+                else if (!StringUtils.isWhitespace(converterAttr))
+                {
+                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    Class converterCls = clr.classForName(converterAttr);
+                    if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                    {
+                        // Not yet cached an instance of this converter so create one
+                        AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                        Class attrType = null;
+                        Method[] methods = converterCls.getMethods();
+                        if (methods != null)
+                        {
+                            for (int j=0;j<methods.length;j++)
+                            {
+                                if (methods[j].getName().equals("convertToEntityAttribute"))
+                                {
+                                    Class returnCls = methods[j].getReturnType();
+                                    if (returnCls != Object.class)
+                                    {
+                                        attrType = returnCls;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        Class dbType = null;
+                        try
+                        {
+                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                            if (returnCls != Object.class)
+                            {
+                                dbType = returnCls;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            NucleusLogger.GENERAL.error("Exception in lookup", e);
+                        }
+
+                        // Register the TypeConverter under the name of the AttributeConverter class
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        typeMgr.registerConverter(converterAttr, typeConv);
+                    }
+
+                    elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);
                 }
 
                 fmd.setElementMetaData(elemmd);
@@ -892,14 +1053,57 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 keymd.setMappedBy(getAttr(attrs, "mapped-by"));
 
                 String converterAttr = getAttr(attrs, "converter");
-                if (converterAttr != null)
-                {
-                    // TODO Process converter
-                }
                 String disableConverterAttr = getAttr(attrs, "disable-converter");
-                if (disableConverterAttr != null)
+                if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
-                    // TODO Process disable-converter
+                    // TODO Disable on the key?
+                }
+                else if (!StringUtils.isWhitespace(converterAttr))
+                {
+                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    Class converterCls = clr.classForName(converterAttr);
+                    if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                    {
+                        // Not yet cached an instance of this converter so create one
+                        AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                        Class attrType = null;
+                        Method[] methods = converterCls.getMethods();
+                        if (methods != null)
+                        {
+                            for (int j=0;j<methods.length;j++)
+                            {
+                                if (methods[j].getName().equals("convertToEntityAttribute"))
+                                {
+                                    Class returnCls = methods[j].getReturnType();
+                                    if (returnCls != Object.class)
+                                    {
+                                        attrType = returnCls;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        Class dbType = null;
+                        try
+                        {
+                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                            if (returnCls != Object.class)
+                            {
+                                dbType = returnCls;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            NucleusLogger.GENERAL.error("Exception in lookup", e);
+                        }
+
+                        // Register the TypeConverter under the name of the AttributeConverter class
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        typeMgr.registerConverter(converterAttr, typeConv);
+                    }
+
+                    keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);
                 }
 
                 fmd.setKeyMetaData(keymd);
@@ -919,14 +1123,57 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 valuemd.setMappedBy(getAttr(attrs, "mapped-by"));
 
                 String converterAttr = getAttr(attrs, "converter");
-                if (converterAttr != null)
-                {
-                    // TODO Process converter
-                }
                 String disableConverterAttr = getAttr(attrs, "disable-converter");
-                if (disableConverterAttr != null)
+                if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
-                    // TODO Process disable-converter
+                    // TODO Disable on the value?
+                }
+                else if (!StringUtils.isWhitespace(converterAttr))
+                {
+                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    Class converterCls = clr.classForName(converterAttr);
+                    if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                    {
+                        // Not yet cached an instance of this converter so create one
+                        AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                        Class attrType = null;
+                        Method[] methods = converterCls.getMethods();
+                        if (methods != null)
+                        {
+                            for (int j=0;j<methods.length;j++)
+                            {
+                                if (methods[j].getName().equals("convertToEntityAttribute"))
+                                {
+                                    Class returnCls = methods[j].getReturnType();
+                                    if (returnCls != Object.class)
+                                    {
+                                        attrType = returnCls;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        Class dbType = null;
+                        try
+                        {
+                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                            if (returnCls != Object.class)
+                            {
+                                dbType = returnCls;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            NucleusLogger.GENERAL.error("Exception in lookup", e);
+                        }
+
+                        // Register the TypeConverter under the name of the AttributeConverter class
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        typeMgr.registerConverter(converterAttr, typeConv);
+                    }
+
+                    valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);
                 }
 
                 fmd.setValueMetaData(valuemd);

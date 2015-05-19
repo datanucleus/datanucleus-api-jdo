@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.jdo.AttributeConverter;
+import javax.jdo.AttributeConverter.NullAttributeConverter;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
@@ -46,6 +48,7 @@ import javax.jdo.annotations.VersionStrategy;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
@@ -1010,15 +1013,16 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         dependent = Boolean.valueOf(depStr);
                     }
-                    String valueStrategy = JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
+                    String valueStrategy = 
+                            JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
                     String customValueStrategy = (String) annotationValues.get("customValueStrategy");
                     if (!StringUtils.isWhitespace(customValueStrategy))
                     {
                         // User has provided an extension strategy
                         valueStrategy = customValueStrategy;
                     }
-                    FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier((PersistenceModifier) annotationValues
-                            .get("persistenceModifier"));
+                    FieldPersistenceModifier modifier = 
+                            JDOAnnotationUtils.getFieldPersistenceModifier((PersistenceModifier) annotationValues.get("persistenceModifier"));
                     if (modifier == null)
                     {
                         modifier = FieldPersistenceModifier.PERSISTENT;
@@ -1058,11 +1062,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     serializedValue = (String) annotationValues.get("serializedValue");
                     embeddedValue = (String) annotationValues.get("embeddedValue");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls != null)
+                    if (converterCls == NullAttributeConverter.class)
                     {
-                        // TODO Support this, also disableConverter
-                        NucleusLogger.GENERAL.debug("TODO Need to process converter class " + converterCls);
+                        converterCls = null;
                     }
+                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
 
                     if (member.isProperty())
                     {
@@ -1074,6 +1078,57 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         // Field
                         mmd = new FieldMetaData(cmd, member.getName());
                     }
+
+                    if (disableConversion)
+                    {
+                        mmd.setTypeConverterDisabled();
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                            Class attrType = member.getType();
+                            Method[] methods = converterCls.getMethods();
+                            if (methods != null)
+                            {
+                                for (int j=0;j<methods.length;j++)
+                                {
+                                    if (methods[j].getName().equals("convertToEntityAttribute"))
+                                    {
+                                        Class returnCls = methods[j].getReturnType();
+                                        if (returnCls != Object.class)
+                                        {
+                                            attrType = returnCls;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            Class dbType = null;
+                            try
+                            {
+                                Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                                if (returnCls != Object.class)
+                                {
+                                    dbType = returnCls;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                NucleusLogger.GENERAL.error("Exception in lookup", e);
+                            }
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                        }
+
+                        mmd.setTypeConverterName(converterCls.getName());
+                    }
+
                     if (modifier != null)
                     {
                         mmd.setPersistenceModifier(modifier);
@@ -1270,11 +1325,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls != null)
+                    if (converterCls == NullAttributeConverter.class)
                     {
-                        // TODO Support this, also disableConverter
-                        NucleusLogger.GENERAL.debug("TODO Need to process element converter class " + converterCls);
+                        converterCls = null;
                     }
+                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
@@ -1339,6 +1394,56 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementColumns[j]));
                         }
                     }
+                    if (disableConversion)
+                    {
+                        // TODO Specify this on the element?
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                            Class attrType = ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
+                            Method[] methods = converterCls.getMethods();
+                            if (methods != null)
+                            {
+                                for (int j=0;j<methods.length;j++)
+                                {
+                                    if (methods[j].getName().equals("convertToEntityAttribute"))
+                                    {
+                                        Class returnCls = methods[j].getReturnType();
+                                        if (returnCls != Object.class)
+                                        {
+                                            attrType = returnCls;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            Class dbType = null;
+                            try
+                            {
+                                Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                                if (returnCls != Object.class)
+                                {
+                                    dbType = returnCls;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                NucleusLogger.GENERAL.error("Exception in lookup", e);
+                            }
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                        }
+
+                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                    }
+
                     JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[]) annotationValues.get("extensions"));
 
                     Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
@@ -1395,11 +1500,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls != null)
+                    if (converterCls == NullAttributeConverter.class)
                     {
-                        // TODO Support this, also disableConverter
-                        NucleusLogger.GENERAL.debug("TODO Need to process key converter class " + converterCls);
+                        converterCls = null;
                     }
+                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
@@ -1464,6 +1569,57 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             keymd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(keyColumns[j]));
                         }
                     }
+
+                    if (disableConversion)
+                    {
+                        // TODO Specify this on the key?
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                            Class attrType = ClassUtils.getMapKeyType(member.getType(), member.getGenericType());
+                            Method[] methods = converterCls.getMethods();
+                            if (methods != null)
+                            {
+                                for (int j=0;j<methods.length;j++)
+                                {
+                                    if (methods[j].getName().equals("convertToEntityAttribute"))
+                                    {
+                                        Class returnCls = methods[j].getReturnType();
+                                        if (returnCls != Object.class)
+                                        {
+                                            attrType = returnCls;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            Class dbType = null;
+                            try
+                            {
+                                Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                                if (returnCls != Object.class)
+                                {
+                                    dbType = returnCls;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                NucleusLogger.GENERAL.error("Exception in lookup", e);
+                            }
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                        }
+
+                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                    }
+
                     JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[]) annotationValues.get("extensions"));
 
                     Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
@@ -1505,11 +1661,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls != null)
+                    if (converterCls == NullAttributeConverter.class)
                     {
-                        // TODO Support this, also disableConverter
-                        NucleusLogger.GENERAL.debug("TODO Need to process value converter class " + converterCls);
+                        converterCls = null;
                     }
+                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
@@ -1574,6 +1730,57 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             valuemd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(valueColumns[j]));
                         }
                     }
+
+                    if (disableConversion)
+                    {
+                        // TODO Specify this on the value?
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                            Class attrType = ClassUtils.getMapValueType(member.getType(), member.getGenericType());
+                            Method[] methods = converterCls.getMethods();
+                            if (methods != null)
+                            {
+                                for (int j=0;j<methods.length;j++)
+                                {
+                                    if (methods[j].getName().equals("convertToEntityAttribute"))
+                                    {
+                                        Class returnCls = methods[j].getReturnType();
+                                        if (returnCls != Object.class)
+                                        {
+                                            attrType = returnCls;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            Class dbType = null;
+                            try
+                            {
+                                Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
+                                if (returnCls != Object.class)
+                                {
+                                    dbType = returnCls;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                NucleusLogger.GENERAL.error("Exception in lookup", e);
+                            }
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                        }
+
+                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                    }
+
                     JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[]) annotationValues.get("extensions"));
 
                     Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
@@ -1665,8 +1872,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.CONVERT))
                 {
                     Class converterCls = (Class) annotationValues.get("value");
+                    if (converterCls == NullAttributeConverter.class)
+                    {
+                        converterCls = null;
+                    }
                     Boolean enabled = (Boolean) annotationValues.get("enabled");
-                    if (enabled)
+                    if (enabled && converterCls != null)
                     {
 //                        String name = (String) annotationValues.get("name");
                         TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
