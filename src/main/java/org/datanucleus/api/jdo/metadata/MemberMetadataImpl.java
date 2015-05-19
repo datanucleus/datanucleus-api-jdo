@@ -37,6 +37,8 @@ import javax.jdo.metadata.OrderMetadata;
 import javax.jdo.metadata.UniqueMetadata;
 import javax.jdo.metadata.ValueMetadata;
 
+import org.datanucleus.api.jdo.JDOTypeConverter;
+import org.datanucleus.api.jdo.JDOTypeConverterUtils;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ArrayMetaData;
 import org.datanucleus.metadata.CollectionMetaData;
@@ -55,6 +57,7 @@ import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.UniqueMetaData;
 import org.datanucleus.metadata.ValueMetaData;
+import org.datanucleus.util.NucleusLogger;
 
 /**
  * Convenience implementation of MemberMetadata for use by FieldMetadataImpl/PropertyMetadataImpl
@@ -756,7 +759,11 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     @Override
     public AttributeConverter<?, ?> getConverter()
     {
-        // TODO Auto-generated method stub
+        String typeConverterName = getInternal().getTypeConverterName();
+        if (typeConverterName != null)
+        {
+            // TODO Extra the converter
+        }
         return null;
     }
 
@@ -766,8 +773,16 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     @Override
     public MemberMetadata setConverter(AttributeConverter<?, ?> conv)
     {
-        // TODO Auto-generated method stub
-        return null;
+        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(conv.getClass(), getInternal().getType());
+        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(conv.getClass(), attrType, null);
+
+        // Register the TypeConverter under the name of the AttributeConverter class
+        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+        NucleusLogger.GENERAL.debug(">> Need to register JDOTypeConverter " + typeConv + " under name " + conv.getClass().getName());
+        // TODO Register this
+        getInternal().setTypeConverterName(conv.getClass().getName());
+
+        return this;
     }
 
     /* (non-Javadoc)
@@ -776,8 +791,7 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     @Override
     public boolean getDisableConverter()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return getInternal().isTypeConversionDisabled();
     }
 
     /* (non-Javadoc)
@@ -786,7 +800,14 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     @Override
     public MemberMetadata setDisableConverter(boolean disable)
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (disable)
+        {
+            getInternal().setTypeConverterDisabled();
+        }
+        else
+        {
+            // TODO Support enabling after disable
+        }
+        return this;
     }
 }

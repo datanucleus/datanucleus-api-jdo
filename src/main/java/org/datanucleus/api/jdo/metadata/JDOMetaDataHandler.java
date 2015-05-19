@@ -17,8 +17,6 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
-import java.lang.reflect.Method;
-
 import javax.jdo.AttributeConverter;
 
 import org.xml.sax.Attributes;
@@ -27,6 +25,7 @@ import org.xml.sax.SAXException;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOTypeConverter;
+import org.datanucleus.api.jdo.JDOTypeConverterUtils;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -299,36 +298,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 // Not yet cached an instance of this converter so create one
                 AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                Class attrType = null;
-                Method[] methods = converterCls.getMethods();
-                if (methods != null)
-                {
-                    for (int j=0;j<methods.length;j++)
-                    {
-                        if (methods[j].getName().equals("convertToEntityAttribute"))
-                        {
-                            Class returnCls = methods[j].getReturnType();
-                            if (returnCls != Object.class)
-                            {
-                                attrType = returnCls;
-                                break;
-                            }
-                        }
-                    }
-                }
-                Class dbType = null;
-                try
-                {
-                    Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
-                    if (returnCls != Object.class)
-                    {
-                        dbType = returnCls;
-                    }
-                }
-                catch (Exception e)
-                {
-                    NucleusLogger.GENERAL.error("Exception in lookup", e);
-                }
+                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
+                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                 // Register the TypeConverter under the name of the AttributeConverter class
                 JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
@@ -415,36 +386,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 // Not yet cached an instance of this converter so create one
                 AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                Class attrType = null;
-                Method[] methods = converterCls.getMethods();
-                if (methods != null)
-                {
-                    for (int j=0;j<methods.length;j++)
-                    {
-                        if (methods[j].getName().equals("convertToEntityAttribute"))
-                        {
-                            Class returnCls = methods[j].getReturnType();
-                            if (returnCls != Object.class)
-                            {
-                                attrType = returnCls;
-                                break;
-                            }
-                        }
-                    }
-                }
-                Class dbType = null;
-                try
-                {
-                    Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
-                    if (returnCls != Object.class)
-                    {
-                        dbType = returnCls;
-                    }
-                }
-                catch (Exception e)
-                {
-                    NucleusLogger.GENERAL.error("Exception in lookup", e);
-                }
+                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
+                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                 // Register the TypeConverter under the name of the AttributeConverter class
                 JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
@@ -998,36 +941,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     {
                         // Not yet cached an instance of this converter so create one
                         AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                        Class attrType = null;
-                        Method[] methods = converterCls.getMethods();
-                        if (methods != null)
-                        {
-                            for (int j=0;j<methods.length;j++)
-                            {
-                                if (methods[j].getName().equals("convertToEntityAttribute"))
-                                {
-                                    Class returnCls = methods[j].getReturnType();
-                                    if (returnCls != Object.class)
-                                    {
-                                        attrType = returnCls;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Class dbType = null;
-                        try
-                        {
-                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
-                            if (returnCls != Object.class)
-                            {
-                                dbType = returnCls;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            NucleusLogger.GENERAL.error("Exception in lookup", e);
-                        }
+                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO element type
+                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
@@ -1067,36 +982,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     {
                         // Not yet cached an instance of this converter so create one
                         AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                        Class attrType = null;
-                        Method[] methods = converterCls.getMethods();
-                        if (methods != null)
-                        {
-                            for (int j=0;j<methods.length;j++)
-                            {
-                                if (methods[j].getName().equals("convertToEntityAttribute"))
-                                {
-                                    Class returnCls = methods[j].getReturnType();
-                                    if (returnCls != Object.class)
-                                    {
-                                        attrType = returnCls;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Class dbType = null;
-                        try
-                        {
-                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
-                            if (returnCls != Object.class)
-                            {
-                                dbType = returnCls;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            NucleusLogger.GENERAL.error("Exception in lookup", e);
-                        }
+                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO key type
+                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
@@ -1137,36 +1024,8 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     {
                         // Not yet cached an instance of this converter so create one
                         AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                        Class attrType = null;
-                        Method[] methods = converterCls.getMethods();
-                        if (methods != null)
-                        {
-                            for (int j=0;j<methods.length;j++)
-                            {
-                                if (methods[j].getName().equals("convertToEntityAttribute"))
-                                {
-                                    Class returnCls = methods[j].getReturnType();
-                                    if (returnCls != Object.class)
-                                    {
-                                        attrType = returnCls;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Class dbType = null;
-                        try
-                        {
-                            Class returnCls = converterCls.getMethod("convertToDatabaseColumn", attrType).getReturnType();
-                            if (returnCls != Object.class)
-                            {
-                                dbType = returnCls;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            NucleusLogger.GENERAL.error("Exception in lookup", e);
-                        }
+                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO value type
+                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
