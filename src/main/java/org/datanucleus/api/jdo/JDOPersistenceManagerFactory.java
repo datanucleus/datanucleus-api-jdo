@@ -40,6 +40,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.jdo.AttributeConverter;
 import javax.jdo.Constants;
 import javax.jdo.FetchGroup;
 import javax.jdo.JDOException;
@@ -535,48 +536,22 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 String converterName = (String) entry.getValue();
                 try
                 {
-                    // TODO Register this TypeConverter (after checking that it is a valid TypeConverter)
-                    Class converterCls = nucleusContext.getClassLoaderResolver(null).classForName(converterName);
-                    Object converter = ClassUtils.newInstance(converterCls, null, null);
-                    NucleusLogger.GENERAL.debug("TODO Need to register type=" + typeName + " as using converter with name=" + converterName + " conv=" + converter);
+                    // Register this TypeConverter (after checking that it is a valid TypeConverter)
+                    Class attrConvCls = nucleusContext.getClassLoaderResolver(null).classForName(converterName);
+                    AttributeConverter attrConv = (AttributeConverter) ClassUtils.newInstance(attrConvCls, null, null);
 
                     // Extract field and datastore types for this converter
-                    /*Class javaType = null;
-                    Class dbType = null;
-                    try
-                    {
-                        Method[] methods = attrConv.getClass().getMethods();
-                        if (methods != null)
-                        {
-                            for (int j=0;j<methods.length;j++)
-                            {
-                                if (methods[j].getName().equals("convertToAttribute"))
-                                {
-                                    Class returnCls = methods[j].getReturnType();
-                                    if (returnCls != Object.class)
-                                    {
-                                        javaType = returnCls;
-                                    }
-                                }
-                            }
-                        }
-                        Class returnCls = entityConv.getClass().getMethod("convertToDatastore", javaType).getReturnType();
-                        if (returnCls != Object.class)
-                        {
-                            dbType = returnCls;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                    Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(attrConvCls, null);
+                    Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(attrConvCls, attrType, null);
 
                     // Register the TypeConverter under the name of the AttributeConverter class
-                    if (javaType != null)
+                    if (attrType != null)
                     {
-                        TypeConverter conv = new JDOTypeConverter(attrConv, javaType, dbType);
-                        typeMgr.registerConverter(cls.getName(), conv, autoApply, javaType.getName());
+                        // TODO Compare with typeName, should be the same (or inherited)
+                        NucleusLogger.GENERAL.debug("Registering javaType=" + typeName + " as using converter with name=" + converterName + " conv=" + attrConv);
+                        JDOTypeConverter conv = new JDOTypeConverter(attrConv, attrType, dbType);
+                        nucleusContext.getTypeManager().registerConverter(converterName, conv, true, attrType.getName());
                     }
-                    nucleusContext.getTypeManager().registerConverter(typeName, converter, true, typeName); */
                 }
                 catch (NucleusException ne)
                 {
