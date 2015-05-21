@@ -631,25 +631,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void retrieveAll(Object... pcs)
     {
+        // TODO Check if first/last arg is Boolean, and redirect to different method
         retrieveAll(Arrays.asList(pcs), false);
-    }
-
-    /**
-     * Retrieve field values of instances from the store. This tells the
-     * <code>PersistenceManager</code> that the application intends to use the
-     * instances, and their field values should be retrieved. The fields in the
-     * current fetch group must be retrieved, and the implementation might
-     * retrieve more fields than the current fetch group.
-     * <P>
-     * The <code>PersistenceManager</code> might use policy information about
-     * the class to retrieve associated instances.
-     * @param pcs the instances
-     * @param useFetchPlan whether to retrieve only the current fetch plan fields
-     * @deprecated
-     */
-    public void retrieveAll(Object[] pcs, boolean useFetchPlan)
-    {
-        retrieveAll(Arrays.asList(pcs), useFetchPlan);
     }
 
     /**
@@ -901,18 +884,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void makeTransientAll(Object... pcs)
     {
+        // TODO Check if first/last arg is Boolean, and redirect to different method
         makeTransientAll(Arrays.asList(pcs));
-    }
-
-    /**
-     * Method to make transient an array of objects.
-     * @param pcs The objects
-     * @param includeFetchPlan Whether to make transient all objects in the fetch plan
-     * @deprecated
-     */
-    public void makeTransientAll(Object[] pcs, boolean includeFetchPlan)
-    {
-        makeTransientAll(Arrays.asList(pcs), includeFetchPlan);
     }
 
     /**
@@ -1782,25 +1755,14 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     }
 
     /**
-     * Accessor for the objects given the object ids.
-     * @param oids Ids of the objects.
-     * @param validate Whether to validate the object state
-     * @return The Objects with these ids (in the same order)
-     * @deprecated
-     */
-    public Object[] getObjectsById(Object[] oids, boolean validate)
-    {
-        return getObjectsById(validate, oids);
-    }
-
-    /**
      * Accessor for the objects given the object ids, validating the objects.
      * @param oids Ids of the objects.
      * @return The Objects with these ids (in the same order)
      */
     public Object[] getObjectsById(Object... oids)
     {
-        return getObjectsById(oids, true);
+        // TODO Check if first/last arg is Boolean, and redirect to different method
+        return getObjectsById(true, oids);
     }
 
     /**
