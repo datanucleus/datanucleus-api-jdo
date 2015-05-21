@@ -631,8 +631,20 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void retrieveAll(Object... pcs)
     {
-        // TODO Check if first/last arg is Boolean, and redirect to different method
-        retrieveAll(Arrays.asList(pcs), false);
+        if (pcs == null || pcs.length == 0)
+        {
+            return;
+        }
+        else if (pcs[pcs.length-1].getClass() == Boolean.class)
+        {
+            // Catch old deprecated/removed method taking (Object[], boolean)
+            NucleusLogger.PERSISTENCE.warn("You are calling PM.retrieveAll(Object...) with a boolean final argument. Method was removed that took this. Update your usage");
+            retrieveAll(Arrays.copyOfRange(pcs, 0, pcs.length-2), false);
+        }
+        else
+        {
+            retrieveAll(Arrays.asList(pcs), false);
+        }
     }
 
     /**
@@ -884,8 +896,20 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void makeTransientAll(Object... pcs)
     {
-        // TODO Check if first/last arg is Boolean, and redirect to different method
-        makeTransientAll(Arrays.asList(pcs));
+        if (pcs == null || pcs.length == 0)
+        {
+            return;
+        }
+        else if (pcs[pcs.length-1].getClass() == Boolean.class)
+        {
+            // Catch old deprecated/removed method taking (Object[], boolean)
+            NucleusLogger.PERSISTENCE.warn("You are calling PM.makeTransientAll(Object...) with a boolean final argument. Method was removed that took this. Update your usage");
+            makeTransientAll(Arrays.copyOfRange(pcs, 0, pcs.length-2), false);
+        }
+        else
+        {
+            makeTransientAll(Arrays.asList(pcs));
+        }
     }
 
     /**
@@ -1761,7 +1785,17 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public Object[] getObjectsById(Object... oids)
     {
-        // TODO Check if first/last arg is Boolean, and redirect to different method
+        if (oids == null || oids.length == 0)
+        {
+            return null;
+        }
+        else if (oids[oids.length-1].getClass() == Boolean.class)
+        {
+            // Catch old deprecated/removed method taking (Object[], boolean)
+            NucleusLogger.PERSISTENCE.warn("You are calling PM.getObjectsById(Object...) with a boolean final argument. Method was removed that took this. Update your usage");
+            return getObjectsById(true, Arrays.copyOfRange(oids, 0, oids.length-1));
+        }
+
         return getObjectsById(true, oids);
     }
 
