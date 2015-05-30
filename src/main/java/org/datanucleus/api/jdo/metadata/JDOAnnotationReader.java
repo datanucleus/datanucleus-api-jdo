@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.jdo.AttributeConverter;
-import javax.jdo.AttributeConverter.NullAttributeConverter;
+import javax.jdo.AttributeConverter.UseDefault;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
@@ -1063,7 +1063,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     serializedValue = (String) annotationValues.get("serializedValue");
                     embeddedValue = (String) annotationValues.get("embeddedValue");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == NullAttributeConverter.class)
+                    if (converterCls == UseDefault.class)
                     {
                         converterCls = null;
                     }
@@ -1298,7 +1298,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == NullAttributeConverter.class)
+                    if (converterCls == UseDefault.class)
                     {
                         converterCls = null;
                     }
@@ -1446,7 +1446,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == NullAttributeConverter.class)
+                    if (converterCls == UseDefault.class)
                     {
                         converterCls = null;
                     }
@@ -1580,7 +1580,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String unique = (String) annotationValues.get("unique");
                     String uniqueName = (String) annotationValues.get("uniqueKey");
                     Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == NullAttributeConverter.class)
+                    if (converterCls == UseDefault.class)
                     {
                         converterCls = null;
                     }
@@ -1764,7 +1764,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.CONVERT))
                 {
                     Class converterCls = (Class) annotationValues.get("value");
-                    if (converterCls == NullAttributeConverter.class)
+                    if (converterCls == UseDefault.class)
                     {
                         converterCls = null;
                     }
