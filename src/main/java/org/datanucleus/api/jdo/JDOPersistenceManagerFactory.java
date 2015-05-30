@@ -2204,6 +2204,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void addFetchGroups(FetchGroup... groups)
     {
+        checkJDOPermission(JDOPermission.GET_METADATA);
+
         if (groups == null || groups.length == 0)
         {
             return;
@@ -2227,6 +2229,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void removeFetchGroups(FetchGroup... groups)
     {
+        checkJDOPermission(JDOPermission.GET_METADATA);
+
         if (groups == null || groups.length == 0)
         {
             return;
@@ -2256,6 +2260,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void removeAllFetchGroups()
     {
+        checkJDOPermission(JDOPermission.GET_METADATA);
+
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(false);
 
         if (jdoGroups != null)
@@ -2298,6 +2304,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void registerMetadata(javax.jdo.metadata.JDOMetadata metadata)
     {
+        checkJDOPermission(JDOPermission.GET_METADATA);
+
         MetaDataManager mmgr = nucleusContext.getMetaDataManager();
         FileMetaData filemd = ((JDOMetadataImpl)metadata).getInternal();
 
@@ -2393,7 +2401,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         nucleusContext.getStoreManager().unmanageClass(nucleusContext.getClassLoaderResolver(null), className, false);
     }
 
-    private void checkJDOPermission(JDOPermission jdoPermission)
+    public static void checkJDOPermission(JDOPermission jdoPermission)
     {
         SecurityManager secmgr = System.getSecurityManager();
         if (secmgr != null)

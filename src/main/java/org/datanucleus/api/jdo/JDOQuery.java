@@ -30,6 +30,7 @@ import javax.jdo.JDOQueryInterruptedException;
 import javax.jdo.JDOUnsupportedOptionException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.spi.JDOPermission;
 
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.QueryMetaData;
@@ -838,6 +839,8 @@ public class JDOQuery implements Query
      */
     public Query saveAsNamedQuery(String name)
     {
+        JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
+
         QueryMetaData qmd = new QueryMetaData(name);
         qmd.setLanguage(language);
         qmd.setQuery(query.toString());
