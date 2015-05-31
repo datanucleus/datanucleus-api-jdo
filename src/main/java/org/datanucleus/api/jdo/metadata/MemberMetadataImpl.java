@@ -786,19 +786,19 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.MemberMetadata#getDisableConverter()
+     * @see javax.jdo.metadata.MemberMetadata#getUseDefaultConversion()
      */
     @Override
-    public boolean getDisableConverter()
+    public Boolean getUseDefaultConversion()
     {
         return getInternal().isTypeConversionDisabled();
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.MemberMetadata#setDisableConverter(boolean)
+     * @see javax.jdo.metadata.MemberMetadata#setUseDefaultConversion(Boolean)
      */
     @Override
-    public MemberMetadata setDisableConverter(boolean disable)
+    public MemberMetadata setUseDefaultConversion(Boolean disable)
     {
         if (disable)
         {

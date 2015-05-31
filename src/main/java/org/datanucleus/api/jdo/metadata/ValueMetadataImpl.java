@@ -351,20 +351,20 @@ public class ValueMetadataImpl extends AbstractMetadataImpl implements ValueMeta
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.ValueMetadata#getDisableConverter()
+     * @see javax.jdo.metadata.ValueMetadata#getUseDefaultConversion()
      */
     @Override
-    public boolean getDisableConverter()
+    public Boolean getUseDefaultConversion()
     {
         // TODO Auto-generated method stub
-        return false;
+        return null;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.ValueMetadata#setDisableConverter(boolean)
+     * @see javax.jdo.metadata.ValueMetadata#setUseDefaultConversion(Boolean)
      */
     @Override
-    public ValueMetadata setDisableConverter(boolean disable)
+    public ValueMetadata setUseDefaultConversion(Boolean disable)
     {
         // TODO Auto-generated method stub
         return null;

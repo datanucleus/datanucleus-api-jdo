@@ -360,20 +360,20 @@ public class ElementMetadataImpl extends AbstractMetadataImpl implements Element
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.ElementMetadata#getDisableConverter()
+     * @see javax.jdo.metadata.ElementMetadata#getUseDefaultConversion()
      */
     @Override
-    public boolean getDisableConverter()
+    public Boolean getUseDefaultConversion()
     {
         // TODO Auto-generated method stub
-        return false;
+        return null;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.ElementMetadata#setDisableConverter(boolean)
+     * @see javax.jdo.metadata.ElementMetadata#setUseDefaultConversion(Boolean)
      */
     @Override
-    public ElementMetadata setDisableConverter(boolean disable)
+    public ElementMetadata setUseDefaultConversion(Boolean disable)
     {
         // TODO Auto-generated method stub
         return null;

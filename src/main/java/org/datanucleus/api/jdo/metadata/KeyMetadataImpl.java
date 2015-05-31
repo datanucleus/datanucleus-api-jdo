@@ -360,20 +360,20 @@ public class KeyMetadataImpl extends AbstractMetadataImpl implements KeyMetadata
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.KeyMetadata#getDisableConverter()
+     * @see javax.jdo.metadata.KeyMetadata#getUseDefaultConversion()
      */
     @Override
-    public boolean getDisableConverter()
+    public Boolean getUseDefaultConversion()
     {
         // TODO Auto-generated method stub
-        return false;
+        return null;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.metadata.KeyMetadata#setDisableConverter(boolean)
+     * @see javax.jdo.metadata.KeyMetadata#setUseDefaultConversion(boolean)
      */
     @Override
-    public KeyMetadata setDisableConverter(boolean disable)
+    public KeyMetadata setUseDefaultConversion(Boolean disable)
     {
         // TODO Auto-generated method stub
         return null;

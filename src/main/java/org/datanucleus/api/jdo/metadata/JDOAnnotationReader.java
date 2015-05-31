@@ -1067,7 +1067,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         converterCls = null;
                     }
-                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
+                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
 
                     if (member.isProperty())
                     {
@@ -1302,7 +1302,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         converterCls = null;
                     }
-                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
+                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
@@ -1450,7 +1450,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         converterCls = null;
                     }
-                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
+                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {
@@ -1584,7 +1584,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         converterCls = null;
                     }
-                    Boolean disableConversion = (Boolean)annotationValues.get("disableConversion");
+                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
 
                     if (!StringUtils.isWhitespace(uniqueName))
                     {

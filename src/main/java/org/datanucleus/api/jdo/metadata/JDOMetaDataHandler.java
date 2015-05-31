@@ -157,7 +157,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        String disableConverterAttr = getAttr(attrs, "use-default-conversion");
         if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
             // TODO Process disable-converter
@@ -212,7 +212,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        String disableConverterAttr = getAttr(attrs, "use-default-conversion");
         if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
             // TODO Process disable-converter
@@ -284,7 +284,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        String disableConverterAttr = getAttr(attrs, "use-default-conversion");
         if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
             fmd.setTypeConverterDisabled();
@@ -372,7 +372,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
 
         String converterAttr = getAttr(attrs, "converter");
-        String disableConverterAttr = getAttr(attrs, "disable-converter");
+        String disableConverterAttr = getAttr(attrs, "use-default-conversion");
         if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
         {
             pmd.setTypeConverterDisabled();
@@ -927,7 +927,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
 
                 String converterAttr = getAttr(attrs, "converter");
-                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                String disableConverterAttr = getAttr(attrs, "use-default-conversion");
                 if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
                     // TODO Disable on the element?
@@ -968,7 +968,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 keymd.setMappedBy(getAttr(attrs, "mapped-by"));
 
                 String converterAttr = getAttr(attrs, "converter");
-                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                String disableConverterAttr = getAttr(attrs, "use-default-conversion");
                 if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
                     // TODO Disable on the key?
@@ -1010,7 +1010,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 valuemd.setMappedBy(getAttr(attrs, "mapped-by"));
 
                 String converterAttr = getAttr(attrs, "converter");
-                String disableConverterAttr = getAttr(attrs, "disable-converter");
+                String disableConverterAttr = getAttr(attrs, "use-default-conversion");
                 if (disableConverterAttr != null && Boolean.getBoolean(disableConverterAttr))
                 {
                     // TODO Disable on the value?
