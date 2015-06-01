@@ -493,6 +493,12 @@ public class JDOQuery implements Query
         return fetchPlan;
     }
 
+    public Query filter(String filter)
+    {
+        setFilter(filter);
+        return this;
+    }
+
     /**
      * Set the filter for the query.
      * @param filter The query filter
@@ -509,6 +515,25 @@ public class JDOQuery implements Query
         }
     }
 
+    public Query groupBy(String grouping)
+    {
+        setGrouping(grouping);
+        return this;
+    }
+
+    public Query having(String having)
+    {
+        try
+        {
+            query.setHaving(having);
+        }
+        catch (NucleusException ne)
+        {
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+        }
+        return this;
+    }
+
     /**
      * Set the grouping for the query.
      * @param grouping The grouping
@@ -519,9 +544,9 @@ public class JDOQuery implements Query
         {
             query.setGrouping(grouping);
         }
-        catch (NucleusException jpe)
+        catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -541,6 +566,12 @@ public class JDOQuery implements Query
     public void setIgnoreCache(boolean ignoreCache)
     {
         query.setIgnoreCache(ignoreCache);
+    }
+
+    public Query orderBy(String ordering)
+    {
+        setOrdering(ordering);
+        return this;
     }
 
     /**
@@ -566,6 +597,18 @@ public class JDOQuery implements Query
     public PersistenceManager getPersistenceManager()
     {
         return pm;
+    }
+
+    public Query range(long fromIncl, long toExcl)
+    {
+        setRange(fromIncl, toExcl);
+        return this;
+    }
+
+    public Query range(String range)
+    {
+        setRange(range);
+        return this;
     }
 
     /**
@@ -878,41 +921,5 @@ public class JDOQuery implements Query
     public Object getNativeQuery()
     {
         return query.getNativeQuery();
-    }
-
-    public Query filter(String filter)
-    {
-        setFilter(filter);
-        return this;
-    }
-
-    public Query groupBy(String grouping)
-    {
-        setGrouping(grouping);
-        return this;
-    }
-
-    public Query having(String having)
-    {
-        // TODO Handle this
-        return this;
-    }
-
-    public Query orderBy(String ordering)
-    {
-        setOrdering(ordering);
-        return this;
-    }
-
-    public Query range(long fromIncl, long toExcl)
-    {
-        setRange(fromIncl, toExcl);
-        return this;
-    }
-
-    public Query range(String range)
-    {
-        setRange(range);
-        return this;
     }
 }
