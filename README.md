@@ -1,9 +1,8 @@
 # datanucleus-api-jdo
 
-Support for DataNucleus persistence using the JDO API (JSR0012, JSR0243).
+Support for DataNucleus persistence using the [JDO API](http://db.apache.org/jdo) (JSR0012, JSR0243).
 
-This is built using Maven, by executing `mvn clean install` which installs the built jar in your local Maven
-repository.
+This is built using Maven, by executing `mvn clean install` which installs the built jar in your local Maven repository.
 
 
 ## KeyFacts
