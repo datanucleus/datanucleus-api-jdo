@@ -644,6 +644,12 @@ public class JDOQuery implements Query
         }
     }
 
+    public Query result(String result)
+    {
+        this.setResult(result);
+        return this;
+    }
+
     /**
      * Set the result for the query.
      * @param result Result clause
