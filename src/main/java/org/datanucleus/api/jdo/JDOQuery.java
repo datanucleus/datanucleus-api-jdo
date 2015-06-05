@@ -43,8 +43,9 @@ import org.datanucleus.store.query.QueryTimeoutException;
  * Stores the PM the query is executed against, the internal query, and the query language.
  * The language is stored since it is referenced by the JDO API and so we don't have to embody knowledge
  * of which internal query type is for which language (could be moved to the internal query).
+ * @param <T> Candidate class for this query
  */
-public class JDOQuery implements Query
+public class JDOQuery<T> implements Query<T>
 {
     private static final long serialVersionUID = -204134873012573162L;
 
@@ -52,7 +53,7 @@ public class JDOQuery implements Query
     transient PersistenceManager pm;
 
     /** Underlying query that will be executed. */
-    org.datanucleus.store.query.Query query;
+    org.datanucleus.store.query.Query<T> query;
 
     /** Query language. */
     String language;
@@ -66,7 +67,7 @@ public class JDOQuery implements Query
      * @param query Underlying query
      * @param language Query language
      */
-    public JDOQuery(PersistenceManager pm, org.datanucleus.store.query.Query query, String language)
+    public JDOQuery(PersistenceManager pm, org.datanucleus.store.query.Query<T> query, String language)
     {
         this.pm = pm;
         this.query = query;
@@ -409,7 +410,7 @@ public class JDOQuery implements Query
      * Set the candidates for the query.
      * @param extent Extent defining the candidates
      */
-    public void setCandidates(Extent extent)
+    public void setCandidates(Extent<T> extent)
     {
         try
         {
@@ -432,7 +433,7 @@ public class JDOQuery implements Query
      * Set the candidates for the query.
      * @param pcs PC candidates
      */
-    public void setCandidates(Collection pcs)
+    public void setCandidates(Collection<T> pcs)
     {
         try
         {
@@ -448,7 +449,7 @@ public class JDOQuery implements Query
      * Set the candidate class for the query.
      * @param candidateClass Candidate class
      */
-    public void setClass(Class candidateClass)
+    public void setClass(Class<T> candidateClass)
     {
         try
         {
@@ -493,7 +494,7 @@ public class JDOQuery implements Query
         return fetchPlan;
     }
 
-    public Query filter(String filter)
+    public Query<T> filter(String filter)
     {
         setFilter(filter);
         return this;
@@ -515,13 +516,13 @@ public class JDOQuery implements Query
         }
     }
 
-    public Query groupBy(String grouping)
+    public Query<T> groupBy(String grouping)
     {
         setGrouping(grouping);
         return this;
     }
 
-    public Query having(String having)
+    public Query<T> having(String having)
     {
         try
         {
@@ -568,7 +569,7 @@ public class JDOQuery implements Query
         query.setIgnoreCache(ignoreCache);
     }
 
-    public Query orderBy(String ordering)
+    public Query<T> orderBy(String ordering)
     {
         setOrdering(ordering);
         return this;
@@ -599,13 +600,13 @@ public class JDOQuery implements Query
         return pm;
     }
 
-    public Query range(long fromIncl, long toExcl)
+    public Query<T> range(long fromIncl, long toExcl)
     {
         setRange(fromIncl, toExcl);
         return this;
     }
 
-    public Query range(String range)
+    public Query<T> range(String range)
     {
         setRange(range);
         return this;
@@ -644,7 +645,7 @@ public class JDOQuery implements Query
         }
     }
 
-    public Query result(String result)
+    public Query<T> result(String result)
     {
         this.setResult(result);
         return this;
@@ -867,7 +868,7 @@ public class JDOQuery implements Query
      * Accessor for the internal query.
      * @return Internal query
      */
-    public org.datanucleus.store.query.Query getInternalQuery()
+    public org.datanucleus.store.query.Query<T> getInternalQuery()
     {
         return query;
     }
@@ -886,7 +887,7 @@ public class JDOQuery implements Query
      * @param name The name to refer to it under
      * @return This query
      */
-    public Query saveAsNamedQuery(String name)
+    public Query<T> saveAsNamedQuery(String name)
     {
         JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
 
