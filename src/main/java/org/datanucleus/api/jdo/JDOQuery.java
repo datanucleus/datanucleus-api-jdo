@@ -162,6 +162,24 @@ public class JDOQuery<T> implements Query<T>
         }
     }
 
+    public Query<T> imports(String imports)
+    {
+        declareImports(imports);
+        return this;
+    }
+
+    public Query<T> parameters(String parameters)
+    {
+        declareParameters(parameters);
+        return this;
+    }
+
+    public Query<T> variables(String variables)
+    {
+        declareVariables(variables);
+        return this;
+    }
+
     /**
      * Execute the query deleting all instances found.
      * @return Number of deleted instances
@@ -480,6 +498,18 @@ public class JDOQuery<T> implements Query<T>
         query.setExtensions(extensions);
     }
 
+    public Query<T> extension(String key, Object value)
+    {
+        addExtension(key, value);
+        return this;
+    }
+
+    public Query<T> extensions(Map values)
+    {
+        setExtensions(values);
+        return this;
+    }
+
     /**
      * Accessor for the fetch plan to use.
      * @return The fetch plan
@@ -567,6 +597,12 @@ public class JDOQuery<T> implements Query<T>
     public void setIgnoreCache(boolean ignoreCache)
     {
         query.setIgnoreCache(ignoreCache);
+    }
+
+    public Query<T> ignoreCache(boolean flag)
+    {
+        setIgnoreCache(flag);
+        return this;
     }
 
     public Query<T> orderBy(String ordering)
@@ -733,6 +769,18 @@ public class JDOQuery<T> implements Query<T>
         return query.getDatastoreWriteTimeoutMillis();
     }
 
+    public Query<T> datastoreReadTimeoutMillis(Integer interval)
+    {
+        setDatastoreReadTimeoutMillis(interval);
+        return this;
+    }
+
+    public Query<T> datastoreWriteTimeoutMillis(Integer interval)
+    {
+        setDatastoreWriteTimeoutMillis(interval);
+        return this;
+    }
+
     /**
      * Set whether to expect a unique result.
      * @param unique Whether results are unique
@@ -764,6 +812,12 @@ public class JDOQuery<T> implements Query<T>
     public void setUnmodifiable()
     {
         query.setUnmodifiable();
+    }
+
+    public Query<T> unmodifiable()
+    {
+        setUnmodifiable();
+        return this;
     }
 
     /**
@@ -846,6 +900,30 @@ public class JDOQuery<T> implements Query<T>
         }
     }
 
+    public Query<T> subquery(Query sub, String variableDecl, String candidateExpr)
+    {
+        addSubquery(sub, variableDecl, candidateExpr);
+        return this;
+    }
+
+    public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, String parameter)
+    {
+        addSubquery(sub, variableDecl, candidateExpr, parameter);
+        return this;
+    }
+
+    public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, String... parameters)
+    {
+        addSubquery(sub, variableDecl, candidateExpr, parameters);
+        return this;
+    }
+
+    public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, Map parameters)
+    {
+        addSubquery(sub, variableDecl, candidateExpr, parameters);
+        return this;
+    }
+
     /**
      * Accessor for whether to serialise any read objects in this query.
      * @return The setting for whether to serialise any read objects
@@ -862,6 +940,12 @@ public class JDOQuery<T> implements Query<T>
     public void setSerializeRead(Boolean serialize)
     {
         query.setSerializeRead(serialize);
+    }
+
+    public Query<T> serializeRead(Boolean serialize)
+    {
+        setSerializeRead(serialize);
+        return this;
     }
 
     /**
