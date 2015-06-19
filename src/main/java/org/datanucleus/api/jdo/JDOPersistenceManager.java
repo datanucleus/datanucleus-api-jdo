@@ -51,6 +51,7 @@ import javax.jdo.JDOException;
 import javax.jdo.JDOFatalUserException;
 import javax.jdo.JDONullIdentityException;
 import javax.jdo.JDOOptimisticVerificationException;
+import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.JDOUnsupportedOptionException;
 import javax.jdo.JDOUserException;
 import javax.jdo.ObjectState;
@@ -1312,8 +1313,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * Construct a query instance with the candidate class specified.
      * @param cls The class to query
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Class cls)
+    public <T> Query<T> newQuery(Class<T> cls)
     {
         Query query = newQuery();
         query.setClass(cls);
@@ -1325,8 +1327,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * candidate class is taken from the Extent.
      * @param cln The extent to query
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Extent cln)
+    public <T> Query<T> newQuery(Extent<T> cln)
     {
         Query query = newQuery();
         query.setClass(cln.getCandidateClass());
@@ -1340,8 +1343,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param cls The class to query
      * @param cln The collection
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Class cls, Collection cln)
+    public <T> Query<T> newQuery(Class<T> cls, Collection<T> cln)
     {
         Query query = newQuery();
         query.setClass(cls);
@@ -1354,8 +1358,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param cls The class to query
      * @param filter A filter to apply
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Class cls, String filter)
+    public <T> Query<T> newQuery(Class<T> cls, String filter)
     {
         Query query = newQuery();
         query.setClass(cls);
@@ -1370,8 +1375,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param cln A collection
      * @param filter A filter to apply
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Class cls, Collection cln, String filter)
+    public <T> Query<T> newQuery(Class<T> cls, Collection<T> cln, String filter)
     {
         Query query = newQuery();
         query.setClass(cls);
@@ -1386,8 +1392,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param cln The extent to query
      * @param filter A filter to apply
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newQuery(Extent cln, String filter)
+    public <T> Query<T> newQuery(Extent<T> cln, String filter)
     {
         Query query = newQuery();
         query.setClass(cln.getCandidateClass());
@@ -1397,12 +1404,26 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     }
 
     /**
+     * Construct a JDOQLTypedQuery instance for the specified candidate.
+     * @param cls Candidate class
+     * @return The JDOQLTypedQuery
+     * @param <T> Candidate type for the query
+     */
+    public <T> JDOQLTypedQuery<T> newJDOQLTypedQuery(Class<T> cls)
+    {
+//        return new JDOTypesafeQuery<T>(this, cls);
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
      * Construct a query instance with the candidate class and the query name.
      * @param cls The class to query
      * @param queryName Name of the query.
      * @return The query
+     * @param <T> Candidate type for the query
      */
-    public Query newNamedQuery(Class cls, String queryName)
+    public <T> Query<T> newNamedQuery(Class<T> cls, String queryName)
     {
         assertIsOpen();
 

@@ -20,6 +20,7 @@ package org.datanucleus.api.jdo;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.jdo.Extent;
@@ -382,6 +383,66 @@ public class JDOQuery<T> implements Query<T>
             // Convert any exceptions into what JDO expects
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeList()
+     */
+    @Override
+    public List<T> executeList()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeUnique()
+     */
+    @Override
+    public T executeUnique()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultList(java.lang.Class)
+     */
+    @Override
+    public <R> List<R> executeResultList(Class<R> resultCls)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultUnique(java.lang.Class)
+     */
+    @Override
+    public <R> R executeResultUnique(Class<R> resultCls)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultList()
+     */
+    @Override
+    public List<Object> executeResultList()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultUnique()
+     */
+    @Override
+    public Object executeResultUnique()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
