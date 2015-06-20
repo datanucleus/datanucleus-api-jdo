@@ -130,7 +130,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#candidate()
+     * @see javax.jdo.JDOQLTypedQuery#candidate()
      */
     public PersistableExpression candidate()
     {
@@ -164,7 +164,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#parameter(java.lang.String, java.lang.Class)
+     * @see javax.jdo.JDOQLTypedQuery#parameter(java.lang.String, java.lang.Class)
      */
     public <P> Expression<P> parameter(String name, Class<P> type)
     {
@@ -264,7 +264,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#stringParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#stringParameter(java.lang.String)
      */
     public StringExpression stringParameter(String name)
     {
@@ -278,7 +278,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#characterParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#characterParameter(java.lang.String)
      */
     public CharacterExpression characterParameter(String name)
     {
@@ -292,11 +292,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#longParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.String)
      */
-    public NumericExpression<Long> longParameter(String name)
+    @Override
+    public NumericExpression<?> numericParameter(String name)
     {
-        NumericExpressionImpl<Long> paramExpr = new NumericExpressionImpl(Long.class, name, ExpressionType.PARAMETER);
+        NumericExpressionImpl<Float> paramExpr = new NumericExpressionImpl(Number.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
             parameterExprByName = new HashMap<String, ExpressionImpl>();
@@ -306,63 +307,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#integerParameter(java.lang.String)
-     */
-    public NumericExpression<Integer> integerParameter(String name)
-    {
-        NumericExpressionImpl<Integer> paramExpr = new NumericExpressionImpl(Integer.class, name, ExpressionType.PARAMETER);
-        if (parameterExprByName == null)
-        {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
-        }
-        parameterExprByName.put(name, paramExpr);
-        return paramExpr;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#shortParameter(java.lang.String)
-     */
-    public NumericExpression<Short> shortParameter(String name)
-    {
-        NumericExpressionImpl<Short> paramExpr = new NumericExpressionImpl(Short.class, name, ExpressionType.PARAMETER);
-        if (parameterExprByName == null)
-        {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
-        }
-        parameterExprByName.put(name, paramExpr);
-        return paramExpr;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#doubleParameter(java.lang.String)
-     */
-    public NumericExpression<Double> doubleParameter(String name)
-    {
-        NumericExpressionImpl<Double> paramExpr = new NumericExpressionImpl(Double.class, name, ExpressionType.PARAMETER);
-        if (parameterExprByName == null)
-        {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
-        }
-        parameterExprByName.put(name, paramExpr);
-        return paramExpr;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#floatParameter(java.lang.String)
-     */
-    public NumericExpression<Float> floatParameter(String name)
-    {
-        NumericExpressionImpl<Float> paramExpr = new NumericExpressionImpl(Float.class, name, ExpressionType.PARAMETER);
-        if (parameterExprByName == null)
-        {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
-        }
-        parameterExprByName.put(name, paramExpr);
-        return paramExpr;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#dateParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#dateParameter(java.lang.String)
      */
     public DateExpression dateParameter(String name)
     {
@@ -376,7 +321,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#timeParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#timeParameter(java.lang.String)
      */
     public TimeExpression timeParameter(String name)
     {
@@ -390,7 +335,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#datetimeParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#datetimeParameter(java.lang.String)
      */
     public DateTimeExpression datetimeParameter(String name)
     {
@@ -404,7 +349,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#collectionParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#collectionParameter(java.lang.String)
      */
     public CollectionExpression collectionParameter(String name)
     {
@@ -418,7 +363,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#mapParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#mapParameter(java.lang.String)
      */
     public MapExpression mapParameter(String name)
     {
@@ -432,7 +377,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#listParameter(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#listParameter(java.lang.String)
      */
     public ListExpression listParameter(String name)
     {
@@ -446,7 +391,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#variable(java.lang.String, java.lang.Class)
+     * @see javax.jdo.JDOQLTypedQuery#variable(java.lang.String, java.lang.Class)
      */
     public <V> Expression<V> variable(String name, Class<V> type)
     {
@@ -540,7 +485,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#excludeSubclasses()
+     * @see javax.jdo.JDOQLTypedQuery#excludeSubclasses()
      */
     public JDOQLTypedQuery<T> excludeSubclasses()
     {
@@ -549,7 +494,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#includeSubclasses()
+     * @see javax.jdo.JDOQLTypedQuery#includeSubclasses()
      */
     public JDOQLTypedQuery<T> includeSubclasses()
     {
@@ -558,7 +503,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#filter(org.datanucleus.query.typesafe.BooleanExpression)
+     * @see javax.jdo.JDOQLTypedQuery#filter(org.datanucleus.query.typesafe.BooleanExpression)
      */
     public JDOQLTypedQuery<T> filter(BooleanExpression expr)
     {
@@ -568,7 +513,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#groupBy(org.datanucleus.query.typesafe.Expression[])
+     * @see javax.jdo.JDOQLTypedQuery#groupBy(org.datanucleus.query.typesafe.Expression[])
      */
     public JDOQLTypedQuery<T> groupBy(Expression... exprs)
     {
@@ -585,7 +530,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#having(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.JDOQLTypedQuery#having(org.datanucleus.query.typesafe.Expression)
      */
     public JDOQLTypedQuery<T> having(Expression expr)
     {
@@ -595,7 +540,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#orderBy(org.datanucleus.query.typesafe.OrderExpression[])
+     * @see javax.jdo.JDOQLTypedQuery#orderBy(org.datanucleus.query.typesafe.OrderExpression[])
      */
     public JDOQLTypedQuery<T> orderBy(OrderExpression... exprs)
     {
@@ -612,7 +557,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#range(long, long)
+     * @see javax.jdo.JDOQLTypedQuery#range(long, long)
      */
     public JDOQLTypedQuery<T> range(long lowerIncl, long upperExcl)
     {
@@ -623,7 +568,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#range(org.datanucleus.query.typesafe.NumericExpression, org.datanucleus.query.typesafe.NumericExpression)
+     * @see javax.jdo.JDOQLTypedQuery#range(org.datanucleus.query.typesafe.NumericExpression, org.datanucleus.query.typesafe.NumericExpression)
      */
     public JDOQLTypedQuery<T> range(NumericExpression lowerInclExpr, NumericExpression upperExclExpr)
     {
@@ -634,7 +579,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#range(java.lang.String, java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#range(java.lang.String, java.lang.String)
      */
     public JDOQLTypedQuery<T> range(Expression paramLowerInclExpr, Expression paramUpperExclExpr)
     {
@@ -653,7 +598,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#subquery(Class, String)
+     * @see javax.jdo.JDOQLTypedQuery#subquery(Class, String)
      */
     public <S> JDOQLTypedSubquery<S> subquery(Class<S> candidateClass, String candidateAlias)
     {
@@ -667,7 +612,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#subquery(java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#subquery(java.lang.String)
      */
     public JDOQLTypedSubquery<T> subquery(String candidateAlias)
     {
@@ -678,16 +623,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
         subqueries.add(subquery);
         return subquery;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.String)
-     */
-    @Override
-    public NumericExpression<?> numericParameter(String name)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /* (non-Javadoc)
@@ -721,7 +656,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#setParameter(org.datanucleus.query.typesafe.Expression, java.lang.Object)
+     * @see javax.jdo.JDOQLTypedQuery#setParameter(org.datanucleus.query.typesafe.Expression, java.lang.Object)
      */
     public JDOQLTypedQuery<T> setParameter(Expression paramExpr, Object value)
     {
@@ -742,7 +677,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#setParameter(java.lang.String, java.lang.Object)
+     * @see javax.jdo.JDOQLTypedQuery#setParameter(java.lang.String, java.lang.Object)
      */
     public JDOQLTypedQuery<T> setParameter(String paramName, Object value)
     {
@@ -762,7 +697,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#setCandidates(java.util.Collection)
+     * @see javax.jdo.JDOQLTypedQuery#setCandidates(java.util.Collection)
      */
     public JDOQLTypedQuery<T> setCandidates(Collection<T> candidates)
     {
@@ -783,8 +718,17 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> result(boolean distinct, Expression<?>... exprs)
     {
-        // TODO Auto-generated method stub
-        return null;
+        result = null;
+        if (exprs != null && exprs.length > 0)
+        {
+            result = new ArrayList<ExpressionImpl>();
+            for (int i=0;i<exprs.length;i++)
+            {
+                result.add((ExpressionImpl)exprs[i]);
+            }
+        }
+        this.resultDistinct = distinct;
+        return this;
     }
 
     /* (non-Javadoc)
@@ -793,8 +737,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
-        // TODO Auto-generated method stub
-        return null;
+        discardCompiled();
+        type = QueryType.SELECT;
+        updateExprs = null;
+        updateVals = null;
+        this.unique = false;
+        this.resultClass = resultCls;
+
+        return (List<R>)executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
@@ -803,8 +753,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
-        // TODO Auto-generated method stub
-        return null;
+        discardCompiled();
+        type = QueryType.SELECT;
+        updateExprs = null;
+        updateVals = null;
+        this.unique = true;
+        this.resultClass = resultCls;
+
+        return (R)executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
@@ -813,8 +769,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public List<Object> executeResultList()
     {
-        // TODO Auto-generated method stub
-        return null;
+        discardCompiled();
+        type = QueryType.SELECT;
+        updateExprs = null;
+        updateVals = null;
+        this.unique = false;
+        this.resultClass = null;
+
+        return (List<Object>)executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
@@ -823,12 +785,18 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Object executeResultUnique()
     {
-        // TODO Auto-generated method stub
-        return null;
+        discardCompiled();
+        type = QueryType.SELECT;
+        updateExprs = null;
+        updateVals = null;
+        this.unique = true;
+        this.resultClass = null;
+
+        return executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeList()
+     * @see javax.jdo.JDOQLTypedQuery#executeList()
      */
     public List<T> executeList()
     {
@@ -848,7 +816,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeUnique()
+     * @see javax.jdo.JDOQLTypedQuery#executeUnique()
      */
     public T executeUnique()
     {
@@ -868,9 +836,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression[])
+     * @see javax.jdo.JDOQLTypedQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression[])
      */
-    public List<Object[]> executeResultList(boolean distinct, Expression... exprs)
+    /*public List<Object[]> executeResultList(boolean distinct, Expression... exprs)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -889,12 +857,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.resultDistinct = distinct;
 
         return (List<Object[]>)executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression)
      */
-    public List<Object> executeResultList(boolean distinct, Expression expr)
+    /*public List<Object> executeResultList(boolean distinct, Expression expr)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -910,12 +878,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.resultDistinct = distinct;
 
         return (List<Object>)executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultList(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
+     * @see javax.jdo.JDOQLTypedQuery#executeResultList(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
      */
-    public <R> List<R> executeResultList(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
+    /*public <R> List<R> executeResultList(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -935,12 +903,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.unique = false;
 
         return (List<R>)executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression[])
+     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression[])
      */
-    public Object[] executeResultUnique(boolean distinct, Expression<?>... exprs)
+    /*public Object[] executeResultUnique(boolean distinct, Expression<?>... exprs)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -960,12 +928,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.unique = true;
 
         return (Object[])executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression)
      */
-    public Object executeResultUnique(boolean distinct, Expression expr)
+    /*public Object executeResultUnique(boolean distinct, Expression expr)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -982,12 +950,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.unique = true;
 
         return executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#executeResultUnique(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
+     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
      */
-    public <R> R executeResultUnique(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
+    /*public <R> R executeResultUnique(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -1007,7 +975,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.unique = true;
 
         return (R)executeInternalQuery(getInternalQuery());
-    }
+    }*/
 
     /**
      * Convenience method to generate an internal DataNucleus Query and apply the generic compilation to it.
@@ -1084,7 +1052,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#deletePersistentAll()
+     * @see javax.jdo.JDOQLTypedQuery#deletePersistentAll()
      */
     public long deletePersistentAll()
     {
@@ -1238,7 +1206,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#getFetchPlan()
+     * @see javax.jdo.JDOQLTypedQuery#getFetchPlan()
      */
     public FetchPlan getFetchPlan()
     {
@@ -1250,7 +1218,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#getPersistenceManager()
+     * @see javax.jdo.JDOQLTypedQuery#getPersistenceManager()
      */
     public PersistenceManager getPersistenceManager()
     {
@@ -1258,7 +1226,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#close(java.lang.Object)
+     * @see javax.jdo.JDOQLTypedQuery#close(java.lang.Object)
      */
     public void close(Object result)
     {
@@ -1274,7 +1242,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#closeAll()
+     * @see javax.jdo.JDOQLTypedQuery#closeAll()
      */
     public void closeAll()
     {
