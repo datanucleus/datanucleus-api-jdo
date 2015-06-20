@@ -17,10 +17,11 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import javax.jdo.query.CharacterExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.typesafe.CharacterExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a CharacterExpression

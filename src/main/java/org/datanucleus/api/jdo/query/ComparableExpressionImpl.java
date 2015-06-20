@@ -20,16 +20,17 @@ package org.datanucleus.api.jdo.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.query.BooleanExpression;
+import javax.jdo.query.ComparableExpression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.OrderExpression;
+import javax.jdo.query.OrderExpression.OrderDirection;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.typesafe.BooleanExpression;
-import org.datanucleus.query.typesafe.ComparableExpression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.OrderExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
-import org.datanucleus.query.typesafe.OrderExpression.OrderDirection;
 
 /**
  * Implementation of the methods for ComparableExpression.
@@ -54,7 +55,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.Expression#gt(org.datanucleus.query.typesafe.ComparableExpression)
      */
-    public BooleanExpression gt(org.datanucleus.query.typesafe.ComparableExpression expr)
+    public BooleanExpression gt(ComparableExpression expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -80,7 +81,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.Expression#gteq(org.datanucleus.query.typesafe.ComparableExpression)
      */
-    public BooleanExpression gteq(org.datanucleus.query.typesafe.ComparableExpression expr)
+    public BooleanExpression gteq(ComparableExpression expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -106,7 +107,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.Expression#lt(org.datanucleus.query.typesafe.ComparableExpression)
      */
-    public BooleanExpression lt(org.datanucleus.query.typesafe.ComparableExpression expr)
+    public BooleanExpression lt(ComparableExpression expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -132,7 +133,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.Expression#lteq(org.datanucleus.query.typesafe.ComparableExpression)
      */
-    public BooleanExpression lteq(org.datanucleus.query.typesafe.ComparableExpression expr)
+    public BooleanExpression lteq(ComparableExpression expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();

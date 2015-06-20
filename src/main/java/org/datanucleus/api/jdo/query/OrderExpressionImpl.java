@@ -17,8 +17,8 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
-import org.datanucleus.query.typesafe.Expression;
-import org.datanucleus.query.typesafe.OrderExpression;
+import javax.jdo.query.Expression;
+import javax.jdo.query.OrderExpression;
 
 /**
  * Implementation of an ordering expression.
@@ -40,7 +40,7 @@ public class OrderExpressionImpl<T> implements OrderExpression<T>
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.OrderExpression#getDirection()
      */
-    public org.datanucleus.query.typesafe.OrderExpression.OrderDirection getDirection()
+    public OrderExpression.OrderDirection getDirection()
     {
         return direction;
     }

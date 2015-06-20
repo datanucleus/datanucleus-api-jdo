@@ -17,9 +17,10 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import javax.jdo.query.ObjectExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.typesafe.ObjectExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of an expression for all unsupported types.

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.query.OrderExpression.OrderDirection;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
@@ -34,12 +35,11 @@ import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.PrimaryExpression;
 import org.datanucleus.query.symbol.PropertySymbol;
 import org.datanucleus.query.symbol.SymbolTable;
-import org.datanucleus.query.typesafe.OrderExpression.OrderDirection;
 
 /**
  * Abstract base for a typesafe query. Extended by JDOTypesafeQuery and JDOTypesafeSubquery.
  */
-public abstract class AbstractTypesafeQuery<T>
+public abstract class AbstractJDOQLTypedQuery<T>
 {
     enum QueryType
     {
@@ -85,7 +85,7 @@ public abstract class AbstractTypesafeQuery<T>
     /** The generic query compilation that this equates to (cached). */
     QueryCompilation compilation = null;
 
-    public AbstractTypesafeQuery(PersistenceManager pm, Class<T> cls, String alias)
+    public AbstractJDOQLTypedQuery(PersistenceManager pm, Class<T> cls, String alias)
     {
         this.pm = pm;
         this.ec = ((JDOPersistenceManager)pm).getExecutionContext();

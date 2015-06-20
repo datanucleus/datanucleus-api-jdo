@@ -69,7 +69,7 @@ import org.datanucleus.PropertyNames;
 import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionNotActiveException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
-import org.datanucleus.api.jdo.query.JDOTypesafeQuery;
+import org.datanucleus.api.jdo.query.JDOQLTypedQueryImpl;
 import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusException;
@@ -87,7 +87,6 @@ import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
-import org.datanucleus.query.typesafe.TypesafeQuery;
 import org.datanucleus.state.CallbackHandler;
 import org.datanucleus.state.DetachState;
 import org.datanucleus.state.FetchPlanState;
@@ -1411,9 +1410,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> JDOQLTypedQuery<T> newJDOQLTypedQuery(Class<T> cls)
     {
-//        return new JDOTypesafeQuery<T>(this, cls);
-        // TODO Auto-generated method stub
-        return null;
+        return new JDOQLTypedQueryImpl<T>(this, cls);
     }
 
     /**
@@ -1525,17 +1522,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
 
         return query;
-    }
-
-    /**
-     * Method to return a "typesafe" query object, for the specified query type.
-     * @param cls candidate class
-     * @return The typesafe query object
-     * @param <T> candidate type
-     */
-    public <T> TypesafeQuery<T> newTypesafeQuery(Class<T> cls)
-    {
-        return new JDOTypesafeQuery<T>(this, cls);
     }
 
     // ------------------------------- Extents ------------------------------------------

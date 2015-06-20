@@ -17,11 +17,12 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import javax.jdo.query.EnumExpression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.typesafe.EnumExpression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of an Enum expression.

@@ -20,12 +20,13 @@ package org.datanucleus.api.jdo.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.query.Expression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.typesafe.Expression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a NumericExpression.

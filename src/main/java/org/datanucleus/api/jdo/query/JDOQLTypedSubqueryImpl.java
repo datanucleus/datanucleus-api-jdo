@@ -23,28 +23,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.jdo.JDOException;
+import javax.jdo.JDOQLTypedSubquery;
 import javax.jdo.PersistenceManager;
+import javax.jdo.query.BooleanExpression;
+import javax.jdo.query.CharacterExpression;
+import javax.jdo.query.CollectionExpression;
+import javax.jdo.query.DateExpression;
+import javax.jdo.query.DateTimeExpression;
+import javax.jdo.query.Expression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+import javax.jdo.query.StringExpression;
+import javax.jdo.query.TimeExpression;
 
 import org.datanucleus.query.expression.VariableExpression;
-import org.datanucleus.query.typesafe.BooleanExpression;
-import org.datanucleus.query.typesafe.CharacterExpression;
-import org.datanucleus.query.typesafe.CollectionExpression;
-import org.datanucleus.query.typesafe.DateExpression;
-import org.datanucleus.query.typesafe.DateTimeExpression;
-import org.datanucleus.query.typesafe.Expression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
-import org.datanucleus.query.typesafe.StringExpression;
-import org.datanucleus.query.typesafe.TimeExpression;
-import org.datanucleus.query.typesafe.TypesafeSubquery;
 
 /**
  * Implementation of a typesafe subquery for JDO.
  */
-public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements TypesafeSubquery<T>
+public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implements JDOQLTypedSubquery<T>
 {
-    public JDOTypesafeSubquery(PersistenceManager pm, Class<T> candidateClass, String candidateAlias,
-            JDOTypesafeQuery parentQuery)
+    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias,
+            JDOQLTypedQueryImpl parentQuery)
     {
         super(pm, candidateClass, candidateAlias);
     }
@@ -61,7 +61,7 @@ public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements 
     {
         String candName = candidateCls.getName();
         int pos = candName.lastIndexOf('.');
-        String qName = candName.substring(0, pos+1) + JDOTypesafeQuery.getQueryClassNameForClassName(candName.substring(pos+1));
+        String qName = candName.substring(0, pos+1) + JDOQLTypedQueryImpl.getQueryClassNameForClassName(candName.substring(pos+1));
         try
         {
             // Access the "candidate" field of the query class
@@ -95,7 +95,7 @@ public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#filter(org.datanucleus.query.typesafe.BooleanExpression)
      */
-    public TypesafeSubquery filter(BooleanExpression expr)
+    public JDOQLTypedSubquery<T> filter(BooleanExpression expr)
     {
         discardCompiled();
         this.filter = (BooleanExpressionImpl)expr;
@@ -105,7 +105,7 @@ public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#groupBy(org.datanucleus.query.typesafe.Expression[])
      */
-    public TypesafeSubquery groupBy(Expression... exprs)
+    public JDOQLTypedSubquery<T> groupBy(Expression... exprs)
     {
         discardCompiled();
         if (exprs != null && exprs.length > 0)
@@ -122,7 +122,7 @@ public class JDOTypesafeSubquery<T> extends AbstractTypesafeQuery<T> implements 
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeSubquery#having(org.datanucleus.query.typesafe.Expression)
      */
-    public TypesafeSubquery having(Expression expr)
+    public JDOQLTypedSubquery<T> having(Expression expr)
     {
         discardCompiled();
         this.having = (ExpressionImpl)expr;

@@ -20,18 +20,18 @@ package org.datanucleus.api.jdo.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.query.Expression;
+import javax.jdo.query.ListExpression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.typesafe.Expression;
-import org.datanucleus.query.typesafe.ListExpression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a ListExpression.
  */
-public class ListExpressionImpl<T extends List<E>, E> extends CollectionExpressionImpl<T, E> 
-    implements ListExpression<T, E>
+public class ListExpressionImpl<T extends List<E>, E> extends CollectionExpressionImpl<T, E> implements ListExpression<T, E>
 {
     public ListExpressionImpl(PersistableExpression parent, String name)
     {

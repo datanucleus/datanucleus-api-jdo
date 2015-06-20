@@ -17,10 +17,11 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import javax.jdo.query.BooleanExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.typesafe.BooleanExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a BooleanExpression

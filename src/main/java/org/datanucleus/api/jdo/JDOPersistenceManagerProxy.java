@@ -27,6 +27,7 @@ import javax.jdo.Extent;
 import javax.jdo.FetchGroup;
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOException;
+import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.ObjectState;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -687,7 +688,7 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(java.lang.Class)
      */
-    public Query newQuery(Class cls)
+    public <T> Query<T> newQuery(Class<T> cls)
     {
         return getPM().newQuery(cls);
     }
@@ -696,7 +697,7 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(javax.jdo.Extent)
      */
-    public Query newQuery(Extent cln)
+    public <T> Query<T> newQuery(Extent<T> cln)
     {
         return getPM().newQuery(cln);
     }
@@ -714,7 +715,7 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(java.lang.Class, java.util.Collection)
      */
-    public Query newQuery(Class cls, Collection cln)
+    public <T> Query<T> newQuery(Class<T> cls, Collection<T> cln)
     {
         return getPM().newQuery(cls, cln);
     }
@@ -723,7 +724,7 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(java.lang.Class, java.lang.String)
      */
-    public Query newQuery(Class cls, String filter)
+    public <T> Query<T> newQuery(Class<T> cls, String filter)
     {
         return getPM().newQuery(cls, filter);
     }
@@ -732,7 +733,7 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(javax.jdo.Extent, java.lang.String)
      */
-    public Query newQuery(Extent cln, String filter)
+    public <T> Query<T> newQuery(Extent<T> cln, String filter)
     {
         return getPM().newQuery(cln, filter);
     }
@@ -741,9 +742,18 @@ public class JDOPersistenceManagerProxy implements PersistenceManager
      * (non-Javadoc)
      * @see javax.jdo.PersistenceManager#newQuery(java.lang.Class, java.util.Collection, java.lang.String)
      */
-    public Query newQuery(Class cls, Collection cln, String filter)
+    public <T> Query<T> newQuery(Class<T> cls, Collection<T> cln, String filter)
     {
         return getPM().newQuery(cls, cln, filter);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.PersistenceManager#newJDOQLTypedQuery(java.lang.Class)
+     */
+    @Override
+    public <T> JDOQLTypedQuery<T> newJDOQLTypedQuery(Class<T> cls)
+    {
+        return getPM().newJDOQLTypedQuery(cls);
     }
 
     /*

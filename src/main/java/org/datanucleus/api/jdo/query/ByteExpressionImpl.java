@@ -17,9 +17,10 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import javax.jdo.query.ByteExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.typesafe.ByteExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a ByteExpression

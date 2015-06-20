@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jdo.query.BooleanExpression;
+import javax.jdo.query.CollectionExpression;
+import javax.jdo.query.Expression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.typesafe.BooleanExpression;
-import org.datanucleus.query.typesafe.CollectionExpression;
-import org.datanucleus.query.typesafe.Expression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a CollectionExpression

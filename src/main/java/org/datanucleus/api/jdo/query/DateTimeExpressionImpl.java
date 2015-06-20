@@ -19,11 +19,12 @@ package org.datanucleus.api.jdo.query;
 
 import java.util.Date;
 
+import javax.jdo.query.DateTimeExpression;
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.typesafe.DateTimeExpression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
 
 /**
  * Implementation of a DateTime expression.

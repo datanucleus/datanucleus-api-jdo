@@ -19,11 +19,12 @@ package org.datanucleus.api.jdo.query;
 
 import java.sql.Time;
 
+import javax.jdo.query.NumericExpression;
+import javax.jdo.query.PersistableExpression;
+import javax.jdo.query.TimeExpression;
+
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.typesafe.NumericExpression;
-import org.datanucleus.query.typesafe.PersistableExpression;
-import org.datanucleus.query.typesafe.TimeExpression;
 
 /**
  * Implementation of a Time expression.
