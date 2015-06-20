@@ -39,12 +39,13 @@ import javax.jdo.query.TimeExpression;
 import org.datanucleus.query.expression.VariableExpression;
 
 /**
- * Implementation of a typesafe subquery for JDO.
+ * Implementation of a JDOQLTypedSubquery.
  */
 public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implements JDOQLTypedSubquery<T>
 {
-    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias,
-            JDOQLTypedQueryImpl parentQuery)
+    private static final long serialVersionUID = 8872729615681952405L;
+
+    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias, JDOQLTypedQueryImpl parentQuery)
     {
         super(pm, candidateClass, candidateAlias);
     }

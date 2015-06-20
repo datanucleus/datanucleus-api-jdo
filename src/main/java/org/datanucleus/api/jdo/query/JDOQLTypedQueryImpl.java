@@ -17,6 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,12 +52,15 @@ import javax.jdo.query.OrderExpression.OrderDirection;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
+import javax.jdo.spi.JDOPermission;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.api.jdo.JDOFetchPlan;
+import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.MetaDataManager;
+import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.query.JDOQLQueryHelper;
 import org.datanucleus.query.compiler.QueryCompilation;
 import org.datanucleus.query.expression.Literal;
@@ -65,20 +69,26 @@ import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
 
 /**
- * Implementation of a typesafe Query for JDO.
+ * Implementation of a JDOQLTypedQuery.
+ * TODO Implement unmodifiable and throw exception on setters
  */
 public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implements JDOQLTypedQuery<T>
 {
-    FetchPlan fp;
+    private static final long serialVersionUID = -8359479260893321900L;
 
-    /** Whether to ignore the cache when evaluating the query. */
+    FetchPlan fetchPlan;
     boolean ignoreCache = false;
+    Boolean serializeRead = null;
+    Integer datastoreReadTimeout = null;
+    Integer datastoreWriteTimeout = null;
 
     /** Whether to include subclasses of the candidate in the query. */
     boolean subclasses = true;
 
     /** Any result class. */
     Class resultClass = null;
+
+    boolean unmodifiable = false;
 
     /** Whether the result is unique (single row). */
     boolean unique = false;
@@ -691,6 +701,26 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#setParameters(java.util.Map)
+     */
+    @Override
+    public JDOQLTypedQuery<T> setParameters(Map namedParamMap)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#setParameters(java.lang.Object[])
+     */
+    @Override
+    public JDOQLTypedQuery<T> setParameters(Object... paramValues)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.TypesafeQuery#setParameter(org.datanucleus.query.typesafe.Expression, java.lang.Object)
      */
     public JDOQLTypedQuery<T> setParameter(Expression paramExpr, Object value)
@@ -744,6 +774,56 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             this.candidates = null;
         }
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#result(boolean, javax.jdo.query.Expression[])
+     */
+    @Override
+    public JDOQLTypedQuery<T> result(boolean distinct, Expression<?>... exprs)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultList(java.lang.Class)
+     */
+    @Override
+    public <R> List<R> executeResultList(Class<R> resultCls)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(java.lang.Class)
+     */
+    @Override
+    public <R> R executeResultUnique(Class<R> resultCls)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultList()
+     */
+    @Override
+    public List<Object> executeResultList()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique()
+     */
+    @Override
+    public Object executeResultUnique()
+    {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -936,8 +1016,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     protected Query getInternalQuery()
     {
         // Create a DataNucleus query and set the generic compilation
-        Query internalQuery =
-            ec.getStoreManager().getQueryManager().newQuery("JDOQL", ec, toString());
+        Query internalQuery = ec.getStoreManager().getQueryManager().newQuery("JDOQL", ec, toString());
         internalQuery.setIgnoreCache(ignoreCache);
         if (!subclasses)
         {
@@ -956,9 +1035,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             internalQuery.setExtensions(extensions);
         }
-        if (fp != null)
+        if (fetchPlan != null)
         {
-            internalQuery.setFetchPlan(((JDOFetchPlan)fp).getInternalFetchPlan());
+            internalQuery.setFetchPlan(((JDOFetchPlan)fetchPlan).getInternalFetchPlan());
         }
         if (type == QueryType.SELECT)
         {
@@ -1163,11 +1242,11 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public FetchPlan getFetchPlan()
     {
-        if (fp == null)
+        if (fetchPlan == null)
         {
-            fp = new JDOFetchPlan(ec.getFetchPlan().getCopy());
+            fetchPlan = new JDOFetchPlan(ec.getFetchPlan().getCopy());
         }
-        return fp;
+        return fetchPlan;
     }
 
     /* (non-Javadoc)
@@ -1176,37 +1255,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public PersistenceManager getPersistenceManager()
     {
         return pm;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#setIgnoreCache(boolean)
-     */
-    public JDOQLTypedQuery<T> setIgnoreCache(boolean ignore)
-    {
-        this.ignoreCache = ignore;
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#addExtension(java.lang.String, java.lang.Object)
-     */
-    public JDOQLTypedQuery<T> addExtension(String key, Object value)
-    {
-        if (extensions == null)
-        {
-            extensions = new HashMap();
-        }
-        extensions.put(key, value);
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.TypesafeQuery#setExtensions(java.util.Map)
-     */
-    public JDOQLTypedQuery<T> setExtensions(Map<String, Object> extensions)
-    {
-        this.extensions = new HashMap(extensions);
-        return this;
     }
 
     /* (non-Javadoc)
@@ -1241,6 +1289,17 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
             internalQueries.clear();
             internalQueries = null;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.io.Closeable#close()
+     */
+    @Override
+    public void close() throws IOException
+    {
+        closeAll();
+        this.fetchPlan.clearGroups();
+        this.fetchPlan = null;
     }
 
     /**
@@ -1437,5 +1496,171 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public static String getQueryClassNameForClassName(String name)
     {
         return QUERY_CLASS_PREFIX + name;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#getDatastoreReadTimeoutMillis()
+     */
+    @Override
+    public Integer getDatastoreReadTimeoutMillis()
+    {
+        return datastoreReadTimeout;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#datastoreReadTimeoutMillis(java.lang.Integer)
+     */
+    @Override
+    public JDOQLTypedQuery<T> datastoreReadTimeoutMillis(Integer interval)
+    {
+        this.datastoreReadTimeout = interval;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#getDatastoreWriteTimeoutMillis()
+     */
+    @Override
+    public Integer getDatastoreWriteTimeoutMillis()
+    {
+        return datastoreWriteTimeout;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#datastoreWriteTimeoutMillis(java.lang.Integer)
+     */
+    @Override
+    public JDOQLTypedQuery<T> datastoreWriteTimeoutMillis(Integer interval)
+    {
+        this.datastoreWriteTimeout = interval;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#getSerializeRead()
+     */
+    @Override
+    public Boolean getSerializeRead()
+    {
+        return serializeRead;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#serializeRead(java.lang.Boolean)
+     */
+    @Override
+    public JDOQLTypedQuery<T> serializeRead(Boolean serialize)
+    {
+        this.serializeRead = serialize;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#isUnmodifiable()
+     */
+    @Override
+    public boolean isUnmodifiable()
+    {
+        return unmodifiable;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#unmodifiable()
+     */
+    @Override
+    public JDOQLTypedQuery<T> unmodifiable()
+    {
+        this.unmodifiable = true;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#getIgnoreCache()
+     */
+    @Override
+    public boolean getIgnoreCache()
+    {
+        return ignoreCache;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ignoreCache(boolean)
+     */
+    @Override
+    public JDOQLTypedQuery<T> ignoreCache(boolean flag)
+    {
+        this.ignoreCache = flag;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#extension(java.lang.String, java.lang.Object)
+     */
+    @Override
+    public JDOQLTypedQuery<T> extension(String key, Object value)
+    {
+        if (extensions == null)
+        {
+            extensions = new HashMap();
+        }
+        extensions.put(key, value);
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#extensions(java.util.Map)
+     */
+    @Override
+    public JDOQLTypedQuery<T> extensions(Map values)
+    {
+        this.extensions = new HashMap(extensions);
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#cancelAll()
+     */
+    @Override
+    public void cancelAll()
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#cancel(java.lang.Thread)
+     */
+    @Override
+    public void cancel(Thread thread)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#saveAsNamedQuery(java.lang.String)
+     */
+    @Override
+    public JDOQLTypedQuery<T> saveAsNamedQuery(String name)
+    {
+        JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
+
+        QueryMetaData qmd = new QueryMetaData(name);
+        qmd.setLanguage("JDOQL");
+        Query query = getInternalQuery();
+        qmd.setQuery(query.toString());
+        qmd.setResultClass(query.getResultClassName());
+        qmd.setUnique(query.isUnique());
+        Map<String, Object> queryExts = query.getExtensions();
+        if (queryExts != null && !queryExts.isEmpty())
+        {
+            Iterator<Map.Entry<String, Object>> queryExtsIter = queryExts.entrySet().iterator();
+            while (queryExtsIter.hasNext())
+            {
+                Map.Entry<String, Object> queryExtEntry = queryExtsIter.next();
+                qmd.addExtension(queryExtEntry.getKey(), "" + queryExtEntry.getValue());
+            }
+        }
+        query.getExecutionContext().getMetaDataManager().registerNamedQuery(qmd);
+
+        return this;
     }
 }
