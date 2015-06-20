@@ -767,7 +767,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see javax.jdo.JDOQLTypedQuery#executeResultList()
      */
     @Override
-    public List<Object> executeResultList()
+    public List executeResultList()
     {
         discardCompiled();
         type = QueryType.SELECT;
@@ -776,7 +776,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         this.unique = false;
         this.resultClass = null;
 
-        return (List<Object>)executeInternalQuery(getInternalQuery());
+        return (List) executeInternalQuery(getInternalQuery());
     }
 
     /* (non-Javadoc)
