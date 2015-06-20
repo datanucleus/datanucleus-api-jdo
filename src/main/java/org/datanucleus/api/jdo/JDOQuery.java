@@ -62,6 +62,9 @@ public class JDOQuery<T> implements Query<T>
     /** JDO Fetch Plan. */
     JDOFetchPlan fetchPlan = null;
 
+    Object[] parameterValues = null;
+    Map parameterMap = null;
+
     /**
      * Constructor for a query used by JDO.
      * @param pm PersistenceManager
@@ -181,66 +184,18 @@ public class JDOQuery<T> implements Query<T>
         return this;
     }
 
-    /**
-     * Execute the query deleting all instances found.
-     * @return Number of deleted instances
-     */
-    public long deletePersistentAll()
+    public Query<T> setParameters(Map paramMap)
     {
-        try
-        {
-            return query.deletePersistentAll();
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return 0;
-        }
-        catch (NucleusException jpe)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = paramMap;
+        this.parameterValues = null;
+        return this;
     }
 
-    /**
-     * Execute the query deleting all instances found.
-     * @param parameters Parameters to use when executing
-     * @return Number of deleted instances
-     */
-    public long deletePersistentAll(Object... parameters)
+    public Query<T> setParameters(Object... paramValues)
     {
-        try
-        {
-            return query.deletePersistentAll(parameters);
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return 0;
-        }
-        catch (NucleusException jpe)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
-    }
-
-    /**
-     * Execute the query deleting all instances found.
-     * @param parameters Parameters to use when executing
-     * @return Number of deleted instances
-     */
-    public long deletePersistentAll(Map parameters)
-    {
-        try
-        {
-            return query.deletePersistentAll(parameters);
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return 0;
-        }
-        catch (NucleusException jpe)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = null;
+        this.parameterValues = paramValues;
+        return this;
     }
 
     /**
@@ -249,19 +204,9 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute()
     {
-        try
-        {
-            return query.execute();
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return null;
-        }
-        catch (NucleusException jpe)
-        {
-            // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = null;
+        this.parameterValues = null;
+        return executeInternal();
     }
 
     /**
@@ -271,19 +216,9 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1)
     {
-        try
-        {
-            return query.executeWithArray(new Object[] {p1});
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return null;
-        }
-        catch (NucleusException jpe)
-        {
-            // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = null;
+        this.parameterValues = new Object[]{p1};
+        return executeInternal();
     }
 
     /**
@@ -294,19 +229,9 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2)
     {
-        try
-        {
-            return query.executeWithArray(new Object[] {p1, p2});
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return null;
-        }
-        catch (NucleusException jpe)
-        {
-            // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = null;
+        this.parameterValues = new Object[]{p1, p2};
+        return executeInternal();
     }
 
     /**
@@ -318,19 +243,9 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2, Object p3)
     {
-        try
-        {
-            return query.executeWithArray(new Object[] {p1, p2, p3});
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return null;
-        }
-        catch (NucleusException jpe)
-        {
-            // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }            
+        this.parameterMap = null;
+        this.parameterValues = new Object[]{p1, p2, p3};
+        return executeInternal();
     }
 
     /**
@@ -340,19 +255,9 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithArray(Object... parameterValues)
     {
-        try
-        {
-            return query.executeWithArray(parameterValues);
-        }
-        catch (NoQueryResultsException nqre)
-        {
-            return null;
-        }
-        catch (NucleusException jpe)
-        {
-            // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
-        }
+        this.parameterMap = null;
+        this.parameterValues = parameterValues;
+        return executeInternal();
     }
 
     /**
@@ -362,9 +267,78 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithMap(Map parameters)
     {
+        this.parameterMap = parameters;
+        this.parameterValues = null;
+        return executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeList()
+     */
+    @Override
+    public List<T> executeList()
+    {
+        return (List<T>) executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeUnique()
+     */
+    @Override
+    public T executeUnique()
+    {
+        return (T) executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultList(java.lang.Class)
+     */
+    @Override
+    public <R> List<R> executeResultList(Class<R> resultCls)
+    {
+        return (List<R>) executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultUnique(java.lang.Class)
+     */
+    @Override
+    public <R> R executeResultUnique(Class<R> resultCls)
+    {
+        return (R) executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultList()
+     */
+    @Override
+    public List<Object> executeResultList()
+    {
+        return (List<Object>) executeInternal();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.Query#executeResultUnique()
+     */
+    @Override
+    public Object executeResultUnique()
+    {
+        return executeInternal();
+    }
+
+    protected Object executeInternal()
+    {
         try
         {
-            return query.executeWithMap(parameters);
+            if (parameterValues != null)
+            {
+                return query.executeWithArray(parameterValues);
+            }
+            else if (parameterMap != null)
+            {
+                return query.executeWithMap(parameterMap);
+            }
+            return query.execute();
         }
         catch (NoQueryResultsException nqre)
         {
@@ -385,64 +359,71 @@ public class JDOQuery<T> implements Query<T>
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeList()
+    /**
+     * Execute the query deleting all instances found.
+     * @return Number of deleted instances
      */
-    @Override
-    public List<T> executeList()
+    public long deletePersistentAll()
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.parameterMap = null;
+        this.parameterValues = null;
+        return deletePersistentInternal();
     }
 
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeUnique()
+    /**
+     * Execute the query deleting all instances found.
+     * @param parameters Parameters to use when executing
+     * @return Number of deleted instances
      */
-    @Override
-    public T executeUnique()
+    public long deletePersistentAll(Object... parameters)
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.parameterMap = null;
+        this.parameterValues = parameters;
+        return deletePersistentInternal();
     }
 
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeResultList(java.lang.Class)
+    /**
+     * Execute the query deleting all instances found.
+     * @param parameters Parameters to use when executing
+     * @return Number of deleted instances
      */
-    @Override
-    public <R> List<R> executeResultList(Class<R> resultCls)
+    public long deletePersistentAll(Map parameters)
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.parameterMap = parameters;
+        this.parameterValues = null;
+        return deletePersistentInternal();
     }
 
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeResultUnique(java.lang.Class)
-     */
-    @Override
-    public <R> R executeResultUnique(Class<R> resultCls)
+    protected long deletePersistentInternal()
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeResultList()
-     */
-    @Override
-    public List<Object> executeResultList()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.Query#executeResultUnique()
-     */
-    @Override
-    public Object executeResultUnique()
-    {
-        // TODO Auto-generated method stub
-        return null;
+        try
+        {
+            if (parameterValues != null)
+            {
+                return query.deletePersistentAll(parameterValues);
+            }
+            else if (parameterMap != null)
+            {
+                return query.deletePersistentAll(parameterMap);
+            }
+            return query.deletePersistentAll();
+        }
+        catch (NoQueryResultsException nqre)
+        {
+            return 0;
+        }
+        catch (QueryTimeoutException qte)
+        {
+            throw new JDODataStoreException("Query has timed out : " + qte.getMessage());
+        }
+        catch (QueryInterruptedException qie)
+        {
+            throw new JDOQueryInterruptedException("Query has been cancelled : " + qie.getMessage());
+        }
+        catch (NucleusException jpe)
+        {
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+        }
     }
 
     /**
