@@ -641,8 +641,45 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> setParameters(Map namedParamMap)
     {
-        // TODO Auto-generated method stub
-        return null;
+        discardCompiled();
+        if (namedParamMap == null || namedParamMap.isEmpty())
+        {
+            parameterValuesByName = null;
+            return this;
+        }
+
+        if (parameterValuesByName == null)
+        {
+            parameterValuesByName = new HashMap<String, Object>();
+        }
+
+        Iterator<Map.Entry> entryIter = namedParamMap.entrySet().iterator();
+        while (entryIter.hasNext())
+        {
+            Map.Entry entry = entryIter.next();
+            Object key = entry.getKey();
+            Object val = entry.getValue();
+
+            if (key instanceof String)
+            {
+                if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(key)))
+                {
+                    throw new JDOUserException("Parameter with name " + key + " doesnt exist for this query");
+                }
+                parameterValuesByName.put((String)key, val);
+            }
+            else if (key instanceof Expression)
+            {
+                ParameterExpression internalParamExpr = (ParameterExpression) ((ExpressionImpl)key).getQueryExpression();
+                if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(internalParamExpr.getAlias())))
+                {
+                    throw new JDOUserException("Parameter with name " + internalParamExpr.getAlias() + " doesnt exist for this query");
+                }
+                parameterValuesByName.put(internalParamExpr.getAlias(), val);
+            }
+        }
+
+        return this;
     }
 
     /* (non-Javadoc)

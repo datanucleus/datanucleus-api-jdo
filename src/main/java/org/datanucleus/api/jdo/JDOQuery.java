@@ -184,7 +184,7 @@ public class JDOQuery<T> implements Query<T>
         return this;
     }
 
-    public Query<T> setParameters(Map paramMap)
+    public Query<T> setParameters(Map<String, ?> paramMap)
     {
         this.parameterMap = paramMap;
         this.parameterValues = null;
@@ -365,8 +365,6 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll()
     {
-        this.parameterMap = null;
-        this.parameterValues = null;
         return deletePersistentInternal();
     }
 
