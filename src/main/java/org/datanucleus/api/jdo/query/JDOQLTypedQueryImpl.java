@@ -36,6 +36,7 @@ import javax.jdo.FetchPlan;
 import javax.jdo.JDOException;
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.JDOQLTypedSubquery;
+import javax.jdo.JDOUnsupportedOptionException;
 import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.query.BooleanExpression;
@@ -59,6 +60,7 @@ import org.datanucleus.api.jdo.JDOFetchPlan;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusException;
+import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.query.JDOQLQueryHelper;
@@ -67,6 +69,7 @@ import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
+import org.datanucleus.util.Localiser;
 
 /**
  * Implementation of a JDOQLTypedQuery.
@@ -489,6 +492,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> excludeSubclasses()
     {
+        assertIsModifiable();
+        discardCompiled();
         this.subclasses = false;
         return this;
     }
@@ -498,6 +503,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> includeSubclasses()
     {
+        assertIsModifiable();
+        discardCompiled();
         this.subclasses = true;
         return this;
     }
@@ -507,6 +514,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> filter(BooleanExpression expr)
     {
+        assertIsModifiable();
         discardCompiled();
         this.filter = (BooleanExpressionImpl)expr;
         return this;
@@ -517,6 +525,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> groupBy(Expression... exprs)
     {
+        assertIsModifiable();
         discardCompiled();
         if (exprs != null && exprs.length > 0)
         {
@@ -534,6 +543,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> having(Expression expr)
     {
+        assertIsModifiable();
         discardCompiled();
         this.having = (ExpressionImpl)expr;
         return this;
@@ -544,6 +554,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> orderBy(OrderExpression... exprs)
     {
+        assertIsModifiable();
         discardCompiled();
         if (exprs != null && exprs.length > 0)
         {
@@ -602,6 +613,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public <S> JDOQLTypedSubquery<S> subquery(Class<S> candidateClass, String candidateAlias)
     {
+        discardCompiled();
         JDOQLTypedSubqueryImpl<S> subquery = new JDOQLTypedSubqueryImpl<S>(pm, candidateClass, candidateAlias, this);
         if (subqueries == null)
         {
@@ -755,6 +767,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> result(boolean distinct, Expression<?>... exprs)
     {
+        assertIsModifiable();
+        discardCompiled();
+
         result = null;
         if (exprs != null && exprs.length > 0)
         {
@@ -774,7 +789,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
-        discardCompiled();
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -790,7 +804,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
-        discardCompiled();
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -806,7 +819,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public List executeResultList()
     {
-        discardCompiled();
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -822,7 +834,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Object executeResultUnique()
     {
-        discardCompiled();
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -837,13 +848,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public List<T> executeList()
     {
-        if (result != null || resultDistinct != null || resultClass != null)
-        {
-            discardCompiled();
-            result = null;
-            resultClass = null;
-            resultDistinct = null;
-        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -857,13 +861,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public T executeUnique()
     {
-        if (result != null || resultDistinct != null || resultClass != null)
-        {
-            discardCompiled();
-            result = null;
-            resultClass = null;
-            resultDistinct = null;
-        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -1579,6 +1576,18 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         return this;
     }
 
+    /**
+     * Method to throw an exception if the query is currently not modifiable.
+     * @throws NucleusUserException Thrown when it is unmodifiable
+     */
+    protected void assertIsModifiable()
+    {
+        if (unmodifiable)
+        {
+            throw new NucleusUserException(Localiser.msg("021014"));
+        }
+    }
+
     /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#getIgnoreCache()
      */
@@ -1628,7 +1637,27 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public void cancelAll()
     {
-        // TODO Auto-generated method stub
+        if (internalQueries == null || internalQueries.isEmpty())
+        {
+            return;
+        }
+        try
+        {
+            Iterator<Query> iter = internalQueries.iterator();
+            while (iter.hasNext())
+            {
+                Query query = iter.next();
+                query.cancel();
+            }
+        }
+        catch (NucleusException ne)
+        {
+            throw new JDOException("Error in calling Query.cancelAll. See the nested exception", ne);
+        }
+        catch (UnsupportedOperationException uoe)
+        {
+            throw new JDOUnsupportedOptionException();
+        }
     }
 
     /* (non-Javadoc)
@@ -1637,7 +1666,27 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public void cancel(Thread thread)
     {
-        // TODO Auto-generated method stub
+        if (internalQueries == null || internalQueries.isEmpty())
+        {
+            return;
+        }
+        try
+        {
+            Iterator<Query> iter = internalQueries.iterator();
+            while (iter.hasNext())
+            {
+                Query query = iter.next();
+                query.cancel(thread);
+            }
+        }
+        catch (NucleusException ne)
+        {
+            throw new JDOException("Error in calling Query.cancelAll. See the nested exception", ne);
+        }
+        catch (UnsupportedOperationException uoe)
+        {
+            throw new JDOUnsupportedOptionException();
+        }
     }
 
     /* (non-Javadoc)
