@@ -70,10 +70,10 @@ import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
 import org.datanucleus.util.Localiser;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Implementation of a JDOQLTypedQuery.
- * TODO Implement unmodifiable and throw exception on setters
  */
 public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implements JDOQLTypedQuery<T>
 {
@@ -638,16 +638,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#clearParameters()
-     */
-    @Override
-    public JDOQLTypedQuery<T> clearParameters()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#setParameters(java.util.Map)
      */
     @Override
@@ -692,16 +682,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
 
         return this;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#setParameters(java.lang.Object[])
-     */
-    @Override
-    public JDOQLTypedQuery<T> setParameters(Object... paramValues)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /* (non-Javadoc)
@@ -789,6 +769,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
+        if (result == null)
+        {
+            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -804,6 +788,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
+        if (result == null)
+        {
+            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -819,6 +807,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public List executeResultList()
     {
+        if (result == null)
+        {
+            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -834,6 +826,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Object executeResultUnique()
     {
+        if (result == null)
+        {
+            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -848,6 +844,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public List<T> executeList()
     {
+        if (result != null)
+        {
+            throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -861,6 +861,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public T executeUnique()
     {
+        if (result != null)
+        {
+            throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
+        }
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
@@ -868,148 +872,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         return (T)executeInternalQuery(getInternalQuery());
     }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression[])
-     */
-    /*public List<Object[]> executeResultList(boolean distinct, Expression... exprs)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (exprs != null && exprs.length > 0)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            for (int i=0;i<exprs.length;i++)
-            {
-                result.add((ExpressionImpl)exprs[i]);
-            }
-        }
-        this.resultClass = null;
-        this.resultDistinct = distinct;
-
-        return (List<Object[]>)executeInternalQuery(getInternalQuery());
-    }*/
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultList(boolean, org.datanucleus.query.typesafe.Expression)
-     */
-    /*public List<Object> executeResultList(boolean distinct, Expression expr)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (expr != null)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            result.add((ExpressionImpl)expr);
-        }
-        this.resultClass = null;
-        this.resultDistinct = distinct;
-
-        return (List<Object>)executeInternalQuery(getInternalQuery());
-    }*/
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultList(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
-     */
-    /*public <R> List<R> executeResultList(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (exprs != null && exprs.length > 0)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            for (int i=0;i<exprs.length;i++)
-            {
-                result.add((ExpressionImpl)exprs[i]);
-            }
-        }
-        this.resultClass = resultCls;
-        this.resultDistinct = distinct;
-        this.unique = false;
-
-        return (List<R>)executeInternalQuery(getInternalQuery());
-    }*/
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression[])
-     */
-    /*public Object[] executeResultUnique(boolean distinct, Expression<?>... exprs)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (exprs != null && exprs.length > 0)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            for (int i=0;i<exprs.length;i++)
-            {
-                result.add((ExpressionImpl)exprs[i]);
-            }
-        }
-        this.resultClass = null;
-        this.resultDistinct = distinct;
-        this.unique = true;
-
-        return (Object[])executeInternalQuery(getInternalQuery());
-    }*/
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(boolean, org.datanucleus.query.typesafe.Expression)
-     */
-    /*public Object executeResultUnique(boolean distinct, Expression expr)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (expr != null)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            result.add((ExpressionImpl)expr);
-        }
-        this.resultClass = null;
-        this.resultDistinct = distinct;
-        this.unique = true;
-
-        return executeInternalQuery(getInternalQuery());
-    }*/
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#executeResultUnique(java.lang.Class, boolean, org.datanucleus.query.typesafe.Expression[])
-     */
-    /*public <R> R executeResultUnique(Class<R> resultCls, boolean distinct, Expression<?>... exprs)
-    {
-        discardCompiled();
-        type = QueryType.SELECT;
-        updateExprs = null;
-        updateVals = null;
-        result = null;
-        if (exprs != null && exprs.length > 0)
-        {
-            result = new ArrayList<ExpressionImpl>();
-            for (int i=0;i<exprs.length;i++)
-            {
-                result.add((ExpressionImpl)exprs[i]);
-            }
-        }
-        this.resultClass = resultCls;
-        this.resultDistinct = distinct;
-        this.unique = true;
-
-        return (R)executeInternalQuery(getInternalQuery());
-    }*/
 
     /**
      * Convenience method to generate an internal DataNucleus Query and apply the generic compilation to it.
@@ -1092,10 +954,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result != null || resultClass != null)
         {
-            discardCompiled();
-            result = null;
-            resultClass = null;
+            throw new JDOUserException("Cannot call deletePersistentAll method when query has result or resultClass set. Remove the result setting.");
         }
+
         type = QueryType.SELECT;
         updateExprs = null;
         updateVals = null;
