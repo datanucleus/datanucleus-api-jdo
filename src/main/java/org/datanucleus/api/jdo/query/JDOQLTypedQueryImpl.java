@@ -771,7 +771,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result == null)
         {
-            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+            throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -790,7 +790,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result == null)
         {
-            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+            throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -809,7 +809,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result == null)
         {
-            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+            throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -828,7 +828,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result == null)
         {
-            throw new JDOUserException("Cannot call executeResultXXX method when query has result unset. Call executeXXX instead.");
+            throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -846,8 +846,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result != null)
         {
-            // TODO Cater for "distinct this" or "this"
-            throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
+            throw new JDOUserException("Cannot call executeList method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultList instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -864,8 +863,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result != null)
         {
-            // TODO Cater for "distinct this" or "this"
-            throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
+            throw new JDOUserException("Cannot call executeUnique method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultUnique instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
