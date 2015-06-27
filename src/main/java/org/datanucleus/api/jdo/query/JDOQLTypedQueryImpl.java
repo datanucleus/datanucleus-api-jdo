@@ -638,10 +638,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#setParameters(java.util.Map)
+     * @see javax.jdo.JDOQLTypedQuery#setNamedParameters(java.util.Map)
      */
     @Override
-    public JDOQLTypedQuery<T> setParameters(Map namedParamMap)
+    public JDOQLTypedQuery<T> setNamedParameters(Map namedParamMap)
     {
         discardCompiled();
         if (namedParamMap == null || namedParamMap.isEmpty())

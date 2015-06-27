@@ -39,6 +39,8 @@ import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
+import org.datanucleus.util.NucleusLogger;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Wrapper for JDO Query class.
@@ -185,17 +187,17 @@ public class JDOQuery<T> implements Query<T>
         return this;
     }
 
-    public Query<T> setParameters(Map<String, ?> paramMap)
-    {
-        this.parameterMap = paramMap;
-        this.parameterValues = null;
-        return this;
-    }
-
     public Query<T> setParameters(Object... paramValues)
     {
         this.parameterMap = null;
         this.parameterValues = paramValues;
+        return this;
+    }
+
+    public Query<T> setNamedParameters(Map<String, ?> paramMap)
+    {
+        this.parameterMap = paramMap;
+        this.parameterValues = null;
         return this;
     }
 
@@ -268,7 +270,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithMap(Map parameters)
     {
-        this.parameterMap = parameters;
+        this.parameterMap = new HashMap(parameters);
         this.parameterValues = null;
         return executeInternal();
     }
@@ -283,6 +285,7 @@ public class JDOQuery<T> implements Query<T>
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultList() instead");
         }
+        NucleusLogger.GENERAL.info(">> executeList params=" + StringUtils.mapToString(parameterMap));
         return (List<T>) executeInternal();
     }
 
