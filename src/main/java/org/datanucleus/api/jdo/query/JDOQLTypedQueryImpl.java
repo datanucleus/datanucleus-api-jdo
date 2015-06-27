@@ -74,6 +74,7 @@ import org.datanucleus.util.StringUtils;
 
 /**
  * Implementation of a JDOQLTypedQuery.
+ * Note that a JDOQLTypedQuery only supports named parameters.
  */
 public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implements JDOQLTypedQuery<T>
 {
@@ -638,10 +639,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#setNamedParameters(java.util.Map)
+     * @see javax.jdo.JDOQLTypedQuery#setParameters(java.util.Map)
      */
     @Override
-    public JDOQLTypedQuery<T> setNamedParameters(Map namedParamMap)
+    public JDOQLTypedQuery<T> setParameters(Map namedParamMap)
     {
         discardCompiled();
         if (namedParamMap == null || namedParamMap.isEmpty())
