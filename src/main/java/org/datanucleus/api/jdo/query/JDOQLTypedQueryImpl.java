@@ -945,6 +945,11 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
             // Convert any exceptions into what JDO expects
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
         }
+        finally
+        {
+            // Parameter values are not retained beyond the subsequent execute/deletePersistentAll call
+            parameterValuesByName = null;
+        }
     }
 
     /* (non-Javadoc)
@@ -977,6 +982,11 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             // Convert any exceptions into what JDO expects
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+        }
+        finally
+        {
+            // Parameter values are not retained beyond the subsequent execute/deletePersistentAll call
+            parameterValuesByName = null;
         }
     }
 

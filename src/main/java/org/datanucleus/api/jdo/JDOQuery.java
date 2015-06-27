@@ -65,8 +65,11 @@ public class JDOQuery<T> implements Query<T>
     /** JDO Fetch Plan. */
     JDOFetchPlan fetchPlan = null;
 
+    /** Map of parameters keyed by their name. */
+    Map parameterValueByName = null;
+
+    /** Positional parameter values. */
     Object[] parameterValues = null;
-    Map parameterMap = null;
 
     /**
      * Constructor for a query used by JDO.
@@ -189,14 +192,14 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> setParameters(Object... paramValues)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = paramValues;
         return this;
     }
 
     public Query<T> setNamedParameters(Map<String, ?> paramMap)
     {
-        this.parameterMap = paramMap;
+        this.parameterValueByName = paramMap;
         this.parameterValues = null;
         return this;
     }
@@ -207,7 +210,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute()
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = null;
         return executeInternal();
     }
@@ -219,7 +222,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1};
         return executeInternal();
     }
@@ -232,7 +235,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1, p2};
         return executeInternal();
     }
@@ -246,7 +249,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2, Object p3)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1, p2, p3};
         return executeInternal();
     }
@@ -258,7 +261,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithArray(Object... parameterValues)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = parameterValues;
         return executeInternal();
     }
@@ -270,7 +273,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithMap(Map parameters)
     {
-        this.parameterMap = new HashMap(parameters);
+        this.parameterValueByName = parameters;
         this.parameterValues = null;
         return executeInternal();
     }
@@ -285,7 +288,7 @@ public class JDOQuery<T> implements Query<T>
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultList() instead");
         }
-        NucleusLogger.GENERAL.info(">> executeList params=" + StringUtils.mapToString(parameterMap));
+        NucleusLogger.GENERAL.info(">> executeList params=" + StringUtils.mapToString(parameterValueByName));
         return (List<T>) executeInternal();
     }
 
@@ -364,9 +367,9 @@ public class JDOQuery<T> implements Query<T>
             {
                 return query.executeWithArray(parameterValues);
             }
-            else if (parameterMap != null)
+            else if (parameterValueByName != null)
             {
-                return query.executeWithMap(parameterMap);
+                return query.executeWithMap(parameterValueByName);
             }
             return query.execute();
         }
@@ -387,6 +390,12 @@ public class JDOQuery<T> implements Query<T>
             // Convert any exceptions into what JDO expects
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
         }
+        finally
+        {
+            // Parameter values are not retained beyond subsequent execute/deletePersistentAll
+            this.parameterValueByName = null;
+            this.parameterValues = null;
+        }
     }
 
     /**
@@ -405,7 +414,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll(Object... parameters)
     {
-        this.parameterMap = null;
+        this.parameterValueByName = null;
         this.parameterValues = parameters;
         return deletePersistentInternal();
     }
@@ -417,7 +426,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll(Map parameters)
     {
-        this.parameterMap = parameters;
+        this.parameterValueByName = parameters;
         this.parameterValues = null;
         return deletePersistentInternal();
     }
@@ -430,9 +439,9 @@ public class JDOQuery<T> implements Query<T>
             {
                 return query.deletePersistentAll(parameterValues);
             }
-            else if (parameterMap != null)
+            else if (parameterValueByName != null)
             {
-                return query.deletePersistentAll(parameterMap);
+                return query.deletePersistentAll(parameterValueByName);
             }
             return query.deletePersistentAll();
         }
@@ -451,6 +460,12 @@ public class JDOQuery<T> implements Query<T>
         catch (NucleusException jpe)
         {
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+        }
+        finally
+        {
+            // Parameter values are not retained beyond subsequent execute/deletePersistentAll
+            this.parameterValueByName = null;
+            this.parameterValues = null;
         }
     }
 
