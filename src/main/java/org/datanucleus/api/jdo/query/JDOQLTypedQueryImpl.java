@@ -846,6 +846,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result != null)
         {
+            // TODO Cater for "distinct this" or "this"
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
         }
         type = QueryType.SELECT;
@@ -863,6 +864,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         if (result != null)
         {
+            // TODO Cater for "distinct this" or "this"
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultXXX instead.");
         }
         type = QueryType.SELECT;

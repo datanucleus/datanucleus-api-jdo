@@ -279,6 +279,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public List<T> executeList()
     {
+        // TODO Cater for "distinct this" of just "this"
         if (query.getResult() != null)
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultXXX() instead");
@@ -292,6 +293,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public T executeUnique()
     {
+        // TODO Cater for "distinct this" of just "this"
         if (query.getResult() != null)
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultXXX() instead");
