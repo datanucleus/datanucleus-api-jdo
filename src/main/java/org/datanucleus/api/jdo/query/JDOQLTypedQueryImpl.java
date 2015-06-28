@@ -80,33 +80,30 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 {
     private static final long serialVersionUID = -8359479260893321900L;
 
-    JDOFetchPlan fetchPlan;
-    boolean ignoreCache = false;
-    Boolean serializeRead = null;
-    Integer datastoreReadTimeout = null;
-    Integer datastoreWriteTimeout = null;
+    protected JDOFetchPlan fetchPlan;
+    protected boolean ignoreCache = false;
+    protected Boolean serializeRead = null;
+    protected Integer datastoreReadTimeout = null;
+    protected Integer datastoreWriteTimeout = null;
+    protected Map<String, Object> extensions = null;
+
+    protected Collection<T> candidates = null;
 
     /** Whether to include subclasses of the candidate in the query. */
     boolean subclasses = true;
-
-    /** Any result class. */
-    Class resultClass = null;
 
     boolean unmodifiable = false;
 
     /** Whether the result is unique (single row). */
     boolean unique = false;
 
-    protected Collection<T> candidates = null;
+    Class resultClass = null;
 
     /** Range : lower limit expression. */
     protected ExpressionImpl rangeLowerExpr;
 
     /** Range : upper limit expression. */
     protected ExpressionImpl rangeUpperExpr;
-
-    /** Any extensions */
-    protected Map<String, Object> extensions = null;
 
     /** Map of parameter expression keyed by the name. */
     protected Map<String, ExpressionImpl> parameterExprByName = null;
@@ -879,20 +876,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         // Create a DataNucleus query and set the generic compilation
         Query internalQuery = ec.getStoreManager().getQueryManager().newQuery("JDOQL", ec, toString());
+
         internalQuery.setIgnoreCache(ignoreCache);
-        if (!subclasses)
-        {
-            internalQuery.setSubclasses(false);
-        }
-        if (type == QueryType.SELECT)
-        {
-            if (resultDistinct != null)
-            {
-                internalQuery.setResultDistinct(resultDistinct.booleanValue());
-            }
-            internalQuery.setResultClass(resultClass);
-            internalQuery.setUnique(unique);
-        }
         if (extensions != null)
         {
             internalQuery.setExtensions(extensions);
@@ -901,12 +886,44 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             internalQuery.setFetchPlan(fetchPlan.getInternalFetchPlan());
         }
+        if (serializeRead != null)
+        {
+            internalQuery.setSerializeRead(serializeRead);
+        }
+        if (datastoreReadTimeout != null)
+        {
+            internalQuery.setDatastoreReadTimeoutMillis(datastoreReadTimeout);
+        }
+        if (datastoreWriteTimeout != null)
+        {
+            internalQuery.setDatastoreWriteTimeoutMillis(datastoreWriteTimeout);
+        }
+
+        if (!subclasses)
+        {
+            internalQuery.setSubclasses(false);
+        }
         if (type == QueryType.SELECT)
         {
+            internalQuery.setType(Query.SELECT);
+            if (resultDistinct != null)
+            {
+                internalQuery.setResultDistinct(resultDistinct.booleanValue());
+            }
+            internalQuery.setResultClass(resultClass);
+            internalQuery.setUnique(unique);
             if (candidates != null)
             {
                 internalQuery.setCandidates(candidates);
             }
+        }
+        else if (type == QueryType.BULK_UPDATE)
+        {
+            internalQuery.setType(Query.BULK_UPDATE);
+        }
+        else if (type == QueryType.BULK_DELETE)
+        {
+            internalQuery.setType(Query.BULK_DELETE);
         }
 
         QueryCompilation compilation = getCompilation();
@@ -1325,8 +1342,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
                     while (iter.hasNext())
                     {
                         OrderExpressionImpl orderExpr = iter.next();
-                        str.append(JDOQLQueryHelper.getJDOQLForExpression(
-                            ((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
+                        str.append(JDOQLQueryHelper.getJDOQLForExpression(((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
                         str.append(" " + (orderExpr.getDirection() == OrderDirection.ASC ? "ASCENDING" : "DESCENDING"));
                         if (iter.hasNext())
                         {
