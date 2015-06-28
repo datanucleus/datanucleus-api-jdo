@@ -32,7 +32,11 @@ import org.datanucleus.query.compiler.JDOQLSymbolResolver;
 import org.datanucleus.query.compiler.QueryCompilation;
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
+import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.query.expression.Literal;
+import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.query.expression.PrimaryExpression;
+import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.query.symbol.PropertySymbol;
 import org.datanucleus.query.symbol.SymbolTable;
 
@@ -53,6 +57,9 @@ public abstract class AbstractJDOQLTypedQuery<T>
     /** Candidate class for the query. */
     protected Class candidateCls;
 
+    /** Whether to include subclasses of the candidate in the query. */
+    protected boolean subclasses = true;
+
     /** Alias for the candidate of this query. */
     protected String candidateAlias = null;
 
@@ -66,6 +73,11 @@ public abstract class AbstractJDOQLTypedQuery<T>
     /** Whether the results are distinct (no dups). */
     protected Boolean resultDistinct = null;
 
+    /** Whether the result is unique (single row). */
+    protected boolean unique = false;
+
+    protected Class resultClass = null;
+
     /** Filter expression. */
     protected BooleanExpressionImpl filter;
 
@@ -77,6 +89,12 @@ public abstract class AbstractJDOQLTypedQuery<T>
 
     /** Ordering expression(s). */
     protected List<OrderExpressionImpl> ordering;
+
+    /** Range : lower limit expression. */
+    protected ExpressionImpl rangeLowerExpr;
+
+    /** Range : upper limit expression. */
+    protected ExpressionImpl rangeUpperExpr;
 
     protected PersistenceManager pm;
 
@@ -224,5 +242,329 @@ public abstract class AbstractJDOQLTypedQuery<T>
             compilation = compile(ec.getMetaDataManager(), ec.getClassLoaderResolver());
         }
         return compilation;
+    }
+
+    /**
+     * Method to return the single-string form of this JDOQL query.
+     * @return Single-string form of the query
+     */
+    public String toString()
+    {
+        // TODO Replace any variables that correspond to subqueries by the toString() of the subquery
+        if (queryString == null)
+        {
+            StringBuilder str = null;
+            if (type == QueryType.BULK_UPDATE)
+            {
+                str = new StringBuilder("UPDATE");
+            }
+            else if (type == QueryType.BULK_DELETE)
+            {
+                str = new StringBuilder("DELETE");
+            }
+            else
+            {
+                str = new StringBuilder("SELECT");
+            }
+
+            if (type == QueryType.SELECT)
+            {
+                if (unique)
+                {
+                    str.append(" UNIQUE");
+                }
+
+                // Result
+                if (result != null && !result.isEmpty())
+                {
+                    if (resultDistinct != null && resultDistinct.booleanValue())
+                    {
+                        str.append(" DISTINCT");
+                    }
+                    str.append(" ");
+                    Iterator<ExpressionImpl> iter = result.iterator();
+                    while (iter.hasNext())
+                    {
+                        ExpressionImpl resultExpr = iter.next();
+                        str.append(getJDOQLForExpression(resultExpr.getQueryExpression()));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+
+                // Result class
+                if (resultClass != null)
+                {
+                    str.append(" INTO ").append(resultClass.getName());
+                }
+            }
+
+            // Candidate
+            if (type == QueryType.SELECT || type == QueryType.BULK_DELETE)
+            {
+                str.append(" FROM ").append(candidateCls.getName());
+            }
+            else
+            {
+                str.append(" " + candidateCls.getName());
+            }
+            if (this instanceof JDOQLTypedSubqueryImpl)
+            {
+                str.append(" " + candidateAlias);
+            }
+
+            if (!subclasses)
+            {
+                str.append(" EXCLUDE SUBCLASSES");
+            }
+
+            if (type == QueryType.BULK_UPDATE)
+            {
+                str.append(" SET");
+                Iterator<ExpressionImpl> exprIter = updateExprs.iterator();
+                Iterator<ExpressionImpl> valIter = updateVals.iterator();
+                while (exprIter.hasNext())
+                {
+                    ExpressionImpl expr = exprIter.next();
+                    ExpressionImpl val = valIter.next();
+                    str.append(" ").append(getJDOQLForExpression(expr.getQueryExpression()));
+                    str.append(" = ").append(getJDOQLForExpression(val.getQueryExpression()));
+                    if (exprIter.hasNext())
+                    {
+                        str.append(",");
+                    }
+                }
+            }
+
+            // Filter
+            if (filter != null)
+            {
+                str.append(" WHERE ");
+                str.append(getJDOQLForExpression(filter.getQueryExpression()));
+            }
+
+            if (type == QueryType.SELECT)
+            {
+                // Grouping
+                if (grouping != null && !grouping.isEmpty())
+                {
+                    str.append(" GROUP BY ");
+                    Iterator<ExpressionImpl> iter = grouping.iterator();
+                    while (iter.hasNext())
+                    {
+                        ExpressionImpl groupExpr = iter.next();
+                        str.append(getJDOQLForExpression(groupExpr.getQueryExpression()));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+
+                // Having
+                if (having != null)
+                {
+                    str.append(" HAVING ");
+                    str.append(getJDOQLForExpression(having.getQueryExpression()));
+                }
+
+                // Ordering
+                if (ordering != null && !ordering.isEmpty())
+                {
+                    str.append(" ORDER BY ");
+                    Iterator<OrderExpressionImpl> iter = ordering.iterator();
+                    while (iter.hasNext())
+                    {
+                        OrderExpressionImpl orderExpr = iter.next();
+                        str.append(getJDOQLForExpression(((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
+                        str.append(" " + (orderExpr.getDirection() == OrderDirection.ASC ? "ASCENDING" : "DESCENDING"));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+
+                // Range
+                if (rangeLowerExpr != null && rangeUpperExpr != null)
+                {
+                    str.append(" RANGE ");
+                    str.append(getJDOQLForExpression(rangeLowerExpr.getQueryExpression()));
+                    str.append(",");
+                    str.append(getJDOQLForExpression(rangeUpperExpr.getQueryExpression()));
+                }
+            }
+
+            queryString = str.toString();
+        }
+        return queryString;
+    }
+
+    public String getJDOQLForExpression(Expression expr)
+    {
+        if (expr instanceof DyadicExpression)
+        {
+            DyadicExpression dyExpr = (DyadicExpression)expr;
+            Expression left = dyExpr.getLeft();
+            Expression right = dyExpr.getRight();
+            StringBuilder str = new StringBuilder("(");
+            if (dyExpr.getOperator() == Expression.OP_DISTINCT)
+            {
+                // Distinct goes in front of the left expression
+                str.append("DISTINCT ");
+            }
+
+            if (left != null)
+            {
+                str.append(getJDOQLForExpression(left));
+            }
+
+            // Special cases
+            if (dyExpr.getOperator() == Expression.OP_AND)
+            {
+                str.append(" && ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_OR)
+            {
+                str.append(" || ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_ADD)
+            {
+                str.append(" + ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_SUB)
+            {
+                str.append(" - ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_MUL)
+            {
+                str.append(" * ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_DIV)
+            {
+                str.append(" / ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_EQ)
+            {
+                str.append(" == ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_GT)
+            {
+                str.append(" > ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_LT)
+            {
+                str.append(" < ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_GTEQ)
+            {
+                str.append(" >= ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_LTEQ)
+            {
+                str.append(" <= ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_NOTEQ)
+            {
+                str.append(" != ");
+            }
+            else if (dyExpr.getOperator() == Expression.OP_DISTINCT)
+            {
+                // Processed above
+            }
+            else
+            {
+                // TODO Support other operators
+                throw new UnsupportedOperationException("Dont currently support operator " + dyExpr.getOperator() + " in JDOQL conversion");
+            }
+
+            if (right != null)
+            {
+                str.append(getJDOQLForExpression(right));
+            }
+            str.append(")");
+            return str.toString();
+        }
+        else if (expr instanceof PrimaryExpression)
+        {
+            PrimaryExpression primExpr = (PrimaryExpression)expr;
+            if (primExpr.getLeft() != null)
+            {
+                return getJDOQLForExpression(primExpr.getLeft()) + "." + primExpr.getId();
+            }
+            return primExpr.getId();
+        }
+        else if (expr instanceof ParameterExpression)
+        {
+            ParameterExpression paramExpr = (ParameterExpression)expr;
+            if (paramExpr.getId() != null)
+            {
+                return ":" + paramExpr.getId();
+            }
+            return "?" + paramExpr.getPosition();
+        }
+        else if (expr instanceof VariableExpression)
+        {
+            VariableExpression varExpr = (VariableExpression)expr;
+            return varExpr.getId();
+        }
+        else if (expr instanceof InvokeExpression)
+        {
+            InvokeExpression invExpr = (InvokeExpression)expr;
+            StringBuilder str = new StringBuilder();
+            if (invExpr.getLeft() != null)
+            {
+                str.append(getJDOQLForExpression(invExpr.getLeft())).append(".");
+            }
+            str.append(invExpr.getOperation());
+            str.append("(");
+            List<Expression> args = invExpr.getArguments();
+            if (args != null)
+            {
+                Iterator<Expression> iter = args.iterator();
+                while (iter.hasNext())
+                {
+                    str.append(getJDOQLForExpression(iter.next()));
+                    if (iter.hasNext())
+                    {
+                        str.append(",");
+                    }
+                }
+            }
+            str.append(")");
+            return str.toString();
+        }
+        else if (expr instanceof Literal)
+        {
+            Literal litExpr = (Literal)expr;
+            Object value = litExpr.getLiteral();
+            if (value instanceof String || value instanceof Character)
+            {
+                return "'" + value.toString() + "'";
+            }
+            else if (value instanceof Boolean)
+            {
+                return ((Boolean)value ? "TRUE" : "FALSE");
+            }
+            else
+            {
+                if (litExpr.getLiteral() == null)
+                {
+                    return "null";
+                }
+                return litExpr.getLiteral().toString();
+            }
+        }
+        else if (expr instanceof VariableExpression)
+        {
+            VariableExpression varExpr = (VariableExpression)expr;
+            return varExpr.getId();
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Dont currently support " + expr.getClass().getName() + " in JDOQLHelper");
+        }
     }
 }

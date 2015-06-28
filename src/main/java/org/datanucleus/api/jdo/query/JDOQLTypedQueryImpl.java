@@ -49,7 +49,6 @@ import javax.jdo.query.ListExpression;
 import javax.jdo.query.MapExpression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.OrderExpression;
-import javax.jdo.query.OrderExpression.OrderDirection;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
@@ -63,10 +62,10 @@ import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.QueryMetaData;
-import org.datanucleus.query.JDOQLQueryHelper;
 import org.datanucleus.query.compiler.QueryCompilation;
 import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.expression.ParameterExpression;
+import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
 import org.datanucleus.util.Localiser;
@@ -89,21 +88,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
     protected Collection<T> candidates = null;
 
-    /** Whether to include subclasses of the candidate in the query. */
-    boolean subclasses = true;
-
     boolean unmodifiable = false;
-
-    /** Whether the result is unique (single row). */
-    boolean unique = false;
-
-    Class resultClass = null;
-
-    /** Range : lower limit expression. */
-    protected ExpressionImpl rangeLowerExpr;
-
-    /** Range : upper limit expression. */
-    protected ExpressionImpl rangeUpperExpr;
 
     /** Map of parameter expression keyed by the name. */
     protected Map<String, ExpressionImpl> parameterExprByName = null;
@@ -623,6 +608,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedSubquery<T> subquery(String candidateAlias)
     {
+        discardCompiled();
         JDOQLTypedSubqueryImpl<T> subquery = new JDOQLTypedSubqueryImpl<T>(pm, this.candidateCls, candidateAlias, this);
         if (subqueries == null)
         {
@@ -1214,159 +1200,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /**
-     * Method to return the single-string form of this JDOQL query.
-     * @return Single-string form of the query
-     */
-    public String toString()
-    {
-        // TODO Replace any variables that correspond to subqueries by the toString() of the subquery
-        if (queryString == null)
-        {
-            StringBuilder str = null;
-            if (type == QueryType.BULK_UPDATE)
-            {
-                str = new StringBuilder("UPDATE");
-            }
-            else if (type == QueryType.BULK_DELETE)
-            {
-                str = new StringBuilder("DELETE");
-            }
-            else
-            {
-                str = new StringBuilder("SELECT");
-            }
-
-            if (type == QueryType.SELECT)
-            {
-                if (unique)
-                {
-                    str.append(" UNIQUE");
-                }
-
-                // Result
-                if (result != null && !result.isEmpty())
-                {
-                    if (resultDistinct != null && resultDistinct.booleanValue())
-                    {
-                        str.append(" DISTINCT");
-                    }
-                    str.append(" ");
-                    Iterator<ExpressionImpl> iter = result.iterator();
-                    while (iter.hasNext())
-                    {
-                        ExpressionImpl resultExpr = iter.next();
-                        str.append(JDOQLQueryHelper.getJDOQLForExpression(resultExpr.getQueryExpression()));
-                        if (iter.hasNext())
-                        {
-                            str.append(",");
-                        }
-                    }
-                }
-
-                // Result class
-                if (resultClass != null)
-                {
-                    str.append(" INTO ").append(resultClass.getName());
-                }
-            }
-
-            // Candidate
-            if (type == QueryType.SELECT || type == QueryType.BULK_DELETE)
-            {
-                str.append(" FROM ").append(candidateCls.getName());
-            }
-            else
-            {
-                str.append(" " + candidateCls.getName());
-            }
-            if (!subclasses)
-            {
-                str.append(" EXCLUDE SUBCLASSES");
-            }
-
-            if (type == QueryType.BULK_UPDATE)
-            {
-                str.append(" SET");
-                Iterator<ExpressionImpl> exprIter = updateExprs.iterator();
-                Iterator<ExpressionImpl> valIter = updateVals.iterator();
-                while (exprIter.hasNext())
-                {
-                    ExpressionImpl expr = exprIter.next();
-                    ExpressionImpl val = valIter.next();
-                    str.append(" ").append(JDOQLQueryHelper.getJDOQLForExpression(expr.getQueryExpression()));
-                    str.append(" = ").append(JDOQLQueryHelper.getJDOQLForExpression(val.getQueryExpression()));
-                    if (exprIter.hasNext())
-                    {
-                        str.append(",");
-                    }
-                }
-            }
-
-            // Filter
-            if (filter != null)
-            {
-                str.append(" WHERE ");
-                str.append(JDOQLQueryHelper.getJDOQLForExpression(filter.getQueryExpression()));
-            }
-
-            if (type == QueryType.SELECT)
-            {
-                // Grouping
-                if (grouping != null && !grouping.isEmpty())
-                {
-                    str.append(" GROUP BY ");
-                    Iterator<ExpressionImpl> iter = grouping.iterator();
-                    while (iter.hasNext())
-                    {
-                        ExpressionImpl groupExpr = iter.next();
-                        str.append(JDOQLQueryHelper.getJDOQLForExpression(groupExpr.getQueryExpression()));
-                        if (iter.hasNext())
-                        {
-                            str.append(",");
-                        }
-                    }
-                }
-
-                // Having
-                if (having != null)
-                {
-                    str.append(" HAVING ");
-                    str.append(JDOQLQueryHelper.getJDOQLForExpression(having.getQueryExpression()));
-                }
-
-                // Ordering
-                if (ordering != null && !ordering.isEmpty())
-                {
-                    str.append(" ORDER BY ");
-                    Iterator<OrderExpressionImpl> iter = ordering.iterator();
-                    while (iter.hasNext())
-                    {
-                        OrderExpressionImpl orderExpr = iter.next();
-                        str.append(JDOQLQueryHelper.getJDOQLForExpression(((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
-                        str.append(" " + (orderExpr.getDirection() == OrderDirection.ASC ? "ASCENDING" : "DESCENDING"));
-                        if (iter.hasNext())
-                        {
-                            str.append(",");
-                        }
-                    }
-                }
-
-                // Range
-                if (rangeLowerExpr != null && rangeUpperExpr != null)
-                {
-                    str.append(" RANGE ");
-                    str.append(JDOQLQueryHelper.getJDOQLForExpression(rangeLowerExpr.getQueryExpression()));
-                    str.append(",");
-                    str.append(JDOQLQueryHelper.getJDOQLForExpression(rangeUpperExpr.getQueryExpression()));
-                }
-            }
-
-            queryString = str.toString();
-        }
-        return queryString;
-    }
-
-    /**
      * Method to return the (simple) name of the query class for a specified class name.
      * Currently just returns "Q{className}"
      * @param name Simple name of the class (without package)
@@ -1593,5 +1426,30 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         query.getExecutionContext().getMetaDataManager().registerNamedQuery(qmd);
 
         return this;
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery#getJDOQLForExpression(org.datanucleus.query.expression.Expression)
+     */
+    @Override
+    public String getJDOQLForExpression(org.datanucleus.query.expression.Expression expr)
+    {
+        if (expr instanceof VariableExpression)
+        {
+            VariableExpression varExpr = (VariableExpression)expr;
+            if (subqueries != null)
+            {
+                for (JDOQLTypedSubqueryImpl subq : subqueries)
+                {
+                    if (varExpr.getId().equals(subq.getAlias()))
+                    {
+                        // This variable represents a subquery so return the subquery text, so we form a single-string including subqueries
+                        return "(" + subq.toString() + ")";
+                    }
+                }
+            }
+        }
+
+        return super.getJDOQLForExpression(expr);
     }
 }
