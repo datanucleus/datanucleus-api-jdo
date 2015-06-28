@@ -21,6 +21,7 @@ package org.datanucleus.api.jdo.query;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.jdo.JDOException;
 import javax.jdo.JDOQLTypedSubquery;
@@ -35,7 +36,9 @@ import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
+import javax.jdo.query.OrderExpression.OrderDirection;
 
+import org.datanucleus.query.JDOQLQueryHelper;
 import org.datanucleus.query.expression.VariableExpression;
 
 /**
@@ -218,5 +221,134 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
             throw new JDOException("Unable to create expression of type " + expr.getClass().getName() +
             " due to error in constructor");
         }
+    }
+
+    /**
+     * Method to return the single-string form of this JDOQL query.
+     * @return Single-string form of the query
+     */
+    public String toString()
+    {
+        if (queryString == null)
+        {
+            StringBuilder str = null;
+            if (type == QueryType.BULK_UPDATE)
+            {
+                str = new StringBuilder("UPDATE");
+            }
+            else if (type == QueryType.BULK_DELETE)
+            {
+                str = new StringBuilder("DELETE");
+            }
+            else
+            {
+                str = new StringBuilder("SELECT");
+            }
+
+            if (type == QueryType.SELECT)
+            {
+                // Result
+                if (result != null && !result.isEmpty())
+                {
+                    if (resultDistinct != null && resultDistinct.booleanValue())
+                    {
+                        str.append(" DISTINCT");
+                    }
+                    str.append(" ");
+                    Iterator<ExpressionImpl> iter = result.iterator();
+                    while (iter.hasNext())
+                    {
+                        ExpressionImpl resultExpr = iter.next();
+                        str.append(JDOQLQueryHelper.getJDOQLForExpression(resultExpr.getQueryExpression()));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+            }
+
+            // Candidate
+            if (type == QueryType.SELECT || type == QueryType.BULK_DELETE)
+            {
+                str.append(" FROM ").append(candidateCls.getName());
+            }
+            else
+            {
+                str.append(" " + candidateCls.getName());
+            }
+
+            if (type == QueryType.BULK_UPDATE)
+            {
+                str.append(" SET");
+                Iterator<ExpressionImpl> exprIter = updateExprs.iterator();
+                Iterator<ExpressionImpl> valIter = updateVals.iterator();
+                while (exprIter.hasNext())
+                {
+                    ExpressionImpl expr = exprIter.next();
+                    ExpressionImpl val = valIter.next();
+                    str.append(" ").append(JDOQLQueryHelper.getJDOQLForExpression(expr.getQueryExpression()));
+                    str.append(" = ").append(JDOQLQueryHelper.getJDOQLForExpression(val.getQueryExpression()));
+                    if (exprIter.hasNext())
+                    {
+                        str.append(",");
+                    }
+                }
+            }
+
+            // Filter
+            if (filter != null)
+            {
+                str.append(" WHERE ");
+                str.append(JDOQLQueryHelper.getJDOQLForExpression(filter.getQueryExpression()));
+            }
+
+            if (type == QueryType.SELECT)
+            {
+                // Grouping
+                if (grouping != null && !grouping.isEmpty())
+                {
+                    str.append(" GROUP BY ");
+                    Iterator<ExpressionImpl> iter = grouping.iterator();
+                    while (iter.hasNext())
+                    {
+                        ExpressionImpl groupExpr = iter.next();
+                        str.append(JDOQLQueryHelper.getJDOQLForExpression(groupExpr.getQueryExpression()));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+
+                // Having
+                if (having != null)
+                {
+                    str.append(" HAVING ");
+                    str.append(JDOQLQueryHelper.getJDOQLForExpression(having.getQueryExpression()));
+                }
+
+                // Ordering
+                if (ordering != null && !ordering.isEmpty())
+                {
+                    str.append(" ORDER BY ");
+                    Iterator<OrderExpressionImpl> iter = ordering.iterator();
+                    while (iter.hasNext())
+                    {
+                        OrderExpressionImpl orderExpr = iter.next();
+                        str.append(JDOQLQueryHelper.getJDOQLForExpression(
+                            ((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
+                        str.append(" " + (orderExpr.getDirection() == OrderDirection.ASC ? "ASCENDING" : "DESCENDING"));
+                        if (iter.hasNext())
+                        {
+                            str.append(",");
+                        }
+                    }
+                }
+            }
+
+            queryString = str.toString();
+        }
+        return queryString;
     }
 }

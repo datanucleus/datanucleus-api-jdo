@@ -83,7 +83,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
     protected ExecutionContext ec;
 
     /** The generic query compilation that this equates to (cached). */
-    QueryCompilation compilation = null;
+    protected QueryCompilation compilation = null;
+
+    /** The single-string query that this equates to (cached). */
+    protected String queryString = null;
 
     public AbstractJDOQLTypedQuery(PersistenceManager pm, Class<T> cls, String alias)
     {
