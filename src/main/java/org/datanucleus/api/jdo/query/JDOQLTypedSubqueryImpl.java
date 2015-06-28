@@ -191,35 +191,31 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
 
     protected Expression internalSelect(Expression expr, Class implClass)
     {
+        discardCompiled();
         this.result = new ArrayList<ExpressionImpl>();
         this.result.add((ExpressionImpl)expr);
 
         VariableExpression varExpr = new VariableExpression(getAlias());
         try
         {
-            Constructor ctr = implClass.getConstructor(
-                new Class[] {org.datanucleus.query.expression.Expression.class});
+            Constructor ctr = implClass.getConstructor(new Class[] {org.datanucleus.query.expression.Expression.class});
             return (Expression)ctr.newInstance(new Object[] {varExpr});
         }
         catch (NoSuchMethodException nsme)
         {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() +
-                " since required constructor doesnt exist");
+            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " since required constructor doesnt exist");
         }
         catch (InvocationTargetException ite)
         {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() +
-            " due to error in constructor");
+            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
         }
         catch (IllegalAccessException iae)
         {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() +
-            " due to error in constructor");
+            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
         }
         catch (InstantiationException ie)
         {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() +
-            " due to error in constructor");
+            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
         }
     }
 

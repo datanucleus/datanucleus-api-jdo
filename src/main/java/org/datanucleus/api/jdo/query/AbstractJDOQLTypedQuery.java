@@ -102,6 +102,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
     protected void discardCompiled()
     {
         compilation = null;
+        queryString = null;
     }
 
     /**
@@ -183,8 +184,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
             {
                 OrderExpressionImpl order = iter.next();
                 org.datanucleus.query.expression.OrderExpression orderExpr =
-                    new org.datanucleus.query.expression.OrderExpression(
-                        ((ExpressionImpl)order.getExpression()).getQueryExpression(), 
+                    new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
                         order.getDirection() == OrderDirection.ASC ? "ascending" : "descending");
                 orderExpr.bind(symtbl);
                 orderExprs[i++] = orderExpr;
@@ -202,13 +202,11 @@ public abstract class AbstractJDOQLTypedQuery<T>
             {
                 ExpressionImpl updateExpr = expIter.next();
                 ExpressionImpl updateVal  = valIter.next();
-                updateExprs[i++] = new DyadicExpression(updateExpr.getQueryExpression(), Expression.OP_EQ, 
-                    updateVal.getQueryExpression());
+                updateExprs[i++] = new DyadicExpression(updateExpr.getQueryExpression(), Expression.OP_EQ, updateVal.getQueryExpression());
             }
         }
 
-        compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs,
-            null, filterExpr, groupingExprs, havingExpr, orderExprs, updateExprs);
+        compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs, null, filterExpr, groupingExprs, havingExpr, orderExprs, updateExprs);
         compilation.setQueryLanguage("JDOQL");
 
         return compilation;
