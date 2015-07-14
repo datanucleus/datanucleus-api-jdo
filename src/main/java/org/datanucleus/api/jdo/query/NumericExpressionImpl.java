@@ -218,7 +218,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "asin", args);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sqrt", args);
         return new NumericExpressionImpl<T>(invokeExpr);
     }
 
@@ -240,7 +240,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "atan", args);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "asin", args);
         return new NumericExpressionImpl<T>(invokeExpr);
     }
 
@@ -251,18 +251,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sqrt", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
-    }
-
-    /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#sin()
-     */
-    public NumericExpression sin()
-    {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
-        args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sin", args);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "atan", args);
         return new NumericExpressionImpl<T>(invokeExpr);
     }
 
@@ -274,6 +263,17 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "cos", args);
+        return new NumericExpressionImpl<T>(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.query.typesafe.NumericExpression#sin()
+     */
+    public NumericExpression sin()
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(queryExpr);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sin", args);
         return new NumericExpressionImpl<T>(invokeExpr);
     }
 
