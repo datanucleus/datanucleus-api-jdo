@@ -341,4 +341,14 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
         org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NEG, this.queryExpr);
         return new NumericExpressionImpl(queryExpr);
     }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#com()
+     */
+    @Override
+    public NumericExpression com()
+    {
+        org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_COM, this.queryExpr);
+        return new NumericExpressionImpl(queryExpr);
+    }
 }

@@ -80,4 +80,14 @@ public class BooleanExpressionImpl<T> extends ComparableExpressionImpl<Boolean> 
             new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_OR, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.BooleanExpression#neg()
+     */
+    @Override
+    public BooleanExpression neg()
+    {
+        org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NEG, this.queryExpr);
+        return new BooleanExpressionImpl(queryExpr);
+    }
 }
