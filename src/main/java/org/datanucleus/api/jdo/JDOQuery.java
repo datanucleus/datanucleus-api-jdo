@@ -39,8 +39,6 @@ import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
-import org.datanucleus.util.NucleusLogger;
-import org.datanucleus.util.StringUtils;
 
 /**
  * Wrapper for JDO Query class.
@@ -288,7 +286,6 @@ public class JDOQuery<T> implements Query<T>
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultList() instead");
         }
-        NucleusLogger.GENERAL.info(">> executeList params=" + StringUtils.mapToString(parameterValueByName));
         return (List<T>) executeInternal();
     }
 
