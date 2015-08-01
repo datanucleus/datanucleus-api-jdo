@@ -351,4 +351,46 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
         org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_COM, this.queryExpr);
         return new NumericExpressionImpl(queryExpr);
     }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#bAnd(javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public NumericExpression bAnd(NumericExpression bitExpr)
+    {
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();
+
+        org.datanucleus.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_BIT_AND, rightQueryExpr);
+        return new NumericExpressionImpl(queryExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#bOr(javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public NumericExpression bOr(NumericExpression bitExpr)
+    {
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();
+
+        org.datanucleus.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_BIT_OR, rightQueryExpr);
+        return new NumericExpressionImpl(queryExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#bXor(javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public NumericExpression bXor(NumericExpression bitExpr)
+    {
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();
+
+        org.datanucleus.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_BIT_XOR, rightQueryExpr);
+        return new NumericExpressionImpl(queryExpr);
+    }
 }
