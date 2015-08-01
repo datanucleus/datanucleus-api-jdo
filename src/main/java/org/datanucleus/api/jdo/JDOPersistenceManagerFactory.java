@@ -1207,6 +1207,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 options.add("javax.jdo.option.DatastoreTimeout");
             }
+
+            if (storeMgrOptions.contains(StoreManager.OPTION_QUERY_JDOQL_BITWISE_OPS))
+            {
+                options.add("javax.jdo.option.JDOQL.BitwiseOperations");
+            }
         }
 
         return Collections.unmodifiableSet(options);
