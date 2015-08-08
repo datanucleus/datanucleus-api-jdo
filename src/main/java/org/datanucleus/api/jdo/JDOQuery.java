@@ -634,19 +634,6 @@ public class JDOQuery<T> implements Query<T>
         return this;
     }
 
-    public Query<T> having(String having)
-    {
-        try
-        {
-            query.setHaving(having);
-        }
-        catch (NucleusException ne)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-        }
-        return this;
-    }
-
     /**
      * Set the grouping for the query.
      * @param grouping The grouping
