@@ -1184,7 +1184,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
             if (storeMgrOptions.contains(StoreManager.OPTION_QUERY_JDOQL_BITWISE_OPS))
             {
-                options.add("javax.jdo.option.JDOQL.BitwiseOperations");
+                options.add("javax.jdo.query.JDOQL.BitwiseOperations");
             }
         }
 
