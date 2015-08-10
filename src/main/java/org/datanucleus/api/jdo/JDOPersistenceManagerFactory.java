@@ -1239,7 +1239,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         // Query Languages
         "javax.jdo.query.SQL",
         "javax.jdo.query.JDOQL", // Not a listed optional feature
-        "javax.jdo.option.UnconstrainedQueryVariables"
+        "javax.jdo.query.JDOQL.UnconstrainedQueryVariables"
     };
 
     /**
