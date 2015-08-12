@@ -18,7 +18,6 @@ Contributors:
 package org.datanucleus.api.jdo.metadata;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -94,6 +93,7 @@ import org.datanucleus.metadata.VersionMetaData;
 import org.datanucleus.metadata.annotations.AbstractAnnotationReader;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.Member;
+import org.datanucleus.store.types.ContainerHandler;
 import org.datanucleus.store.types.TypeManager;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
@@ -1874,9 +1874,18 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                 }
 
+                TypeManager typeManager = mgr.getNucleusContext().getTypeManager();
+                ContainerHandler containerHandler = typeManager.getContainerHandler(member.getType());
+                
                 // If the field is a container then add its container element
                 ContainerMetaData contmd = null;
-                if (Collection.class.isAssignableFrom(member.getType()))
+                
+                if ( containerHandler != null )
+                {
+                    contmd = containerHandler.newMetaData();
+                }
+
+                if (contmd instanceof CollectionMetaData)
                 {
                     Class collectionElementType = null;
                     StringBuilder elementTypeStr = new StringBuilder();
@@ -1946,7 +1955,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
                 }
-                else if (member.getType().isArray())
+                else if (contmd instanceof ArrayMetaData)
                 {
                     StringBuilder elementTypeStr = new StringBuilder();
                     if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
@@ -1983,7 +1992,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         arrmd.setDependentElement(Boolean.valueOf(dependentElement));
                     }
                 }
-                else if (Map.class.isAssignableFrom(member.getType()))
+                else if (contmd instanceof MapMetaData)
                 {
                     Class mapKeyType = null;
                     if (keyType != null && keyType != void.class)
@@ -2102,6 +2111,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
                 }
+                
                 if (contmd != null)
                 {
                     mmd.setContainer(contmd);
