@@ -752,7 +752,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         nucleusContext.getMetaDataManager().setAllowXML(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_XML));
         nucleusContext.getMetaDataManager().setAllowAnnotations(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_ANNOTATIONS));
         nucleusContext.getMetaDataManager().setValidate(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_VALIDATE));
-
+        nucleusContext.getMetaDataManager().setDefaultNullable(getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_DEFAULT_NULLABLE));
+        
         if (pumd != null)
         {
             // Initialise the MetaDataManager with all files/classes for this persistence-unit
