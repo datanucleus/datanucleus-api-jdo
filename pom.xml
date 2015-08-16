@@ -23,7 +23,7 @@
     </scm>
 
     <properties>
-        <jdo.version>3.2.0-m2-SNAPSHOT</jdo.version>
+        <jdo.version>3.2.0-m2</jdo.version>
         <dn.core.version>4.1.0-release</dn.core.version>
     </properties>
 
