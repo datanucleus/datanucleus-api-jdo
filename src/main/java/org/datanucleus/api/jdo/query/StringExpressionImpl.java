@@ -211,6 +211,22 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
+    public BooleanExpression matches(StringExpression expr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)expr).getQueryExpression());
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
+    public BooleanExpression matches(String str)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(str));
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#startsWith(java.lang.String)
      */
