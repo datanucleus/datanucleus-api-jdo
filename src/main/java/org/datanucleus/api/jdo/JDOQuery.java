@@ -1044,7 +1044,19 @@ public class JDOQuery<T> implements Query<T>
     {
         JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
 
-        QueryMetaData qmd = new QueryMetaData(name);
+        String queryName = null;
+        if (query.getCandidateClassName() != null)
+        {
+            // Candidate, so save as "{candidateName}_{userName}"
+            queryName = query.getCandidateClassName() + "_" + name;
+        }
+        else
+        {
+            // No candidate so save as "{userName}"
+            queryName = name;
+        }
+
+        QueryMetaData qmd = new QueryMetaData(queryName);
         qmd.setLanguage(language);
         qmd.setQuery(query.toString());
         qmd.setResultClass(query.getResultClassName());
