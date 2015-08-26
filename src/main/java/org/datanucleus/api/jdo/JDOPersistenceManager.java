@@ -160,18 +160,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             return;
         }
 
-        // JDO 3.2
-        /*try
-        {
-            if (ec.getTransaction().isActive())
-            {
-                ec.getTransaction().rollback();
-            }
-        }
-        catch (NucleusException ne)
-        {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-        }*/
         try
         {
             // Close the ExecutionContext
@@ -179,7 +167,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (TransactionActiveOnCloseException tae)
         {
-            // TODO JDO 3.2 likely will change this to force rollback
             throw new JDOUserException(tae.getMessage(), this);
         }
         catch (NucleusException ne)
