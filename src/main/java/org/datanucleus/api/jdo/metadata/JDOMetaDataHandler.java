@@ -1074,7 +1074,12 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 AbstractClassMetaData cmd = (AbstractClassMetaData) getStack();
                 VersionMetaData vermd = cmd.newVersionMetadata();
-                vermd.setStrategy(getAttr(attrs, "strategy")).setColumnName(getAttr(attrs, "column"));
+                String strategy = getAttr(attrs, "strategy");
+                if (!StringUtils.isWhitespace(strategy))
+                {
+                    vermd.setStrategy(strategy);
+                }
+                vermd.setColumnName(getAttr(attrs, "column"));
                 vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                 pushStack(vermd);
             }
