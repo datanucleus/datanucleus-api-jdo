@@ -680,8 +680,8 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else
                 {
-                    if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE) && !annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) && !annName
-                            .equals(JDOAnnotationUtils.QUERIES) && !annName.equals(JDOAnnotationUtils.QUERY))
+                    if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE) && !annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) && 
+                        !annName.equals(JDOAnnotationUtils.QUERIES) && !annName.equals(JDOAnnotationUtils.QUERY))
                     {
                         NucleusLogger.METADATA.debug(Localiser.msg("044203", cls.getName(), annotations[i].getName()));
                     }
@@ -1876,11 +1876,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                 TypeManager typeManager = mgr.getNucleusContext().getTypeManager();
                 ContainerHandler containerHandler = typeManager.getContainerHandler(member.getType());
-                
-                // If the field is a container then add its container element
                 ContainerMetaData contmd = null;
-                
-                if ( containerHandler != null )
+
+                // If the field is a container then add its container element
+                if (containerHandler != null)
                 {
                     contmd = containerHandler.newMetaData();
                 }
