@@ -56,7 +56,7 @@ import org.datanucleus.util.ClassUtils;
 public class JDOAdapter implements ApiAdapter
 {
     private static final long serialVersionUID = 4135712868062532386L;
-    protected static Set<String> defaultPersistentTypeNames = new HashSet<String>();
+    protected static final Set<String> defaultPersistentTypeNames = new HashSet<String>();
 
     static
     {

@@ -570,14 +570,14 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             refresh(obj);
         }
 
-        Throwable[] nested_excs = exc.getNestedExceptions();
-        if (nested_excs != null)
+        Throwable[] nestedExceptions = exc.getNestedExceptions();
+        if (nestedExceptions != null)
         {
-            for (int i = 0; i < nested_excs.length; i++)
+            for (int i = 0; i < nestedExceptions.length; i++)
             {
-                if (nested_excs[i] instanceof JDOException)
+                if (nestedExceptions[i] instanceof JDOException)
                 {
-                    refreshAll((JDOException) nested_excs[i]);
+                    refreshAll((JDOException) nestedExceptions[i]);
                 }
             }
         }
@@ -693,6 +693,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     /**
      * JDO Convenience method to wrap any DataNucleus exceptions for the makePersistent process.
      * @param obj The object to persist
+     * @return The persistent object
      * @throws JDOUserException thrown if the object could not be persisted
      */
     private <T> T jdoMakePersistent(T obj)
@@ -712,6 +713,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * JDO method to persist an object.
      * Will also attach a previously detached object.
      * @param obj The object
+     * @return The persistent object
      * @return The persisted object
      */
     public <T> T makePersistent(T obj)
@@ -730,6 +732,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     /**
      * JDO method to make persistent an array of objects.
      * @param pcs The objects to persist
+     * @return The persistent objects
      */
     public <T> T[] makePersistentAll(T... pcs)
     {
@@ -740,6 +743,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * JDO method to make persistent a collection of objects.
      * Throws a JDOUserException if objects could not be made persistent.
      * @param pcs The objects to persist
+     * @return The persistent objects
      */
     public <T> Collection<T> makePersistentAll(Collection<T> pcs)
     {
@@ -1802,13 +1806,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         for (Object oid : oids)
         {
             Object id = oid;
-            if (id != null)
+            if (id != null && id instanceof javax.jdo.identity.SingleFieldIdentity)
             {
-                if (id instanceof javax.jdo.identity.SingleFieldIdentity)
-                {
-                    // Convert to DN own internal types
-                    id = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
-                }
+                // Convert to DN own internal types
+                id = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
             }
             oidArray[j++] = id;
         }
