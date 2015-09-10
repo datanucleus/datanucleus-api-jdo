@@ -63,6 +63,7 @@ import javax.jdo.annotations.Uniques;
 import javax.jdo.annotations.Value;
 import javax.jdo.annotations.Version;
 
+import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.metadata.ColumnMetaData;
 import org.datanucleus.metadata.DiscriminatorStrategy;
 import org.datanucleus.metadata.FieldPersistenceModifier;
@@ -170,17 +171,17 @@ public class JDOAnnotationUtils
             // Fallback to JDOQL
             return QueryLanguage.JDOQL.toString();
         }
-        else if (value.equalsIgnoreCase("javax.jdo.query.JDOQL"))
+        else if (value.equalsIgnoreCase(JDOQuery.JDOQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "JDOQL"
             return QueryLanguage.JDOQL.toString();
         }
-        else if (value.equalsIgnoreCase("javax.jdo.query.SQL"))
+        else if (value.equalsIgnoreCase(JDOQuery.SQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "SQL"
             return QueryLanguage.SQL.toString();
         }
-        else if (value.equalsIgnoreCase("javax.jdo.query.JPQL"))
+        else if (value.equalsIgnoreCase(JDOQuery.JPQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "JPQL"
             return QueryLanguage.JPQL.toString();

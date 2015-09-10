@@ -51,6 +51,10 @@ public class JDOQuery<T> implements Query<T>
 {
     private static final long serialVersionUID = -204134873012573162L;
 
+    public static final String JDOQL_QUERY_LANGUAGE = "javax.jdo.query.JDOQL";
+    public static final String JPQL_QUERY_LANGUAGE = "javax.jdo.query.JPQL";
+    public static final String SQL_QUERY_LANGUAGE = "javax.jdo.query.SQL";
+
     /** PersistenceManager for the query. */
     transient PersistenceManager pm;
 

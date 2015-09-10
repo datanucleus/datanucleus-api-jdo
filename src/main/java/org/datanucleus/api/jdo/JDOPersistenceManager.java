@@ -1255,15 +1255,15 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         {
             queryLanguage = "JDOQL";
         }
-        else if (queryLanguage.equals("javax.jdo.query.JDOQL"))
+        else if (queryLanguage.equals(JDOQuery.JDOQL_QUERY_LANGUAGE))
         {
             queryLanguage = "JDOQL";
         }
-        else if (queryLanguage.equals("javax.jdo.query.SQL"))
+        else if (queryLanguage.equals(JDOQuery.SQL_QUERY_LANGUAGE))
         {
             queryLanguage = "SQL";
         }
-        else if (queryLanguage.equals("javax.jdo.query.JPQL"))
+        else if (queryLanguage.equals(JDOQuery.JPQL_QUERY_LANGUAGE))
         {
             queryLanguage = "JPQL";
         }

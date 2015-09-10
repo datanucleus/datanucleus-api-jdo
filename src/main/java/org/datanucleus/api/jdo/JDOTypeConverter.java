@@ -23,6 +23,8 @@ import org.datanucleus.store.types.converters.TypeConverter;
 
 /**
  * Wrapper for a JDO AttributeConverter for use internally to DataNucleus.
+ * @param <X> Member type for this converter
+ * @param <Y> Datastore type for storing this member with this converter
  */
 public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
 {
@@ -36,6 +38,12 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
     /** The datastore type. */
     Class<Y> dbType;
 
+    /**
+     * Constructor for a JDO type converter, wrapping a javax.jdo.AttributeConverter.
+     * @param conv The JDO AttributeConverter
+     * @param memberType The member type
+     * @param dbType The datastore type for this member
+     */
     public JDOTypeConverter(AttributeConverter<X, Y> conv, Class<X> memberType, Class<Y> dbType)
     {
         this.jdoConverter = conv;
@@ -68,7 +76,7 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
     @Override
     public X toMemberType(Y datastoreValue)
     {
-      return jdoConverter.convertToAttribute(datastoreValue);
+        return jdoConverter.convertToAttribute(datastoreValue);
     }
 
     public String toString()

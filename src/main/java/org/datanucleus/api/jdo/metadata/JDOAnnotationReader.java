@@ -47,6 +47,7 @@ import javax.jdo.annotations.VersionStrategy;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.JDOTypeConverterUtils;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
@@ -841,15 +842,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String lang = JDOAnnotationUtils.getQueryLanguageName(qs[j].language());
                     if (!StringUtils.isWhitespace(lang))
                     {
-                        if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                        if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
                         {
                             lang = QueryLanguage.JDOQL.toString();
                         }
-                        else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                        else if (lang.equals(JDOQuery.SQL_QUERY_LANGUAGE)) // Convert to SQL
                         {
                             lang = QueryLanguage.SQL.toString();
                         }
-                        else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                        else if (lang.equals(JDOQuery.JPQL_QUERY_LANGUAGE)) // Convert to JPQL
                         {
                             lang = QueryLanguage.JPQL.toString();
                         }
@@ -883,15 +884,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String lang = JDOAnnotationUtils.getQueryLanguageName((String) annotationValues.get("language"));
                 if (!StringUtils.isWhitespace(lang))
                 {
-                    if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                    if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
                     {
                         lang = QueryLanguage.JDOQL.toString();
                     }
-                    else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                    else if (lang.equals(JDOQuery.SQL_QUERY_LANGUAGE)) // Convert to SQL
                     {
                         lang = QueryLanguage.SQL.toString();
                     }
-                    else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                    else if (lang.equals(JDOQuery.JPQL_QUERY_LANGUAGE)) // Convert to JPQL
                     {
                         lang = QueryLanguage.JPQL.toString();
                     }

@@ -24,6 +24,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.JDOTypeConverterUtils;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
@@ -584,15 +585,15 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 String lang = getAttr(attrs, "language");
                 if (!StringUtils.isWhitespace(lang))
                 {
-                    if (lang.equals("javax.jdo.query.JDOQL")) // Convert to JDOQL
+                    if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
                     {
                         lang = QueryLanguage.JDOQL.toString();
                     }
-                    else if (lang.equals("javax.jdo.query.SQL")) // Convert to SQL
+                    else if (lang.equals(JDOQuery.SQL_QUERY_LANGUAGE)) // Convert to SQL
                     {
                         lang = QueryLanguage.SQL.toString();
                     }
-                    else if (lang.equals("javax.jdo.query.JPQL")) // Convert to JPQL
+                    else if (lang.equals(JDOQuery.JPQL_QUERY_LANGUAGE)) // Convert to JPQL
                     {
                         lang = QueryLanguage.JPQL.toString();
                     }

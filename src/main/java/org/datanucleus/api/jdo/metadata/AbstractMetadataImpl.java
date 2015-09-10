@@ -27,7 +27,7 @@ import org.datanucleus.metadata.MetaData;
  * Base for all implementations of JDO Metadata classes. Provides parentage, and the underlying
  * internal metadata component used by DataNucleus. Also provides extension handling.
  */
-public class AbstractMetadataImpl implements Metadata
+public abstract class AbstractMetadataImpl implements Metadata
 {
     /** Link to parent wrapper. */
     AbstractMetadataImpl parent;
