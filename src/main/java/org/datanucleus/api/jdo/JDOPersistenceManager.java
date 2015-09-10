@@ -2290,20 +2290,17 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             }
         }
 
-        // Check the PMF now
+        // Check the PMF. This will create one if none present
         JDOFetchGroup jdoGrp = (JDOFetchGroup)getPersistenceManagerFactory().getFetchGroup(cls, name);
-        if (jdoGrp != null)
-        {
-            // PMF returned us a group (maybe newly created) so put a copy in scope here
-            // We actually copy the internal group to the EC, and have our own JDOFetchGroup here
-            FetchGroup internalGrp = (jdoGrp).getInternalFetchGroup();
-            FetchGroup internalCopy = new FetchGroup(internalGrp);
-            jdoGrp = new JDOFetchGroup(internalCopy);
-            ec.addInternalFetchGroup(internalCopy);
-            jdoFetchGroups.add(jdoGrp);
-            return jdoGrp;
-        }
-        return null;
+
+        // PMF returned us a group (maybe newly created) so put a copy in scope here
+        // We actually copy the internal group to the EC, and have our own JDOFetchGroup here
+        FetchGroup internalGrp = (jdoGrp).getInternalFetchGroup();
+        FetchGroup internalCopy = new FetchGroup(internalGrp);
+        jdoGrp = new JDOFetchGroup(internalCopy);
+        ec.addInternalFetchGroup(internalCopy);
+        jdoFetchGroups.add(jdoGrp);
+        return jdoGrp;
     }
 
     /**
