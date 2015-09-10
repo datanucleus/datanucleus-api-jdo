@@ -115,7 +115,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /** Cache of PMF keyed by the name. Only used when having single-PMF property enabled. */
-    private static ConcurrentHashMap<String, JDOPersistenceManagerFactory> pmfByName;
+    private static volatile ConcurrentHashMap<String, JDOPersistenceManagerFactory> pmfByName;
 
     /** The context that this factory uses. TODO Ought to be serializable, or able to recreate. */
     protected transient PersistenceNucleusContext nucleusContext;
