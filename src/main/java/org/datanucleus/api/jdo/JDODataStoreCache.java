@@ -95,6 +95,7 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
      * @param subclasses if true, evict instances of subclasses also
      * @deprecated
      */
+    @Deprecated
     public void evictAll(Class pcClass, boolean subclasses)
     {
         cache.evictAll(pcClass, subclasses);
@@ -143,6 +144,7 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
      * @param subclasses if true, pin instances of subclasses also
      * @deprecated
      */
+    @Deprecated
     public void pinAll(Class pcClass, boolean subclasses)
     {
         cache.pinAll(pcClass, subclasses);
@@ -191,6 +193,7 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
      * @param subclasses if true, unpin instances of subclasses also
      * @deprecated
      */
+    @Deprecated
     public void unpinAll(Class pcClass, boolean subclasses)
     {
         cache.unpinAll(pcClass, subclasses);

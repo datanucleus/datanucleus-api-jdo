@@ -494,7 +494,7 @@ public class JDOAdapter implements ApiAdapter
                 // non-static fields of objectid-class include
                 // persistence-capable object field
                 AbstractMemberMetaData fieldInPcClass = cmd.getMetaDataForMember(fieldsInPkClass[i].getName());
-                boolean found_field = false;
+                boolean foundField = false;
                 if (fieldInPcClass == null)
                 {
                     throw new InvalidPrimaryKeyException("019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
@@ -504,36 +504,33 @@ public class JDOAdapter implements ApiAdapter
                 // Type declared in the persistable class
                 if (fieldInPcClass.getTypeName().equals(fieldsInPkClass[i].getType().getName()))
                 {
-                    found_field = true;
+                    foundField = true;
                 }
 
                 // Check for primary key field that is PC (Compound Identity - aka Identifying Relations)
-                if (!found_field)
+                if (!foundField)
                 {
                     String fieldTypePkClass = fieldsInPkClass[i].getType().getName();
-                    AbstractClassMetaData ref_cmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
-                    if (ref_cmd == null)
+                    AbstractClassMetaData refCmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
+                    if (refCmd == null)
                     {
                         throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                     }
-                    if (ref_cmd.getObjectidClass() == null)
+                    if (refCmd.getObjectidClass() == null && IdentityUtils.isSingleFieldIdentityClass(fieldTypePkClass))
                     {
-                        //Single Field Identity
-                        if (IdentityUtils.isSingleFieldIdentityClass(fieldTypePkClass))
-                        {
-                            throw new InvalidPrimaryKeyException("019014", cmd.getFullClassName(), pkClass.getName(),
-                                fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getFullClassName());
-                        }
+                        // Single Field Identity
+                        throw new InvalidPrimaryKeyException("019014", cmd.getFullClassName(), pkClass.getName(),
+                            fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getFullClassName());
                     }
-                    if (!fieldTypePkClass.equals(ref_cmd.getObjectidClass()))
+                    if (!fieldTypePkClass.equals(refCmd.getObjectidClass()))
                     {
                         throw new InvalidPrimaryKeyException("019013", cmd.getFullClassName(), pkClass.getName(),
-                            fieldsInPkClass[i].getName(), fieldTypePkClass, ref_cmd.getObjectidClass());
+                            fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getObjectidClass());
                     }
-                    found_field=true;
+                    foundField=true;
                 }
-                if (!found_field)
+                if (!foundField)
                 {
                     throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
                         fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());

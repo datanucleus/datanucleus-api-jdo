@@ -357,23 +357,23 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         // Build up map of all properties to apply (from persistence-unit + overridden + defaulted)
     	Map props = new HashMap();
-    	if (pumd != null && pumd.getProperties() != null)
-    	{
-    	    props.putAll(pumd.getProperties());
-    	}
-    	if (overrideProps != null)
-    	{
-    		props.putAll(overrideProps);
-    	}
+        if (pumd != null && pumd.getProperties() != null)
+        {
+            props.putAll(pumd.getProperties());
+        }
+        if (overrideProps != null)
+        {
+            props.putAll(overrideProps);
+        }
         if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !props.containsKey("javax.jdo.option.TransactionType"))
-	    {
-    		// Default to RESOURCE_LOCAL txns
-    		props.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
-    	}
-    	else
+        {
+            // Default to RESOURCE_LOCAL txns
+            props.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
+        }
+        else
         {
             // let TransactionType.JTA imply ResourceType.JTA
-            String transactionType = props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ? 
+            String transactionType = props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ?
                     (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String) props.get("javax.jdo.option.TransactionType");
             if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
             {
@@ -382,7 +382,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
         }
 
-    	// Initialise the context with all properties
+        // Initialise the context with all properties
         nucleusContext = new PersistenceNucleusContextImpl("JDO", props);
 
         initialiseMetaData(pumd);
@@ -1038,12 +1038,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     NucleusLogger.PERSISTENCE.warn(Localiser.msg("012010", key));
                 }
             }
-            if (NucleusLogger.PERSISTENCE.isDebugEnabled())
+            if (p.isEmpty() && NucleusLogger.PERSISTENCE.isDebugEnabled())
             {
-                if (p.isEmpty())
-                {
-                    NucleusLogger.PERSISTENCE.debug(Localiser.msg("012011"));
-                }
+                NucleusLogger.PERSISTENCE.debug(Localiser.msg("012011"));
             }
         }
         catch (IOException ex)
@@ -2031,6 +2028,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      * @return Returns either <tt>null</tt> or a <tt>List</tt> with instances of <tt>LifecycleListenerSpecification</tt>.
      * @deprecated
      */
+    @Deprecated
     public List<LifecycleListenerForClass> getLifecycleListenerSpecifications()
     {
         if (lifecycleListeners == null)
@@ -2059,8 +2057,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             return;
         }
 
-        classes = LifecycleListenerForClass.canonicaliseClasses(classes);
-        if (classes != null && classes.length == 0)
+        Class[] myClasses = LifecycleListenerForClass.canonicaliseClasses(classes);
+        if (myClasses != null && myClasses.length == 0)
         {
             return;
         }
@@ -2073,13 +2071,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         LifecycleListenerForClass entry;
         if (lifecycleListeners.containsKey(listener))
         {
-            entry = lifecycleListeners.get(listener).mergeClasses(classes);
+            entry = lifecycleListeners.get(listener).mergeClasses(myClasses);
         }
         else
         {
-            entry = new LifecycleListenerForClass(listener, classes);
+            entry = new LifecycleListenerForClass(listener, myClasses);
         }
-
         lifecycleListeners.put(listener, entry);
     }
 
@@ -2342,6 +2339,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /**
      * Method to return the (class) metadata object for the specified class, if there is
      * metadata defined for that class.
+     * @param className Name of the class that we want metadata for
      * @return The metadata
      */
     public javax.jdo.metadata.TypeMetadata getMetadata(String className)
@@ -2384,6 +2382,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 }
                 catch (ClassNotResolvedException cnre)
                 {
+                    // Do nothing
                 }
             }
         }
