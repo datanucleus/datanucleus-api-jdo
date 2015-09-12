@@ -39,10 +39,10 @@ import org.datanucleus.query.expression.VariableExpression;
 public class ExpressionImpl<T> implements Expression<T>
 {
     /** The generic query expression that represents this typesafe expression. */
-    org.datanucleus.query.expression.Expression queryExpr;
+    protected org.datanucleus.query.expression.Expression queryExpr;
 
     /** Type of this expression. */
-    ExpressionType exprType = ExpressionType.PATH;
+    protected ExpressionType exprType = ExpressionType.PATH;
 
     /**
      * Constructor, extending a parent, and accessing a member of that parent.
