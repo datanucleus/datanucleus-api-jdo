@@ -977,6 +977,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             UniqueMetaData unimd = null;
             ForeignKeyMetaData fkmd = null;
             HashSet<ExtensionMetaData> extensions = null;
+            Class convertConverterCls = null;
 
             for (int i = 0; i < annotations.length; i++)
             {
@@ -1764,20 +1765,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.CONVERT))
                 {
-                    Class converterCls = (Class) annotationValues.get("value");
-                    if (converterCls == UseDefault.class)
+                    convertConverterCls = (Class) annotationValues.get("value");
+                    if (convertConverterCls == UseDefault.class)
                     {
-                        converterCls = null;
+                        convertConverterCls = null;
                     }
                     Boolean enabled = (Boolean) annotationValues.get("enabled");
-                    if (enabled && converterCls != null)
+                    if (!enabled)
                     {
-//                        String name = (String) annotationValues.get("name");
-                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
-                        {
-                            // TODO Register this converter for this type under the specified name
-                        }
+                        convertConverterCls = null;
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
@@ -1806,7 +1802,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
             }
 
-            if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null))
+            if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || 
+                embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || 
+                ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null || convertConverterCls != null))
             {
                 // @Persistent not supplied but other relevant annotations defined, so add default metadata
                 // element
@@ -1848,6 +1846,23 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 if (transactionalField)
                 {
                     mmd.setTransactional();
+                }
+                if (convertConverterCls != null)
+                {
+                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
+                    if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
+                    {
+                        // Not yet cached an instance of this converter so create one
+                        AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(convertConverterCls, null, null);
+                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
+                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
+
+                        // Register the TypeConverter under the name of the AttributeConverter class
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        typeMgr.registerConverter(convertConverterCls.getName(), typeConv);
+                    }
+
+                    mmd.setTypeConverterName(convertConverterCls.getName());
                 }
 
                 // Add any embedded info
