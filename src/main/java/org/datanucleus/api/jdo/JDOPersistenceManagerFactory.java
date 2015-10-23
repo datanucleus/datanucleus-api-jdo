@@ -144,6 +144,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /** Flag for whether this object is still configurable. */
     private boolean configurable = true;
 
+    /** Flag for whether the first PM has been created, so is considered "active". */
+    private boolean active = false;
+
     static
     {
         // Add StateInterrogation for JDOHelper to call through so that it finds the right methods in our bytecode enhancement
@@ -523,6 +526,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             // Only throw JDOException and subclasses
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
+        // TODO Throw exception if the properties are incomplete. e.g inadequate datastore definition supplied
 
         // Set up any type handling specific to this PMF, such as user-defined TypeConverters
         if (typeProps != null)
@@ -659,6 +663,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
         nucleusContext.close();
 
+        active = false;
         closed = true;
     }
 
@@ -854,13 +859,15 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      * The instance has default values for options. The parameters user-id/password are used when obtaining
      * datastore connections from the connection pool.
      * <p>After the first use of getPersistenceManager, no "set" methods will succeed.</p>
-     * @param userName  the user name for the connection
-     * @param password  the password for the connection
+     * @param userName the user name for the connection
+     * @param password the password for the connection
      * @return <tt>PersistenceManager</tt> instance with default options.
      */
     public PersistenceManager getPersistenceManager(String userName, String password)
     {
         assertIsOpen();
+
+        active = true;
 
         // Freeze the PMF config now that we are handing out PM's
         freezeConfiguration();
@@ -965,8 +972,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
             else
             {
-                NucleusLogger.PERSISTENCE.warn(Localiser.msg("012007", 
-                    ref.getClassName(), JDOClassNameConstants.JDOPersistenceManagerFactory));
+                NucleusLogger.PERSISTENCE.warn(Localiser.msg("012007", ref.getClassName(), JDOClassNameConstants.JDOPersistenceManagerFactory));
             }
         }
         else
@@ -2047,9 +2053,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public void addInstanceLifecycleListener(InstanceLifecycleListener listener, Class[] classes)
     {
         boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty("datanucleus.allowListenerUpdateAfterInit", false);
-        if (!allowListeners)
+        if (!allowListeners && active)
         {
-            assertConfigurable();
+            throw new JDOUserException(Localiser.msg("012023"));
         }
 
         if (listener == null)
@@ -2086,11 +2092,10 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void removeInstanceLifecycleListener(InstanceLifecycleListener listener)
     {
-        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty(
-            "datanucleus.allowListenerUpdateAfterInit", false);
-        if (!allowListeners)
+        boolean allowListeners = getNucleusContext().getConfiguration().getBooleanProperty("datanucleus.allowListenerUpdateAfterInit", false);
+        if (!allowListeners && active)
         {
-            assertConfigurable();
+            throw new JDOUserException(Localiser.msg("012023"));
         }
 
         if (listener == null || lifecycleListeners == null)
