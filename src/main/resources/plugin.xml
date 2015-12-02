@@ -196,7 +196,7 @@ Contributors:
        <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_2_1.xsd"/>
        <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_2_0.xsd"/>
 
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_2.xsd"/>
+       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd"/>
        <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
        <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
     </extension>
