@@ -194,7 +194,7 @@ Contributors:
              type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_2_0.xsd"/>
 
        <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_0.xsd"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_0.xsd"/>
+       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_1.xsd"/>
+       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_1.xsd"/>
     </extension>
 </plugin>
