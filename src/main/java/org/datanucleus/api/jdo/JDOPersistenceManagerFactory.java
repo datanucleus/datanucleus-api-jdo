@@ -384,6 +384,17 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 props.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
             }
         }
+        if (pumd != null)
+        {
+            if (pumd.getJtaDataSource() != null)
+            {
+                props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY_NAME, pumd.getJtaDataSource());
+            }
+            if (pumd.getNonJtaDataSource() != null)
+            {
+                props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2_NAME, pumd.getNonJtaDataSource());
+            }
+        }
 
         // Initialise the context with all properties
         nucleusContext = new PersistenceNucleusContextImpl("JDO", props);
