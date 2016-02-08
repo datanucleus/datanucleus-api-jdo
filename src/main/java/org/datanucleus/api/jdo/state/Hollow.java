@@ -79,7 +79,7 @@ class Hollow extends LifeCycleState
      * @param op ObjectProvider.
      * @param useFetchPlan to make transient the fields in the fetch plan
      * @return new LifeCycle state.
-     **/
+     */
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
@@ -124,8 +124,11 @@ class Hollow extends LifeCycleState
         }
         else if (!tx.isActive() && op.getClassMetaData().getIdentityType() == IdentityType.NONDURABLE)
         {
-            // JDO2 spec 5.4.4
-            throw new NucleusUserException("Not able to read fields of nondurable object when in HOLLOW state");
+            if (!isLoaded)
+            {
+                // JDO2 spec 5.4.4
+                throw new NucleusUserException("Not able to read fields of nondurable object when in HOLLOW state");
+            }
         }
         if (!tx.getOptimistic() && tx.isActive())
         {
@@ -182,7 +185,7 @@ class Hollow extends LifeCycleState
      * @param op ObjectProvider.
      * @param fetchPlan the fetch plan to load fields
      * @return new LifeCycle state.
-     **/
+     */
     public LifeCycleState transitionRetrieve(ObjectProvider op, FetchPlan fetchPlan)
     {
         op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
