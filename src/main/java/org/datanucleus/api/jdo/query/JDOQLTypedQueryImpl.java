@@ -68,6 +68,7 @@ import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
+import org.datanucleus.store.query.Query.QueryType;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
 
@@ -891,7 +892,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
         if (type == QueryType.SELECT)
         {
-            internalQuery.setType(Query.SELECT);
+            internalQuery.setType(Query.QueryType.SELECT);
             if (resultDistinct != null)
             {
                 internalQuery.setResultDistinct(resultDistinct.booleanValue());
@@ -905,11 +906,11 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
         else if (type == QueryType.BULK_UPDATE)
         {
-            internalQuery.setType(Query.BULK_UPDATE);
+            internalQuery.setType(Query.QueryType.BULK_UPDATE);
         }
         else if (type == QueryType.BULK_DELETE)
         {
-            internalQuery.setType(Query.BULK_DELETE);
+            internalQuery.setType(Query.QueryType.BULK_DELETE);
         }
 
         QueryCompilation compilation = getCompilation();

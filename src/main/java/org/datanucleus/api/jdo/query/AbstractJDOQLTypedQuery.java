@@ -39,19 +39,13 @@ import org.datanucleus.query.expression.PrimaryExpression;
 import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.query.symbol.PropertySymbol;
 import org.datanucleus.query.symbol.SymbolTable;
+import org.datanucleus.store.query.Query.QueryType;
 
 /**
  * Abstract base for a typesafe query. Extended by JDOTypesafeQuery and JDOTypesafeSubquery.
  */
 public abstract class AbstractJDOQLTypedQuery<T>
 {
-    enum QueryType
-    {
-        SELECT,
-        BULK_UPDATE,
-        BULK_DELETE;
-    }
-
     protected QueryType type = QueryType.SELECT;
 
     /** Candidate class for the query. */
