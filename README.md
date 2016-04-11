@@ -8,8 +8,7 @@ This is built using Maven, by executing `mvn clean install` which installs the b
 ## KeyFacts
 
 __License__ : Apache 2 licensed  
-__Issue Tracker__ : http://www.datanucleus.org/servlet/jira/browse/NUCAPIJDO  
-__RoadMap__ : http://issues.datanucleus.org/browse/NUCAPIJDO?report=com.atlassian.jira.plugin.system.project:roadmap-panel  
+__Issue Tracker__ : http://github.com/datanucleus/datanucleus-api-jdo/issues  
 __Javadocs__ : [5.0](http://www.datanucleus.org/javadocs/api.jdo/5.0/), [4.2](http://www.datanucleus.org/javadocs/api.jdo/4.2/), [4.1](http://www.datanucleus.org/javadocs/api.jdo/4.1/), [4.0](http://www.datanucleus.org/javadocs/api.jdo/4.0/), [3.2](http://www.datanucleus.org/javadocs/api.jdo/3.2/), [3.1](http://www.datanucleus.org/javadocs/api.jdo/3.1/), [3.0](http://www.datanucleus.org/javadocs/api.jdo/3.0/)  
 __Download(Releases)__ : [Maven Central](http://central.maven.org/maven2/org/datanucleus/datanucleus-api-jdo)  
 __Download(Nightly)__ : [Nightly Builds](http://www.datanucleus.org/downloads/maven2-nightly/org/datanucleus/datanucleus-api-jdo)  
