@@ -137,7 +137,12 @@ public class JDOCallbackHandler implements CallbackHandler
 
         if (beanValidationHandler != null)
         {
-            beanValidationHandler.prePersist(pc);
+            ObjectProvider op = nucleusCtx.getApiAdapter().getExecutionContext(pc).findObjectProvider(pc);
+            if (!op.getLifecycleState().isNew())
+            {
+                // Don't fire this when persisting new since we will have done prePersist
+                beanValidationHandler.preStore(pc);
+            }
         }
     }
 
