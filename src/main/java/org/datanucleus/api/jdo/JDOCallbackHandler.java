@@ -54,8 +54,7 @@ public class JDOCallbackHandler implements CallbackHandler
 {
     NucleusContext nucleusCtx;
 
-    private final Map<InstanceLifecycleListener, LifecycleListenerForClass> listeners =
-        new IdentityHashMap<InstanceLifecycleListener, LifecycleListenerForClass>(1);
+    private final Map<InstanceLifecycleListener, LifecycleListenerForClass> listeners = new IdentityHashMap<InstanceLifecycleListener, LifecycleListenerForClass>(1);
 
     private List<LifecycleListenerForClass> listenersWorkingCopy = null;
 
@@ -111,7 +110,7 @@ public class JDOCallbackHandler implements CallbackHandler
             {
                 ExecutionContext ec = nucleusCtx.getApiAdapter().getExecutionContext(pc);
                 String[] fieldNames = null;
-                // PRE_STORE will return the fields being stored (JPOX extension)
+                // PRE_STORE will return the fields being stored (DataNucleus extension)
                 ObjectProvider op = ec.findObjectProvider(pc);
                 fieldNames = op.getDirtyFieldNames();
                 if (fieldNames == null)
@@ -137,7 +136,12 @@ public class JDOCallbackHandler implements CallbackHandler
 
         if (beanValidationHandler != null)
         {
-            beanValidationHandler.prePersist(pc);
+            ObjectProvider op = nucleusCtx.getApiAdapter().getExecutionContext(pc).findObjectProvider(pc);
+            if (!op.getLifecycleState().isNew())
+            {
+                // Don't fire this when persisting new since we will have done prePersist
+                beanValidationHandler.preStore(pc);
+            }
         }
     }
 
