@@ -29,7 +29,9 @@ import org.datanucleus.ExecutionContext;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.query.compiler.JDOQLSymbolResolver;
+import org.datanucleus.query.compiler.PropertySymbol;
 import org.datanucleus.query.compiler.QueryCompilation;
+import org.datanucleus.query.compiler.SymbolTable;
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
@@ -37,8 +39,6 @@ import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.query.expression.PrimaryExpression;
 import org.datanucleus.query.expression.VariableExpression;
-import org.datanucleus.query.symbol.PropertySymbol;
-import org.datanucleus.query.symbol.SymbolTable;
 import org.datanucleus.store.query.Query.QueryType;
 
 /**

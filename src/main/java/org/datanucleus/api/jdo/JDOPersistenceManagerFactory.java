@@ -84,7 +84,7 @@ import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
 import org.datanucleus.properties.CorePropertyValidator;
-import org.datanucleus.query.cache.QueryCompilationCache;
+import org.datanucleus.query.compiler.QueryCompilationCache;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ConnectionFactory;
 import org.datanucleus.store.connection.ConnectionResourceType;
