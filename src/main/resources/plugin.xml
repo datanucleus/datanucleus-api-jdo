@@ -163,4 +163,10 @@ Contributors:
        <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
        <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
     </extension>
+
+    <!-- EXTENSION ANNOTATIONS -->
+    <extension point="org.datanucleus.member_annotation_handler">
+        <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.ReadOnly" handler="org.datanucleus.api.jdo.annotations.ReadOnlyHandler"/>
+        <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.SharedRelation" handler="org.datanucleus.api.jdo.annotations.SharedRelationHandler"/>
+    </extension>
 </plugin>
