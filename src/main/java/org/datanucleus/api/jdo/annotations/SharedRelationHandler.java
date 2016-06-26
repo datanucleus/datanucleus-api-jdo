@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractMemberMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
 
@@ -36,11 +37,11 @@ public class SharedRelationHandler implements MemberAnnotationHandler
         String value = (String)annotationValues.get("value");
         Boolean pk = (Boolean)annotationValues.get("primaryKey");
 
-        mmd.addExtension("relation-discriminator-column", column);
-        mmd.addExtension("relation-discriminator-value", value);
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_RELATION_DISCRIM_COLUMN, column);
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_RELATION_DISCRIM_VALUE, value);
         if (pk)
         {
-            mmd.addExtension("relation-discriminator-pk", "true");
+            mmd.addExtension(MetaData.EXTENSION_MEMBER_RELATION_DISCRIM_PK, "true");
         }
     }
 }
