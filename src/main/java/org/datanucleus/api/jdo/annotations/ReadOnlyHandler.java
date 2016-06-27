@@ -18,18 +18,29 @@ Contributors:
 package org.datanucleus.api.jdo.annotations;
 
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
+import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
 
 /**
- * Handler for the {@link ReadOnly} annotation when applied to a field/property of a persistable class.
+ * Handler for the {@link ReadOnly} annotation when applied to a field/property of a persistable class, or when applied to a class itself.
  */
-public class ReadOnlyHandler implements MemberAnnotationHandler
+public class ReadOnlyHandler implements MemberAnnotationHandler, ClassAnnotationHandler
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
         mmd.addExtension("insertable", "false");
         mmd.addExtension("updateable", "false");
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.metadata.annotations.ClassAnnotationHandler#processClassAnnotation(org.datanucleus.metadata.annotations.AnnotationObject, org.datanucleus.metadata.AbstractClassMetaData, org.datanucleus.ClassLoaderResolver)
+     */
+    @Override
+    public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
+    {
+        cmd.addExtension("read-only", "true");
     }
 }

@@ -23,9 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Extension annotation allowing for specifying a field as Read-Only (insertable=false, updateable=false).
+ * Extension annotation allowing for specifying a field as Read-Only (insertable=false, updateable=false) or for specifying a class as Read-Only.
  */
-@Target({ElementType.FIELD, ElementType.METHOD}) 
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReadOnly
 {
