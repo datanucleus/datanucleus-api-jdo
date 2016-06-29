@@ -1795,7 +1795,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         {
             throw new JDOUserException(Localiser.msg("011002"));
         }
-        else if (oids.size() == 0)
+        else if (oids.isEmpty())
         {
             return Collections.EMPTY_LIST;
         }

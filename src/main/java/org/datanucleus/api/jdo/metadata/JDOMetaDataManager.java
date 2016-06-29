@@ -1043,7 +1043,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             populateAbstractClassMetaData(imd, clr, c.getClassLoader());
             initialiseAbstractClassMetaData(imd, clr);
 
-            if (utilisedFileMetaData.size() > 0)
+            if (!utilisedFileMetaData.isEmpty())
             {
                 // Initialise all FileMetaData that were processed in this call
                 Iterator iter = utilisedFileMetaData.iterator();

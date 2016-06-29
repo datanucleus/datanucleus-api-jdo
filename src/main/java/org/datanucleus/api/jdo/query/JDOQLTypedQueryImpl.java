@@ -1089,7 +1089,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public long update()
     {
         type = QueryType.BULK_UPDATE;
-        if (updateExprs == null || updateExprs.size() == 0)
+        if (updateExprs == null || updateExprs.isEmpty())
         {
             throw new JDOUserException("No update expressions defined. Use set() method");
         }
