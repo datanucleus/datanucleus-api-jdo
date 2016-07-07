@@ -24,7 +24,7 @@
 
     <properties>
         <jdo.version>3.2.0-m5</jdo.version>
-        <dn.core.version>5.0.0-m1</dn.core.version>
+        <dn.core.version>5.0.0-release</dn.core.version>
     </properties>
 
     <build>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.datanucleus</groupId>
             <artifactId>datanucleus-core</artifactId>
-            <version>[${dn.core.version}, )</version>
+            <version>[${dn.core.version}, 5.9)</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
