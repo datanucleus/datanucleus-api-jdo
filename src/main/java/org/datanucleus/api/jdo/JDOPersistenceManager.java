@@ -151,7 +151,24 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     }
 
     /**
-     * The internal method called by the PMF to cleanup this PM
+     * Method to close the Persistence Manager.
+     */
+    public void close()
+    {
+        pmf.releasePersistenceManager(this);
+    }
+
+    /**
+     * Accessor for whether this ExecutionContext is closed.
+     * @return Whether this manager is closed.
+     */
+    public boolean isClosed()
+    {
+        return closed;
+    }
+
+    /**
+     * The internal method called by the PMF to cleanup this PM. Called from PMF.releasePersistenceManager().
      */
     protected void internalClose()
     {
@@ -176,6 +193,12 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         userObject = null;
         userObjectMap = null;
+        fetchPlan = null;
+        jdoFetchGroups = null;
+        jdotx = null;
+        ec = null;
+        // TODO null the pmf
+
         closed = true;
     }
 
@@ -349,23 +372,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         {
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
-    }
-
-    /**
-     * Method to close the Persistence Manager.
-     */
-    public void close()
-    {
-        pmf.releasePersistenceManager(this);
-    }
-
-    /**
-     * Accessor for whether this ExecutionContext is closed.
-     * @return Whether this manager is closed.
-     */
-    public boolean isClosed()
-    {
-        return closed;
     }
 
     /**
