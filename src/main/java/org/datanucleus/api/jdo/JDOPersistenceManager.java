@@ -155,7 +155,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void close()
     {
-        pmf.releasePersistenceManager(this);
+        if (pmf != null)
+        {
+            pmf.releasePersistenceManager(this);
+        }
     }
 
     /**
@@ -197,7 +200,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         jdoFetchGroups = null;
         jdotx = null;
         ec = null;
-        // TODO null the pmf
+        pmf = null;
 
         closed = true;
     }
