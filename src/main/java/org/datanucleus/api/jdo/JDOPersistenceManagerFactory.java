@@ -121,7 +121,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     protected transient PersistenceNucleusContext nucleusContext;
 
     /** The cache of PM's in use. */
-    private transient Set<JDOPersistenceManager> pmCache = Collections.newSetFromMap(new ConcurrentHashMap());
+    private transient Set<JDOPersistenceManager> pmCache = ConcurrentHashMap.newKeySet();
 
     /** Lifecycle Listeners. */
     protected transient Map<InstanceLifecycleListener, LifecycleListenerForClass> lifecycleListeners;
@@ -784,15 +784,14 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     getConfiguration().setProperty(PropertyNames.PROPERTY_VALIDATION_MODE, pumd.getValidationMode());
                 }
             }
-            catch (NucleusException jpe)
+            catch (NucleusException ne)
             {
-                throw new JDOException(jpe.getMessage(),jpe);
+                throw new JDOException(ne.getMessage(), ne);
             }
         }
 
         // Turn off loading of metadata from here if required
-        boolean allowMetadataLoad =
-            nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_LOAD_AT_RUNTIME);
+        boolean allowMetadataLoad = nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALLOW_LOAD_AT_RUNTIME);
         if (!allowMetadataLoad)
         {
             nucleusContext.getMetaDataManager().setAllowMetaDataLoad(false);
@@ -846,9 +845,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 {
                     throw new JDOUnsupportedOptionException(inse.getMessage());
                 }
-                catch (NucleusException jpe)
+                catch (NucleusException ne)
                 {
-                    throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+                    throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
                 }
             }
         }
@@ -1209,7 +1208,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     /**
      * The JDO spec optional features that DataNucleus supports.
      * See JDO 2.0 spec section 11.6 for the full list of possibilities.
-     **/
+     */
     private static final String[] OPTION_ARRAY =
     {
         "javax.jdo.option.TransientTransactional",
@@ -2152,7 +2151,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public Set<FetchGroup> getFetchGroups()
     {
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(false);
-
         if (jdoGroups != null)
         {
             synchronized (jdoGroups)
@@ -2174,7 +2172,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public FetchGroup getFetchGroup(Class cls, String name)
     {
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(false);
-
         if (jdoGroups != null)
         {
             synchronized (jdoGroups)
@@ -2224,7 +2221,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(true);
-
         synchronized (jdoGroups)
         {
             for (int i=0;i<groups.length;i++)
@@ -2249,7 +2245,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(false);
-
         if (jdoGroups != null)
         {
             synchronized (jdoGroups)
@@ -2275,7 +2270,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         checkJDOPermission(JDOPermission.GET_METADATA);
 
         Set<JDOFetchGroup> jdoGroups = getJDOFetchGroups(false);
-
         if (jdoGroups != null)
         {
             synchronized (jdoGroups)
