@@ -1266,8 +1266,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (pmCache.contains(pm))
         {
             pmCache.remove(pm);
-            pm.internalClose();
         }
+        pm.internalClose();
     }
 
     /**
