@@ -1257,7 +1257,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     };
 
     /**
-     * Remove a PersistenceManager from the cache
+     * Remove a PersistenceManager from the cache.
      * Only the PersistenceManager is allowed to call this method
      * @param pm the PersistenceManager to be removed from cache
      */
@@ -1267,7 +1267,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             pmCache.remove(pm);
         }
-        pm.internalClose();
     }
 
     /**

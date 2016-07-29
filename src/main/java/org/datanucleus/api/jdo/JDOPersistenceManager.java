@@ -159,6 +159,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         {
             pmf.releasePersistenceManager(this);
         }
+        internalClose();
     }
 
     /**
