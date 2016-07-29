@@ -1249,14 +1249,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public void releasePersistenceManager(JDOPersistenceManager pm)
     {
-        boolean close = false;
         if (pmCache.contains(pm))
         {
-            close = true;
             pmCache.remove(pm);
-        }
-        if (close)
-        {
             pm.internalClose();        	
         }
         	
