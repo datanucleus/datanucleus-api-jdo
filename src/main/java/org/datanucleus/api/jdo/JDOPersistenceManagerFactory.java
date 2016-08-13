@@ -333,8 +333,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     NucleusLogger.PERSISTENCE.warn("Requested PMF of name \"" + name + "\" but already exists and using singleton pattern, so returning existing PMF");
                     return pmfByName.get(name);
                 }
+                pmfByName.putIfAbsent(name, pmf);
             }
-            pmfByName.putIfAbsent(name, pmf);
         }
 
         // Freeze the PMF for use (establishes connection to datastore etc)
@@ -632,17 +632,14 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (pmfByName != null)
         {
             // Closing so clean out from singleton pattern handler
-            synchronized (pmfByName)
+            Iterator<Map.Entry<String, JDOPersistenceManagerFactory>> pmfIter = pmfByName.entrySet().iterator();
+            while (pmfIter.hasNext())
             {
-                Iterator<Map.Entry<String, JDOPersistenceManagerFactory>> pmfIter = pmfByName.entrySet().iterator();
-                while (pmfIter.hasNext())
+                Map.Entry<String, JDOPersistenceManagerFactory> entry = pmfIter.next();
+                if (entry.getValue() == this)
                 {
-                    Map.Entry<String, JDOPersistenceManagerFactory> entry = pmfIter.next();
-                    if (entry.getValue() == this)
-                    {
-                        pmfIter.remove();
-                        break;
-                    }
+                    pmfIter.remove();
+                    break;
                 }
             }
         }
