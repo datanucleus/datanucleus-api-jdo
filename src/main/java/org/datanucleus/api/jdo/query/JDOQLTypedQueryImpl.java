@@ -1172,8 +1172,11 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public void close() throws IOException
     {
         closeAll();
-        this.fetchPlan.clearGroups();
-        this.fetchPlan = null;
+        if (this.fetchPlan != null)
+        {
+            this.fetchPlan.clearGroups();
+            this.fetchPlan = null;
+        }
     }
 
     /**
