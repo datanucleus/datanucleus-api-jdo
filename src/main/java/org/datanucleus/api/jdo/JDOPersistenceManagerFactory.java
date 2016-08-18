@@ -107,6 +107,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 {
     private static final long serialVersionUID = -575257641123665920L;
 
+    public static final String PROPERTY_SINGLETON_PMF_BY_NAME = "datanucleus.singletonPMFForName";
+
     private static final String JDO_TYPE_CONVERTER_PROP_PREFIX = "javax.jdo.option.typeconverter.";
 
     static
@@ -311,7 +313,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             pmf = new JDOPersistenceManagerFactory(props);
         }
 
-        Boolean singleton = pmf.getConfiguration().getBooleanObjectProperty("datanucleus.singletonPMFForName");
+        Boolean singleton = pmf.getConfiguration().getBooleanObjectProperty(PROPERTY_SINGLETON_PMF_BY_NAME);
         if (singleton != null && singleton)
         {
             // Check on singleton pattern. Would be nice to know the name of the PMF before creation
