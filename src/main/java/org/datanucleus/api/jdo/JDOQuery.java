@@ -92,13 +92,19 @@ public class JDOQuery<T> implements Query<T>
 
     public void close()
     {
-        // TODO Improve cleanup, maybe by updating org.datanucleus.store.query.Query
+        if (closed)
+        {
+            return;
+        }
+
         closeAll();
         if (this.fetchPlan != null)
         {
             this.fetchPlan.clearGroups();
             this.fetchPlan = null;
         }
+        this.parameterValueByName = null;
+        this.parameterValues = null;
         this.pm = null;
         this.query = null;
 
@@ -1197,14 +1203,14 @@ public class JDOQuery<T> implements Query<T>
     }
 
     /**
-     * Method to assert if this Persistence Manager is open.
-     * @throws JDOFatalUserException if the PM is closed.
+     * Method to assert if this Query is open.
+     * @throws JDOFatalUserException if the Query is closed.
      */
     protected void assertIsOpen()
     {
         if (isClosed())
         {
-            throw new JDOFatalUserException(Localiser.msg("011000"));
+            throw new JDOFatalUserException(Localiser.msg("011100"));
         }
     }
 }

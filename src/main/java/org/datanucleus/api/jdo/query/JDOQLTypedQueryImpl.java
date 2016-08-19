@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOException;
+import javax.jdo.JDOFatalUserException;
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.JDOQLTypedSubquery;
 import javax.jdo.JDOUnsupportedOptionException;
@@ -80,6 +81,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 {
     private static final long serialVersionUID = -8359479260893321900L;
 
+    private boolean closed = false;
+
     protected JDOFetchPlan fetchPlan;
     protected boolean ignoreCache = false;
     protected Boolean serializeRead = null;
@@ -114,10 +117,83 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
+     * @see java.io.Closeable#close()
+     */
+    @Override
+    public void close() throws IOException
+    {
+        if (closed)
+        {
+            return;
+        }
+
+        closeAll();
+        if (this.fetchPlan != null)
+        {
+            this.fetchPlan.clearGroups();
+            this.fetchPlan = null;
+        }
+        this.parameterExprByName = null;
+        this.parameterValuesByName = null;
+        this.ec = null;
+        this.pm = null;
+        this.internalQueries = null;
+        this.subqueries = null;
+
+        this.closed = true;
+    }
+
+    /**
+     * Accessor for whether this Query is closed.
+     * @return Whether this Query is closed.
+     */
+    public boolean isClosed()
+    {
+        return closed;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#close(java.lang.Object)
+     */
+    public void close(Object result)
+    {
+        assertIsOpen();
+        if (internalQueries != null)
+        {
+            Iterator<Query> iter = internalQueries.iterator();
+            while (iter.hasNext())
+            {
+                Query query = iter.next();
+                query.close(result);
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#closeAll()
+     */
+    public void closeAll()
+    {
+        assertIsOpen();
+        if (internalQueries != null)
+        {
+            Iterator<Query> iter = internalQueries.iterator();
+            while (iter.hasNext())
+            {
+                Query query = iter.next();
+                query.closeAll();
+            }
+            internalQueries.clear();
+            internalQueries = null;
+        }
+    }
+
+    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#candidate()
      */
     public PersistableExpression candidate()
     {
+        assertIsOpen();
         String candName = candidateCls.getName();
         int pos = candName.lastIndexOf('.');
         String qName = candName.substring(0, pos+1) + getQueryClassNameForClassName(candName.substring(pos+1));
@@ -152,6 +228,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public <P> Expression<P> parameter(String name, Class<P> type)
     {
+        assertIsOpen();
         discardCompiled();
 
         ExpressionImpl paramExpr = null;
@@ -252,6 +329,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public StringExpression stringParameter(String name)
     {
+        assertIsOpen();
         StringExpressionImpl paramExpr = new StringExpressionImpl(String.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -266,6 +344,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public CharacterExpression characterParameter(String name)
     {
+        assertIsOpen();
         CharacterExpressionImpl paramExpr = new CharacterExpressionImpl(Character.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -281,6 +360,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public NumericExpression<?> numericParameter(String name)
     {
+        assertIsOpen();
         NumericExpressionImpl<Float> paramExpr = new NumericExpressionImpl(Number.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -295,6 +375,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public DateExpression dateParameter(String name)
     {
+        assertIsOpen();
         DateExpressionImpl paramExpr = new DateExpressionImpl(Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -309,6 +390,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public TimeExpression timeParameter(String name)
     {
+        assertIsOpen();
         TimeExpressionImpl paramExpr = new TimeExpressionImpl(Time.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -323,6 +405,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public DateTimeExpression datetimeParameter(String name)
     {
+        assertIsOpen();
         DateTimeExpressionImpl paramExpr = new DateTimeExpressionImpl(java.util.Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -337,6 +420,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public CollectionExpression collectionParameter(String name)
     {
+        assertIsOpen();
         CollectionExpressionImpl paramExpr = new CollectionExpressionImpl(java.util.Collection.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -351,6 +435,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public MapExpression mapParameter(String name)
     {
+        assertIsOpen();
         MapExpressionImpl paramExpr = new MapExpressionImpl(java.util.Map.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -365,6 +450,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public ListExpression listParameter(String name)
     {
+        assertIsOpen();
         ListExpressionImpl paramExpr = new ListExpressionImpl(java.util.List.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
@@ -379,6 +465,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public <V> Expression<V> variable(String name, Class<V> type)
     {
+        assertIsOpen();
         discardCompiled();
 
         Expression varExpr = null;
@@ -473,6 +560,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> excludeSubclasses()
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         this.subclasses = false;
@@ -484,6 +572,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> includeSubclasses()
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         this.subclasses = true;
@@ -495,6 +584,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> filter(BooleanExpression expr)
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         this.filter = (BooleanExpressionImpl)expr;
@@ -506,6 +596,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> groupBy(Expression... exprs)
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         if (exprs != null && exprs.length > 0)
@@ -524,6 +615,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> having(Expression expr)
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         this.having = (ExpressionImpl)expr;
@@ -535,6 +627,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> orderBy(OrderExpression... exprs)
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
         if (exprs != null && exprs.length > 0)
@@ -553,6 +646,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> range(long lowerIncl, long upperExcl)
     {
+        assertIsOpen();
         discardCompiled();
         this.rangeLowerExpr = new NumericExpressionImpl<T>(new Literal(lowerIncl));
         this.rangeUpperExpr = new NumericExpressionImpl<T>(new Literal(upperExcl));
@@ -564,6 +658,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> range(NumericExpression lowerInclExpr, NumericExpression upperExclExpr)
     {
+        assertIsOpen();
         discardCompiled();
         this.rangeLowerExpr = (ExpressionImpl)lowerInclExpr;
         this.rangeUpperExpr = (ExpressionImpl)upperExclExpr;
@@ -575,6 +670,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> range(Expression paramLowerInclExpr, Expression paramUpperExclExpr)
     {
+        assertIsOpen();
         discardCompiled();
         if (!((ExpressionImpl)paramLowerInclExpr).isParameter())
         {
@@ -594,6 +690,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public <S> JDOQLTypedSubquery<S> subquery(Class<S> candidateClass, String candidateAlias)
     {
+        assertIsOpen();
         discardCompiled();
         JDOQLTypedSubqueryImpl<S> subquery = new JDOQLTypedSubqueryImpl<S>(pm, candidateClass, candidateAlias, this);
         if (subqueries == null)
@@ -609,6 +706,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedSubquery<T> subquery(String candidateAlias)
     {
+        assertIsOpen();
         discardCompiled();
         JDOQLTypedSubqueryImpl<T> subquery = new JDOQLTypedSubqueryImpl<T>(pm, this.candidateCls, candidateAlias, this);
         if (subqueries == null)
@@ -625,6 +723,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> setParameters(Map namedParamMap)
     {
+        assertIsOpen();
         discardCompiled();
         if (namedParamMap == null || namedParamMap.isEmpty())
         {
@@ -671,6 +770,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> setParameter(Expression paramExpr, Object value)
     {
+        assertIsOpen();
         discardCompiled();
 
         ParameterExpression internalParamExpr = (ParameterExpression) ((ExpressionImpl)paramExpr).getQueryExpression();
@@ -692,6 +792,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> setParameter(String paramName, Object value)
     {
+        assertIsOpen();
         discardCompiled();
 
         if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(paramName)))
@@ -712,6 +813,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> setCandidates(Collection<T> candidates)
     {
+        assertIsOpen();
         if (candidates != null)
         {
             this.candidates = new ArrayList<T>(candidates);
@@ -729,6 +831,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> result(boolean distinct, Expression<?>... exprs)
     {
+        assertIsOpen();
         assertIsModifiable();
         discardCompiled();
 
@@ -751,6 +854,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
+        assertIsOpen();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
@@ -770,6 +874,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
+        assertIsOpen();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -789,6 +894,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public List executeResultList()
     {
+        assertIsOpen();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
@@ -808,6 +914,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Object executeResultUnique()
     {
+        assertIsOpen();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -826,6 +933,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public List<T> executeList()
     {
+        assertIsOpen();
         if (result != null)
         {
             throw new JDOUserException("Cannot call executeList method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultList instead.");
@@ -843,6 +951,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public T executeUnique()
     {
+        assertIsOpen();
         if (result != null)
         {
             throw new JDOUserException("Cannot call executeUnique method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultUnique instead.");
@@ -959,6 +1068,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public long deletePersistentAll()
     {
+        assertIsOpen();
         if (result != null || resultClass != null)
         {
             throw new JDOUserException("Cannot call deletePersistentAll method when query has result or resultClass set. Remove the result setting.");
@@ -1032,6 +1142,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQuery<T> set(Expression expr, Object val)
     {
+        assertIsOpen();
         type = QueryType.BULK_UPDATE;
 
         // TODO Check that expr relates to the candidate
@@ -1088,6 +1199,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public long update()
     {
+        assertIsOpen();
         type = QueryType.BULK_UPDATE;
         if (updateExprs == null || updateExprs.isEmpty())
         {
@@ -1106,6 +1218,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public long delete()
     {
+        assertIsOpen();
         type = QueryType.BULK_DELETE;
         updateExprs = null;
         updateVals = null;
@@ -1117,6 +1230,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public FetchPlan getFetchPlan()
     {
+        assertIsOpen();
         if (fetchPlan == null)
         {
             fetchPlan = new JDOFetchPlan(ec.getFetchPlan().getCopy());
@@ -1129,55 +1243,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public PersistenceManager getPersistenceManager()
     {
+        assertIsOpen();
         return pm;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#close(java.lang.Object)
-     */
-    public void close(Object result)
-    {
-        if (internalQueries != null)
-        {
-            Iterator<Query> iter = internalQueries.iterator();
-            while (iter.hasNext())
-            {
-                Query query = iter.next();
-                query.close(result);
-            }
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#closeAll()
-     */
-    public void closeAll()
-    {
-        if (internalQueries != null)
-        {
-            Iterator<Query> iter = internalQueries.iterator();
-            while (iter.hasNext())
-            {
-                Query query = iter.next();
-                query.closeAll();
-            }
-            internalQueries.clear();
-            internalQueries = null;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see java.io.Closeable#close()
-     */
-    @Override
-    public void close() throws IOException
-    {
-        closeAll();
-        if (this.fetchPlan != null)
-        {
-            this.fetchPlan.clearGroups();
-            this.fetchPlan = null;
-        }
     }
 
     /**
@@ -1186,6 +1253,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public QueryCompilation compile(MetaDataManager mmgr, ClassLoaderResolver clr)
     {
+        assertIsOpen();
         QueryCompilation compilation = super.compile(mmgr, clr);
 
         // Add compilation of any subqueries
@@ -1220,6 +1288,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Integer getDatastoreReadTimeoutMillis()
     {
+        assertIsOpen();
         return datastoreReadTimeout;
     }
 
@@ -1229,6 +1298,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> datastoreReadTimeoutMillis(Integer interval)
     {
+        assertIsOpen();
         this.datastoreReadTimeout = interval;
         return this;
     }
@@ -1239,6 +1309,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Integer getDatastoreWriteTimeoutMillis()
     {
+        assertIsOpen();
         return datastoreWriteTimeout;
     }
 
@@ -1248,6 +1319,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> datastoreWriteTimeoutMillis(Integer interval)
     {
+        assertIsOpen();
         this.datastoreWriteTimeout = interval;
         return this;
     }
@@ -1258,6 +1330,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public Boolean getSerializeRead()
     {
+        assertIsOpen();
         return serializeRead;
     }
 
@@ -1267,6 +1340,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> serializeRead(Boolean serialize)
     {
+        assertIsOpen();
         this.serializeRead = serialize;
         return this;
     }
@@ -1277,6 +1351,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public boolean isUnmodifiable()
     {
+        assertIsOpen();
         return unmodifiable;
     }
 
@@ -1286,20 +1361,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> unmodifiable()
     {
+        assertIsOpen();
         this.unmodifiable = true;
         return this;
-    }
-
-    /**
-     * Method to throw an exception if the query is currently not modifiable.
-     * @throws NucleusUserException Thrown when it is unmodifiable
-     */
-    protected void assertIsModifiable()
-    {
-        if (unmodifiable)
-        {
-            throw new NucleusUserException(Localiser.msg("021014"));
-        }
     }
 
     /* (non-Javadoc)
@@ -1308,6 +1372,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public boolean getIgnoreCache()
     {
+        assertIsOpen();
         return ignoreCache;
     }
 
@@ -1317,6 +1382,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> ignoreCache(boolean flag)
     {
+        assertIsOpen();
         this.ignoreCache = flag;
         return this;
     }
@@ -1327,6 +1393,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> extension(String key, Object value)
     {
+        assertIsOpen();
         if (extensions == null)
         {
             extensions = new HashMap();
@@ -1341,6 +1408,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> extensions(Map values)
     {
+        assertIsOpen();
         this.extensions = new HashMap(extensions);
         return this;
     }
@@ -1351,6 +1419,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public void cancelAll()
     {
+        assertIsOpen();
         if (internalQueries == null || internalQueries.isEmpty())
         {
             return;
@@ -1380,6 +1449,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public void cancel(Thread thread)
     {
+        assertIsOpen();
         if (internalQueries == null || internalQueries.isEmpty())
         {
             return;
@@ -1409,6 +1479,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public JDOQLTypedQuery<T> saveAsNamedQuery(String name)
     {
+        assertIsOpen();
         JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
 
         QueryMetaData qmd = new QueryMetaData(name);
@@ -1455,5 +1526,29 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
 
         return super.getJDOQLForExpression(expr);
+    }
+
+    /**
+     * Method to throw an exception if the query is currently not modifiable.
+     * @throws NucleusUserException Thrown when it is unmodifiable
+     */
+    protected void assertIsModifiable()
+    {
+        if (unmodifiable)
+        {
+            throw new NucleusUserException(Localiser.msg("021014"));
+        }
+    }
+
+    /**
+     * Method to assert if this Query is open.
+     * @throws JDOFatalUserException if the Query is closed.
+     */
+    protected void assertIsOpen()
+    {
+        if (closed)
+        {
+            throw new JDOFatalUserException(Localiser.msg("011100"));
+        }
     }
 }
