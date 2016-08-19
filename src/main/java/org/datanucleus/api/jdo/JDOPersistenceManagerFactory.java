@@ -180,11 +180,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             overridingMap.put(param, overridingProps.get(param));
         }
 
-        // Create the PMF and freeze it (JDO spec $11.7)
-        final JDOPersistenceManagerFactory pmf = new JDOPersistenceManagerFactory(overridingMap);
-        pmf.freezeConfiguration();
-
-        return pmf;
+        return getPersistenceManagerFactory(overridingMap);
     }
 
     /**
