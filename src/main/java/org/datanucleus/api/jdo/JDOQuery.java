@@ -86,8 +86,11 @@ public class JDOQuery<T> implements Query<T>
     {
         // TODO Improve cleanup, maybe by updating org.datanucleus.store.query.Query
         closeAll();
-        this.fetchPlan.clearGroups();
-        this.fetchPlan = null;
+        if (this.fetchPlan != null)
+        {
+            this.fetchPlan.clearGroups();
+            this.fetchPlan = null;
+        }
     }
 
     /**
