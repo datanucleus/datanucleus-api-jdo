@@ -159,11 +159,12 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager, Auto
         {
             pmf.releasePersistenceManager(this);
         }
+        internalClose();
     }
 
     /**
-     * Accessor for whether this ExecutionContext is closed.
-     * @return Whether this manager is closed.
+     * Accessor for whether this PersistenceManager is closed.
+     * @return Whether this PM is closed.
      */
     public boolean isClosed()
     {
