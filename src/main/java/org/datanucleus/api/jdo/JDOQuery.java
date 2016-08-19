@@ -27,6 +27,7 @@ import javax.jdo.Extent;
 import javax.jdo.FetchPlan;
 import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOException;
+import javax.jdo.JDOFatalUserException;
 import javax.jdo.JDOQueryInterruptedException;
 import javax.jdo.JDOUnsupportedOptionException;
 import javax.jdo.JDOUserException;
@@ -39,6 +40,7 @@ import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.QueryInterruptedException;
 import org.datanucleus.store.query.QueryTimeoutException;
+import org.datanucleus.util.Localiser;
 
 /**
  * Wrapper for JDO Query class.
@@ -60,6 +62,8 @@ public class JDOQuery<T> implements Query<T>
 
     /** Underlying query that will be executed. */
     org.datanucleus.store.query.Query<T> query;
+
+    private boolean closed = false;
 
     /** Query language. */
     String language;
@@ -95,6 +99,19 @@ public class JDOQuery<T> implements Query<T>
             this.fetchPlan.clearGroups();
             this.fetchPlan = null;
         }
+        this.pm = null;
+        this.query = null;
+
+        closed = true;
+    }
+
+    /**
+     * Accessor for whether this Query is closed.
+     * @return Whether this Query is closed.
+     */
+    public boolean isClosed()
+    {
+        return closed;
     }
 
     /**
@@ -103,6 +120,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void close(Object queryResult)
     {
+        assertIsOpen();
         query.close(queryResult);
     }
 
@@ -111,6 +129,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void closeAll()
     {
+        assertIsOpen();
         query.closeAll();
     }
 
@@ -119,6 +138,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void compile()
     {
+        assertIsOpen();
         try
         {
             query.compile();
@@ -135,6 +155,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void declareImports(String imports)
     {
+        assertIsOpen();
         try
         {
             query.declareImports(imports);
@@ -151,6 +172,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void declareParameters(String parameters)
     {
+        assertIsOpen();
         try
         {
             query.declareExplicitParameters(parameters);
@@ -167,6 +189,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void declareVariables(String variables)
     {
+        assertIsOpen();
         try
         {
             query.declareExplicitVariables(variables);
@@ -179,24 +202,28 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> imports(String imports)
     {
+        assertIsOpen();
         declareImports(imports);
         return this;
     }
 
     public Query<T> parameters(String parameters)
     {
+        assertIsOpen();
         declareParameters(parameters);
         return this;
     }
 
     public Query<T> variables(String variables)
     {
+        assertIsOpen();
         declareVariables(variables);
         return this;
     }
 
     public Query<T> setParameters(Object... paramValues)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = paramValues;
         return this;
@@ -204,6 +231,7 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> setNamedParameters(Map<String, ?> paramMap)
     {
+        assertIsOpen();
         this.parameterValueByName = paramMap;
         this.parameterValues = null;
         return this;
@@ -215,6 +243,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute()
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = null;
         return executeInternal();
@@ -227,6 +256,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1};
         return executeInternal();
@@ -240,6 +270,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1, p2};
         return executeInternal();
@@ -254,6 +285,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object execute(Object p1, Object p2, Object p3)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = new Object[]{p1, p2, p3};
         return executeInternal();
@@ -266,6 +298,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithArray(Object... parameterValues)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = parameterValues;
         return executeInternal();
@@ -278,6 +311,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object executeWithMap(Map parameters)
     {
+        assertIsOpen();
         this.parameterValueByName = parameters;
         this.parameterValues = null;
         return executeInternal();
@@ -289,6 +323,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public List<T> executeList()
     {
+        assertIsOpen();
         if (query.getResult() != null)
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultList() instead");
@@ -302,6 +337,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public T executeUnique()
     {
+        assertIsOpen();
         if (query.getResult() != null)
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultUnique() instead");
@@ -315,6 +351,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
+        assertIsOpen();
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
@@ -329,6 +366,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
+        assertIsOpen();
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -343,6 +381,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public List<Object> executeResultList()
     {
+        assertIsOpen();
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
@@ -356,6 +395,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public Object executeResultUnique()
     {
+        assertIsOpen();
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -408,6 +448,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll()
     {
+        assertIsOpen();
         return deletePersistentInternal();
     }
 
@@ -418,6 +459,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll(Object... parameters)
     {
+        assertIsOpen();
         this.parameterValueByName = null;
         this.parameterValues = parameters;
         return deletePersistentInternal();
@@ -430,6 +472,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public long deletePersistentAll(Map parameters)
     {
+        assertIsOpen();
         this.parameterValueByName = parameters;
         this.parameterValues = null;
         return deletePersistentInternal();
@@ -479,6 +522,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void cancelAll()
     {
+        assertIsOpen();
         try
         {
             query.cancel();
@@ -499,6 +543,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void cancel(Thread thr)
     {
+        assertIsOpen();
         try
         {
             query.cancel(thr);
@@ -519,6 +564,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setCandidates(Extent<T> extent)
     {
+        assertIsOpen();
         try
         {
             if (extent == null)
@@ -542,6 +588,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setCandidates(Collection<T> pcs)
     {
+        assertIsOpen();
         try
         {
             query.setCandidates(pcs);
@@ -558,6 +605,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setClass(Class<T> candidateClass)
     {
+        assertIsOpen();
         try
         {
             query.setCandidateClass(candidateClass);
@@ -575,6 +623,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void addExtension(String key, Object value)
     {
+        assertIsOpen();
         query.addExtension(key, value);
     }
 
@@ -584,17 +633,20 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setExtensions(Map extensions)
     {
+        assertIsOpen();
         query.setExtensions(extensions);
     }
 
     public Query<T> extension(String key, Object value)
     {
+        assertIsOpen();
         addExtension(key, value);
         return this;
     }
 
     public Query<T> extensions(Map values)
     {
+        assertIsOpen();
         setExtensions(values);
         return this;
     }
@@ -605,6 +657,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public FetchPlan getFetchPlan()
     {
+        assertIsOpen();
         if (fetchPlan == null)
         {
             // Not yet assigned so give a JDO wrapper to the underlying FetchPlan
@@ -615,6 +668,7 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> filter(String filter)
     {
+        assertIsOpen();
         setFilter(filter);
         return this;
     }
@@ -625,6 +679,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setFilter(String filter)
     {
+        assertIsOpen();
         try
         {
             query.setFilter(filter);
@@ -637,6 +692,7 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> groupBy(String grouping)
     {
+        assertIsOpen();
         setGrouping(grouping);
         return this;
     }
@@ -647,6 +703,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setGrouping(String grouping)
     {
+        assertIsOpen();
         try
         {
             query.setGrouping(grouping);
@@ -663,6 +720,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public boolean getIgnoreCache()
     {
+        assertIsOpen();
         return query.getIgnoreCache();
     }
 
@@ -672,17 +730,20 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setIgnoreCache(boolean ignoreCache)
     {
+        assertIsOpen();
         query.setIgnoreCache(ignoreCache);
     }
 
     public Query<T> ignoreCache(boolean flag)
     {
+        assertIsOpen();
         setIgnoreCache(flag);
         return this;
     }
 
     public Query<T> orderBy(String ordering)
     {
+        assertIsOpen();
         setOrdering(ordering);
         return this;
     }
@@ -693,6 +754,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setOrdering(String ordering)
     {
+        assertIsOpen();
         try
         {
             query.setOrdering(ordering);
@@ -709,17 +771,20 @@ public class JDOQuery<T> implements Query<T>
      */
     public PersistenceManager getPersistenceManager()
     {
+        assertIsOpen();
         return pm;
     }
 
     public Query<T> range(long fromIncl, long toExcl)
     {
+        assertIsOpen();
         setRange(fromIncl, toExcl);
         return this;
     }
 
     public Query<T> range(String range)
     {
+        assertIsOpen();
         setRange(range);
         return this;
     }
@@ -730,6 +795,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setRange(String range)
     {
+        assertIsOpen();
         try
         {
             query.setRange(range);
@@ -747,6 +813,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setRange(long fromIncl, long toExcl)
     {
+        assertIsOpen();
         try
         {
             query.setRange(fromIncl, toExcl);
@@ -759,6 +826,7 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> result(String result)
     {
+        assertIsOpen();
         this.setResult(result);
         return this;
     }
@@ -769,6 +837,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setResult(String result)
     {
+        assertIsOpen();
         try
         {
             query.setResult(result);
@@ -785,6 +854,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setResultClass(Class result_cls)
     {
+        assertIsOpen();
         try
         {
             query.setResultClass(result_cls);
@@ -801,6 +871,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setDatastoreReadTimeoutMillis(Integer timeout)
     {
+        assertIsOpen();
         try
         {
             query.setDatastoreReadTimeoutMillis(timeout);
@@ -817,6 +888,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Integer getDatastoreReadTimeoutMillis()
     {
+        assertIsOpen();
         return query.getDatastoreReadTimeoutMillis();
     }
 
@@ -826,6 +898,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setDatastoreWriteTimeoutMillis(Integer timeout)
     {
+        assertIsOpen();
         try
         {
             query.setDatastoreWriteTimeoutMillis(timeout);
@@ -842,17 +915,20 @@ public class JDOQuery<T> implements Query<T>
      */
     public Integer getDatastoreWriteTimeoutMillis()
     {
+        assertIsOpen();
         return query.getDatastoreWriteTimeoutMillis();
     }
 
     public Query<T> datastoreReadTimeoutMillis(Integer interval)
     {
+        assertIsOpen();
         setDatastoreReadTimeoutMillis(interval);
         return this;
     }
 
     public Query<T> datastoreWriteTimeoutMillis(Integer interval)
     {
+        assertIsOpen();
         setDatastoreWriteTimeoutMillis(interval);
         return this;
     }
@@ -863,6 +939,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setUnique(boolean unique)
     {
+        assertIsOpen();
         try
         {
             query.setUnique(unique);
@@ -879,6 +956,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public boolean isUnmodifiable()
     {
+        assertIsOpen();
         return query.isUnmodifiable();
     }
 
@@ -887,11 +965,13 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setUnmodifiable()
     {
+        assertIsOpen();
         query.setUnmodifiable();
     }
 
     public Query<T> unmodifiable()
     {
+        assertIsOpen();
         setUnmodifiable();
         return this;
     }
@@ -904,6 +984,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void addSubquery(Query sub, String variableDecl, String candidateExpr)
     {
+        assertIsOpen();
         addSubquery(sub, variableDecl, candidateExpr, (Map)null);
     }
 
@@ -918,6 +999,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void addSubquery(Query sub, String variableDecl, String candidateExpr, String parameter)
     {
+        assertIsOpen();
         Map paramMap = new HashMap();
         if (parameter != null)
         {
@@ -938,6 +1020,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void addSubquery(Query sub, String variableDecl, String candidateExpr, String... parameters)
     {
+        assertIsOpen();
         Map paramMap = new HashMap();
         if (parameters != null)
         {
@@ -961,6 +1044,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public void addSubquery(Query sub, String variableDecl, String candidateExpr, Map parameters)
     {
+        assertIsOpen();
         try
         {
             org.datanucleus.store.query.Query subquery = null;
@@ -978,24 +1062,28 @@ public class JDOQuery<T> implements Query<T>
 
     public Query<T> subquery(Query sub, String variableDecl, String candidateExpr)
     {
+        assertIsOpen();
         addSubquery(sub, variableDecl, candidateExpr);
         return this;
     }
 
     public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, String parameter)
     {
+        assertIsOpen();
         addSubquery(sub, variableDecl, candidateExpr, parameter);
         return this;
     }
 
     public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, String... parameters)
     {
+        assertIsOpen();
         addSubquery(sub, variableDecl, candidateExpr, parameters);
         return this;
     }
 
     public Query<T> subquery(Query sub, String variableDecl, String candidateExpr, Map parameters)
     {
+        assertIsOpen();
         addSubquery(sub, variableDecl, candidateExpr, parameters);
         return this;
     }
@@ -1006,6 +1094,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Boolean getSerializeRead()
     {
+        assertIsOpen();
         return query.getSerializeRead();
     }
 
@@ -1015,11 +1104,13 @@ public class JDOQuery<T> implements Query<T>
      */
     public void setSerializeRead(Boolean serialize)
     {
+        assertIsOpen();
         query.setSerializeRead(serialize);
     }
 
     public Query<T> serializeRead(Boolean serialize)
     {
+        assertIsOpen();
         setSerializeRead(serialize);
         return this;
     }
@@ -1039,6 +1130,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public String getLanguage()
     {
+        assertIsOpen();
         return language;
     }
 
@@ -1049,6 +1141,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public Query<T> saveAsNamedQuery(String name)
     {
+        assertIsOpen();
         JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
 
         String queryName = null;
@@ -1090,7 +1183,7 @@ public class JDOQuery<T> implements Query<T>
      */
     public String toString()
     {
-        return query.toString();
+        return query != null ? query.toString() : "(closed query)";
     }
 
     /**
@@ -1099,6 +1192,19 @@ public class JDOQuery<T> implements Query<T>
      */
     public Object getNativeQuery()
     {
+        assertIsOpen();
         return query.getNativeQuery();
+    }
+
+    /**
+     * Method to assert if this Persistence Manager is open.
+     * @throws JDOFatalUserException if the PM is closed.
+     */
+    protected void assertIsOpen()
+    {
+        if (isClosed())
+        {
+            throw new JDOFatalUserException(Localiser.msg("011000"));
+        }
     }
 }
