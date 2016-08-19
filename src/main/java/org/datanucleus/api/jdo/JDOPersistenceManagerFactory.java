@@ -107,9 +107,13 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 {
     private static final long serialVersionUID = -575257641123665920L;
 
-    public static final String PROPERTY_SINGLETON_PMF_BY_NAME = "datanucleus.singletonPMFForName";
+    private static final String PROPERTY_SINGLETON_PMF_BY_NAME = "datanucleus.singletonPMFForName";
 
-    private static final String JDO_TYPE_CONVERTER_PROP_PREFIX = "javax.jdo.option.typeconverter.";
+    private static final String PROPERTY_JDO_PMF_FACTORY_CLASS = "javax.jdo.PersistenceManagerFactoryClass";
+
+    private static final String PROPERTY_JDO_TRANSACTION_TYPE = "javax.jdo.option.TransactionType";
+
+    private static final String PROPERTY_JDO_TYPE_CONVERTER_PREFIX = "javax.jdo.option.typeconverter.";
 
     static
     {
@@ -178,7 +182,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         // Extract the properties into a Map allowing for a Properties object being used
         Map overridingMap = new HashMap();
-        // Make sure we handle default properties too (SUN Properties class oddness)
+
+        // Make sure we handle default properties too (java.util.Properties class oddness)
         for (Enumeration e = overridingProps.propertyNames() ; e.hasMoreElements() ;)
         {
             // Use props.get to allow for user misusing Properties class
@@ -186,11 +191,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             overridingMap.put(param, overridingProps.get(param));
         }
 
-        // Create the PMF and freeze it (JDO spec $11.7)
-        final JDOPersistenceManagerFactory pmf = new JDOPersistenceManagerFactory(overridingMap);
-        pmf.freezeConfiguration();
-
-        return pmf;
+        return getPersistenceManagerFactory(overridingMap);
     }
 
     /**
@@ -205,7 +206,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         Map overridingMap = null;
         if (overridingProps instanceof Properties)
         {
-            // Make sure we handle default properties too (SUN Properties class oddness)
+            // Make sure we handle default properties too (java.util.Properties class oddness)
             overridingMap = new HashMap();
             for (Enumeration e = ((Properties)overridingProps).propertyNames() ; e.hasMoreElements() ;)
             {
@@ -234,7 +235,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         Map propsMap = null;
         if (props instanceof Properties)
         {
-            // Make sure we handle default properties too (SUN Properties class oddness)
+            // Make sure we handle default properties too (java.util.Properties class oddness)
             propsMap = new HashMap();
             for (Enumeration e = ((Properties)props).propertyNames() ; e.hasMoreElements() ;)
             {
@@ -252,7 +253,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         Map overridesMap = null;
         if (overrides instanceof Properties)
         {
-            // Make sure we handle default properties too (SUN Properties class oddness)
+            // Make sure we handle default properties too (java.util.Properties class oddness)
             overridesMap = new HashMap();
             for (Enumeration e = ((Properties)overrides).propertyNames() ; e.hasMoreElements() ;)
             {
@@ -285,14 +286,14 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         // Cater for overriding the PMF
         Class pmfClass = null;
-        if (props != null && props.containsKey("javax.jdo.PersistenceManagerFactoryClass"))
+        if (props != null && props.containsKey(PROPERTY_JDO_PMF_FACTORY_CLASS))
         {
-            String pmfClassName = (String) props.get("javax.jdo.PersistenceManagerFactoryClass");
+            String pmfClassName = (String) props.get(PROPERTY_JDO_PMF_FACTORY_CLASS);
             if (!pmfClassName.equals(JDOPersistenceManagerFactory.class.getName()))
             {
                 try
                 {
-                    // TODO Use the primaryClassLoader if passes in?
+                    // TODO Use the primaryClassLoader if passed in?
                     pmfClass = Class.forName(pmfClassName);
                 }
                 catch (ClassNotFoundException e)
@@ -370,7 +371,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             props.putAll(overrideProps);
         }
-        if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !props.containsKey("javax.jdo.option.TransactionType"))
+        if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !props.containsKey(PROPERTY_JDO_TRANSACTION_TYPE))
         {
             // Default to RESOURCE_LOCAL txns
             props.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
@@ -379,7 +380,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             // let TransactionType.JTA imply ResourceType.JTA
             String transactionType = props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ?
-                    (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String) props.get("javax.jdo.option.TransactionType");
+                    (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String) props.get(PROPERTY_JDO_TRANSACTION_TYPE);
             if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
             {
                 props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
@@ -478,7 +479,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (props != null)
         {
             pmfProps.putAll(props);
-            if (!pmfProps.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !pmfProps.containsKey("javax.jdo.option.TransactionType"))
+            if (!pmfProps.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !pmfProps.containsKey(PROPERTY_JDO_TRANSACTION_TYPE))
             {
                 // Default to RESOURCE_LOCAL txns
                 pmfProps.put(PropertyNames.PROPERTY_TRANSACTION_TYPE, TransactionType.RESOURCE_LOCAL.toString());
@@ -487,7 +488,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 // let TransactionType.JTA imply ResourceType.JTA
                 String transactionType = pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) != null ? 
-                        (String)pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String)pmfProps.get("javax.jdo.option.TransactionType");
+                        (String)pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String)pmfProps.get(PROPERTY_JDO_TRANSACTION_TYPE);
                 if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
                 {
                     pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
@@ -507,7 +508,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             Map.Entry<String, Object> entry = entryIter.next();
             String propName = entry.getKey();
-            if (propName.startsWith(JDO_TYPE_CONVERTER_PROP_PREFIX))
+            if (propName.startsWith(PROPERTY_JDO_TYPE_CONVERTER_PREFIX))
             {
                 if (typeProps == null)
                 {
@@ -549,7 +550,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 Map.Entry<String, Object> entry = typePropsIter.next();
                 String propName = entry.getKey();
-                String typeName = propName.substring(JDO_TYPE_CONVERTER_PROP_PREFIX.length());
+                String typeName = propName.substring(PROPERTY_JDO_TYPE_CONVERTER_PREFIX.length());
                 String converterName = (String) entry.getValue();
                 try
                 {
