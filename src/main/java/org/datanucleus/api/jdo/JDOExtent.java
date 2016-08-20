@@ -29,6 +29,8 @@ import javax.jdo.PersistenceManager;
  */
 public class JDOExtent<E> implements Extent<E>
 {
+    private boolean closed = false;
+
     /** Underlying PersistenceManager. */
     PersistenceManager pm;
 
@@ -48,6 +50,22 @@ public class JDOExtent<E> implements Extent<E>
         this.pm = pm;
         this.extent = extent;
         fetchPlan = new JDOFetchPlan(extent.getFetchPlan());
+    }
+
+    public void close()
+    {
+        if (closed)
+        {
+            return;
+        }
+
+        this.closeAll();
+        this.fetchPlan.clearGroups();
+        this.fetchPlan = null;
+        this.extent = null;
+        this.pm = null;
+
+        this.closed = true;
     }
 
     /**
