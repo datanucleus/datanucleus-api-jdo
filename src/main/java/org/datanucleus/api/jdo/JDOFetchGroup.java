@@ -272,12 +272,12 @@ public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
         {
             return false;
         }
-        else if (!(obj instanceof FetchGroup))
+        else if (!(obj instanceof JDOFetchGroup))
         {
             return false;
         }
-        FetchGroup other = (FetchGroup)obj;
-        return (other.getName().equals(getName()) && other.getType() == getType());
+        JDOFetchGroup other = (JDOFetchGroup)obj;
+        return other.fg.equals(fg);
     }
 
     /* (non-Javadoc)
