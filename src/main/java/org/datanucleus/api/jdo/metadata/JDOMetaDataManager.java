@@ -181,13 +181,11 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             }
             else if (!allowXML && allowAnnotations)
             {
-                NucleusLogger.METADATA.debug("MetaDataManager : Input=(Annotations)" +
-                    ", JDO-listener=" + useMetadataListener);
+                NucleusLogger.METADATA.debug("MetaDataManager : Input=(Annotations), JDO-listener=" + useMetadataListener);
             }
             else
             {
-                NucleusLogger.METADATA.debug("MetaDataManager : Input=(NONE)" +
-                    ", JDO-listener=" + useMetadataListener);
+                NucleusLogger.METADATA.debug("MetaDataManager : Input=(NONE), JDO-listener=" + useMetadataListener);
             }
         }
 
@@ -353,48 +351,21 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     }
 
     /**
-     * Internal method for accessing the MetaData for a class.
-     * The MetaData returned can be uninitialised.
-     * Runs through the following process
-     * <OL>
-     * <LI>Checks if the class is known not to have metata</LI>
-     * <LI>Check if we have metadata for the class in one of the files that has
-     * been parsed.</LI>
-     * <LI>If we have metadata, check that it is initialised</LI>
-     * <LI>If we don't have metadata, find the file for this class.</LI>
-     * <LI>If we cant find a file for it, add it to the list of classes known
-     * to have no metadata</LI>
-     * </OL>
-     * @param c The class to find MetaData for
-     * @return The ClassMetaData for this class (or null if not found)
-     **/
-    public synchronized AbstractClassMetaData getMetaDataForClassInternal(Class c, ClassLoaderResolver clr)
+     * Load the metadata for the specified class (if available).
+     * With JDO we check for XML metadata for the class (in one of the standard locations), or annotations on the class itself.
+     * @param c The class
+     * @param clr ClassLoader resolver
+     * @return The metadata for this class (if found)
+     */
+    protected AbstractClassMetaData loadMetaDataForClass(Class c, ClassLoaderResolver clr)
     {
-        if (c.isArray())
-        {
-            // Only particular classes can have metadata
-            return null;
-        }
-
-        String className = c.getName();
-        // If we know that this class/interface has no MetaData/annotations don't bother searching
-        if (isClassWithoutPersistenceInfo(className))
-        {
-            return null;
-        }
-
-        // Check if we have the MetaData already
-        AbstractClassMetaData the_md = classMetaDataByClass.get(className);
-        if (the_md != null)
-        {
-            return the_md;
-        }
-
         if (!allowMetaDataLoad)
         {
             // Not allowing further metadata load so just return
             return null;
         }
+
+        String className = c.getName();
         try
         {
             // TODO What if a different thread starts loading this class just before we do? it will load then we do too
@@ -402,9 +373,8 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
             if (allowXML)
             {
-                // No loaded MetaData so search valid location for a file for this class and load all in the process
-                FileMetaData filemd = loadXMLMetaDataForClass(c, clr, null, getJDOFileSuffix(), 
-                    MetadataFileType.JDO_FILE, true);
+                // Search valid location for a file for this class and load all in the process
+                FileMetaData filemd = loadXMLMetaDataForClass(c, clr, null, getJDOFileSuffix(), MetadataFileType.JDO_FILE, true);
                 if (filemd != null)
                 {
                     // Class has had its metadata loaded
@@ -413,7 +383,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                     // If not MetaData complete will also merge in annotations at populate stage
 
                     // Retrieve the MetaData for the requested class
-                    the_md = classMetaDataByClass.get(className);
+                    AbstractClassMetaData the_md = classMetaDataByClass.get(className);
 
                     return the_md;
                 }
@@ -421,7 +391,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
             if (allowAnnotations)
             {
-                // No MetaData so check for annotations
+                // Check for annotations
                 FileMetaData annFilemd = loadAnnotationsForClass(c, clr, true, true);
                 if (annFilemd != null)
                 {
