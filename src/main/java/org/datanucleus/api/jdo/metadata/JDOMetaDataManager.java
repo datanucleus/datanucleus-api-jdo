@@ -325,6 +325,10 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                             {
                                 classMetaDataByDiscriminatorName.put(cmd.getFullClassName(), cmd);
                             }
+                            else if (dismd.getStrategy() == DiscriminatorStrategy.ENTITY_NAME)
+                            {
+                                classMetaDataByDiscriminatorName.put(cmd.getEntityName(), cmd);
+                            }
                             else if (dismd.getStrategy() == DiscriminatorStrategy.VALUE_MAP && dismd.getValue() != null)
                             {
                                 classMetaDataByDiscriminatorName.put(dismd.getValue(), cmd);
