@@ -198,22 +198,6 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
         return fgmds;
     }
 
-    public ForeignKeyMetadata[] getForeignKeys()
-    {
-        ForeignKeyMetaData[] internalFks = getInternal().getForeignKeyMetaData();
-        if (internalFks == null)
-        {
-            return null;
-        }
-        ForeignKeyMetadataImpl[] fkmds = new ForeignKeyMetadataImpl[internalFks.length];
-        for (int i=0;i<fkmds.length;i++)
-        {
-            fkmds[i] = new ForeignKeyMetadataImpl(internalFks[i]);
-            fkmds[i].parent = this;
-        }
-        return fkmds;
-    }
-
     public IdentityType getIdentityType()
     {
         org.datanucleus.metadata.IdentityType idType = getInternal().getIdentityType();
@@ -231,44 +215,12 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
         }
     }
 
-    public IndexMetadata[] getIndices()
-    {
-        IndexMetaData[] internalIdxmds = getInternal().getIndexMetaData();
-        if (internalIdxmds == null)
-        {
-            return null;
-        }
-        IndexMetadataImpl[] idxmds = new IndexMetadataImpl[internalIdxmds.length];
-        for (int i=0;i<idxmds.length;i++)
-        {
-            idxmds[i] = new IndexMetadataImpl(internalIdxmds[i]);
-            idxmds[i].parent = this;
-        }
-        return idxmds;
-    }
-
     public InheritanceMetadata getInheritanceMetadata()
     {
         InheritanceMetaData internalInhmd = getInternal().getInheritanceMetaData();
         InheritanceMetadataImpl inhmd = new InheritanceMetadataImpl(internalInhmd);
         inhmd.parent = this;
         return inhmd;
-    }
-
-    public JoinMetadata[] getJoins()
-    {
-        JoinMetaData[] internalJoins = getInternal().getJoinMetaData();
-        if (internalJoins == null)
-        {
-            return null;
-        }
-        JoinMetadataImpl[] joins = new JoinMetadataImpl[internalJoins.length];
-        for (int i=0;i<joins.length;i++)
-        {
-            joins[i] = new JoinMetadataImpl(internalJoins[i]);
-            joins[i].parent = this;
-        }
-        return joins;
     }
 
     public String getName()
@@ -282,22 +234,79 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
         return (fgmds != null ? fgmds.size() : 0);
     }
 
+    public ForeignKeyMetadata[] getForeignKeys()
+    {
+        List<ForeignKeyMetaData> internalFKs = getInternal().getForeignKeyMetaData();
+        if (internalFKs == null)
+        {
+            return null;
+        }
+
+        ForeignKeyMetadata[] fkmds = new ForeignKeyMetadataImpl[internalFKs.size()];
+        int i=0;
+        for (ForeignKeyMetaData internalFKMD : internalFKs)
+        {
+            ForeignKeyMetadataImpl fkmd = new ForeignKeyMetadataImpl(internalFKMD);
+            fkmds[i++] = fkmd;
+            fkmd.parent = this;
+        }
+        return fkmds;
+    }
+
     public int getNumberOfForeignKeys()
     {
-        ForeignKeyMetaData[] fkmds = getInternal().getForeignKeyMetaData();
-        return (fkmds != null ? fkmds.length : 0);
+        List<ForeignKeyMetaData> fkmds = getInternal().getForeignKeyMetaData();
+        return (fkmds != null ? fkmds.size() : 0);
+    }
+
+    public IndexMetadata[] getIndices()
+    {
+        List<IndexMetaData> internalIdxmds = getInternal().getIndexMetaData();
+        if (internalIdxmds == null)
+        {
+            return null;
+        }
+
+        IndexMetadataImpl[] idxmds = new IndexMetadataImpl[internalIdxmds.size()];
+        int i = 0;
+        for (IndexMetaData internalIdxmd : internalIdxmds)
+        {
+            IndexMetadataImpl idxmd = new IndexMetadataImpl(internalIdxmd);
+            idxmds[i++] = idxmd;
+            idxmd.parent = this;
+        }
+        return idxmds;
     }
 
     public int getNumberOfIndices()
     {
-        IndexMetaData[] indexmds = getInternal().getIndexMetaData();
-        return (indexmds != null ? indexmds.length : 0);
+        List<IndexMetaData> indexmds = getInternal().getIndexMetaData();
+        return (indexmds != null ? indexmds.size() : 0);
+    }
+
+    public JoinMetadata[] getJoins()
+    {
+        List<JoinMetaData> internalJoins = getInternal().getJoinMetaData();
+        if (internalJoins == null)
+        {
+            return null;
+        }
+
+        JoinMetadataImpl[] joins = new JoinMetadataImpl[internalJoins.size()];
+        int i = 0;
+        for (JoinMetaData internalJoinMD : internalJoins)
+        {
+            JoinMetadataImpl joinmd = new JoinMetadataImpl(internalJoinMD);
+            joins[i++] = joinmd;
+            joinmd.parent = this;
+        }
+        return joins;
     }
 
     public int getNumberOfJoins()
     {
-        JoinMetaData[] joinmds = getInternal().getJoinMetaData();
-        return (joinmds != null ? joinmds.length : 0);
+        List<JoinMetaData> joinmds = getInternal().getJoinMetaData();
+        return (joinmds != null ? joinmds.size() : 0);
     }
 
     public int getNumberOfQueries()
@@ -305,10 +314,29 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
         return getInternal().getNoOfQueries();
     }
 
+    public UniqueMetadata[] getUniques()
+    {
+        List<UniqueMetaData> internalUnimds = getInternal().getUniqueMetaData();
+        if (internalUnimds == null)
+        {
+            return null;
+        }
+
+        UniqueMetadataImpl[] unimds = new UniqueMetadataImpl[internalUnimds.size()];
+        int i = 0;
+        for (UniqueMetaData internalUniMD : internalUnimds)
+        {
+            UniqueMetadataImpl unimd = new UniqueMetadataImpl(internalUniMD);
+            unimds[i++] = unimd;
+            unimd.parent = this;
+        }
+        return unimds;
+    }
+
     public int getNumberOfUniques()
     {
-        UniqueMetaData[] uniquemds = getInternal().getUniqueMetaData();
-        return (uniquemds != null ? uniquemds.length : 0);
+        List<UniqueMetaData> uniquemds = getInternal().getUniqueMetaData();
+        return (uniquemds != null ? uniquemds.size() : 0);
     }
 
     public String getObjectIdClass()
@@ -354,22 +382,6 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
     public String getTable()
     {
         return getInternal().getTable();
-    }
-
-    public UniqueMetadata[] getUniques()
-    {
-        UniqueMetaData[] internalUnimds = getInternal().getUniqueMetaData();
-        if (internalUnimds == null)
-        {
-            return null;
-        }
-        UniqueMetadataImpl[] unimds = new UniqueMetadataImpl[internalUnimds.length];
-        for (int i=0;i<unimds.length;i++)
-        {
-            unimds[i] = new UniqueMetadataImpl(internalUnimds[i]);
-            unimds[i].parent = this;
-        }
-        return unimds;
     }
 
     public VersionMetadata getVersionMetadata()
