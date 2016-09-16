@@ -79,6 +79,11 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
         return jdoConverter.convertToAttribute(datastoreValue);
     }
 
+    public AttributeConverter<X, Y> getAttributeConverter()
+    {
+        return jdoConverter;
+    }
+
     public String toString()
     {
         return "JDOTypeConverter<" + memberType.getName() + "," + dbType.getName() + ">";
