@@ -26,12 +26,17 @@ import javax.jdo.metadata.IndexMetadata;
 import javax.jdo.metadata.KeyMetadata;
 import javax.jdo.metadata.UniqueMetadata;
 
+import org.datanucleus.api.jdo.JDOTypeConverter;
+import org.datanucleus.api.jdo.JDOTypeConverterUtils;
+import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ColumnMetaData;
 import org.datanucleus.metadata.EmbeddedMetaData;
 import org.datanucleus.metadata.ForeignKeyMetaData;
 import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.KeyMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.UniqueMetaData;
+import org.datanucleus.store.types.TypeManager;
 
 /**
  * Implementation of JDO KeyMetadata object.
@@ -345,7 +350,17 @@ public class KeyMetadataImpl extends AbstractMetadataImpl implements KeyMetadata
     @Override
     public AttributeConverter<?, ?> getConverter()
     {
-        // TODO Auto-generated method stub
+        KeyMetaData keymd = getInternal();
+        if (keymd.hasExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME))
+        {
+            String typeConverterName = keymd.getValueForExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME);
+            if (typeConverterName != null)
+            {
+                JDOTypeConverter typeConv = (JDOTypeConverter)getInternal().getMetaDataManager().getNucleusContext().getTypeManager().getTypeConverterForName(typeConverterName);
+                return typeConv.getAttributeConverter();
+            }
+        }
+
         return null;
     }
 
@@ -355,8 +370,19 @@ public class KeyMetadataImpl extends AbstractMetadataImpl implements KeyMetadata
     @Override
     public KeyMetadata setConverter(AttributeConverter<?, ?> conv)
     {
-        // TODO Auto-generated method stub
-        return null;
+        String keyType = ((AbstractMemberMetaData)getInternal().getParent()).getMap().getKeyType();
+        Class keyCls = getInternal().getMetaDataManager().getNucleusContext().getClassLoaderResolver(null).classForName(keyType);
+        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(conv.getClass(), keyCls);
+        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(conv.getClass(), attrType, null);
+
+        // Register the TypeConverter under the name of the AttributeConverter class
+        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+        TypeManager typeMgr = getInternal().getMetaDataManager().getNucleusContext().getTypeManager();
+        typeMgr.registerConverter(conv.getClass().getName(), typeConv);
+
+        getInternal().addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, conv.getClass().getName());
+
+        return this;
     }
 
     /* (non-Javadoc)
