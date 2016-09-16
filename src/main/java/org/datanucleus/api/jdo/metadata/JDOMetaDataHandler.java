@@ -105,9 +105,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
     public JDOMetaDataHandler(MetaDataManager mgr, String filename, EntityResolver resolver)
     {
         super(mgr, filename, resolver);
-        metadata = new FileMetaData();
-        ((FileMetaData) metadata).setFilename(filename);
-        ((FileMetaData) metadata).setMetaDataManager(mgr); // Parsing via this manager, so set it
+        metadata = new FileMetaData(filename);
         pushStack(metadata);
     }
 
