@@ -57,7 +57,7 @@ import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.UniqueMetaData;
 import org.datanucleus.metadata.ValueMetaData;
-import org.datanucleus.util.NucleusLogger;
+import org.datanucleus.store.types.TypeManager;
 
 /**
  * Convenience implementation of MemberMetadata for use by FieldMetadataImpl/PropertyMetadataImpl
@@ -762,7 +762,8 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
         String typeConverterName = getInternal().getTypeConverterName();
         if (typeConverterName != null)
         {
-            // TODO Extra the converter
+            JDOTypeConverter typeConv = (JDOTypeConverter)getInternal().getMetaDataManager().getNucleusContext().getTypeManager().getTypeConverterForName(typeConverterName);
+            return typeConv.getAttributeConverter();
         }
         return null;
     }
@@ -778,8 +779,9 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
 
         // Register the TypeConverter under the name of the AttributeConverter class
         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-        NucleusLogger.GENERAL.debug(">> Need to register JDOTypeConverter " + typeConv + " under name " + conv.getClass().getName());
-        // TODO Register this
+        TypeManager typeMgr = getInternal().getMetaDataManager().getNucleusContext().getTypeManager();
+        typeMgr.registerConverter(conv.getClass().getName(), typeConv);
+
         getInternal().setTypeConverterName(conv.getClass().getName());
 
         return this;
