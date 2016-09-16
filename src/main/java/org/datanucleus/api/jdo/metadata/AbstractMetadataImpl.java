@@ -20,8 +20,11 @@ package org.datanucleus.api.jdo.metadata;
 import javax.jdo.metadata.ExtensionMetadata;
 import javax.jdo.metadata.Metadata;
 
+import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.ExtensionMetaData;
+import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.MetaData;
+import org.datanucleus.metadata.PackageMetaData;
 
 /**
  * Base for all implementations of JDO Metadata classes. Provides parentage, and the underlying
@@ -42,7 +45,19 @@ public abstract class AbstractMetadataImpl implements Metadata
 
     public String toString()
     {
-        return internalMD.toString("", "    ");
+        if (internalMD instanceof FileMetaData)
+        {
+            return new JDOMetaDataHelper().getXMLForMetaData((FileMetaData)internalMD, "", "    ");
+        }
+        else if (internalMD instanceof PackageMetaData)
+        {
+            return new JDOMetaDataHelper().getXMLForMetaData((PackageMetaData)internalMD, "", "    ");
+        }
+        else if (internalMD instanceof AbstractClassMetaData)
+        {
+            return new JDOMetaDataHelper().getXMLForMetaData((AbstractClassMetaData)internalMD, "", "    ");
+        }
+        return super.toString();
     }
 
     public ExtensionMetadata[] getExtensions()
