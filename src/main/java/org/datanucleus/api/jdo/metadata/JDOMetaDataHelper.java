@@ -78,48 +78,48 @@ public class JDOMetaDataHelper
 
         if (intf)
         {
-            str.append(prefix).append("<interface name=\"" + cmd.getName() + "\"\n");
+            str.append(prefix).append("<interface name=\"" + cmd.getName() + "\"");
         }
         else
         {
-            str.append(prefix).append("<class name=\"" + cmd.getName() + "\"\n");
+            str.append(prefix).append("<class name=\"" + cmd.getName() + "\"");
         }
 
         if (cmd.getIdentityType() != null)
         {
-            str.append(prefix).append("       identity-type=\"" + cmd.getIdentityType() + "\"\n");
+            str.append("\n").append(prefix).append("       identity-type=\"" + cmd.getIdentityType() + "\"");
         }
         if (cmd.getObjectidClass() != null)
         {
-            str.append(prefix).append("       objectid-class=\"" + cmd.getObjectidClass() + "\"\n");
+            str.append("\n").append(prefix).append("       objectid-class=\"" + cmd.getObjectidClass() + "\"");
         }
         if (!cmd.isRequiresExtent())
         {
-            str.append(prefix).append("       requires-extent=\"" + cmd.isRequiresExtent() + "\"\n");
+            str.append("\n").append(prefix).append("       requires-extent=\"" + cmd.isRequiresExtent() + "\"");
         }
         if (cmd.isEmbeddedOnly())
         {
-            str.append(prefix).append("       embedded-only=\"" + cmd.isEmbeddedOnly() + "\"\n");
+            str.append("\n").append(prefix).append("       embedded-only=\"" + cmd.isEmbeddedOnly() + "\"");
         }
         if (cmd.getPersistenceModifier() != null)
         {
-            str.append(prefix).append("       persistence-modifier=\"" + cmd.getPersistenceModifier() + "\"\n");
+            str.append("\n").append(prefix).append("       persistence-modifier=\"" + cmd.getPersistenceModifier() + "\"");
         }
         if (cmd.getCatalog() != null)
         {
-            str.append(prefix).append("       catalog=\"" + cmd.getCatalog() + "\"\n");
+            str.append("\n").append(prefix).append("       catalog=\"" + cmd.getCatalog() + "\"");
         }
         if (cmd.getSchema() != null)
         {
-            str.append(prefix).append("       schema=\"" + cmd.getSchema() + "\"\n");
+            str.append("\n").append(prefix).append("       schema=\"" + cmd.getSchema() + "\"");
         }
         if (cmd.getTable() != null)
         {
-            str.append(prefix).append("       table=\"" + cmd.getTable() + "\"\n");
+            str.append("\n").append(prefix).append("       table=\"" + cmd.getTable() + "\"");
         }
         if (cmd.isDetachable())
         {
-            str.append(prefix).append("       detachable=\"" + cmd.isDetachable() + "\"\n");
+            str.append("\n").append(prefix).append("       detachable=\"" + cmd.isDetachable() + "\"");
         }
         str.append(">\n");
 
@@ -494,7 +494,7 @@ public class JDOMetaDataHelper
         {
             for (String memberName : memberNames)
             {
-                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>");
+                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>\n");
             }
         }
         String[] columnNames = idxmd.getColumnNames();
@@ -502,7 +502,7 @@ public class JDOMetaDataHelper
         {
             for (String columnName : columnNames)
             {
-                str.append(prefix).append(indent).append("<column name=\"" + columnName + "\"/>");
+                str.append(prefix).append(indent).append("<column name=\"" + columnName + "\"/>\n");
             }
         }
 
@@ -540,7 +540,7 @@ public class JDOMetaDataHelper
         {
             for (String memberName : memberNames)
             {
-                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>");
+                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>\n");
             }
         }
         String[] columnNames = unimd.getColumnNames();
@@ -548,7 +548,7 @@ public class JDOMetaDataHelper
         {
             for (String columnName : columnNames)
             {
-                str.append(prefix).append(indent).append("<column name=\"" + columnName + "\"/>");
+                str.append(prefix).append(indent).append("<column name=\"" + columnName + "\"/>\n");
             }
         }
 
@@ -665,7 +665,7 @@ public class JDOMetaDataHelper
         {
             for (String memberName : memberNames)
             {
-                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>");
+                str.append(prefix).append(indent).append("<field name=\"" + memberName + "\"/>\n");
             }
         }
         ColumnMetaData[] columns = fkmd.getColumnMetaData();
