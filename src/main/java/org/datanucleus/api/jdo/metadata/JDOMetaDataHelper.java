@@ -185,14 +185,11 @@ public class JDOMetaDataHelper
         }
 
         // Add members
-        AbstractMemberMetaData[] managedMembers = cmd.getManagedMembers();
-        // TODO Add overridden
-        if (managedMembers != null)
+        int numMembers = cmd.getNoOfMembers();
+        for (int i=0;i<numMembers;i++)
         {
-            for (int i=0; i<managedMembers.length; i++)
-            {
-                str.append(getXMLForMetaData(managedMembers[i], prefix + indent,indent));
-            }
+            AbstractMemberMetaData mmd = cmd.getMetaDataForMemberAtRelativePosition(i);
+            str.append(getXMLForMetaData(mmd, prefix + indent,indent));
         }
 
         // Add unmapped columns
