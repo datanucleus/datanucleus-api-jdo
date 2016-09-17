@@ -17,11 +17,14 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.jdo.metadata.ExtensionMetadata;
 import javax.jdo.metadata.Metadata;
 
 import org.datanucleus.metadata.AbstractClassMetaData;
-import org.datanucleus.metadata.ExtensionMetaData;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.PackageMetaData;
@@ -62,16 +65,19 @@ public abstract class AbstractMetadataImpl implements Metadata
 
     public ExtensionMetadata[] getExtensions()
     {
-        ExtensionMetaData[] exts = internalMD.getExtensions();
+        Map<String, String> exts = internalMD.getExtensions();
         if (exts == null)
         {
             return null;
         }
 
-        ExtensionMetadata[] extensions = new ExtensionMetadata[exts.length];
-        for (int i=0;i<extensions.length;i++)
+        ExtensionMetadata[] extensions = new ExtensionMetadata[exts.size()];
+        Iterator<Entry<String, String>> entryIter = exts.entrySet().iterator();
+        int i = 0;
+        while (entryIter.hasNext())
         {
-            extensions[i] = new ExtensionMetadataImpl(exts[i]);
+            Entry<String, String> entry = entryIter.next();
+            extensions[i++] = new ExtensionMetadataImpl(MetaData.VENDOR_NAME, entry.getKey(), entry.getValue());
         }
         return extensions;
     }
@@ -84,7 +90,12 @@ public abstract class AbstractMetadataImpl implements Metadata
     public ExtensionMetadata newExtensionMetadata(String vendor, String key, String value)
     {
         // Create new backing extension, and wrap it for returning
-        return new ExtensionMetadataImpl(internalMD.newExtensionMetaData(vendor, key, value));
+        ExtensionMetadata extmd = new ExtensionMetadataImpl(vendor, key, value);
+        if (vendor.equals(MetaData.VENDOR_NAME))
+        {
+            internalMD.addExtension(key, value);
+        }
+        return extmd;
     }
 
     public AbstractMetadataImpl getParent()

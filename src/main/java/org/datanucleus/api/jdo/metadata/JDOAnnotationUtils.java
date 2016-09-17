@@ -657,7 +657,10 @@ public class JDOAnnotationUtils
 
         for (int i=0;i<extensions.length;i++)
         {
-            metadata.addExtension(extensions[i].vendorName(), extensions[i].key(), extensions[i].value());
+            if (extensions[i].vendorName() != null && extensions[i].vendorName().equalsIgnoreCase(MetaData.VENDOR_NAME))
+            {
+                metadata.addExtension(extensions[i].key(), extensions[i].value());
+            }
         }
     }
 }

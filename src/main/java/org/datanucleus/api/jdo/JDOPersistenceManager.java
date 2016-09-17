@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jdo.Extent;
@@ -79,11 +80,9 @@ import org.datanucleus.exceptions.TransactionActiveOnCloseException;
 import org.datanucleus.identity.SCOID;
 import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
-import org.datanucleus.metadata.ExtensionMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
 import org.datanucleus.metadata.IdentityType;
-import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
@@ -1488,15 +1487,14 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
 
         // Add any extensions
-        ExtensionMetaData[] extmds = qmd.getExtensions();
+        Map<String, String> extmds = qmd.getExtensions();
         if (extmds != null)
         {
-            for (int i=0;i<extmds.length;i++)
+            Iterator<Entry<String, String>> entryIter = extmds.entrySet().iterator();
+            while (entryIter.hasNext())
             {
-                if (extmds[i].getVendorName().equals(MetaData.VENDOR_NAME))
-                {
-                    query.addExtension(extmds[i].getKey(), extmds[i].getValue());
-                }
+                Entry<String, String> entry = entryIter.next();
+                query.addExtension(entry.getKey(), entry.getValue());
             }
         }
         if (qmd.isUnmodifiable())

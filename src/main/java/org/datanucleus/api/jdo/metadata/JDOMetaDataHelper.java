@@ -17,7 +17,10 @@ Contributors:
  **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -30,7 +33,6 @@ import org.datanucleus.metadata.ContainerMetaData;
 import org.datanucleus.metadata.DiscriminatorMetaData;
 import org.datanucleus.metadata.ElementMetaData;
 import org.datanucleus.metadata.EmbeddedMetaData;
-import org.datanucleus.metadata.ExtensionMetaData;
 import org.datanucleus.metadata.FetchGroupMemberMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
@@ -44,6 +46,7 @@ import org.datanucleus.metadata.InterfaceMetaData;
 import org.datanucleus.metadata.JoinMetaData;
 import org.datanucleus.metadata.KeyMetaData;
 import org.datanucleus.metadata.MapMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.PrimaryKeyMetaData;
@@ -225,15 +228,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = cmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(cmd.getExtensions(), str, prefix, indent);
 
         if (intf)
         {
@@ -279,15 +274,7 @@ public class JDOMetaDataHelper
             }
 
             // Add extensions
-            ExtensionMetaData[] extensions = idmd.getExtensions();
-            if (extensions != null)
-            {
-                for (int i=0;i<extensions.length;i++)
-                {
-                    ExtensionMetaData extmd = extensions[i];
-                    str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-                }
-            }
+            processExtensions(idmd.getExtensions(), str, prefix, indent);
 
             str.append(prefix).append("</datastore-identity>\n");
         }
@@ -347,14 +334,10 @@ public class JDOMetaDataHelper
             str.append(" position=\"" + colmd.getPosition() + "\"");
         }
 
-        ExtensionMetaData[] extensions = colmd.getExtensions();
+        Map<String, String> extensions = colmd.getExtensions();
         if (extensions != null)
         {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
+            processExtensions(extensions, str, prefix, indent);
 
             str.append(prefix).append("</column>\n");
         }
@@ -384,15 +367,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = pkmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(pkmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</primary-key>\n");
         return str.toString();
@@ -416,15 +391,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = inhmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(inhmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</inheritance>\n");
         return str.toString();
@@ -465,15 +432,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = dismd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(dismd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</discriminator>\n");
         return str.toString();
@@ -507,15 +466,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = idxmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(idxmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</index>\n");
         return str.toString();
@@ -553,15 +504,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = unimd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(unimd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</unique>\n");
         return str.toString();
@@ -617,15 +560,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = joinmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(joinmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</join>\n");
         return str.toString();
@@ -678,15 +613,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = fkmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(fkmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</foreign-key>\n");
         return str.toString();
@@ -718,15 +645,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = vermd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(vermd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</version>\n");
         return str.toString();
@@ -753,15 +672,7 @@ public class JDOMetaDataHelper
         str.append(prefix).append(qmd.getQuery()).append("\n");
 
         // Add extensions
-        ExtensionMetaData[] extensions = qmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(qmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix + "</query>\n");
         return str.toString();
@@ -1005,15 +916,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = mmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(mmd.getExtensions(), str, prefix, indent);
 
         if (field)
         {
@@ -1060,15 +963,7 @@ public class JDOMetaDataHelper
         }
         
         // Add extensions
-        ExtensionMetaData[] extensions = embmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(embmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix + "</embedded>\n");
         return str.toString();
@@ -1127,15 +1022,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = elemmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(elemmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</element>\n");
         return str.toString();
@@ -1194,15 +1081,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = keymd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(keymd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</key>\n");
         return str.toString();
@@ -1261,15 +1140,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = valmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(valmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</value>\n");
         return str.toString();
@@ -1310,15 +1181,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = ordermd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(ordermd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</order>\n");
         return str.toString();
@@ -1343,15 +1206,7 @@ public class JDOMetaDataHelper
         str.append(">\n");
 
         // Add extensions
-        ExtensionMetaData[] extensions = collmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(collmd.getExtensions(), str, prefix, indent);
  
         str.append(prefix).append("</collection>\n");
         return str.toString();
@@ -1388,15 +1243,7 @@ public class JDOMetaDataHelper
         str.append(">\n");
 
         // Add extensions
-        ExtensionMetaData[] extensions = mapmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(mapmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</map>\n");
         return str.toString();
@@ -1423,16 +1270,12 @@ public class JDOMetaDataHelper
             str.append(" dependent-element=\"").append(arrmd.isDependentElement()).append("\"");
         }
 
-        ExtensionMetaData[] extensions = arrmd.getExtensions();
+        Map<String, String> extensions = arrmd.getExtensions();
         if (extensions != null)
         {
             str.append(">\n");
 
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
+            processExtensions(extensions, str, prefix, indent);
 
             str.append(prefix).append("</array>\n");
         }
@@ -1488,15 +1331,7 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = pmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(pmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix).append("</package>\n");
         return str.toString();
@@ -1529,15 +1364,7 @@ public class JDOMetaDataHelper
         str.append(">\n");
 
         // Add extensions
-        ExtensionMetaData[] extensions = seqmd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(seqmd.getExtensions(), str, prefix, indent);
 
         str.append(prefix + "</sequence>\n");
         return str.toString();
@@ -1588,18 +1415,23 @@ public class JDOMetaDataHelper
         }
 
         // Add extensions
-        ExtensionMetaData[] extensions = filemd.getExtensions();
-        if (extensions != null)
-        {
-            for (int i=0;i<extensions.length;i++)
-            {
-                ExtensionMetaData extmd = extensions[i];
-                str.append(getXMLForMetaData(extmd, prefix+indent, indent)).append("\n");
-            }
-        }
+        processExtensions(filemd.getExtensions(), str, prefix, indent);
 
         str.append("</jdo>");
         return str.toString();
+    }
+
+    protected void processExtensions(Map<String, String> extensions, StringBuilder str, String prefix, String indent)
+    {
+        if (extensions != null)
+        {
+            Iterator<Entry<String, String>> entryIter = extensions.entrySet().iterator();
+            while (entryIter.hasNext())
+            {
+                Entry<String, String> entry = entryIter.next();
+                str.append(getXMLForMetaData(entry.getKey(), entry.getValue(), prefix+indent, indent)).append("\n");
+            }
+        }
     }
 
     public String getXMLForMetaData(FetchPlanMetaData fpmd, String prefix, String indent)
@@ -1623,12 +1455,12 @@ public class JDOMetaDataHelper
         return str.toString();
     }
 
-    public String getXMLForMetaData(ExtensionMetaData extmd, String prefix, String indent)
+    public String getXMLForMetaData(String key, String value, String prefix, String indent)
     {
         StringBuilder str = new StringBuilder();
-        str.append(prefix).append("<extension vendor-name=\"").append(extmd.getVendorName()).append("\" ")
-            .append("key=\"").append(extmd.getKey()).append("\" ")
-            .append("value=\"").append(extmd.getValue()).append("\"/>");
+        str.append(prefix).append("<extension vendor-name=\"").append(MetaData.VENDOR_NAME).append("\" ")
+            .append("key=\"").append(key).append("\" ")
+            .append("value=\"").append(value).append("\"/>");
         return str.toString();
     }
 }

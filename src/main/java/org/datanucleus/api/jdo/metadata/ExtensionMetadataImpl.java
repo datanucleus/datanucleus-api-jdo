@@ -19,23 +19,20 @@ package org.datanucleus.api.jdo.metadata;
 
 import javax.jdo.metadata.ExtensionMetadata;
 
-import org.datanucleus.metadata.ExtensionMetaData;
-
 /**
  * Implementation of JDO ExtensionMetadata object.
  */
 public class ExtensionMetadataImpl implements ExtensionMetadata
 {
-    ExtensionMetaData extmd;
+    String vendor;
+    String key;
+    String value;
 
     public ExtensionMetadataImpl(String vendor, String key, String value)
     {
-        extmd = new ExtensionMetaData(vendor, key, value);
-    }
-
-    public ExtensionMetadataImpl(ExtensionMetaData extmd)
-    {
-        this.extmd = extmd;
+        this.vendor = vendor;
+        this.key = key;
+        this.value = value;
     }
 
     /* (non-Javadoc)
@@ -43,7 +40,7 @@ public class ExtensionMetadataImpl implements ExtensionMetadata
      */
     public String getKey()
     {
-        return extmd.getKey();
+        return key;
     }
 
     /* (non-Javadoc)
@@ -51,7 +48,7 @@ public class ExtensionMetadataImpl implements ExtensionMetadata
      */
     public String getValue()
     {
-        return extmd.getValue();
+        return value;
     }
 
     /* (non-Javadoc)
@@ -59,6 +56,6 @@ public class ExtensionMetadataImpl implements ExtensionMetadata
      */
     public String getVendorName()
     {
-        return extmd.getVendorName();
+        return vendor;
     }
 }

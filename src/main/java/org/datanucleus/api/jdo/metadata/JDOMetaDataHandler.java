@@ -1067,7 +1067,11 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             else if (localName.equals("extension"))
             {
                 MetaData md = getStack();
-                md.addExtension(getAttr(attrs, "vendor-name"), getAttr(attrs, "key"), getAttr(attrs, "value"));
+                String vendorName = getAttr(attrs, "vendor-name");
+                if (vendorName != null && vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                {
+                    md.addExtension(getAttr(attrs, "key"), getAttr(attrs, "value"));
+                }
             }
             else if (localName.equals("version"))
             {
