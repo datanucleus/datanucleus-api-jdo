@@ -75,6 +75,7 @@ import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.IndexedValue;
 import org.datanucleus.metadata.InheritanceMetaData;
 import org.datanucleus.metadata.InvalidClassMetaDataException;
+import org.datanucleus.metadata.InvalidMetaDataException;
 import org.datanucleus.metadata.JoinMetaData;
 import org.datanucleus.metadata.KeyMetaData;
 import org.datanucleus.metadata.MapMetaData;
@@ -668,7 +669,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         for (int j = 0; j < values.length; j++)
                         {
                             String vendorName = values[j].vendorName();
-                            if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                            if (StringUtils.isWhitespace(vendorName))
+                            {
+                                throw new InvalidMetaDataException("044160", vendorName, values[j].key().toString(), values[j].value().toString());
+                            }
+                            else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                             {
                                 extensions.put(values[j].key().toString(), values[j].value().toString());
                             }
@@ -678,7 +683,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.EXTENSION))
                 {
                     String vendorName = (String)annotationValues.get("vendorName");
-                    if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                    if (StringUtils.isWhitespace(vendorName))
+                    {
+                        throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
+                    }
+                    else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                     {
                         extensions = new HashMap<String,String>(1);
                         extensions.put((String)annotationValues.get("key"), (String)annotationValues.get("value"));
@@ -1785,7 +1794,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         for (int j = 0; j < values.length; j++)
                         {
                             String vendorName = values[j].vendorName();
-                            if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                            if (StringUtils.isWhitespace(vendorName))
+                            {
+                                throw new InvalidMetaDataException("044160", vendorName, values[j].key().toString(), values[j].value().toString());
+                            }
+                            else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                             {
                                 extensions.put(values[j].key().toString(), values[j].value().toString());
                             }
@@ -1795,7 +1808,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.EXTENSION))
                 {
                     String vendorName = (String)annotationValues.get("vendorName");
-                    if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                    if (StringUtils.isWhitespace(vendorName))
+                    {
+                        throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
+                    }
+                    else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                     {
                         extensions = new HashMap<String,String>(1);
                         extensions.put((String)annotationValues.get("key"), (String)annotationValues.get("value"));

@@ -57,6 +57,7 @@ import org.datanucleus.metadata.IndexedValue;
 import org.datanucleus.metadata.InheritanceMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
 import org.datanucleus.metadata.InvalidClassMetaDataException;
+import org.datanucleus.metadata.InvalidMetaDataException;
 import org.datanucleus.metadata.JoinMetaData;
 import org.datanucleus.metadata.KeyMetaData;
 import org.datanucleus.metadata.MapMetaData;
@@ -1068,6 +1069,10 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             {
                 MetaData md = getStack();
                 String vendorName = getAttr(attrs, "vendor-name");
+                if (StringUtils.isWhitespace(vendorName))
+                {
+                    throw new InvalidMetaDataException("044160", vendorName, getAttr(attrs, "key"), getAttr(attrs, "value"));
+                }
                 if (vendorName != null && vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                 {
                     md.addExtension(getAttr(attrs, "key"), getAttr(attrs, "value"));
