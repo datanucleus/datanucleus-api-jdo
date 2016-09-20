@@ -1106,7 +1106,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                             // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                             typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
@@ -1394,7 +1394,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                             // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                             typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
@@ -1543,7 +1543,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                             // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                             typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
@@ -1677,7 +1677,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                             // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                             typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
@@ -1880,7 +1880,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
-                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                         typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
                     }
 

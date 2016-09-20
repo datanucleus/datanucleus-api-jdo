@@ -32,35 +32,13 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
 
     AttributeConverter<X, Y> jdoConverter;
 
-    /** The member type. */
-    Class<X> memberType;
-
-    /** The datastore type. */
-    Class<Y> dbType;
-
     /**
      * Constructor for a JDO type converter, wrapping a javax.jdo.AttributeConverter.
      * @param conv The JDO AttributeConverter
-     * @param memberType The member type
-     * @param dbType The datastore type for this member
      */
-    public JDOTypeConverter(AttributeConverter<X, Y> conv, Class<X> memberType, Class<Y> dbType)
+    public JDOTypeConverter(AttributeConverter<X, Y> conv)
     {
         this.jdoConverter = conv;
-        this.dbType = dbType;
-        this.memberType = memberType;
-    }
-
-    // TODO Drop this. not needed now
-    public Class<X> getMemberClass()
-    {
-        return memberType;
-    }
-
-    // TODO Drop this. not needed now
-    public Class<Y> getDatastoreClass()
-    {
-        return dbType;
     }
 
     /* (non-Javadoc)
@@ -88,6 +66,6 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
 
     public String toString()
     {
-        return "JDOTypeConverter<" + memberType.getName() + "," + dbType.getName() + ">";
+        return "JDOTypeConverter for " + jdoConverter;
     }
 }

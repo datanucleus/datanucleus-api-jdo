@@ -778,7 +778,7 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(conv.getClass(), attrType, null);
 
         // Register the TypeConverter under the name of the AttributeConverter class
-        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
         TypeManager typeMgr = getInternal().getMetaDataManager().getNucleusContext().getTypeManager();
         typeMgr.registerConverter(conv.getClass().getName(), typeConv, attrType, dbType, false, null);
 

@@ -567,7 +567,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     {
                         // TODO Compare with typeName, should be the same (or inherited)
                         NucleusLogger.GENERAL.debug("Registering javaType=" + typeName + " as using converter with name=" + converterName + " conv=" + attrConv);
-                        JDOTypeConverter conv = new JDOTypeConverter(attrConv, attrType, dbType);
+                        JDOTypeConverter conv = new JDOTypeConverter(attrConv);
                         nucleusContext.getTypeManager().registerConverter(converterName, conv, attrType, dbType, true, attrType.getName());
                     }
                 }

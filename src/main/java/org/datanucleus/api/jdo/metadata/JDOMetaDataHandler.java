@@ -302,7 +302,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                 // Register the TypeConverter under the name of the AttributeConverter class
-                JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                 typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
             }
 
@@ -390,7 +390,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                 // Register the TypeConverter under the name of the AttributeConverter class
-                JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                 typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
             }
 
@@ -945,7 +945,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
-                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                         typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
@@ -986,7 +986,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
-                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                         typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
@@ -1028,7 +1028,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                         // Register the TypeConverter under the name of the AttributeConverter class
-                        JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
                         typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
