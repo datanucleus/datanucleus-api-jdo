@@ -1107,7 +1107,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                             // Register the TypeConverter under the name of the AttributeConverter class
                             JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
                         mmd.setTypeConverterName(converterCls.getName());
@@ -1395,7 +1395,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                             // Register the TypeConverter under the name of the AttributeConverter class
                             JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
                         elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
@@ -1544,7 +1544,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                             // Register the TypeConverter under the name of the AttributeConverter class
                             JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
                         keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
@@ -1678,7 +1678,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                             // Register the TypeConverter under the name of the AttributeConverter class
                             JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
                         valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
@@ -1881,7 +1881,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                        typeMgr.registerConverter(convertConverterCls.getName(), typeConv);
+                        typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
                     }
 
                     mmd.setTypeConverterName(convertConverterCls.getName());

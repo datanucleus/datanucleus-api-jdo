@@ -303,7 +303,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                 // Register the TypeConverter under the name of the AttributeConverter class
                 JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                typeMgr.registerConverter(converterAttr, typeConv);
+                typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
             }
 
             fmd.setTypeConverterName(converterAttr);
@@ -391,7 +391,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                 // Register the TypeConverter under the name of the AttributeConverter class
                 JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                typeMgr.registerConverter(converterAttr, typeConv);
+                typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
             }
 
             pmd.setTypeConverterName(converterAttr);
@@ -946,7 +946,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                        typeMgr.registerConverter(converterAttr, typeConv);
+                        typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
                     elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);
@@ -987,7 +987,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                        typeMgr.registerConverter(converterAttr, typeConv);
+                        typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
                     keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);
@@ -1029,7 +1029,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
 
                         // Register the TypeConverter under the name of the AttributeConverter class
                         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
-                        typeMgr.registerConverter(converterAttr, typeConv);
+                        typeMgr.registerConverter(converterAttr, typeConv, attrType, dbType, false, null);
                     }
 
                     valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterAttr);

@@ -378,7 +378,7 @@ public class ElementMetadataImpl extends AbstractMetadataImpl implements Element
         // Register the TypeConverter under the name of the AttributeConverter class
         JDOTypeConverter typeConv = new JDOTypeConverter(conv, attrType, dbType);
         TypeManager typeMgr = getInternal().getMetaDataManager().getNucleusContext().getTypeManager();
-        typeMgr.registerConverter(conv.getClass().getName(), typeConv);
+        typeMgr.registerConverter(conv.getClass().getName(), typeConv, attrType, dbType, false, null);
 
         getInternal().addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, conv.getClass().getName());
 
