@@ -161,7 +161,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Thread-specific state information (instances of {@link OperationInfo}) for the PM proxy.
+     * Thread-specific state information (instances of {@link OperationInfo}) for the PM proxy. TODO Change from Inheritable since this means we share the PM across threads!
      */
     private transient ThreadLocal<PersistenceManager> pmProxyThreadLocal = new InheritableThreadLocal<PersistenceManager>()
     {
