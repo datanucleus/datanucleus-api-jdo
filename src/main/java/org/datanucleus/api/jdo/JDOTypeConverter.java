@@ -51,11 +51,13 @@ public class JDOTypeConverter<X, Y> implements TypeConverter<X, Y>
         this.memberType = memberType;
     }
 
+    // TODO Drop this. not needed now
     public Class<X> getMemberClass()
     {
         return memberType;
     }
 
+    // TODO Drop this. not needed now
     public Class<Y> getDatastoreClass()
     {
         return dbType;
