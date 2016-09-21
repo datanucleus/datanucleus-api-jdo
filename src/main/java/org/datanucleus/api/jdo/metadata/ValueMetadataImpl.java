@@ -382,17 +382,33 @@ public class ValueMetadataImpl extends AbstractMetadataImpl implements ValueMeta
     @Override
     public Boolean getUseDefaultConversion()
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (getInternal().hasExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED))
+        {
+            String val = getInternal().getValueForExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED);
+            return Boolean.valueOf(val);
+        }
+        else if (getInternal().hasExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME))
+        {
+            return false;
+        }
+        return true;
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.metadata.ValueMetadata#setUseDefaultConversion(Boolean)
      */
     @Override
-    public ValueMetadata setUseDefaultConversion(Boolean disable)
+    public ValueMetadata setUseDefaultConversion(Boolean flag)
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (flag)
+        {
+            getInternal().addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
+        }
+        else
+        {
+            getInternal().removeExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED);
+        }
+
+        return this;
     }
 }

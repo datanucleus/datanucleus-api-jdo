@@ -1380,7 +1380,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (disableConversion)
                     {
-                        // TODO Specify this on the element?
+                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
                     else if (converterCls != null)
                     {
@@ -1529,7 +1529,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                     if (disableConversion)
                     {
-                        // TODO Specify this on the key?
+                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
                     else if (converterCls != null)
                     {
@@ -1663,7 +1663,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
                     if (disableConversion)
                     {
-                        // TODO Specify this on the value?
+                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
                     else if (converterCls != null)
                     {

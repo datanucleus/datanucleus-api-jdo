@@ -793,23 +793,33 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
     @Override
     public Boolean getUseDefaultConversion()
     {
-        return getInternal().isTypeConversionDisabled();
+        if (getInternal().hasExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED))
+        {
+            String val = getInternal().getValueForExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED);
+            return Boolean.valueOf(val);
+        }
+        else if (getInternal().hasExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME))
+        {
+            return false;
+        }
+        return true;
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.metadata.MemberMetadata#setUseDefaultConversion(Boolean)
      */
     @Override
-    public MemberMetadata setUseDefaultConversion(Boolean disable)
+    public MemberMetadata setUseDefaultConversion(Boolean flag)
     {
-        if (disable)
+        if (flag)
         {
-            getInternal().setTypeConverterDisabled();
+            getInternal().addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
         }
         else
         {
-            // TODO Support enabling after disable
+            getInternal().removeExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED);
         }
+
         return this;
     }
 }
