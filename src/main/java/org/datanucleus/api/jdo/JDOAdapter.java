@@ -144,6 +144,20 @@ public class JDOAdapter implements ApiAdapter
         return (getExecutionContext(pc) != null);
     }
 
+    /*public StateManager getStateManager(Object pc)
+    {
+        if (pc == null)
+        {
+            return null;
+        }
+
+        if (pc instanceof Persistable)
+        {
+            return ((Persistable)pc).dnGetStateManager();
+        }
+        return null;
+    }*/
+
     /**
      * Method to return the ExecutionContext (if any) associated with the passed object.
      * Supports persistable objects, and PersistenceManager.
