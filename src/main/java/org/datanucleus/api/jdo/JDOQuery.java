@@ -92,6 +92,7 @@ public class JDOQuery<T> implements Query<T>
 
     public void close()
     {
+        // TODO Support JDO spec handling of just calling closeAll()
         if (closed)
         {
             return;
