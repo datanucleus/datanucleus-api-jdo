@@ -751,9 +751,9 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             }
             if (!resources.hasMoreElements() && NucleusLogger.METADATA.isDebugEnabled())
             {
-                NucleusLogger.METADATA.debug(Localiser.msg("044049", 
-                    metadataFileExtension, pc_class.getName(), location));
+                NucleusLogger.METADATA.debug(Localiser.msg("044049", metadataFileExtension, pc_class.getName(), location));
             }
+
             while (resources.hasMoreElements())
             {
                 URL url = (URL) resources.nextElement();
@@ -901,6 +901,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             int separatorPosition = itemName.indexOf('.');
             if (separatorPosition < 0)
             {
+                // No dot, so just use top-level location(s)
                 if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
                 {
                     // "/com/package.jdo" (JDO 1.0.1)
@@ -920,7 +921,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
                     if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
                     {
-                        // "/com/xyz/package.jdo" (JDO 1.0.1)
+                        // "/com/xyz/package.jdo" (JDO 1.0.1+)
                         locations.add(PATH_SEPARATOR + name.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
                     }
                     if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_0_LOCATIONS)
@@ -936,7 +937,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         {
                             if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
                             {
-                                // "/com/xyz/uvw/package.jdo" (JDO 1.0.1)
+                                // "/com/xyz/uvw/package.jdo" (JDO 1.0.1+)
                                 locations.add(PATH_SEPARATOR + itemName.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
                             }
                         }
