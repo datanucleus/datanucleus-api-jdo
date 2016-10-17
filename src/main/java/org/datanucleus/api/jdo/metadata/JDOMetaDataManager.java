@@ -377,14 +377,14 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
             if (allowXML)
             {
-                // Search valid location for a file for this class and load all in the process
+                // Search valid location for a JDO XML definition (package.jdo etc) for this class and load all classes specified in the file
                 FileMetaData filemd = loadXMLMetaDataForClass(c, clr, null, getJDOFileSuffix(), MetadataFileType.JDO_FILE, true);
                 if (filemd != null)
                 {
                     // Class has had its metadata loaded
                     utilisedFileMetaData.add(filemd);
 
-                    // If not MetaData complete will also merge in annotations at populate stage
+                    // If not MetaData complete will also merge in annotations in populate()
 
                     // Retrieve the MetaData for the requested class
                     AbstractClassMetaData the_md = classMetaDataByClass.get(className);
@@ -395,7 +395,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
             if (allowAnnotations)
             {
-                // Check for annotations
+                // No JDO XML definition (package.jdo), so check for annotations. Note package-{mapping}.orm will be added later in populate().
                 FileMetaData annFilemd = loadAnnotationsForClass(c, clr, true, true);
                 if (annFilemd != null)
                 {
