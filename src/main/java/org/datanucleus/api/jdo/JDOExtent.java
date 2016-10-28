@@ -60,12 +60,18 @@ public class JDOExtent<E> implements Extent<E>
         }
 
         this.closeAll();
-        this.fetchPlan.clearGroups();
-        this.fetchPlan = null;
-        this.extent = null;
-        this.pm = null;
 
-        this.closed = true;
+        Boolean closeableQuery = extent.getExecutionContext().getBooleanProperty(JDOQuery.PROPERTY_CLOSEABLE_QUERY);
+        if (closeableQuery == Boolean.TRUE)
+        {
+            // User has requested a closeable Query, so release connection to PM and underlying query etc
+            this.fetchPlan.clearGroups();
+            this.fetchPlan = null;
+            this.extent = null;
+            this.pm = null;
+
+            this.closed = true;
+        }
     }
 
     /**

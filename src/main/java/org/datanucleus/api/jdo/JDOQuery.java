@@ -51,6 +51,8 @@ import org.datanucleus.util.Localiser;
  */
 public class JDOQuery<T> implements Query<T>
 {
+    public static final String PROPERTY_CLOSEABLE_QUERY = "datanucleus.closeableQuery";
+
     private static final long serialVersionUID = -204134873012573162L;
 
     public static final String JDOQL_QUERY_LANGUAGE = "javax.jdo.query.JDOQL";
@@ -92,24 +94,29 @@ public class JDOQuery<T> implements Query<T>
 
     public void close()
     {
-        // TODO Support JDO spec handling of just calling closeAll()
         if (closed)
         {
             return;
         }
 
         closeAll();
-        if (this.fetchPlan != null)
-        {
-            this.fetchPlan.clearGroups();
-            this.fetchPlan = null;
-        }
-        this.parameterValueByName = null;
-        this.parameterValues = null;
-        this.pm = null;
-        this.query = null;
 
-        closed = true;
+        Boolean closeableQuery = query.getExecutionContext().getBooleanProperty(PROPERTY_CLOSEABLE_QUERY);
+        if (closeableQuery == Boolean.TRUE)
+        {
+            // User has requested a closeable Query, so release connection to PM and underlying query etc
+            if (this.fetchPlan != null)
+            {
+                this.fetchPlan.clearGroups();
+                this.fetchPlan = null;
+            }
+            this.parameterValueByName = null;
+            this.parameterValues = null;
+            this.pm = null;
+            this.query = null;
+
+            this.closed = true;
+        }
     }
 
     /**

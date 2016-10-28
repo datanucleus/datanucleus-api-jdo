@@ -53,6 +53,7 @@ Contributors:
 
         <persistence-property name="datanucleus.allowListenerUpdateAfterInit" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
 
+        <persistence-property name="datanucleus.closeableQuery" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
         <persistence-property name="datanucleus.singletonPMFForName" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
     </extension>
 
