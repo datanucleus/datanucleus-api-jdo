@@ -51,7 +51,7 @@ import org.datanucleus.util.Localiser;
  */
 public class JDOQuery<T> implements Query<T>
 {
-    public static final String PROPERTY_CLOSEABLE_QUERY = "datanucleus.closeableQuery";
+    public static final String PROPERTY_CLOSEABLE_QUERY = "datanucleus.query.closeable";
 
     private static final long serialVersionUID = -204134873012573162L;
 
