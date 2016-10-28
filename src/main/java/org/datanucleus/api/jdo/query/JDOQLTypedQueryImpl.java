@@ -58,6 +58,7 @@ import javax.jdo.spi.JDOPermission;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.api.jdo.JDOFetchPlan;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
+import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
@@ -128,19 +129,25 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
 
         closeAll();
-        if (this.fetchPlan != null)
-        {
-            this.fetchPlan.clearGroups();
-            this.fetchPlan = null;
-        }
-        this.parameterExprByName = null;
-        this.parameterValuesByName = null;
-        this.ec = null;
-        this.pm = null;
-        this.internalQueries = null;
-        this.subqueries = null;
 
-        this.closed = true;
+        Boolean closeableQuery = ec.getBooleanProperty(JDOQuery.PROPERTY_CLOSEABLE_QUERY);
+        if (closeableQuery == Boolean.TRUE)
+        {
+            // User has requested a closeable Query, so release connection to PM and underlying query etc
+            if (this.fetchPlan != null)
+            {
+                this.fetchPlan.clearGroups();
+                this.fetchPlan = null;
+            }
+            this.parameterExprByName = null;
+            this.parameterValuesByName = null;
+            this.ec = null;
+            this.pm = null;
+            this.internalQueries = null;
+            this.subqueries = null;
+
+            this.closed = true;
+        }
     }
 
     /**
