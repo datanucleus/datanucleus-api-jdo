@@ -1091,7 +1091,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         mmd = new FieldMetaData(cmd, member.getName());
                     }
 
-                    if (disableConversion)
+                    if (disableConversion != null && disableConversion)
                     {
                         mmd.setTypeConverterDisabled();
                     }
@@ -1378,7 +1378,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementColumns[j]));
                         }
                     }
-                    if (disableConversion)
+                    if (disableConversion != null && disableConversion)
                     {
                         elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
@@ -1527,7 +1527,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
 
-                    if (disableConversion)
+                    if (disableConversion != null && disableConversion)
                     {
                         keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
@@ -1661,7 +1661,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
 
-                    if (disableConversion)
+                    if (disableConversion != null && disableConversion)
                     {
                         valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
