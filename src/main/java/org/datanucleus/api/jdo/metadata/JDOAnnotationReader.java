@@ -1992,15 +1992,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (elemmd != null)
                     {
-                        if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
-                        {
-                            EmbeddedMetaData embmd = new EmbeddedMetaData();
-                            elemmd.setEmbeddedMetaData(embmd);
-                        }
                         if (embeddedElementMembers != null)
                         {
                             // Add any embedded element mappings
                             EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
+                            if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
+                            {
+                                // Create EmbeddedMetaData for element since not existing
+                                embmd = elemmd.newEmbeddedMetaData();
+                            }
                             for (int j = 0; j < embeddedElementMembers.length; j++)
                             {
                                 // Add the metadata for the embedded element to the embedded metadata
@@ -2117,15 +2117,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (keymd != null)
                     {
-                        if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
-                        {
-                            EmbeddedMetaData embmd = new EmbeddedMetaData();
-                            keymd.setEmbeddedMetaData(embmd);
-                        }
                         if (embeddedKeyMembers != null)
                         {
                             // Add any embedded key mappings
                             EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
+                            if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
+                            {
+                                // Create EmbeddedMetaData for key since not existing
+                                embmd = keymd.newEmbeddedMetaData();
+                            }
                             for (int j = 0; j < embeddedKeyMembers.length; j++)
                             {
                                 // Add the metadata for the embedded key to the embedded metadata
@@ -2148,15 +2148,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                     if (valuemd != null)
                     {
-                        if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
-                        {
-                            EmbeddedMetaData embmd = new EmbeddedMetaData();
-                            valuemd.setEmbeddedMetaData(embmd);
-                        }
                         if (embeddedValueMembers != null)
                         {
                             // Add any embedded value mappings
                             EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
+                            if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
+                            {
+                                // Create EmbeddedMetaData for value since not existing
+                                embmd = valuemd.newEmbeddedMetaData();
+                            }
                             for (int j = 0; j < embeddedValueMembers.length; j++)
                             {
                                 // Add the metadata for the embedded value to the embedded metadata
