@@ -949,6 +949,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         {
             boolean primaryKey = false;
             boolean serialised = false;
+            boolean embeddedMember = false;
             boolean nonPersistentField = false;
             boolean transactionalField = false;
             String cacheable = null;
@@ -1696,8 +1697,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
                         valuemd.setEmbeddedMetaData(embmd);
                         embeddedValueMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedValueMembers til completion of this loop so we have the
-                        // value type
+                        // Delay addition of embeddedValueMembers til completion of this loop so we have the value type
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.ORDER))
@@ -1719,10 +1719,27 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.EMBEDDED))
                 {
+                    embeddedMember = true;
                     embeddedOwnerField = (String) annotationValues.get("ownerMember");
+                    if (StringUtils.isWhitespace(embeddedOwnerField))
+                    {
+                        embeddedOwnerField = null;
+                    }
                     embeddedNullIndicatorColumn = (String) annotationValues.get("nullIndicatorColumn");
+                    if (StringUtils.isWhitespace(embeddedNullIndicatorColumn))
+                    {
+                        embeddedNullIndicatorColumn = null;
+                    }
                     embeddedNullIndicatorValue = (String) annotationValues.get("nullIndicatorValue");
+                    if (StringUtils.isWhitespace(embeddedNullIndicatorValue))
+                    {
+                        embeddedNullIndicatorValue = null;
+                    }
                     embeddedMembers = (Persistent[]) annotationValues.get("members");
+                    if (embeddedMembers != null && embeddedMembers.length == 0)
+                    {
+                        embeddedMembers = null;
+                    }
                     // TODO Support discriminator
                 }
                 else if (annName.equals(JDOAnnotationUtils.INDEX))
@@ -1861,6 +1878,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     mmd.setSerialised(true);
                 }
+                if (embeddedMember)
+                {
+                    mmd.setEmbedded(true);
+                }
                 if (nonPersistentField)
                 {
                     mmd.setNotPersistent();
@@ -1888,26 +1909,29 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
 
                 // Add any embedded info
-                if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null)
+                if (embeddedMember)
                 {
-                    EmbeddedMetaData embmd = new EmbeddedMetaData();
-                    embmd.setOwnerMember(embeddedOwnerField);
-                    embmd.setNullIndicatorColumn(embeddedNullIndicatorColumn);
-                    embmd.setNullIndicatorValue(embeddedNullIndicatorValue);
-                    mmd.setEmbeddedMetaData(embmd);
-                    if (embeddedMembers != null && embeddedMembers.length > 0)
+                    if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null)
                     {
-                        for (int j = 0; j < embeddedMembers.length; j++)
+                        EmbeddedMetaData embmd = new EmbeddedMetaData();
+                        embmd.setOwnerMember(embeddedOwnerField);
+                        embmd.setNullIndicatorColumn(embeddedNullIndicatorColumn);
+                        embmd.setNullIndicatorValue(embeddedNullIndicatorValue);
+                        mmd.setEmbeddedMetaData(embmd);
+                        if (embeddedMembers != null && embeddedMembers.length > 0)
                         {
-                            // Add the metadata for the embedded field/property to the embedded metadata
-                            String memberName = embeddedMembers[j].name();
-                            if (memberName.indexOf('.') > 0)
+                            for (int j = 0; j < embeddedMembers.length; j++)
                             {
-                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                // Add the metadata for the embedded field/property to the embedded metadata
+                                String memberName = embeddedMembers[j].name();
+                                if (memberName.indexOf('.') > 0)
+                                {
+                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                                }
+                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedMembers[j],
+                                    isMemberOfClassAField(member.getType(), memberName));
+                                embmd.addMember(embfmd);
                             }
-                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedMembers[j],
-                                isMemberOfClassAField(member.getType(), memberName));
-                            embmd.addMember(embfmd);
                         }
                     }
                 }
