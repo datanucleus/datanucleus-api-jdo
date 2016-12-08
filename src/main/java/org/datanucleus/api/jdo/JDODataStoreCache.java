@@ -93,18 +93,6 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
      * Evict the parameter instances from the second-level cache.
      * @param pcClass the class of instances to evict
      * @param subclasses if true, evict instances of subclasses also
-     * @deprecated
-     */
-    @Deprecated
-    public void evictAll(Class pcClass, boolean subclasses)
-    {
-        cache.evictAll(pcClass, subclasses);
-    }
-
-    /**
-     * Evict the parameter instances from the second-level cache.
-     * @param pcClass the class of instances to evict
-     * @param subclasses if true, evict instances of subclasses also
      */
     public void evictAll(boolean subclasses, Class pcClass)
     {
@@ -136,18 +124,6 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
     public void pinAll(Object... oids)
     {
         cache.pinAll(oids);
-    }
-
-    /**
-     * Pin instances in the second-level cache.
-     * @param pcClass the class of instances to pin
-     * @param subclasses if true, pin instances of subclasses also
-     * @deprecated
-     */
-    @Deprecated
-    public void pinAll(Class pcClass, boolean subclasses)
-    {
-        cache.pinAll(pcClass, subclasses);
     }
 
     /**
@@ -185,18 +161,6 @@ public class JDODataStoreCache implements DataStoreCache, Serializable
     public void unpinAll(Object... oids)
     {
         cache.unpinAll(oids);
-    }
-
-    /**
-     * Unpin instances from the second-level cache.
-     * @param pcClass the class of instances to unpin
-     * @param subclasses if true, unpin instances of subclasses also
-     * @deprecated
-     */
-    @Deprecated
-    public void unpinAll(Class pcClass, boolean subclasses)
-    {
-        cache.unpinAll(pcClass, subclasses);
     }
 
     /**
