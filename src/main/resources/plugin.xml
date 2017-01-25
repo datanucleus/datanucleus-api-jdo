@@ -171,6 +171,7 @@ Contributors:
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateTimestamp" handler="org.datanucleus.api.jdo.annotations.CreateTimestampHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateTimestamp" handler="org.datanucleus.api.jdo.annotations.UpdateTimestampHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.MultiTenant" handler="org.datanucleus.api.jdo.annotations.MultiTenantHandler"/>
+        <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.SoftDelete" handler="org.datanucleus.api.jdo.annotations.SoftDeleteHandler"/>
     </extension>
 
     <!-- EXTENSION ANNOTATIONS -->
