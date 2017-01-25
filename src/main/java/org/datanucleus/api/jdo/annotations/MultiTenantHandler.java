@@ -25,7 +25,7 @@ import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 
 /**
- * Handler for the {@link MultiTenant} annotation when applied to a field/property of a persistable class, or when applied to a class itself.
+ * Handler for the {@link MultiTenant} annotation when applied to a class.
  */
 public class MultiTenantHandler implements ClassAnnotationHandler
 {
