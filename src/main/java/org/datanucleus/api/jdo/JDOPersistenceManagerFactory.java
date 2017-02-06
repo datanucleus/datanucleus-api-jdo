@@ -1471,7 +1471,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public void setNontransactionalRead(boolean flag)
     {
         assertConfigurable();
-        getConfiguration().setProperty(PropertyNames.PROPERTY_NONTX_READ, flag ? Boolean.TRUE : Boolean.FALSE);
+        getConfiguration().setProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_READ, flag ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
@@ -1482,7 +1482,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public void setNontransactionalWrite(boolean flag)
     {
         assertConfigurable();
-        getConfiguration().setProperty(PropertyNames.PROPERTY_NONTX_WRITE, flag ? Boolean.TRUE : Boolean.FALSE);
+        getConfiguration().setProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_WRITE, flag ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
@@ -1493,7 +1493,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public void setNontransactionalWriteAutoCommit(boolean flag)
     {
         assertConfigurable();
-        getConfiguration().setProperty(PropertyNames.PROPERTY_NONTX_ATOMIC, flag ? Boolean.TRUE : Boolean.FALSE);
+        getConfiguration().setProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_ATOMIC, flag ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
@@ -1798,7 +1798,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public boolean getNontransactionalRead()
     {
-        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_NONTX_READ);
+        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_READ);
     }
 
     /**
@@ -1808,7 +1808,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public boolean getNontransactionalWrite()
     {
-        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_NONTX_WRITE);
+        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_WRITE);
     }
 
     /**
@@ -1818,7 +1818,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
      */
     public boolean getNontransactionalWriteAutoCommit()
     {
-        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_NONTX_ATOMIC);
+        return getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_TRANSACTION_NONTX_ATOMIC);
     }
 
     /**
