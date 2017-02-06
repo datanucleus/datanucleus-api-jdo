@@ -397,6 +397,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2_NAME, pumd.getNonJtaDataSource());
             }
+            // TODO If no primary specified in properties and no JtaDataSource but has nonJtaDataSource then use nonJta for primary
         }
 
         // Initialise the context with all properties
