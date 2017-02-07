@@ -371,6 +371,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         {
             props.putAll(overrideProps);
         }
+
+        // Derive transaction type
         if (!props.containsKey(PropertyNames.PROPERTY_TRANSACTION_TYPE) && !props.containsKey(PROPERTY_JDO_TRANSACTION_TYPE))
         {
             // Default to RESOURCE_LOCAL txns
@@ -387,17 +389,27 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 props.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
             }
         }
+
+        // Convert persistence-unit data-sources into internal connectionFactory names
         if (pumd != null)
         {
             if (pumd.getJtaDataSource() != null)
             {
+                // JTA defined, so use that as primary, and any non-JTA as secondary
                 props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY_NAME, pumd.getJtaDataSource());
+                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
+                if (pumd.getNonJtaDataSource() != null)
+                {
+                    props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2_NAME, pumd.getNonJtaDataSource());
+                    props.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.RESOURCE_LOCAL.toString());
+                }
             }
-            if (pumd.getNonJtaDataSource() != null)
+            else if (pumd.getNonJtaDataSource() != null)
             {
-                props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2_NAME, pumd.getNonJtaDataSource());
+                // No JTA defined, so use the non-JTA as primary
+                props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY_NAME, pumd.getNonJtaDataSource());
+                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.RESOURCE_LOCAL.toString());
             }
-            // TODO If no primary specified in properties and no JtaDataSource but has nonJtaDataSource then use nonJta for primary
         }
 
         // Initialise the context with all properties
