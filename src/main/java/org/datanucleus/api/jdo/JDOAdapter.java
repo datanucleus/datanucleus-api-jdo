@@ -494,8 +494,7 @@ public class JDOAdapter implements ApiAdapter
             if (!Modifier.isStatic(fieldsInPkClass[i].getModifiers()))
             {
                 // All non-static fields must be serializable
-                if (!fieldsInPkClass[i].getType().isPrimitive() &&
-                    !(Serializable.class).isAssignableFrom(fieldsInPkClass[i].getType()))
+                if (!fieldsInPkClass[i].getType().isPrimitive() && !(Serializable.class).isAssignableFrom(fieldsInPkClass[i].getType()))
                 {
                     throw new InvalidPrimaryKeyException("019009", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
@@ -506,52 +505,57 @@ public class JDOAdapter implements ApiAdapter
                     throw new InvalidPrimaryKeyException("019010", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
-                // non-static fields of objectid-class include
-                // persistence-capable object field
-                AbstractMemberMetaData fieldInPcClass = cmd.getMetaDataForMember(fieldsInPkClass[i].getName());
-                boolean foundField = false;
-                if (fieldInPcClass == null)
+                if (fieldsInPkClass[i].getName().equals("targetClassName"))
                 {
-                    throw new InvalidPrimaryKeyException("019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
+                    // Ignore any field named "targetClassName"
                 }
-
-                // check if the field in objectid-class has the same type as the
-                // Type declared in the persistable class
-                if (fieldInPcClass.getTypeName().equals(fieldsInPkClass[i].getType().getName()))
+                else
                 {
-                    foundField = true;
-                }
+                    // Check if a non-static field of objectid-class is present in the Persistable class
+                    AbstractMemberMetaData fieldInPcClass = cmd.getMetaDataForMember(fieldsInPkClass[i].getName());
+                    boolean foundField = false;
+                    if (fieldInPcClass == null)
+                    {
+                        throw new InvalidPrimaryKeyException("019011", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
+                    }
 
-                // Check for primary key field that is PC (Compound Identity - aka Identifying Relations)
-                if (!foundField)
-                {
-                    String fieldTypePkClass = fieldsInPkClass[i].getType().getName();
-                    AbstractClassMetaData refCmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
-                    if (refCmd == null)
+                    // check if the field in objectid-class has the same type as the type declared in the persistable class
+                    if (fieldInPcClass.getTypeName().equals(fieldsInPkClass[i].getType().getName()))
+                    {
+                        foundField = true;
+                    }
+
+                    // Check for primary key field that is PC (Compound Identity - aka Identifying Relations)
+                    if (!foundField)
+                    {
+                        String fieldTypePkClass = fieldsInPkClass[i].getType().getName();
+                        AbstractClassMetaData refCmd = mmgr.getMetaDataForClassInternal(fieldInPcClass.getType(), clr);
+                        if (refCmd == null)
+                        {
+                            throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
+                                fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
+                        }
+                        if (refCmd.getObjectidClass() == null && IdentityUtils.isSingleFieldIdentityClass(fieldTypePkClass))
+                        {
+                            // Single Field Identity
+                            throw new InvalidPrimaryKeyException("019014", cmd.getFullClassName(), pkClass.getName(),
+                                fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getFullClassName());
+                        }
+                        if (!fieldTypePkClass.equals(refCmd.getObjectidClass()))
+                        {
+                            throw new InvalidPrimaryKeyException("019013", cmd.getFullClassName(), pkClass.getName(),
+                                fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getObjectidClass());
+                        }
+                        foundField=true;
+                    }
+                    if (!foundField)
                     {
                         throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
                             fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
                     }
-                    if (refCmd.getObjectidClass() == null && IdentityUtils.isSingleFieldIdentityClass(fieldTypePkClass))
-                    {
-                        // Single Field Identity
-                        throw new InvalidPrimaryKeyException("019014", cmd.getFullClassName(), pkClass.getName(),
-                            fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getFullClassName());
-                    }
-                    if (!fieldTypePkClass.equals(refCmd.getObjectidClass()))
-                    {
-                        throw new InvalidPrimaryKeyException("019013", cmd.getFullClassName(), pkClass.getName(),
-                            fieldsInPkClass[i].getName(), fieldTypePkClass, refCmd.getObjectidClass());
-                    }
-                    foundField=true;
-                }
-                if (!foundField)
-                {
-                    throw new InvalidPrimaryKeyException("019012", cmd.getFullClassName(), pkClass.getName(),
-                        fieldsInPkClass[i].getName(), fieldInPcClass.getType().getName());
-                }
 
-                noOfPkFields++;
+                    noOfPkFields++;
+                }
             }
         }
 
