@@ -1710,7 +1710,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 // Convert to DN own internal types
                 theId = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
             }
-            return ec.findObject(theId, validate, validate, null);
+            return ec.findObjectById(theId, validate);
         }
         catch (NucleusException ne)
         {
@@ -1767,7 +1767,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             }
         }
 
-        return ec.findObjects(theOids, validate);
+        return ec.findObjectsById(theOids, validate);
     }
 
     /**
@@ -1822,7 +1822,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             oidArray[j++] = id;
         }
 
-        Object[] objs = ec.findObjects(oidArray, validate);
+        Object[] objs = ec.findObjectsById(oidArray, validate);
 
         Collection objects = new ArrayList(oids.size());
         for (int i=0;i<objs.length;i++)
