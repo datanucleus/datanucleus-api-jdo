@@ -1710,7 +1710,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 // Convert to DN own internal types
                 theId = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
             }
-            return ec.findObjectById(theId, validate);
+            return ec.findObject(theId, validate);
         }
         catch (NucleusException ne)
         {
@@ -1720,15 +1720,22 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     }
 
     /**
-     * Convenience method that exactly matches the behavior of calling 
-     * pm.getObjectById (pm.newObjectIdInstance (cls, key), true).
+     * Method to look up the instance of the given type with the given key.
      * @param cls Class of the persistable
      * @param key Value of the key field for SingleFieldIdentity, or the string value of the key otherwise
      * @return The object for this id.
      */
     public <T> T getObjectById(Class<T> cls, Object key)
     {
-        return (T) getObjectById(newObjectIdInstance (cls, key), true);
+        try
+        {
+            return ec.findObject(cls, key);
+        }
+        catch (NucleusException ne)
+        {
+            // Convert any DataNucleus exceptions into what JDO expects
+            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+        }
     }
 
     /**
