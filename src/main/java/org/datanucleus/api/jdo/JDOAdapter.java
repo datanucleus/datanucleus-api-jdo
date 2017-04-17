@@ -37,10 +37,7 @@ import org.datanucleus.ExecutionContext;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.ApiAdapter;
 import org.datanucleus.api.jdo.state.LifeCycleStateFactory;
-import org.datanucleus.enhancement.Detachable;
 import org.datanucleus.enhancement.Persistable;
-import org.datanucleus.enhancement.Persistable.ObjectIdFieldConsumer;
-import org.datanucleus.enhancement.StateManager;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -137,29 +134,6 @@ public class JDOAdapter implements ApiAdapter
     // ------------------------------ Object Lifecycle --------------------------------
 
     /**
-     * Whether the provided object is currently managed (has an ExecutionContext).
-     * @return Whether it is managed
-     */
-    public boolean isManaged(Object pc)
-    {
-        return (getExecutionContext(pc) != null);
-    }
-
-    public StateManager getStateManager(Object pc)
-    {
-        if (pc == null)
-        {
-            return null;
-        }
-
-        if (pc instanceof Persistable)
-        {
-            return ((Persistable)pc).dnGetStateManager();
-        }
-        return null;
-    }
-
-    /**
      * Method to return the ExecutionContext (if any) associated with the passed object.
      * Supports persistable objects, and PersistenceManager.
      * @param obj The object
@@ -195,111 +169,6 @@ public class JDOAdapter implements ApiAdapter
     }
 
     /**
-     * Accessor for whether the passed object is persistent.
-     * @param obj The object
-     * @return Whether it is persistent
-     */
-    public boolean isPersistent(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsPersistent() : false;
-    }
-
-    /**
-     * Accessor for whether the passed object is new.
-     * @param obj The object
-     * @return Whether it is new
-     */
-    public boolean isNew(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsNew() : false;
-    }
-
-    /**
-     * Accessor for whether the passed object is dirty.
-     * @param obj The object
-     * @return Whether it is dirty
-     */
-    public boolean isDirty(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsDirty() : false;
-    }
-
-    /**
-     * Accessor for whether the passed object is deleted.
-     * @param obj The object
-     * @return Whether it is deleted
-     */
-    public boolean isDeleted(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsDeleted() : false;
-    }
-
-    /**
-     * Accessor for whether the passed object is detached.
-     * @param obj The object
-     * @return Whether it is detached
-     */
-    public boolean isDetached(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsDetached() : false;
-    }
-
-    /**
-     * Accessor for whether the passed object is transactional.
-     * @param obj The object
-     * @return Whether it is transactional
-     */
-    public boolean isTransactional(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnIsTransactional() : false;
-    }
-
-    /**
-     * Method to return if the passed object is persistable using this API.
-     * Returns whether the object is an instance of persistable.
-     * @param obj The object
-     * @return Whether it is persistable
-     */
-    public boolean isPersistable(Object obj)
-    {
-        if (obj == null)
-        {
-            return false;
-        }
-        return (obj instanceof Persistable);
-    }
-
-    /**
-     * Utility method to check if the specified class is of a type that can be persisted for this API.
-     * Checks that it implements persistable.
-     * @param cls The class to check
-     * @return Whether the class is persistable
-     */
-    public boolean isPersistable(Class cls)
-    {
-        if (cls == null)
-        {
-            return false;
-        }
-        return (Persistable.class.isAssignableFrom(cls));
-    }
-
-    /**
-     * Method to return if the passed object is detachable using this API.
-     * Returns whether the object is an instance of javax.jdo.spi.Detachable.
-     * @param obj The object
-     * @return Whether it is detachable
-     */
-    public boolean isDetachable(Object obj)
-    {
-        if (obj == null)
-        {
-            return false;
-        }
-        return (obj instanceof Detachable);
-    }
-
-    /**
      * Accessor for the object state.
      * @param obj Object
      * @return The state ("persistent-clean", "detached-dirty" etc)
@@ -313,38 +182,7 @@ public class JDOAdapter implements ApiAdapter
         return JDOHelper.getObjectState(obj).toString();
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#makeDirty(java.lang.Object, java.lang.String)
-     */
-    public void makeDirty(Object obj, String member)
-    {
-        ((Persistable)obj).dnMakeDirty(member);
-    }
-
     // ------------------------------ Object Identity  --------------------------------
-
-    /**
-     * Method to return the object identity for the passed persistable object.
-     * Returns null if it is not persistable, or has no identity.
-     * @param obj The object
-     * @return The identity
-     */
-    public Object getIdForObject(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnGetObjectId() : null;
-
-    }
-
-    /**
-     * Method to return the object version for the passed persistable object.
-     * Returns null if it is not persistable, or not versioned.
-     * @param obj The object
-     * @return The version
-     */
-    public Object getVersionForObject(Object obj)
-    {
-        return obj instanceof Persistable ? ((Persistable)obj).dnGetVersion() : null;
-    }
 
     /**
      * Utility to check if a primary-key class is valid.
@@ -692,10 +530,5 @@ public class JDOAdapter implements ApiAdapter
     public RuntimeException getApiExceptionForNucleusException(NucleusException ne)
     {
         return NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
-    }
-
-    public void copyKeyFieldsFromIdToObject(Object pc, ObjectIdFieldConsumer fm, Object id)
-    {
-        ((Persistable)pc).dnCopyKeyFieldsFromObjectId(fm, id);
     }
 }
