@@ -49,7 +49,6 @@ import org.datanucleus.ClassNameConstants;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.api.jdo.exceptions.ClassNotPersistenceCapableException;
 import org.datanucleus.enhancement.Persistable;
-import org.datanucleus.enhancement.StateManager;
 import org.datanucleus.exceptions.ClassNotPersistableException;
 import org.datanucleus.exceptions.DatastoreReadOnlyException;
 import org.datanucleus.exceptions.NucleusCanRetryException;
@@ -322,7 +321,7 @@ public class NucleusJDOHelper extends JDOHelper
 
             // Temporarily attach a StateManager to access the detached field information
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.dnReplaceStateManager((StateManager) op);
+            pc.dnReplaceStateManager(op);
             op.retrieveDetachState(op);
             String[] dirtyFieldNames = op.getDirtyFieldNames();
             pc.dnReplaceStateManager(null);
@@ -358,7 +357,7 @@ public class NucleusJDOHelper extends JDOHelper
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.dnReplaceStateManager((StateManager) op);
+            pc.dnReplaceStateManager(op);
             op.retrieveDetachState(op);
             String[] loadedFieldNames = op.getLoadedFieldNames();
             pc.dnReplaceStateManager(null);
@@ -395,7 +394,7 @@ public class NucleusJDOHelper extends JDOHelper
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.dnReplaceStateManager((StateManager)op);
+            pc.dnReplaceStateManager(op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
             boolean loaded = op.isFieldLoaded(position);
@@ -434,7 +433,7 @@ public class NucleusJDOHelper extends JDOHelper
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
             ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, getObjectId(pc), null);
-            pc.dnReplaceStateManager((StateManager)op);
+            pc.dnReplaceStateManager(op);
             op.retrieveDetachState(op);
             int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
             boolean[] dirtyFieldNumbers = op.getDirtyFields();
