@@ -959,12 +959,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             String serializedElement = null;
             String dependentElement = null;
 
-            Class keyType = null;
+            Class[] keyTypes = null;
             String embeddedKey = null;
             String serializedKey = null;
             String dependentKey = null;
 
-            Class valueType = null;
+            Class[] valueTypes = null;
             String embeddedValue = null;
             String serializedValue = null;
             String dependentValue = null;
@@ -1436,12 +1436,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.KEY))
                 {
                     // Key of a Map
-                    Class[] keyTypes = (Class[]) annotationValues.get("types");
-                    if (keyTypes != null && keyTypes.length > 0)
-                    {
-                        // TODO Support more than 1 value
-                        keyType = keyTypes[0];
-                    }
+                    keyTypes = (Class[]) annotationValues.get("types");
                     embeddedKey = (String) annotationValues.get("embedded");
                     serializedKey = (String) annotationValues.get("serialized");
                     dependentKey = (String) annotationValues.get("dependent");
@@ -1570,12 +1565,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (annName.equals(JDOAnnotationUtils.VALUE))
                 {
                     // Value of a Map
-                    Class[] valueTypes = (Class[]) annotationValues.get("types");
-                    if (valueTypes != null && valueTypes.length > 0)
-                    {
-                        // TODO Support more than 1 value
-                        valueType = valueTypes[0];
-                    }
+                    valueTypes = (Class[]) annotationValues.get("types");
                     embeddedValue = (String) annotationValues.get("embedded");
                     serializedValue = (String) annotationValues.get("serialized");
                     dependentValue = (String) annotationValues.get("dependent");
@@ -1970,7 +1960,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     contmd = new CollectionMetaData();
+                    contmd.setParent(mmd);
                     CollectionMetaData collmd = (CollectionMetaData) contmd;
+
                     collmd.setElementType(elementTypeStr.toString());
                     if (!StringUtils.isWhitespace(embeddedElement))
                     {
@@ -2038,7 +2030,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     contmd = new ArrayMetaData();
+                    contmd.setParent(mmd);
                     ArrayMetaData arrmd = (ArrayMetaData) contmd;
+
                     arrmd.setElementType(elementTypeStr.toString());
                     if (!StringUtils.isWhitespace(embeddedElement))
                     {
@@ -2056,10 +2050,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 else if (contmd instanceof MapMetaData)
                 {
                     Class mapKeyType = null;
-                    if (keyType != null && keyType != void.class)
+                    if (keyTypes != null && keyTypes.length > 0 && keyTypes[0] != void.class)
                     {
-                        // User-specified key type
-                        mapKeyType = keyType;
+                        // User-specified key type TODO Support multiple keys (interface implementations)
+                        mapKeyType = keyTypes[0];
                     }
                     else
                     {
@@ -2068,10 +2062,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     Class mapValueType = null;
-                    if (valueType != null && valueType != void.class)
+                    if (valueTypes != null && valueTypes.length > 0 && valueTypes[0] != void.class)
                     {
-                        // User-specified value type
-                        mapValueType = valueType;
+                        // User-specified value type TODO Support multiple values (interface implementations)
+                        mapValueType = valueTypes[0];
                     }
                     else
                     {
@@ -2080,6 +2074,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
 
                     contmd = new MapMetaData();
+                    contmd.setParent(mmd);
                     MapMetaData mapmd = (MapMetaData) contmd;
 
                     mapmd.setKeyType((mapKeyType != null ? mapKeyType.getName() : null));

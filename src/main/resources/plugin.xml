@@ -182,5 +182,6 @@ Contributors:
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.SharedRelation" handler="org.datanucleus.api.jdo.annotations.SharedRelationHandler"/>
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateTimestamp" handler="org.datanucleus.api.jdo.annotations.CreateTimestampHandler"/>
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateTimestamp" handler="org.datanucleus.api.jdo.annotations.UpdateTimestampHandler"/>
+        <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.ComparatorClass" handler="org.datanucleus.api.jdo.annotations.ComparatorClassHandler"/>
     </extension>
 </plugin>
