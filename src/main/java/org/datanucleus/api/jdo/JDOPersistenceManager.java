@@ -62,6 +62,7 @@ import javax.jdo.datastore.Sequence;
 import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.listener.InstanceLifecycleListener;
 
+import org.datanucleus.BeanValidatorHandler;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.FetchGroup;
@@ -88,7 +89,6 @@ import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
-import org.datanucleus.state.CallbackHandler;
 import org.datanucleus.store.NucleusConnection;
 import org.datanucleus.store.NucleusSequence;
 import org.datanucleus.store.StoreManager;
@@ -142,7 +142,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         this.fetchPlan = new JDOFetchPlan(ec.getFetchPlan());
         this.jdotx = new JDOTransaction(this, ec.getTransaction());
 
-        CallbackHandler beanValidator = pmf.getNucleusContext().getValidationHandler(ec);
+        BeanValidatorHandler beanValidator = pmf.getNucleusContext().getValidationHandler(ec);
         if (beanValidator != null)
         {
             ec.getCallbackHandler().setValidationListener(beanValidator);
