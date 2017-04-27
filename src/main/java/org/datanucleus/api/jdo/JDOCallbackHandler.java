@@ -41,6 +41,7 @@ import javax.jdo.listener.LoadLifecycleListener;
 import javax.jdo.listener.StoreCallback;
 import javax.jdo.listener.StoreLifecycleListener;
 
+import org.datanucleus.BeanValidationHandler;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.NucleusContext;
 import org.datanucleus.state.CallbackHandler;
@@ -58,14 +59,14 @@ public class JDOCallbackHandler implements CallbackHandler
 
     private List<LifecycleListenerForClass> listenersWorkingCopy = null;
 
-    CallbackHandler beanValidationHandler;
+    BeanValidationHandler beanValidationHandler;
 
     public JDOCallbackHandler(NucleusContext nucleusCtx)
     {
         this.nucleusCtx = nucleusCtx;
     }
 
-    public void setValidationListener(CallbackHandler handler)
+    public void setBeanValidationHandler(BeanValidationHandler handler)
     {
         beanValidationHandler = handler;
     }
