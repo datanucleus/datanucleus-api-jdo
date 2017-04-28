@@ -43,7 +43,7 @@ import javax.jdo.listener.StoreLifecycleListener;
 
 import org.datanucleus.BeanValidationHandler;
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.NucleusContext;
+import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.state.CallbackHandler;
 import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.util.Localiser;
@@ -53,7 +53,7 @@ import org.datanucleus.util.Localiser;
  */
 public class JDOCallbackHandler implements CallbackHandler
 {
-    NucleusContext nucleusCtx;
+    PersistenceNucleusContext nucleusCtx;
 
     private final Map<InstanceLifecycleListener, LifecycleListenerForClass> listeners = new IdentityHashMap<InstanceLifecycleListener, LifecycleListenerForClass>(1);
 
@@ -61,7 +61,7 @@ public class JDOCallbackHandler implements CallbackHandler
 
     BeanValidationHandler beanValidationHandler;
 
-    public JDOCallbackHandler(NucleusContext nucleusCtx)
+    public JDOCallbackHandler(PersistenceNucleusContext nucleusCtx)
     {
         this.nucleusCtx = nucleusCtx;
     }
