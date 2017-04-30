@@ -298,6 +298,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public T executeUnique()
     {
+        query.setUnique(true);
         if (query.getResult() != null)
         {
             throw new JDOUserException("Cannot call executeXXX method when query has result set to " + query.getResult() + ". Use executeResultUnique() instead");
@@ -325,6 +326,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public <R> R executeResultUnique(Class<R> resultCls)
     {
+        query.setUnique(true);
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -352,6 +354,7 @@ public class JDOQuery<T> implements Query<T>
     @Override
     public Object executeResultUnique()
     {
+        query.setUnique(true);
         if (query.getResult() == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
