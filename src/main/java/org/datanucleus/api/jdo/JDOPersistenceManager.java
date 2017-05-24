@@ -1117,7 +1117,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         ec.assertClassPersistable(obj.getClass());
         try
         {
-            return ec.detachObjectCopy(obj, state);
+            return ec.detachObjectCopy(state, obj);
         }
         catch (NucleusException ne)
         {
