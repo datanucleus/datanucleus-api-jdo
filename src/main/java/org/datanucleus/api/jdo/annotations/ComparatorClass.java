@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Extension annotation providing for specifying a comparator class against a collection.
  */
-@Target({ElementType.FIELD, ElementType.METHOD}) 
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD}) 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ComparatorClass
 {
