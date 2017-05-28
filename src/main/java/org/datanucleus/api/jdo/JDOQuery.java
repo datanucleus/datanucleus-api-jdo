@@ -367,10 +367,11 @@ public class JDOQuery<T> implements Query<T>
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
         assertIsOpen();
-        if (query.getResult() == null)
+        if (resultCls == null)
         {
-            throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
+            throw new JDOUserException("Result Class must be specified");
         }
+
         this.query.setResultClass(resultCls);
         return (List<R>) executeInternal();
     }
@@ -383,10 +384,11 @@ public class JDOQuery<T> implements Query<T>
     {
         assertIsOpen();
         query.setUnique(true);
-        if (query.getResult() == null)
+        if (resultCls == null)
         {
-            throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
+            throw new JDOUserException("Result Class must be specified");
         }
+
         this.query.setResultClass(resultCls);
         return (R) executeInternal();
     }
@@ -402,6 +404,7 @@ public class JDOQuery<T> implements Query<T>
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
         }
+
         return (List<Object>) executeInternal();
     }
 
@@ -417,6 +420,7 @@ public class JDOQuery<T> implements Query<T>
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
         }
+
         return executeInternal();
     }
 
