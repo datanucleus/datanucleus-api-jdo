@@ -1845,6 +1845,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * @param fieldNames Name(s) of the field(s) making up the unique key
      * @param fieldValues Value(s) for the field(s) making up the unique key
      * @return The object meeting this selection.
+     * @param <T> Type of the object
      */
     public <T> T getObjectByUnique(Class<T> cls, String[] fieldNames, Object[] fieldValues)
     {
