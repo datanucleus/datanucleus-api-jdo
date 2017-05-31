@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Extension annotation providing for marking a relation as "shared" and adding a distinguisher column.
  */
-@Target({ElementType.FIELD, ElementType.METHOD}) 
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD}) 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SharedRelation
 {
