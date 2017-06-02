@@ -116,7 +116,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         super(mgr);
 
         // We support JDO and DataNucleus annotations in this reader.
-        setSupportedAnnotationPackages(new String[]{"javax.jdo", "org.datanucleus"});
+        setSupportedAnnotationPackages(new String[]{"javax.jdo", "org.datanucleus.api.jdo.annotations"});
     }
 
     /**
