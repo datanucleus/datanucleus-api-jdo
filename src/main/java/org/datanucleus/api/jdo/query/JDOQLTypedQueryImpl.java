@@ -1126,17 +1126,17 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         // Validate the defined parameters and the provided values
         if (numParams != numValues)
         {
-            throw new JDOUserException("Query has " + numParams + " but " +
-                numValues + " values have been provided");
+            throw new JDOUserException("Query has " + numParams + " but " + numValues + " values have been provided");
         }
 
-        Iterator<String> paramIter = parameterExprByName.keySet().iterator();
-        while (paramIter.hasNext())
+        if (parameterExprByName != null && !parameterExprByName.isEmpty())
         {
-            String paramName = paramIter.next();
-            if (!parameterValuesByName.containsKey(paramName))
+            for (String paramName : parameterExprByName.keySet())
             {
-                throw new JDOUserException("Query has a parameter " + paramName + " defined but no value supplied");
+                if (!parameterValuesByName.containsKey(paramName))
+                {
+                    throw new JDOUserException("Query has a parameter " + paramName + " defined but no value supplied");
+                }
             }
         }
     }
@@ -1165,10 +1165,6 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             valExpr = new StringExpressionImpl(literalExpr);
         }
-        else if (val instanceof Number)
-        {
-            valExpr = new NumericExpressionImpl(literalExpr);
-        }
         else if (val instanceof java.sql.Time)
         {
             valExpr = new TimeExpressionImpl(literalExpr);
@@ -1188,6 +1184,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         else if (val instanceof Byte)
         {
             valExpr = new ByteExpressionImpl(literalExpr);
+        }
+        else if (val instanceof Number)
+        {
+            valExpr = new NumericExpressionImpl(literalExpr);
         }
         else if (val instanceof Enum)
         {
