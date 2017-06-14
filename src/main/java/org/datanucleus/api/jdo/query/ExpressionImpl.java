@@ -143,9 +143,7 @@ public class ExpressionImpl<T> implements Expression<T>
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr);
-        return new BooleanExpressionImpl(queryExpr);
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -156,9 +154,7 @@ public class ExpressionImpl<T> implements Expression<T>
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr);
-        return new BooleanExpressionImpl(queryExpr);
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -169,9 +165,7 @@ public class ExpressionImpl<T> implements Expression<T>
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr);
-        return new BooleanExpressionImpl(queryExpr);
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -182,9 +176,7 @@ public class ExpressionImpl<T> implements Expression<T>
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr);
-        return new BooleanExpressionImpl(queryExpr);
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)

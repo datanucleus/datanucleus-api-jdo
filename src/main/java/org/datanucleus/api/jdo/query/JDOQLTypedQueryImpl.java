@@ -1133,7 +1133,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             for (String paramName : parameterExprByName.keySet())
             {
-                if (!parameterValuesByName.containsKey(paramName))
+                if (parameterValuesByName == null || !parameterValuesByName.containsKey(paramName))
                 {
                     throw new JDOUserException("Query has a parameter " + paramName + " defined but no value supplied");
                 }
