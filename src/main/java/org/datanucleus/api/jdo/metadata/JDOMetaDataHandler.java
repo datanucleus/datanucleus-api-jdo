@@ -716,7 +716,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 if (parent instanceof AbstractMemberMetaData)
                 {
                     AbstractMemberMetaData fmd = (AbstractMemberMetaData) parent;
-                    joinmd = fmd.newJoinMetadata();
+                    joinmd = fmd.newJoinMetaData();
                 }
                 else if (parent instanceof AbstractClassMetaData)
                 {
