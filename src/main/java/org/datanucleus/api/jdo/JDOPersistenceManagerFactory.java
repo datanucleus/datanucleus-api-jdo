@@ -173,7 +173,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
     /**
      * Return a new PersistenceManagerFactory with options set according to the given Properties.
-     * This method exists for JDO1 compliance whereas in JDO2 the method takes a Map.
+     * This method exists for JDO1 compliance whereas in JDO2+ the method takes a Map.
      * @param overridingProps The Properties to initialize the PersistenceManagerFactory with.
      * @return A PersistenceManagerFactory with options set according to the given Properties.
      * @see javax.jdo.JDOHelper#getPersistenceManagerFactory(java.util.Map)
@@ -946,6 +946,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         return super.equals(obj);
     }
 
+    // TODO Provide hashCode to match equals
+
     /**
      * Create a PMF using the (JNDI) location or reference information specified.
      * @param obj The object
@@ -1145,20 +1147,19 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * The application can determine from the results of this method which
-     * optional features, and which query languages are supported by the JDO
-     * implementation. See section 11.6 of the JDO 2 specification.
+     * The application can determine from the results of this method which optional features, and which query languages are supported by the JDO implementation. 
+     * See section 11.6 of the JDO specification.
      * @return A Collection of String representing the supported options.
      */
     public Collection<String> supportedOptions()
     {
         // Generate the list of supported options, taking the general options we support and removing
         // any that the particular StoreManager doesn't support
-        Set options = new HashSet(Arrays.asList(OPTION_ARRAY));
+        Set<String> options = new HashSet<>(Arrays.asList(OPTION_ARRAY));
         StoreManager storeMgr = nucleusContext.getStoreManager();
         if (storeMgr != null)
         {
-            Collection storeMgrOptions = storeMgr.getSupportedOptions();
+            Collection<String> storeMgrOptions = storeMgr.getSupportedOptions();
             if (!storeMgrOptions.contains(StoreManager.OPTION_NONDURABLE_ID))
             {
                 options.remove("javax.jdo.option.NonDurableIdentity");
@@ -1219,8 +1220,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * The JDO spec optional features that DataNucleus supports.
-     * See JDO 2.0 spec section 11.6 for the full list of possibilities.
+     * The JDO optional features that DataNucleus supports.
+     * See JDO spec section 11.6 for the full list of possibilities.
      */
     private static final String[] OPTION_ARRAY =
     {
@@ -1246,12 +1247,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         "javax.jdo.option.TreeMap",
         "javax.jdo.option.Vector",
         "javax.jdo.option.List",
-        "javax.jdo.option.Stack", // Not a listed JDO2 feature
-        "javax.jdo.option.Map", // Not a listed JDO2 feature
-        "javax.jdo.option.HashMap", // Not a listed JDO2 feature
-        "javax.jdo.option.Hashtable", // Not a listed JDO2 feature
-        "javax.jdo.option.SortedSet", // Not a listed JDO2 feature
-        "javax.jdo.option.SortedMap", // Not a listed JDO2 feature
+        "javax.jdo.option.Stack", // Not a listed JDO feature
+        "javax.jdo.option.Map", // Not a listed JDO feature
+        "javax.jdo.option.HashMap", // Not a listed JDO feature
+        "javax.jdo.option.Hashtable", // Not a listed JDO feature
+        "javax.jdo.option.SortedSet", // Not a listed JDO feature
+        "javax.jdo.option.SortedMap", // Not a listed JDO feature
         "javax.jdo.option.Array",
         "javax.jdo.option.NullCollection",
 
