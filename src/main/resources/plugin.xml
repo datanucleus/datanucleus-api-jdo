@@ -172,6 +172,8 @@ Contributors:
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.ReadOnly" handler="org.datanucleus.api.jdo.annotations.ReadOnlyHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateTimestamp" handler="org.datanucleus.api.jdo.annotations.CreateTimestampHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateTimestamp" handler="org.datanucleus.api.jdo.annotations.UpdateTimestampHandler"/>
+        <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateUser" handler="org.datanucleus.api.jdo.annotations.CreateUserHandler"/>
+        <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateUser" handler="org.datanucleus.api.jdo.annotations.UpdateUserHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.MultiTenant" handler="org.datanucleus.api.jdo.annotations.MultiTenantHandler"/>
         <class-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.SoftDelete" handler="org.datanucleus.api.jdo.annotations.SoftDeleteHandler"/>
     </extension>
@@ -182,6 +184,8 @@ Contributors:
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.SharedRelation" handler="org.datanucleus.api.jdo.annotations.SharedRelationHandler"/>
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateTimestamp" handler="org.datanucleus.api.jdo.annotations.CreateTimestampHandler"/>
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateTimestamp" handler="org.datanucleus.api.jdo.annotations.UpdateTimestampHandler"/>
+        <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.CreateUser" handler="org.datanucleus.api.jdo.annotations.CreateUserHandler"/>
+        <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.UpdateUser" handler="org.datanucleus.api.jdo.annotations.UpdateUserHandler"/>
         <member-annotation-handler annotation-class="org.datanucleus.api.jdo.annotations.ComparatorClass" handler="org.datanucleus.api.jdo.annotations.ComparatorClassHandler"/>
     </extension>
 </plugin>
