@@ -27,7 +27,7 @@ import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
 /**
  * Handler for the {@link CreateUser} annotation when applied to a field/property or surrogate column of a persistable class.
  */
-public class CreatedUserHandler implements MemberAnnotationHandler, ClassAnnotationHandler
+public class CreateUserHandler implements MemberAnnotationHandler, ClassAnnotationHandler
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {

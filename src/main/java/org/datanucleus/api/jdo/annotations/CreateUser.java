@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CreatedUser
+public @interface CreateUser
 {
 }
