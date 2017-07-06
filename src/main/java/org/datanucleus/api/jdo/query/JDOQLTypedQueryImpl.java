@@ -62,6 +62,7 @@ import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
+import org.datanucleus.flush.FlushMode;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.query.compiler.QueryCompilation;
@@ -978,8 +979,13 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     protected Query getInternalQuery()
     {
         // Create a DataNucleus query and set the generic compilation
-        Query internalQuery = ec.getStoreManager().getQueryManager().newQuery("JDOQL", ec, toString());
+        Query internalQuery = ec.getStoreManager().newQuery("JDOQL", ec, toString());
 
+        if (ec.getFlushMode() == FlushMode.QUERY)
+        {
+            // Flush mode implies flush all before executing the query so set the necessary property
+            internalQuery.addExtension(Query.EXTENSION_FLUSH_BEFORE_EXECUTION, Boolean.TRUE);
+        }
         internalQuery.setIgnoreCache(ignoreCache);
         if (extensions != null)
         {

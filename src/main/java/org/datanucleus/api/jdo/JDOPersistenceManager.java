@@ -80,6 +80,7 @@ import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusOptimisticException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.exceptions.TransactionActiveOnCloseException;
+import org.datanucleus.flush.FlushMode;
 import org.datanucleus.identity.SCOID;
 import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -94,7 +95,6 @@ import org.datanucleus.store.NucleusSequence;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.Localiser;
-import org.datanucleus.util.StringUtils;
 
 /**
  * Provide the basics of a JDO PersistenceManager using an underlying ExecutionContext to perform the actual persistence.
@@ -1286,25 +1286,35 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         org.datanucleus.store.query.Query internalQuery = null;
         try
         {
-            if (query != null && query instanceof JDOQuery)
+            if (query == null)
+            {
+                internalQuery = ec.getStoreManager().newQuery(queryLanguage, ec);
+            }
+            else if (query instanceof JDOQuery)
             {
                 // Extract the internal query for generating the next query
-                internalQuery = ec.getStoreManager().getQueryManager().newQuery(queryLanguage, ec,
-                        ((JDOQuery)query).getInternalQuery());
+                internalQuery = ec.getStoreManager().newQuery(queryLanguage, ec, ((JDOQuery)query).getInternalQuery());
             }
-            else if (query instanceof String && StringUtils.isWhitespace((String)query))
+            else if (query instanceof String)
             {
-                internalQuery = ec.getStoreManager().getQueryManager().newQuery(queryLanguage, ec, null);
+                internalQuery = ec.getStoreManager().newQuery(queryLanguage, ec, (String)query);
             }
             else
             {
-                internalQuery = ec.getStoreManager().getQueryManager().newQuery(queryLanguage, ec, query);
+                throw new JDOUserException("Cannot create new query with argument of type " + query.getClass().getName());
             }
         }
         catch (NucleusException ne)
         {
             throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
         }
+
+        if (ec.getFlushMode() == FlushMode.QUERY)
+        {
+            // Flush mode implies flush all before executing the query so set the necessary property
+            internalQuery.addExtension(org.datanucleus.store.query.Query.EXTENSION_FLUSH_BEFORE_EXECUTION, Boolean.TRUE);
+        }
+
         return new JDOQuery(this, internalQuery, queryLanguage);
     }
 
