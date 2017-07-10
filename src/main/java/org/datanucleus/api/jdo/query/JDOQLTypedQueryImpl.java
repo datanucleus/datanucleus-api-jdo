@@ -979,7 +979,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     protected Query getInternalQuery()
     {
         // Create a DataNucleus query and set the generic compilation
-        Query internalQuery = ec.getStoreManager().newQuery("JDOQL", ec, toString());
+        Query internalQuery = ec.getStoreManager().newQuery(Query.LANGUAGE_JDOQL, ec, toString());
 
         if (ec.getFlushMode() == FlushMode.QUERY)
         {
@@ -1496,7 +1496,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         JDOPersistenceManagerFactory.checkJDOPermission(JDOPermission.GET_METADATA);
 
         QueryMetaData qmd = new QueryMetaData(name);
-        qmd.setLanguage("JDOQL");
+        qmd.setLanguage(Query.LANGUAGE_JDOQL);
         Query query = getInternalQuery();
         qmd.setQuery(query.toString());
         qmd.setResultClass(query.getResultClassName());

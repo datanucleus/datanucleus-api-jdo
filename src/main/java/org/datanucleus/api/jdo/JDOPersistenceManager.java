@@ -1262,19 +1262,19 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         String queryLanguage = language;
         if (queryLanguage == null)
         {
-            queryLanguage = "JDOQL";
+            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JDOQL;
         }
         else if (queryLanguage.equals(JDOQuery.JDOQL_QUERY_LANGUAGE))
         {
-            queryLanguage = "JDOQL";
+            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JDOQL;
         }
         else if (queryLanguage.equals(JDOQuery.SQL_QUERY_LANGUAGE))
         {
-            queryLanguage = "SQL";
+            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_SQL;
         }
         else if (queryLanguage.equals(JDOQuery.JPQL_QUERY_LANGUAGE))
         {
-            queryLanguage = "JPQL";
+            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JPQL;
         }
 
         // Check that our store supports the language

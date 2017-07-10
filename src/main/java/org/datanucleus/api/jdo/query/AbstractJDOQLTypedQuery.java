@@ -39,6 +39,7 @@ import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.query.expression.PrimaryExpression;
 import org.datanucleus.query.expression.VariableExpression;
+import org.datanucleus.store.query.Query;
 import org.datanucleus.store.query.Query.QueryType;
 
 /**
@@ -219,7 +220,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
         }
 
         compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs, null, filterExpr, groupingExprs, havingExpr, orderExprs, updateExprs);
-        compilation.setQueryLanguage("JDOQL");
+        compilation.setQueryLanguage(Query.LANGUAGE_JDOQL);
 
         return compilation;
     }
