@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 
 import javax.jdo.AttributeConverter;
 
+import org.datanucleus.PersistenceNucleusContext;
+import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.NucleusLogger;
 
 /**
@@ -81,4 +83,22 @@ public class JDOTypeConverterUtils
         return dbType;
     }
 
+    public static AttributeConverter createAttributeConverter(PersistenceNucleusContext nucCtx, Class converterCls)
+    {
+        if (nucCtx != null && nucCtx.getCDIHandler() != null)
+        {
+            try
+            {
+                // Create stateful AttributeConverter with any injected dependencies
+                return (AttributeConverter) nucCtx.getCDIHandler().createObjectWithInjectedDependencies(converterCls);
+            }
+            catch (Exception e)
+            {
+                NucleusLogger.PERSISTENCE.warn("Error creating AttributeConverter of type " + converterCls.getName() + " using CDI BeanHandler", e);
+            }
+        }
+
+        // Create stateless AttributeConverter
+        return (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+    }
 }

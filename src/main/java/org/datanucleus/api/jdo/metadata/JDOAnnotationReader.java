@@ -47,6 +47,7 @@ import javax.jdo.annotations.Unique;
 import javax.jdo.annotations.VersionStrategy;
 
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
@@ -1104,7 +1105,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                             {
                                 // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, member.getType());
                                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -1395,7 +1396,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                             {
                                 // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
                                     ClassUtils.getCollectionElementType(member.getType(), member.getGenericType()));
                                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
@@ -1542,7 +1543,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                             {
                                 // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
                                     ClassUtils.getMapKeyType(member.getType(), member.getGenericType()));
                                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
@@ -1674,7 +1675,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                             {
                                 // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
                                     ClassUtils.getMapValueType(member.getType(), member.getGenericType()));
                                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
@@ -1902,7 +1903,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
                         {
                             // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(convertConverterCls, null, null);
+                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), convertConverterCls);
                             Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
                             Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
 
