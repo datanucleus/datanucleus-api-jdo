@@ -154,7 +154,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 cmd.setCatalog((String) annotationValues.get("catalog"));
                 cmd.setSchema((String) annotationValues.get("schema"));
                 String detachableStr = (String) annotationValues.get("detachable");
-                if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+                if (mmgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
                 {
                     cmd.setDetachable(true);
                 }
@@ -1092,26 +1092,29 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         mmd = new FieldMetaData(cmd, member.getName());
                     }
 
-                    if (disableConversion != null && disableConversion)
+                    if (isPersistenceContext())
                     {
-                        mmd.setTypeConverterDisabled();
-                    }
-                    else if (converterCls != null)
-                    {
-                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        if (disableConversion != null && disableConversion)
                         {
-                            // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, member.getType());
-                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                            // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            mmd.setTypeConverterDisabled();
                         }
+                        else if (converterCls != null)
+                        {
+                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                            {
+                                // Not yet cached an instance of this converter so create one
+                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, member.getType());
+                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
-                        mmd.setTypeConverterName(converterCls.getName());
+                                // Register the TypeConverter under the name of the AttributeConverter class
+                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            }
+
+                            mmd.setTypeConverterName(converterCls.getName());
+                        }
                     }
 
                     if (modifier != null)
@@ -1379,27 +1382,31 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementColumns[j]));
                         }
                     }
-                    if (disableConversion != null && disableConversion)
+
+                    if (isPersistenceContext())
                     {
-                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                    }
-                    else if (converterCls != null)
-                    {
-                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        if (disableConversion != null && disableConversion)
                         {
-                            // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                ClassUtils.getCollectionElementType(member.getType(), member.getGenericType()));
-                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                            // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                         }
+                        else if (converterCls != null)
+                        {
+                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                            {
+                                // Not yet cached an instance of this converter so create one
+                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                    ClassUtils.getCollectionElementType(member.getType(), member.getGenericType()));
+                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
-                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                                // Register the TypeConverter under the name of the AttributeConverter class
+                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            }
+
+                            elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                        }
                     }
 
                     JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[]) annotationValues.get("extensions"));
@@ -1523,27 +1530,30 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
 
-                    if (disableConversion != null && disableConversion)
+                    if (isPersistenceContext())
                     {
-                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                    }
-                    else if (converterCls != null)
-                    {
-                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        if (disableConversion != null && disableConversion)
                         {
-                            // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                ClassUtils.getMapKeyType(member.getType(), member.getGenericType()));
-                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                            // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                         }
+                        else if (converterCls != null)
+                        {
+                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                            {
+                                // Not yet cached an instance of this converter so create one
+                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                    ClassUtils.getMapKeyType(member.getType(), member.getGenericType()));
+                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
-                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                                // Register the TypeConverter under the name of the AttributeConverter class
+                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            }
+
+                            keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                        }
                     }
 
                     JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[]) annotationValues.get("extensions"));
@@ -1652,27 +1662,30 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
 
-                    if (disableConversion != null && disableConversion)
+                    if (isPersistenceContext())
                     {
-                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                    }
-                    else if (converterCls != null)
-                    {
-                        TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        if (disableConversion != null && disableConversion)
                         {
-                            // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
-                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                ClassUtils.getMapValueType(member.getType(), member.getGenericType()));
-                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                            // Register the TypeConverter under the name of the AttributeConverter class
-                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                         }
+                        else if (converterCls != null)
+                        {
+                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                            {
+                                // Not yet cached an instance of this converter so create one
+                                AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                    ClassUtils.getMapValueType(member.getType(), member.getGenericType()));
+                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
-                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                                // Register the TypeConverter under the name of the AttributeConverter class
+                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                            }
+
+                            valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                        }
                     }
 
                     JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[]) annotationValues.get("extensions"));
@@ -1880,22 +1893,26 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     mmd.setTransactional();
                 }
-                if (convertConverterCls != null)
+
+                if (isPersistenceContext())
                 {
-                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                    if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
+                    if (convertConverterCls != null)
                     {
-                        // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(convertConverterCls, null, null);
-                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
-                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
+                        TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = (AttributeConverter)ClassUtils.newInstance(convertConverterCls, null, null);
+                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
+                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
 
-                        // Register the TypeConverter under the name of the AttributeConverter class
-                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                        typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                            typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
+                        }
+
+                        mmd.setTypeConverterName(convertConverterCls.getName());
                     }
-
-                    mmd.setTypeConverterName(convertConverterCls.getName());
                 }
 
                 // Add any embedded info
@@ -1926,7 +1943,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                 }
 
-                TypeManager typeManager = mgr.getNucleusContext().getTypeManager();
+                TypeManager typeManager = mmgr.getNucleusContext().getTypeManager();
                 ContainerHandler containerHandler = typeManager.getContainerHandler(member.getType());
                 ContainerMetaData contmd = null;
 
