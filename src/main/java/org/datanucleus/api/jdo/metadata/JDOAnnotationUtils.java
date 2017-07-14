@@ -327,7 +327,7 @@ public class JDOAnnotationUtils
      * @param strategy The id generation strategy
      * @return The name
      */
-    public static String getIdentityStrategyString(IdGeneratorStrategy strategy)
+    public static String getValueGenerationStrategyString(IdGeneratorStrategy strategy)
     {
         if (strategy == IdGeneratorStrategy.NATIVE)
         {
@@ -353,7 +353,7 @@ public class JDOAnnotationUtils
         {
             return ValueGenerationStrategy.INCREMENT.toString();
         }
-        // TODO Allow for id generator extensions
+        // TODO Allow for value generator extensions
         else
         {
             return null;

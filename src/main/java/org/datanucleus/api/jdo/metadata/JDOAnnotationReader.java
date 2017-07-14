@@ -277,7 +277,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
                 {
-                    String strategy = JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("strategy"));
+                    String strategy = JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("strategy"));
                     String customStrategy = (String) annotationValues.get("customStrategy");
                     if (!StringUtils.isWhitespace(customStrategy))
                     {
@@ -1028,7 +1028,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         dependent = Boolean.valueOf(depStr);
                     }
                     String valueStrategy = 
-                            JDOAnnotationUtils.getIdentityStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
+                            JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
                     String customValueStrategy = (String) annotationValues.get("customValueStrategy");
                     if (!StringUtils.isWhitespace(customValueStrategy))
                     {
@@ -2275,7 +2275,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     {
         FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier(member.persistenceModifier());
         String nullValue = JDOAnnotationUtils.getNullValueString(member.nullValue());
-        String valueStrategy = JDOAnnotationUtils.getIdentityStrategyString(member.valueStrategy());
+        String valueStrategy = JDOAnnotationUtils.getValueGenerationStrategyString(member.valueStrategy());
 
         String fieldTypeName = null;
         Class[] fieldTypes = member.types();
