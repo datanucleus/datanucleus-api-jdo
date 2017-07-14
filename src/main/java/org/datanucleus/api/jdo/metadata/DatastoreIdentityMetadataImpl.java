@@ -23,7 +23,7 @@ import javax.jdo.metadata.DatastoreIdentityMetadata;
 
 import org.datanucleus.metadata.ColumnMetaData;
 import org.datanucleus.metadata.IdentityMetaData;
-import org.datanucleus.metadata.IdentityStrategy;
+import org.datanucleus.metadata.ValueGenerationStrategy;
 
 /**
  * Implementation of JDO DatastoreIdentityMetadata object.
@@ -72,13 +72,13 @@ public class DatastoreIdentityMetadataImpl extends AbstractMetadataImpl implemen
      */
     public String getCustomStrategy()
     {
-        IdentityStrategy strategy = getInternal().getValueStrategy();
-        if (strategy != IdentityStrategy.IDENTITY &&
-            strategy != IdentityStrategy.INCREMENT &&
-            strategy != IdentityStrategy.NATIVE &&
-            strategy != IdentityStrategy.SEQUENCE &&
-            strategy != IdentityStrategy.UUIDHEX &&
-            strategy != IdentityStrategy.UUIDSTRING && 
+        ValueGenerationStrategy strategy = getInternal().getValueStrategy();
+        if (strategy != ValueGenerationStrategy.IDENTITY &&
+            strategy != ValueGenerationStrategy.INCREMENT &&
+            strategy != ValueGenerationStrategy.NATIVE &&
+            strategy != ValueGenerationStrategy.SEQUENCE &&
+            strategy != ValueGenerationStrategy.UUIDHEX &&
+            strategy != ValueGenerationStrategy.UUIDSTRING && 
             strategy != null)
         {
             return strategy.toString();
@@ -108,28 +108,28 @@ public class DatastoreIdentityMetadataImpl extends AbstractMetadataImpl implemen
      */
     public IdGeneratorStrategy getStrategy()
     {
-        IdentityStrategy strategy = getInternal().getValueStrategy();
-        if (strategy == IdentityStrategy.IDENTITY)
+        ValueGenerationStrategy strategy = getInternal().getValueStrategy();
+        if (strategy == ValueGenerationStrategy.IDENTITY)
         {
             return IdGeneratorStrategy.IDENTITY;
         }
-        else if (strategy == IdentityStrategy.INCREMENT)
+        else if (strategy == ValueGenerationStrategy.INCREMENT)
         {
             return IdGeneratorStrategy.INCREMENT;
         }
-        else if (strategy == IdentityStrategy.NATIVE)
+        else if (strategy == ValueGenerationStrategy.NATIVE)
         {
             return IdGeneratorStrategy.NATIVE;
         }
-        else if (strategy == IdentityStrategy.SEQUENCE)
+        else if (strategy == ValueGenerationStrategy.SEQUENCE)
         {
             return IdGeneratorStrategy.SEQUENCE;
         }
-        else if (strategy == IdentityStrategy.UUIDHEX)
+        else if (strategy == ValueGenerationStrategy.UUIDHEX)
         {
             return IdGeneratorStrategy.UUIDHEX;
         }
-        else if (strategy == IdentityStrategy.UUIDSTRING)
+        else if (strategy == ValueGenerationStrategy.UUIDSTRING)
         {
             return IdGeneratorStrategy.UUIDSTRING;
         }
@@ -161,7 +161,7 @@ public class DatastoreIdentityMetadataImpl extends AbstractMetadataImpl implemen
      */
     public DatastoreIdentityMetadata setCustomStrategy(String strategy)
     {
-        getInternal().setValueStrategy(IdentityStrategy.getIdentityStrategy(strategy));
+        getInternal().setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
         return this;
     }
 
@@ -181,27 +181,27 @@ public class DatastoreIdentityMetadataImpl extends AbstractMetadataImpl implemen
     {
         if (strategy == IdGeneratorStrategy.IDENTITY)
         {
-            getInternal().setValueStrategy(IdentityStrategy.IDENTITY);
+            getInternal().setValueStrategy(ValueGenerationStrategy.IDENTITY);
         }
         else if (strategy == IdGeneratorStrategy.INCREMENT)
         {
-            getInternal().setValueStrategy(IdentityStrategy.INCREMENT);
+            getInternal().setValueStrategy(ValueGenerationStrategy.INCREMENT);
         }
         else if (strategy == IdGeneratorStrategy.NATIVE)
         {
-            getInternal().setValueStrategy(IdentityStrategy.NATIVE);
+            getInternal().setValueStrategy(ValueGenerationStrategy.NATIVE);
         }
         else if (strategy == IdGeneratorStrategy.SEQUENCE)
         {
-            getInternal().setValueStrategy(IdentityStrategy.SEQUENCE);
+            getInternal().setValueStrategy(ValueGenerationStrategy.SEQUENCE);
         }
         else if (strategy == IdGeneratorStrategy.UUIDHEX)
         {
-            getInternal().setValueStrategy(IdentityStrategy.UUIDHEX);
+            getInternal().setValueStrategy(ValueGenerationStrategy.UUIDHEX);
         }
         else if (strategy == IdGeneratorStrategy.UUIDSTRING)
         {
-            getInternal().setValueStrategy(IdentityStrategy.UUIDSTRING);
+            getInternal().setValueStrategy(ValueGenerationStrategy.UUIDSTRING);
         }
         return this;
     }

@@ -70,7 +70,7 @@ import org.datanucleus.metadata.FieldMetaData;
 import org.datanucleus.metadata.FieldPersistenceModifier;
 import org.datanucleus.metadata.ForeignKeyMetaData;
 import org.datanucleus.metadata.IdentityMetaData;
-import org.datanucleus.metadata.IdentityStrategy;
+import org.datanucleus.metadata.ValueGenerationStrategy;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.IndexedValue;
@@ -289,7 +289,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] columns = (Column[]) annotationValues.get("columns");
                     idmd = new IdentityMetaData();
                     idmd.setColumnName(column);
-                    idmd.setValueStrategy(IdentityStrategy.getIdentityStrategy(strategy));
+                    idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
                     idmd.setSequence(sequence);
                     if (columns != null && columns.length > 0)
                     {

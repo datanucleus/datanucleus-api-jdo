@@ -68,7 +68,7 @@ import org.datanucleus.metadata.ColumnMetaData;
 import org.datanucleus.metadata.DiscriminatorStrategy;
 import org.datanucleus.metadata.FieldPersistenceModifier;
 import org.datanucleus.metadata.ForeignKeyMetaData;
-import org.datanucleus.metadata.IdentityStrategy;
+import org.datanucleus.metadata.ValueGenerationStrategy;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.InheritanceStrategy;
@@ -331,27 +331,27 @@ public class JDOAnnotationUtils
     {
         if (strategy == IdGeneratorStrategy.NATIVE)
         {
-            return IdentityStrategy.NATIVE.toString();
+            return ValueGenerationStrategy.NATIVE.toString();
         }
         else if (strategy == IdGeneratorStrategy.IDENTITY)
         {
-            return IdentityStrategy.IDENTITY.toString();
+            return ValueGenerationStrategy.IDENTITY.toString();
         }
         else if (strategy == IdGeneratorStrategy.SEQUENCE)
         {
-            return IdentityStrategy.SEQUENCE.toString();
+            return ValueGenerationStrategy.SEQUENCE.toString();
         }
         else if (strategy == IdGeneratorStrategy.UUIDSTRING)
         {
-            return IdentityStrategy.UUIDSTRING.toString();
+            return ValueGenerationStrategy.UUIDSTRING.toString();
         }
         else if (strategy == IdGeneratorStrategy.UUIDHEX)
         {
-            return IdentityStrategy.UUIDHEX.toString();
+            return ValueGenerationStrategy.UUIDHEX.toString();
         }
         else if (strategy == IdGeneratorStrategy.INCREMENT)
         {
-            return IdentityStrategy.INCREMENT.toString();
+            return ValueGenerationStrategy.INCREMENT.toString();
         }
         // TODO Allow for id generator extensions
         else

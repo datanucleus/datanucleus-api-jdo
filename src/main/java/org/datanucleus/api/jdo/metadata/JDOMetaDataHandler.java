@@ -50,7 +50,7 @@ import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.ForeignKeyAction;
 import org.datanucleus.metadata.ForeignKeyMetaData;
 import org.datanucleus.metadata.IdentityMetaData;
-import org.datanucleus.metadata.IdentityStrategy;
+import org.datanucleus.metadata.ValueGenerationStrategy;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.ImplementsMetaData;
 import org.datanucleus.metadata.IndexMetaData;
@@ -539,7 +539,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 AbstractClassMetaData acmd = (AbstractClassMetaData) getStack();
                 IdentityMetaData idmd = new IdentityMetaData();
                 idmd.setColumnName(getAttr(attrs, "column"));
-                idmd.setValueStrategy(IdentityStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
+                idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
                 idmd.setSequence(getAttr(attrs, "sequence"));
                 acmd.setIdentityMetaData(idmd);
                 pushStack(idmd);
