@@ -136,7 +136,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
         if (annotations != null && annotations.length > 0)
         {
-            AnnotationObject pcAnnotation = isClassPersistable(cls);
+            AnnotationObject pcAnnotation = isClassPersistable(annotations);
             if (pcAnnotation != null)
             {
                 // persistable class
@@ -205,13 +205,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                 }
             }
-            else if (isClassPersistenceAware(cls))
+            else if (isClassPersistenceAware(annotations))
             {
                 // PersistenceAware class
                 cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_AWARE);
             }
-            else if (doesClassHaveNamedQueries(cls))
+            else if (doesClassHaveNamedQueries(annotations))
             {
                 // Class with named query specified
                 cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
@@ -2371,13 +2371,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Check if class is persistable, by looking at annotations
-     * @param cls the Class
+     * Check if a class is persistable, by looking at its annotations.
+     * @param annotations Annotations for the class
      * @return The annotationObject for PersistenceCapable
      */
-    protected AnnotationObject isClassPersistable(Class cls)
+    protected AnnotationObject isClassPersistable(AnnotationObject[] annotations)
     {
-        AnnotationObject[] annotations = getClassAnnotationsForClass(cls);
         for (int i = 0; i < annotations.length; i++)
         {
             String annClassName = annotations[i].getName();
@@ -2390,13 +2389,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Check if class is persistence aware, by looking at annotations
-     * @param cls the Class
+     * Check if class is persistence aware, by looking at annotations.
+     * @param annotations Annotations for the class
      * @return true if the class has @PersistenceAware
      */
-    protected boolean isClassPersistenceAware(Class cls)
+    protected boolean isClassPersistenceAware(AnnotationObject[] annotations)
     {
-        AnnotationObject[] annotations = getClassAnnotationsForClass(cls);
         for (int i = 0; i < annotations.length; i++)
         {
             String annName = annotations[i].getName();
@@ -2409,14 +2407,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Check if class has Query annotations (for classes that are not persistable but provide named query
-     * definitions.
-     * @param cls the Class
+     * Check if class has Query annotations (for classes that are not persistable but provide named query definitions.
+     * @param annotations Annotations for the class
      * @return true if the class has Named query annotations
      */
-    protected boolean doesClassHaveNamedQueries(Class cls)
+    protected boolean doesClassHaveNamedQueries(AnnotationObject[] annotations)
     {
-        AnnotationObject[] annotations = getClassAnnotationsForClass(cls);
         for (int i = 0; i < annotations.length; i++)
         {
             String annClassName = annotations[i].getName();
