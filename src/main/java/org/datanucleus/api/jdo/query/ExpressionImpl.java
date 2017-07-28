@@ -140,6 +140,12 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression eq(Expression expr)
     {
+        if (expr == null)
+        {
+            // Assume they meant to compare with NULL Literal
+            return this.eq((T)null);
+        }
+
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
@@ -162,6 +168,12 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression ne(Expression expr)
     {
+        if (expr == null)
+        {
+            // Assume they meant to compare with NULL Literal
+            return this.ne((T)null);
+        }
+
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
