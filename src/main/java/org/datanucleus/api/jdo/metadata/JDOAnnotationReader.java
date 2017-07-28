@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jdo.AttributeConverter;
 import javax.jdo.AttributeConverter.UseDefault;
@@ -116,7 +117,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     {
         super(mgr);
 
-        // We support JDO and DataNucleus annotations in this reader.
+        // We support JDO standard and DataNucleus JDO extension annotations in this reader.
         setSupportedAnnotationPackages(new String[]{"javax.jdo", "org.datanucleus.api.jdo.annotations"});
     }
 
@@ -139,71 +140,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             AnnotationObject pcAnnotation = isClassPersistable(annotations);
             if (pcAnnotation != null)
             {
-                // persistable class
-                if (cls.isInterface())
-                {
-                    cmd = pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls));
-                }
-                else
-                {
-                    cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
-                }
-                cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
-                Map<String, Object> annotationValues = pcAnnotation.getNameValueMap();
-
-                cmd.setTable((String) annotationValues.get("table"));
-                cmd.setCatalog((String) annotationValues.get("catalog"));
-                cmd.setSchema((String) annotationValues.get("schema"));
-                String detachableStr = (String) annotationValues.get("detachable");
-                if (mmgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
-                {
-                    cmd.setDetachable(true);
-                }
-                else
-                {
-                    cmd.setDetachable(detachableStr);
-                }
-                cmd.setRequiresExtent((String) annotationValues.get("requiresExtent"));
-                String idClassName = null;
-                Class idClass = (Class) annotationValues.get("objectIdClass");
-                if (idClass != null && idClass != void.class)
-                {
-                    idClassName = idClass.getName();
-                }
-                cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(idClassName));
-
                 // PersistenceCapable class
+                cmd = (cls.isInterface()) ? pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls)) : pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
                 cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
-                cmd.setEmbeddedOnly((String) annotationValues.get("embeddedOnly"));
-                javax.jdo.annotations.IdentityType idTypeVal = (javax.jdo.annotations.IdentityType) annotationValues.get("identityType");
-                String identityType = JDOAnnotationUtils.getIdentityTypeString(idTypeVal);
-                cmd.setIdentityType(IdentityType.getIdentityType(identityType));
-                cmd.setCacheable((String) annotationValues.get("cacheable"));
-                String serializeRead = (String) annotationValues.get("serializeRead");
-                if (serializeRead != null)
-                {
-                    cmd.setSerializeRead(serializeRead.equals("true") ? true : false);
-                }
 
-                JDOAnnotationUtils.addExtensionsToMetaData(cmd, (Extension[]) annotationValues.get("extensions"));
-
-                // Members typically providing specification of overridden fields/properties
-                Persistent[] members = (Persistent[]) annotationValues.get("members");
-                if (members != null)
-                {
-                    // Add on the fields/properties direct to the metadata for the class/interface
-                    for (int j = 0; j < members.length; j++)
-                    {
-                        String memberName = members[j].name();
-                        if (memberName.indexOf('.') > 0)
-                        {
-                            memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
-                        }
-                        boolean isField = isMemberOfClassAField(cls, memberName);
-                        AbstractMemberMetaData fmd = getFieldMetaDataForPersistent(cmd, members[j], isField);
-                        cmd.addMember(fmd);
-                    }
-                }
+                // Process all attributes here in case needed for other annotations
+                processPersistenceCapableAnnotation(cls, cmd, pcAnnotation.getNameValueMap());
             }
             else if (isClassPersistenceAware(annotations))
             {
@@ -243,16 +185,26 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             String cacheable = null;
             boolean embeddedOnly = false;
             ColumnMetaData[] unmappedColumns = null;
-            HashSet<IndexMetaData> indices = null;
-            HashSet<UniqueMetaData> uniqueKeys = null;
-            HashSet<ForeignKeyMetaData> fks = null;
+            Set<IndexMetaData> indices = null;
+            Set<UniqueMetaData> uniqueKeys = null;
+            Set<ForeignKeyMetaData> fks = null;
             Map<String, String> extensions = null;
 
             for (int i = 0; i < annotations.length; i++)
             {
+                if (annotations[i] == pcAnnotation)
+                {
+                    // Already processed above
+                    continue;
+                }
+
                 Map<String, Object> annotationValues = annotations[i].getNameValueMap();
                 String annName = annotations[i].getName();
-                if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
+                if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
+                {
+                    processPersistenceCapableAnnotation(cls, cmd, annotationValues);
+                }
+                else if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
                 {
                     embeddedOnly = true;
                 }
@@ -822,6 +774,73 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         }
 
         return cmd;
+    }
+
+    private void processPersistenceCapableAnnotation(Class cls, AbstractClassMetaData cmd, Map<String, Object> annotationValues)
+    {
+        String identityType = JDOAnnotationUtils.getIdentityTypeString((javax.jdo.annotations.IdentityType) annotationValues.get("identityType"));
+        cmd.setIdentityType(IdentityType.getIdentityType(identityType));
+
+        Class idClass = (Class) annotationValues.get("objectIdClass");
+        if (idClass != null && idClass != void.class)
+        {
+            cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(idClass.getName()));
+        }
+
+        cmd.setEmbeddedOnly((String) annotationValues.get("embeddedOnly"));
+        cmd.setCacheable((String) annotationValues.get("cacheable"));
+
+        String serializeRead = (String) annotationValues.get("serializeRead");
+        if (serializeRead != null)
+        {
+            cmd.setSerializeRead(serializeRead.equals("true") ? true : false);
+        }
+        cmd.setRequiresExtent((String) annotationValues.get("requiresExtent"));
+
+        if (mmgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+        {
+            cmd.setDetachable(true);
+        }
+        else
+        {
+            cmd.setDetachable((String) annotationValues.get("detachable"));
+        }
+
+        JDOAnnotationUtils.addExtensionsToMetaData(cmd, (Extension[]) annotationValues.get("extensions"));
+
+        String tblName = (String) annotationValues.get("table");
+        if (!StringUtils.isWhitespace(tblName))
+        {
+            cmd.setTable(tblName);
+        }
+        String catName = (String) annotationValues.get("catalog");
+        if (!StringUtils.isWhitespace(catName))
+        {
+            cmd.setCatalog(catName);
+        }
+        String schName = (String) annotationValues.get("schema");
+        if (!StringUtils.isWhitespace(schName))
+        {
+            cmd.setSchema(schName);
+        }
+
+        // Members typically providing specification of overridden fields/properties
+        Persistent[] members = (Persistent[]) annotationValues.get("members");
+        if (members != null)
+        {
+            // Add on the fields/properties direct to the metadata for the class/interface
+            for (int j = 0; j < members.length; j++)
+            {
+                String memberName = members[j].name();
+                if (memberName.indexOf('.') > 0)
+                {
+                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                }
+                boolean isField = isMemberOfClassAField(cls, memberName);
+                AbstractMemberMetaData fmd = getFieldMetaDataForPersistent(cmd, members[j], isField);
+                cmd.addMember(fmd);
+            }
+        }
     }
 
     /**
