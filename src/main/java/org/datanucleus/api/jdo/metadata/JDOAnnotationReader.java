@@ -175,16 +175,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             // Class is persistable so process remaining annotations
             InheritanceMetaData inhmd = null;
             DiscriminatorMetaData dismd = null;
-            IdentityMetaData idmd = null;
-            PrimaryKeyMetaData pkmd = null;
-            VersionMetaData vermd = null;
             JoinMetaData[] joins = null;
             FetchPlanMetaData[] fetchPlans = null;
             FetchGroupMetaData[] fetchGroups = null;
-            SequenceMetaData seqmd = null;
-            String cacheable = null;
-            boolean embeddedOnly = false;
-            ColumnMetaData[] unmappedColumns = null;
             Set<IndexMetaData> indices = null;
             Set<UniqueMetaData> uniqueKeys = null;
             Set<ForeignKeyMetaData> fks = null;
@@ -206,7 +199,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
                 else if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
                 {
-                    embeddedOnly = true;
+                    cmd.setEmbeddedOnly(true);
                 }
                 else if (annName.equals(JDOAnnotationUtils.VERSION))
                 {
@@ -215,7 +208,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String indexed = (String) annotationValues.get("indexed");
                     String column = (String) annotationValues.get("column");
                     Column[] columns = (Column[]) annotationValues.get("columns");
-                    vermd = new VersionMetaData();
+                    VersionMetaData vermd = new VersionMetaData();
                     vermd.setStrategy(strategy);
                     vermd.setColumnName(column);
                     vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
@@ -226,6 +219,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         vermd.setColumnMetaData(colmd);
                     }
                     JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
+
+                    vermd.setParent(cmd);
+                    cmd.setVersionMetaData(vermd);
                 }
                 else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
                 {
@@ -239,7 +235,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     String sequence = (String) annotationValues.get("sequence");
                     String column = (String) annotationValues.get("column");
                     Column[] columns = (Column[]) annotationValues.get("columns");
-                    idmd = new IdentityMetaData();
+                    IdentityMetaData idmd = new IdentityMetaData();
                     idmd.setColumnName(column);
                     idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
                     idmd.setSequence(sequence);
@@ -250,13 +246,16 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         idmd.setColumnMetaData(colmd);
                     }
                     JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
+
+                    idmd.setParent(cmd);
+                    cmd.setIdentityMetaData(idmd);
                 }
                 else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
                 {
                     String pkName = (String) annotationValues.get("name");
                     String pkColumn = (String) annotationValues.get("column");
                     Column[] columns = (Column[]) annotationValues.get("columns");
-                    pkmd = new PrimaryKeyMetaData();
+                    PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
                     pkmd.setName(pkName);
                     pkmd.setColumnName(pkColumn);
                     if (columns != null && columns.length > 0)
@@ -267,6 +266,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         }
                     }
                     JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[]) annotationValues.get("extensions"));
+
+                    pkmd.setParent(cmd);
+                    cmd.setPrimaryKeyMetaData(pkmd);
                 }
                 else if (annName.equals(JDOAnnotationUtils.JOINS))
                 {
@@ -444,7 +446,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     {
                         throw new InvalidClassMetaDataException("044155", cmd.getFullClassName());
                     }
-                    seqmd = new SequenceMetaData(seqName, seqStrategy);
+                    SequenceMetaData seqmd = new SequenceMetaData(seqName, seqStrategy);
                     seqmd.setFactoryClass(seqFactoryClassName);
                     seqmd.setDatastoreSequence(seqSeq);
                     if (seqSize != null)
@@ -456,6 +458,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         seqmd.setInitialValue(seqStart);
                     }
                     JDOAnnotationUtils.addExtensionsToMetaData(seqmd, (Extension[]) annotationValues.get("extensions"));
+
+                    // Sequence - currently only allowing 1 per class (should really be on the package)
+                    cmd.getPackageMetaData().addSequence(seqmd);
                 }
                 else if (annName.equals(JDOAnnotationUtils.INDICES))
                 {
@@ -597,20 +602,22 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     Column[] cols = (Column[]) annotationValues.get("value");
                     if (cols != null && cols.length > 0)
                     {
-                        unmappedColumns = new ColumnMetaData[cols.length];
-                        for (int j = 0; j < cols.length; j++)
+                        for (Column col : cols)
                         {
-                            unmappedColumns[j] = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
-                            JDOAnnotationUtils.addExtensionsToMetaData(unmappedColumns[j], cols[j].extensions());
+                            ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(col);
+                            JDOAnnotationUtils.addExtensionsToMetaData(colmd, col.extensions());
+
+                            colmd.setParent(cmd);
+                            cmd.addUnmappedColumn(colmd);
                         }
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
                 {
                     String cache = (String) annotationValues.get("value");
-                    if (cache != null)
+                    if (cache != null && cache.equalsIgnoreCase("false"))
                     {
-                        cacheable = cache;
+                        cmd.setCacheable(false);
                     }
                 }
                 else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
@@ -656,32 +663,8 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
             }
 
-            // Either PersistenceCapable, PersistenceAware or PersistentInterface so build up the metadata
+            // Add on all remaining metadata that could not be set directly when processing the individual annotations
             NucleusLogger.METADATA.debug(Localiser.msg("044200", cls.getName(), "JDO"));
-
-            if (embeddedOnly)
-            {
-                cmd.setEmbeddedOnly(true);
-            }
-            if (idmd != null)
-            {
-                // Datastore identity
-                idmd.setParent(cmd);
-                cmd.setIdentityMetaData(idmd);
-            }
-            if (pkmd != null)
-            {
-                // Primary Key
-                pkmd.setParent(cmd);
-                cmd.setPrimaryKeyMetaData(pkmd);
-            }
-
-            if (vermd != null)
-            {
-                // Version
-                vermd.setParent(cmd);
-                cmd.setVersionMetaData(vermd);
-            }
 
             if (inhmd != null)
             {
@@ -718,12 +701,6 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 }
             }
 
-            if (seqmd != null)
-            {
-                // Sequence - currently only allowing 1 per class (should really be on the package)
-                cmd.getPackageMetaData().addSequence(seqmd);
-            }
-
             if (indices != null)
             {
                 Iterator iter = indices.iterator();
@@ -754,19 +731,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     cmd.addForeignKey(fkmd);
                 }
             }
-            if (unmappedColumns != null)
-            {
-                for (int i = 0; i < unmappedColumns.length; i++)
-                {
-                    ColumnMetaData colmd = unmappedColumns[i];
-                    colmd.setParent(cmd);
-                    cmd.addUnmappedColumn(colmd);
-                }
-            }
-            if (cacheable != null && cacheable.equalsIgnoreCase("false"))
-            {
-                cmd.setCacheable(false);
-            }
+
             if (extensions != null)
             {
                 cmd.addExtensions(extensions);
