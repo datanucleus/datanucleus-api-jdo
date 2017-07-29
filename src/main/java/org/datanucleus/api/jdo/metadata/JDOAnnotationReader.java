@@ -120,9 +120,8 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Method to process the "class" level annotations and create the outline ClassMetaData object. Supports
-     * classes annotated with @PersistenceCapable, classes annotated with @PersistenceAware, and classes which
-     * have neither of those but have @Queries or @Query.
+     * Method to process the "class" level annotations and create the outline ClassMetaData object. 
+     * Supports classes annotated with @PersistenceCapable, classes annotated with @PersistenceAware, and classes which have neither of those but have @Queries or @Query.
      * @param pmd Parent PackageMetaData
      * @param cls The class
      * @param annotations Annotations for this class
@@ -131,518 +130,521 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected AbstractClassMetaData processClassAnnotations(PackageMetaData pmd, Class cls, AnnotationObject[] annotations, ClassLoaderResolver clr)
     {
+        if (annotations == null || annotations.length == 0)
+        {
+            return null;
+        }
+
         AbstractClassMetaData cmd = null;
 
-        if (annotations != null && annotations.length > 0)
+        AnnotationObject pcAnnotation = isClassPersistable(annotations);
+        if (pcAnnotation != null)
         {
-            AnnotationObject pcAnnotation = isClassPersistable(annotations);
-            if (pcAnnotation != null)
-            {
-                // PersistenceCapable class
-                cmd = (cls.isInterface()) ? pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls)) : pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
-                cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
+            // PersistenceCapable class
+            cmd = (cls.isInterface()) ? pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls)) : pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
 
-                // Process all attributes here in case needed for other annotations
-                processPersistenceCapableAnnotation(cls, cmd, pcAnnotation.getNameValueMap());
+            // Process all attributes here in case needed for other annotations
+            processPersistenceCapableAnnotation(cls, cmd, pcAnnotation.getNameValueMap());
+        }
+        else if (isClassPersistenceAware(annotations))
+        {
+            // PersistenceAware class
+            cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_AWARE);
+        }
+        else if (doesClassHaveNamedQueries(annotations))
+        {
+            // Class with named query specified
+            cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd.setPersistenceModifier(ClassPersistenceModifier.NON_PERSISTENT);
+        }
+        else
+        {
+            // Not involved in the persistence process
+            return null;
+        }
+
+        // Cater for named queries being specified on a persistence aware, or other class
+        processNamedQueries(cmd, cls, annotations);
+
+        if (cmd.getPersistenceModifier() != ClassPersistenceModifier.PERSISTENCE_CAPABLE)
+        {
+            // Not persistable, so no further information needed
+            return cmd;
+        }
+
+        // Class is persistable so process annotations
+        for (AnnotationObject annotation : annotations)
+        {
+            if (annotation == pcAnnotation)
+            {
+                // Already processed above
+                continue;
             }
-            else if (isClassPersistenceAware(annotations))
+
+            Map<String, Object> annotationValues = annotation.getNameValueMap();
+            String annName = annotation.getName();
+
+            if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
             {
-                // PersistenceAware class
-                cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
-                cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_AWARE);
+                processPersistenceCapableAnnotation(cls, cmd, annotationValues);
             }
-            else if (doesClassHaveNamedQueries(annotations))
+            else if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
             {
-                // Class with named query specified
-                cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
-                cmd.setPersistenceModifier(ClassPersistenceModifier.NON_PERSISTENT);
+                cmd.setEmbeddedOnly(true);
             }
-            else
+            else if (annName.equals(JDOAnnotationUtils.VERSION))
             {
-                // Not involved in the persistence process
-                return null;
+                VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
+                String strategy = JDOAnnotationUtils.getVersionStrategyString(versionStrategy);
+                String indexed = (String) annotationValues.get("indexed");
+                String column = (String) annotationValues.get("column");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+                VersionMetaData vermd = new VersionMetaData();
+                vermd.setStrategy(strategy);
+                vermd.setColumnName(column);
+                vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
+                if (columns != null && columns.length > 0)
+                {
+                    // Only use the first column
+                    ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                    vermd.setColumnMetaData(colmd);
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
+
+                vermd.setParent(cmd);
+                cmd.setVersionMetaData(vermd);
             }
-
-            // Cater for named queries being specified on a persistence aware, or other class
-            processNamedQueries(cmd, cls, annotations);
-
-            if (cmd.getPersistenceModifier() != ClassPersistenceModifier.PERSISTENCE_CAPABLE)
+            else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
             {
-                // Not persistable, so no further information needed
-                return cmd;
+                String strategy = JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("strategy"));
+                String customStrategy = (String) annotationValues.get("customStrategy");
+                if (!StringUtils.isWhitespace(customStrategy))
+                {
+                    // User has provided an extension strategy
+                    strategy = customStrategy;
+                }
+                String sequence = (String) annotationValues.get("sequence");
+                String column = (String) annotationValues.get("column");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+                IdentityMetaData idmd = new IdentityMetaData();
+                idmd.setColumnName(column);
+                idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
+                idmd.setSequence(sequence);
+                if (columns != null && columns.length > 0)
+                {
+                    // Only use the first column
+                    ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                    idmd.setColumnMetaData(colmd);
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
+
+                idmd.setParent(cmd);
+                cmd.setIdentityMetaData(idmd);
             }
-
-            // Class is persistable so process annotations
-            for (int i = 0; i < annotations.length; i++)
+            else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
             {
-                if (annotations[i] == pcAnnotation)
+                String pkName = (String) annotationValues.get("name");
+                String pkColumn = (String) annotationValues.get("column");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+                PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
+                pkmd.setName(pkName);
+                pkmd.setColumnName(pkColumn);
+                if (columns != null && columns.length > 0)
                 {
-                    // Already processed above
-                    continue;
+                    for (int j = 0; j < columns.length; j++)
+                    {
+                        pkmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
+                    }
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[]) annotationValues.get("extensions"));
+
+                pkmd.setParent(cmd);
+                cmd.setPrimaryKeyMetaData(pkmd);
+            }
+            else if (annName.equals(JDOAnnotationUtils.JOINS))
+            {
+                Join[] js = (Join[]) annotationValues.get("value");
+                if (js != null && js.length > 0)
+                {
+                    for (int j = 0; j < js.length; j++)
+                    {
+                        JoinMetaData joinmd = cmd.newJoinMetaData();
+                        joinmd.setTable(js[j].table());
+                        joinmd.setColumnName(js[j].column());
+                        joinmd.setIndexed(IndexedValue.getIndexedValue(js[j].indexed()));
+                        joinmd.setOuter(MetaDataUtils.getBooleanForString(js[j].outer(), false));
+                        joinmd.setUnique(js[j].unique());
+                        joinmd.setDeleteAction(JDOAnnotationUtils.getForeignKeyActionString(js[j].deleteAction()));
+                        JDOAnnotationUtils.addExtensionsToMetaData(joinmd, js[j].extensions());
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.JOIN))
+            {
+                JoinMetaData joinmd = cmd.newJoinMetaData();
+                joinmd.setTable((String) annotationValues.get("table"));
+                joinmd.setColumnName((String) annotationValues.get("column"));
+                joinmd.setIndexed(IndexedValue.getIndexedValue((String) annotationValues.get("indexed")));
+                joinmd.setOuter(MetaDataUtils.getBooleanForString((String) annotationValues.get("outer"), false));
+                joinmd.setUnique((String) annotationValues.get("unique"));
+                joinmd.setDeleteAction(((ForeignKeyAction) annotationValues.get("deleteAction")).toString());
+                JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.INHERITANCE))
+            {
+                String strategy = JDOAnnotationUtils.getInheritanceStrategyString((InheritanceStrategy) annotationValues.get("strategy"));
+                String customStrategy = (String) annotationValues.get("customStrategy");
+                if (!StringUtils.isWhitespace(customStrategy))
+                {
+                    // User has provided an extension strategy
+                    strategy = customStrategy;
                 }
 
-                Map<String, Object> annotationValues = annotations[i].getNameValueMap();
-                String annName = annotations[i].getName();
-                if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
+                InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
+                if (inhmd == null)
                 {
-                    processPersistenceCapableAnnotation(cls, cmd, annotationValues);
+                    inhmd = cmd.newInheritanceMetadata();
                 }
-                else if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
-                {
-                    cmd.setEmbeddedOnly(true);
-                }
-                else if (annName.equals(JDOAnnotationUtils.VERSION))
-                {
-                    VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
-                    String strategy = JDOAnnotationUtils.getVersionStrategyString(versionStrategy);
-                    String indexed = (String) annotationValues.get("indexed");
-                    String column = (String) annotationValues.get("column");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-                    VersionMetaData vermd = new VersionMetaData();
-                    vermd.setStrategy(strategy);
-                    vermd.setColumnName(column);
-                    vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
-                    if (columns != null && columns.length > 0)
-                    {
-                        // Only use the first column
-                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
-                        vermd.setColumnMetaData(colmd);
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
+                inhmd.setStrategy(strategy);
+            }
+            else if (annName.equals(JDOAnnotationUtils.DISCRIMINATOR))
+            {
+                DiscriminatorStrategy discriminatorStrategy = (DiscriminatorStrategy) annotationValues.get("strategy");
+                String strategy = JDOAnnotationUtils.getDiscriminatorStrategyString(discriminatorStrategy);
+                String column = (String) annotationValues.get("column");
+                String indexed = (String) annotationValues.get("indexed");
+                String value = (String) annotationValues.get("value");
+                Column[] columns = (Column[]) annotationValues.get("columns");
 
-                    vermd.setParent(cmd);
-                    cmd.setVersionMetaData(vermd);
-                }
-                else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
+                InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
+                if (inhmd == null)
                 {
-                    String strategy = JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("strategy"));
-                    String customStrategy = (String) annotationValues.get("customStrategy");
-                    if (!StringUtils.isWhitespace(customStrategy))
-                    {
-                        // User has provided an extension strategy
-                        strategy = customStrategy;
-                    }
-                    String sequence = (String) annotationValues.get("sequence");
-                    String column = (String) annotationValues.get("column");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-                    IdentityMetaData idmd = new IdentityMetaData();
-                    idmd.setColumnName(column);
-                    idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
-                    idmd.setSequence(sequence);
-                    if (columns != null && columns.length > 0)
-                    {
-                        // Only use the first column
-                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
-                        idmd.setColumnMetaData(colmd);
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
+                    inhmd = cmd.newInheritanceMetadata();
+                }
 
-                    idmd.setParent(cmd);
-                    cmd.setIdentityMetaData(idmd);
-                }
-                else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
+                DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetadata();
+                dismd.setColumnName(column);
+                dismd.setValue(value);
+                dismd.setStrategy(strategy);
+                dismd.setIndexed(indexed);
+                if (columns != null && columns.length > 0)
                 {
-                    String pkName = (String) annotationValues.get("name");
-                    String pkColumn = (String) annotationValues.get("column");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-                    PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
-                    pkmd.setName(pkName);
-                    pkmd.setColumnName(pkColumn);
-                    if (columns != null && columns.length > 0)
-                    {
-                        for (int j = 0; j < columns.length; j++)
-                        {
-                            pkmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
-                        }
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[]) annotationValues.get("extensions"));
+                    // Only use the first column
+                    ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+                    dismd.setColumnMetaData(colmd);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.FETCHPLANS))
+            {
+                FileMetaData filemd = (FileMetaData) pmd.getParent();
 
-                    pkmd.setParent(cmd);
-                    cmd.setPrimaryKeyMetaData(pkmd);
-                }
-                else if (annName.equals(JDOAnnotationUtils.JOINS))
+                FetchPlan[] plans = (FetchPlan[]) annotationValues.get("value");
+                for (int j = 0; j < plans.length; j++)
                 {
-                    Join[] js = (Join[]) annotationValues.get("value");
-                    if (js != null && js.length > 0)
-                    {
-                        for (int j = 0; j < js.length; j++)
-                        {
-                            JoinMetaData joinmd = cmd.newJoinMetaData();
-                            joinmd.setTable(js[j].table());
-                            joinmd.setColumnName(js[j].column());
-                            joinmd.setIndexed(IndexedValue.getIndexedValue(js[j].indexed()));
-                            joinmd.setOuter(MetaDataUtils.getBooleanForString(js[j].outer(), false));
-                            joinmd.setUnique(js[j].unique());
-                            joinmd.setDeleteAction(JDOAnnotationUtils.getForeignKeyActionString(js[j].deleteAction()));
-                            JDOAnnotationUtils.addExtensionsToMetaData(joinmd, js[j].extensions());
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.JOIN))
-                {
-                    JoinMetaData joinmd = cmd.newJoinMetaData();
-                    joinmd.setTable((String) annotationValues.get("table"));
-                    joinmd.setColumnName((String) annotationValues.get("column"));
-                    joinmd.setIndexed(IndexedValue.getIndexedValue((String) annotationValues.get("indexed")));
-                    joinmd.setOuter(MetaDataUtils.getBooleanForString((String) annotationValues.get("outer"), false));
-                    joinmd.setUnique((String) annotationValues.get("unique"));
-                    joinmd.setDeleteAction(((ForeignKeyAction) annotationValues.get("deleteAction")).toString());
-                    JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.INHERITANCE))
-                {
-                    String strategy = JDOAnnotationUtils.getInheritanceStrategyString((InheritanceStrategy) annotationValues.get("strategy"));
-                    String customStrategy = (String) annotationValues.get("customStrategy");
-                    if (!StringUtils.isWhitespace(customStrategy))
-                    {
-                        // User has provided an extension strategy
-                        strategy = customStrategy;
-                    }
-
-                    InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
-                    if (inhmd == null)
-                    {
-                        inhmd = cmd.newInheritanceMetadata();
-                    }
-                    inhmd.setStrategy(strategy);
-                }
-                else if (annName.equals(JDOAnnotationUtils.DISCRIMINATOR))
-                {
-                    DiscriminatorStrategy discriminatorStrategy = (DiscriminatorStrategy) annotationValues.get("strategy");
-                    String strategy = JDOAnnotationUtils.getDiscriminatorStrategyString(discriminatorStrategy);
-                    String column = (String) annotationValues.get("column");
-                    String indexed = (String) annotationValues.get("indexed");
-                    String value = (String) annotationValues.get("value");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
-                    if (inhmd == null)
-                    {
-                        inhmd = cmd.newInheritanceMetadata();
-                    }
-
-                    DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetadata();
-                    dismd.setColumnName(column);
-                    dismd.setValue(value);
-                    dismd.setStrategy(strategy);
-                    dismd.setIndexed(indexed);
-                    if (columns != null && columns.length > 0)
-                    {
-                        // Only use the first column
-                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
-                        dismd.setColumnMetaData(colmd);
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.FETCHPLANS))
-                {
-                    FileMetaData filemd = (FileMetaData) pmd.getParent();
-
-                    FetchPlan[] plans = (FetchPlan[]) annotationValues.get("value");
-                    for (int j = 0; j < plans.length; j++)
-                    {
-                        FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata(plans[j].name());
-                        fpmd.setFetchSize(plans[j].fetchSize());
-                        fpmd.setMaxFetchDepth(plans[j].maxFetchDepth());
-                        int numGroups = plans[j].fetchGroups().length;
-                        for (int k = 0; k < numGroups; k++)
-                        {
-                            FetchGroupMetaData fgmd = new FetchGroupMetaData(plans[j].fetchGroups()[k]);
-                            fpmd.addFetchGroup(fgmd);
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.FETCHPLAN))
-                {
-                    FileMetaData filemd = (FileMetaData) pmd.getParent();
-                    FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata((String)annotationValues.get("name"));
-                    fpmd.setFetchSize(((Integer) annotationValues.get("fetchSize")).intValue());
-                    fpmd.setMaxFetchDepth(((Integer) annotationValues.get("maxFetchDepth")).intValue());
-                    String[] fpFetchGroups = (String[]) annotationValues.get("fetchGroups");
-                    int numGroups = fpFetchGroups.length;
+                    FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata(plans[j].name());
+                    fpmd.setFetchSize(plans[j].fetchSize());
+                    fpmd.setMaxFetchDepth(plans[j].maxFetchDepth());
+                    int numGroups = plans[j].fetchGroups().length;
                     for (int k = 0; k < numGroups; k++)
                     {
-                        FetchGroupMetaData fgmd = new FetchGroupMetaData(fpFetchGroups[k]);
+                        FetchGroupMetaData fgmd = new FetchGroupMetaData(plans[j].fetchGroups()[k]);
                         fpmd.addFetchGroup(fgmd);
                     }
                 }
-                else if (annName.equals(JDOAnnotationUtils.FETCHGROUPS))
+            }
+            else if (annName.equals(JDOAnnotationUtils.FETCHPLAN))
+            {
+                FileMetaData filemd = (FileMetaData) pmd.getParent();
+                FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata((String)annotationValues.get("name"));
+                fpmd.setFetchSize(((Integer) annotationValues.get("fetchSize")).intValue());
+                fpmd.setMaxFetchDepth(((Integer) annotationValues.get("maxFetchDepth")).intValue());
+                String[] fpFetchGroups = (String[]) annotationValues.get("fetchGroups");
+                int numGroups = fpFetchGroups.length;
+                for (int k = 0; k < numGroups; k++)
                 {
-                    FetchGroup[] groups = (FetchGroup[]) annotationValues.get("value");
+                    FetchGroupMetaData fgmd = new FetchGroupMetaData(fpFetchGroups[k]);
+                    fpmd.addFetchGroup(fgmd);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.FETCHGROUPS))
+            {
+                FetchGroup[] groups = (FetchGroup[]) annotationValues.get("value");
 
-                    for (int j = 0; j < groups.length; j++)
-                    {
-                        FetchGroupMetaData fgmd = cmd.newFetchGroupMetaData(groups[j].name());
+                for (int j = 0; j < groups.length; j++)
+                {
+                    FetchGroupMetaData fgmd = cmd.newFetchGroupMetaData(groups[j].name());
 
-                        if (!StringUtils.isWhitespace(groups[j].postLoad()))
-                        {
-                            fgmd.setPostLoad(Boolean.valueOf(groups[j].postLoad()));
-                        }
-                        int numFields = groups[j].members().length;
-                        for (int k = 0; k < numFields; k++)
-                        {
-                            FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, groups[j].members()[k].name());
-                            fgmmd.setRecursionDepth(groups[j].members()[k].recursionDepth());
-                            fgmd.addMember(fgmmd);
-                        }
-                        int numGroups = groups[j].fetchGroups().length;
-                        for (int k = 0; k < numGroups; k++)
-                        {
-                            FetchGroupMetaData subgrp = new FetchGroupMetaData(groups[j].fetchGroups()[k]);
-                            fgmd.addFetchGroup(subgrp);
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.FETCHGROUP))
-                {
-                    FetchGroupMetaData fgmd = cmd.newFetchGroupMetaData((String) annotationValues.get("name"));
-                    String postLoadStr = (String) annotationValues.get("postLoad");
-                    if (!StringUtils.isWhitespace(postLoadStr))
+                    if (!StringUtils.isWhitespace(groups[j].postLoad()))
                     {
-                        fgmd.setPostLoad(Boolean.valueOf(postLoadStr));
+                        fgmd.setPostLoad(Boolean.valueOf(groups[j].postLoad()));
                     }
-                    Persistent[] fields = (Persistent[]) annotationValues.get("members");
-                    if (fields != null)
+                    int numFields = groups[j].members().length;
+                    for (int k = 0; k < numFields; k++)
                     {
-                        for (int j = 0; j < fields.length; j++)
-                        {
-                            FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, fields[j].name());
-                            fgmmd.setRecursionDepth(fields[j].recursionDepth());
-                            fgmd.addMember(fgmmd);
-                        }
+                        FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, groups[j].members()[k].name());
+                        fgmmd.setRecursionDepth(groups[j].members()[k].recursionDepth());
+                        fgmd.addMember(fgmmd);
                     }
-                }
-                else if (annName.equals(JDOAnnotationUtils.SEQUENCE))
-                {
-                    String seqName = (String) annotationValues.get("name");
-                    String seqStrategy = JDOAnnotationUtils.getSequenceStrategyString((SequenceStrategy) annotationValues.get("strategy"));
-                    String seqSeq = (String) annotationValues.get("datastoreSequence");
-                    Class seqFactory = (Class) annotationValues.get("factoryClass");
-                    String seqFactoryClassName = null;
-                    if (seqFactory != null && seqFactory != void.class)
+                    int numGroups = groups[j].fetchGroups().length;
+                    for (int k = 0; k < numGroups; k++)
                     {
-                        seqFactoryClassName = seqFactory.getName();
-                    }
-                    Integer seqSize = (Integer) annotationValues.get("allocationSize");
-                    Integer seqStart = (Integer) annotationValues.get("initialValue");
-
-                    if (StringUtils.isWhitespace(seqName))
-                    {
-                        throw new InvalidClassMetaDataException("044155", cmd.getFullClassName());
-                    }
-                    SequenceMetaData seqmd = new SequenceMetaData(seqName, seqStrategy);
-                    seqmd.setFactoryClass(seqFactoryClassName);
-                    seqmd.setDatastoreSequence(seqSeq);
-                    if (seqSize != null)
-                    {
-                        seqmd.setAllocationSize(seqSize);
-                    }
-                    if (seqStart != null)
-                    {
-                        seqmd.setInitialValue(seqStart);
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(seqmd, (Extension[]) annotationValues.get("extensions"));
-
-                    // Sequence - currently only allowing 1 per class (should really be on the package)
-                    cmd.getPackageMetaData().addSequence(seqmd);
-                }
-                else if (annName.equals(JDOAnnotationUtils.INDICES))
-                {
-                    // Multiple Indices for the class
-                    Index[] values = (Index[]) annotationValues.get("value");
-                    if (values != null && values.length > 0)
-                    {
-                        for (int j = 0; j < values.length; j++)
-                        {
-                            IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(values[j].name(), values[j].table(), "" + values[j].unique(), values[j].members(), values[j].columns());
-                            if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
-                            {
-                                NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
-                            }
-                            else
-                            {
-                                cmd.addIndex(idxmd);
-                                idxmd.setParent(cmd);
-                            }
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.INDEX))
-                {
-                    // Single Index for the class
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String unique = (String) annotationValues.get("unique");
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
-                    if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
-                    {
-                        NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
-                    }
-                    else
-                    {
-                        cmd.addIndex(idxmd);
-                        idxmd.setParent(cmd);
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.UNIQUES))
-                {
-                    // Multiple Unique Constraints for the class
-                    Unique[] values = (Unique[]) annotationValues.get("value");
-                    if (values != null && values.length > 0)
-                    {
-                        for (int j = 0; j < values.length; j++)
-                        {
-                            UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(values[j].name(), values[j].table(), "" + values[j].deferred(), values[j].members(), values[j].columns());
-                            if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
-                            {
-                                NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
-                            }
-                            else
-                            {
-                                cmd.addUniqueConstraint(unimd);
-                                unimd.setParent(cmd);
-                            }
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.UNIQUE))
-                {
-                    // Single Unique constraint for the class
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String deferred = (String) annotationValues.get("deferred");
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
-                    if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
-                    {
-                        NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
-                    }
-                    else
-                    {
-                        cmd.addUniqueConstraint(unimd);
-                        unimd.setParent(cmd);
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.FOREIGNKEYS))
-                {
-                    // Multiple FKs for the class
-                    ForeignKey[] values = (ForeignKey[]) annotationValues.get("value");
-                    if (values != null && values.length > 0)
-                    {
-                        for (int j = 0; j < values.length; j++)
-                        {
-                            String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].deleteAction());
-                            String updateAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].updateAction());
-                            ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(values[j].name(), values[j].table(), values[j].unique(),
-                                "" + values[j].deferred(), deleteAction, updateAction, values[j].members(), values[j].columns());
-                            if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
-                            {
-                                NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
-                            }
-                            else
-                            {
-                                cmd.addForeignKey(fkmd);
-                                fkmd.setParent(cmd);
-                            }
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
-                {
-                    // Single FK constraint for the class
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String unique = (String) annotationValues.get("unique");
-                    String deferred = (String) annotationValues.get("deferred");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
-                    if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
-                    {
-                        NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
-                    }
-                    else
-                    {
-                        cmd.addForeignKey(fkmd);
-                        fkmd.setParent(cmd);
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.COLUMNS))
-                {
-                    // Unmapped column specification
-                    Column[] cols = (Column[]) annotationValues.get("value");
-                    if (cols != null && cols.length > 0)
-                    {
-                        for (Column col : cols)
-                        {
-                            ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(col);
-                            JDOAnnotationUtils.addExtensionsToMetaData(colmd, col.extensions());
-
-                            colmd.setParent(cmd);
-                            cmd.addUnmappedColumn(colmd);
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
-                {
-                    String cache = (String) annotationValues.get("value");
-                    if (cache != null && cache.equalsIgnoreCase("false"))
-                    {
-                        cmd.setCacheable(false);
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
-                {
-                    Extension[] values = (Extension[]) annotationValues.get("value");
-                    if (values != null && values.length > 0)
-                    {
-                        for (int j = 0; j < values.length; j++)
-                        {
-                            String vendorName = values[j].vendorName();
-                            if (StringUtils.isWhitespace(vendorName))
-                            {
-                                throw new InvalidMetaDataException("044160", vendorName, values[j].key().toString(), values[j].value().toString());
-                            }
-                            else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
-                            {
-                                cmd.addExtension(values[j].key().toString(), values[j].value().toString());
-                            }
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.EXTENSION))
-                {
-                    String vendorName = (String)annotationValues.get("vendorName");
-                    if (StringUtils.isWhitespace(vendorName))
-                    {
-                        throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
-                    }
-                    else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
-                    {
-                        cmd.addExtension((String)annotationValues.get("key"), (String)annotationValues.get("value"));
-                    }
-                }
-                else
-                {
-                    if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) && !annName.equals(JDOAnnotationUtils.QUERIES) && !annName.equals(JDOAnnotationUtils.QUERY))
-                    {
-                        NucleusLogger.METADATA.debug(Localiser.msg("044203", cls.getName(), annotations[i].getName()));
+                        FetchGroupMetaData subgrp = new FetchGroupMetaData(groups[j].fetchGroups()[k]);
+                        fgmd.addFetchGroup(subgrp);
                     }
                 }
             }
+            else if (annName.equals(JDOAnnotationUtils.FETCHGROUP))
+            {
+                FetchGroupMetaData fgmd = cmd.newFetchGroupMetaData((String) annotationValues.get("name"));
+                String postLoadStr = (String) annotationValues.get("postLoad");
+                if (!StringUtils.isWhitespace(postLoadStr))
+                {
+                    fgmd.setPostLoad(Boolean.valueOf(postLoadStr));
+                }
+                Persistent[] fields = (Persistent[]) annotationValues.get("members");
+                if (fields != null)
+                {
+                    for (int j = 0; j < fields.length; j++)
+                    {
+                        FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, fields[j].name());
+                        fgmmd.setRecursionDepth(fields[j].recursionDepth());
+                        fgmd.addMember(fgmmd);
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.SEQUENCE))
+            {
+                String seqName = (String) annotationValues.get("name");
+                String seqStrategy = JDOAnnotationUtils.getSequenceStrategyString((SequenceStrategy) annotationValues.get("strategy"));
+                String seqSeq = (String) annotationValues.get("datastoreSequence");
+                Class seqFactory = (Class) annotationValues.get("factoryClass");
+                String seqFactoryClassName = null;
+                if (seqFactory != null && seqFactory != void.class)
+                {
+                    seqFactoryClassName = seqFactory.getName();
+                }
+                Integer seqSize = (Integer) annotationValues.get("allocationSize");
+                Integer seqStart = (Integer) annotationValues.get("initialValue");
 
-            NucleusLogger.METADATA.debug(Localiser.msg("044200", cls.getName(), "JDO"));
+                if (StringUtils.isWhitespace(seqName))
+                {
+                    throw new InvalidClassMetaDataException("044155", cmd.getFullClassName());
+                }
+                SequenceMetaData seqmd = new SequenceMetaData(seqName, seqStrategy);
+                seqmd.setFactoryClass(seqFactoryClassName);
+                seqmd.setDatastoreSequence(seqSeq);
+                if (seqSize != null)
+                {
+                    seqmd.setAllocationSize(seqSize);
+                }
+                if (seqStart != null)
+                {
+                    seqmd.setInitialValue(seqStart);
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(seqmd, (Extension[]) annotationValues.get("extensions"));
+
+                // Sequence - currently only allowing 1 per class (should really be on the package)
+                cmd.getPackageMetaData().addSequence(seqmd);
+            }
+            else if (annName.equals(JDOAnnotationUtils.INDICES))
+            {
+                // Multiple Indices for the class
+                Index[] values = (Index[]) annotationValues.get("value");
+                if (values != null && values.length > 0)
+                {
+                    for (int j = 0; j < values.length; j++)
+                    {
+                        IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(values[j].name(), values[j].table(), "" + values[j].unique(), values[j].members(), values[j].columns());
+                        if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
+                        {
+                            NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
+                        }
+                        else
+                        {
+                            cmd.addIndex(idxmd);
+                            idxmd.setParent(cmd);
+                        }
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.INDEX))
+            {
+                // Single Index for the class
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String unique = (String) annotationValues.get("unique");
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
+                if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
+                {
+                    NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
+                }
+                else
+                {
+                    cmd.addIndex(idxmd);
+                    idxmd.setParent(cmd);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.UNIQUES))
+            {
+                // Multiple Unique Constraints for the class
+                Unique[] values = (Unique[]) annotationValues.get("value");
+                if (values != null && values.length > 0)
+                {
+                    for (int j = 0; j < values.length; j++)
+                    {
+                        UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(values[j].name(), values[j].table(), "" + values[j].deferred(), values[j].members(), values[j].columns());
+                        if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
+                        {
+                            NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
+                        }
+                        else
+                        {
+                            cmd.addUniqueConstraint(unimd);
+                            unimd.setParent(cmd);
+                        }
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.UNIQUE))
+            {
+                // Single Unique constraint for the class
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String deferred = (String) annotationValues.get("deferred");
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
+                if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
+                {
+                    NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
+                }
+                else
+                {
+                    cmd.addUniqueConstraint(unimd);
+                    unimd.setParent(cmd);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.FOREIGNKEYS))
+            {
+                // Multiple FKs for the class
+                ForeignKey[] values = (ForeignKey[]) annotationValues.get("value");
+                if (values != null && values.length > 0)
+                {
+                    for (int j = 0; j < values.length; j++)
+                    {
+                        String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].deleteAction());
+                        String updateAction = JDOAnnotationUtils.getForeignKeyActionString(values[j].updateAction());
+                        ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(values[j].name(), values[j].table(), values[j].unique(),
+                            "" + values[j].deferred(), deleteAction, updateAction, values[j].members(), values[j].columns());
+                        if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
+                        {
+                            NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
+                        }
+                        else
+                        {
+                            cmd.addForeignKey(fkmd);
+                            fkmd.setParent(cmd);
+                        }
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
+            {
+                // Single FK constraint for the class
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String unique = (String) annotationValues.get("unique");
+                String deferred = (String) annotationValues.get("deferred");
+                String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
+                if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
+                {
+                    NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
+                }
+                else
+                {
+                    cmd.addForeignKey(fkmd);
+                    fkmd.setParent(cmd);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.COLUMNS))
+            {
+                // Unmapped column specification
+                Column[] cols = (Column[]) annotationValues.get("value");
+                if (cols != null && cols.length > 0)
+                {
+                    for (Column col : cols)
+                    {
+                        ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(col);
+                        JDOAnnotationUtils.addExtensionsToMetaData(colmd, col.extensions());
+
+                        colmd.setParent(cmd);
+                        cmd.addUnmappedColumn(colmd);
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
+            {
+                String cache = (String) annotationValues.get("value");
+                if (cache != null && cache.equalsIgnoreCase("false"))
+                {
+                    cmd.setCacheable(false);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
+            {
+                Extension[] values = (Extension[]) annotationValues.get("value");
+                if (values != null && values.length > 0)
+                {
+                    for (int j = 0; j < values.length; j++)
+                    {
+                        String vendorName = values[j].vendorName();
+                        if (StringUtils.isWhitespace(vendorName))
+                        {
+                            throw new InvalidMetaDataException("044160", vendorName, values[j].key().toString(), values[j].value().toString());
+                        }
+                        else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                        {
+                            cmd.addExtension(values[j].key().toString(), values[j].value().toString());
+                        }
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.EXTENSION))
+            {
+                String vendorName = (String)annotationValues.get("vendorName");
+                if (StringUtils.isWhitespace(vendorName))
+                {
+                    throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
+                }
+                else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                {
+                    cmd.addExtension((String)annotationValues.get("key"), (String)annotationValues.get("value"));
+                }
+            }
+            else
+            {
+                if (!annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE) && !annName.equals(JDOAnnotationUtils.QUERIES) && !annName.equals(JDOAnnotationUtils.QUERY))
+                {
+                    NucleusLogger.METADATA.debug(Localiser.msg("044203", cls.getName(), annotation.getName()));
+                }
+            }
         }
+
+        NucleusLogger.METADATA.debug(Localiser.msg("044200", cls.getName(), "JDO"));
 
         return cmd;
     }
@@ -700,15 +702,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         if (members != null)
         {
             // Add on the fields/properties direct to the metadata for the class/interface
-            for (int j = 0; j < members.length; j++)
+            for (Persistent member : members)
             {
-                String memberName = members[j].name();
+                String memberName = member.name();
                 if (memberName.indexOf('.') > 0)
                 {
                     memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                 }
                 boolean isField = isMemberOfClassAField(cls, memberName);
-                AbstractMemberMetaData fmd = getFieldMetaDataForPersistent(cmd, members[j], isField);
+                AbstractMemberMetaData fmd = getFieldMetaDataForPersistent(cmd, member, isField);
                 cmd.addMember(fmd);
             }
         }
@@ -722,17 +724,17 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected void processNamedQueries(AbstractClassMetaData cmd, Class cls, AnnotationObject[] annotations)
     {
-        for (int i = 0; i < annotations.length; i++)
+        for (AnnotationObject annotation : annotations)
         {
-            Map<String, Object> annotationValues = annotations[i].getNameValueMap();
-            String annName = annotations[i].getName();
+            Map<String, Object> annotationValues = annotation.getNameValueMap();
+            String annName = annotation.getName();
 
             if (annName.equals(JDOAnnotationUtils.QUERIES))
             {
                 Query[] qs = (Query[]) annotationValues.get("value");
-                for (int j = 0; j < qs.length; j++)
+                for (Query query : qs)
                 {
-                    String lang = JDOAnnotationUtils.getQueryLanguageName(qs[j].language());
+                    String lang = JDOAnnotationUtils.getQueryLanguageName(query.language());
                     if (!StringUtils.isWhitespace(lang))
                     {
                         if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
@@ -748,20 +750,20 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                             lang = QueryLanguage.JPQL.toString();
                         }
                     }
-                    String resultClassName = (qs[j].resultClass() != null && qs[j].resultClass() != void.class ? qs[j].resultClass().getName() : null);
-                    if (StringUtils.isWhitespace(qs[j].name()))
+                    String resultClassName = (query.resultClass() != null && query.resultClass() != void.class ? query.resultClass().getName() : null);
+                    if (StringUtils.isWhitespace(query.name()))
                     {
                         throw new InvalidClassMetaDataException("044154", cmd.getFullClassName());
                     }
-                    QueryMetaData qmd = new QueryMetaData(qs[j].name());
+                    QueryMetaData qmd = new QueryMetaData(query.name());
                     qmd.setScope(cls.getName());
                     qmd.setLanguage(lang);
-                    qmd.setUnmodifiable(qs[j].unmodifiable());
+                    qmd.setUnmodifiable(query.unmodifiable());
                     qmd.setResultClass(resultClassName);
-                    qmd.setUnique(qs[j].unique());
-                    qmd.setFetchPlanName(qs[j].fetchPlan());
-                    qmd.setQuery(qs[j].value());
-                    JDOAnnotationUtils.addExtensionsToMetaData(qmd, qs[j].extensions());
+                    qmd.setUnique(query.unique());
+                    qmd.setFetchPlanName(query.fetchPlan());
+                    qmd.setQuery(query.value());
+                    JDOAnnotationUtils.addExtensionsToMetaData(qmd, query.extensions());
                     cmd.addQuery(qmd);
                     qmd.setParent(cmd);
                 }
@@ -807,8 +809,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Convenience method to process the annotations for a field/property. The passed annotations may have
-     * been specified on the field or on the getter methods.
+     * Convenience method to process the annotations for a field/property. The passed annotations may have been specified on the field or on the getter methods.
      * @param cmd The ClassMetaData/InterfaceMetaData to update
      * @param member The field/property
      * @param annotations Annotations for the field/property
@@ -817,1308 +818,1288 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected AbstractMemberMetaData processMemberAnnotations(AbstractClassMetaData cmd, Member member, AnnotationObject[] annotations, boolean propertyAccessor)
     {
-        AbstractMemberMetaData mmd = null;
-        if (annotations != null && annotations.length > 0)
+        if (annotations == null || annotations.length == 0)
         {
-            boolean primaryKey = false;
-            boolean serialised = false;
-            boolean embeddedMember = false;
-            boolean nonPersistentField = false;
-            boolean transactionalField = false;
-            String cacheable = null;
+            return null;
+        }
 
-            Class[] elementTypes = null;
-            String embeddedElement = null;
-            String serializedElement = null;
-            String dependentElement = null;
+        AbstractMemberMetaData mmd = null;
 
-            Class[] keyTypes = null;
-            String embeddedKey = null;
-            String serializedKey = null;
-            String dependentKey = null;
+        boolean primaryKey = false;
+        boolean serialised = false;
+        boolean embeddedMember = false;
+        boolean nonPersistentField = false;
+        boolean transactionalField = false;
+        String cacheable = null;
 
-            Class[] valueTypes = null;
-            String embeddedValue = null;
-            String serializedValue = null;
-            String dependentValue = null;
+        Class[] elementTypes = null;
+        String embeddedElement = null;
+        String serializedElement = null;
+        String dependentElement = null;
 
-            String embeddedOwnerField = null;
-            String embeddedNullIndicatorColumn = null;
-            String embeddedNullIndicatorValue = null;
-            Persistent[] embeddedMembers = null;
-            Persistent[] embeddedElementMembers = null;
-            Persistent[] embeddedKeyMembers = null;
-            Persistent[] embeddedValueMembers = null;
+        Class[] keyTypes = null;
+        String embeddedKey = null;
+        String serializedKey = null;
+        String dependentKey = null;
 
-            ColumnMetaData[] colmds = null;
-            JoinMetaData joinmd = null;
-            ElementMetaData elemmd = null;
-            KeyMetaData keymd = null;
-            ValueMetaData valuemd = null;
-            OrderMetaData ordermd = null;
-            IndexMetaData idxmd = null;
-            UniqueMetaData unimd = null;
-            ForeignKeyMetaData fkmd = null;
-            Map<String, String> extensions = null;
-            Class convertConverterCls = null;
+        Class[] valueTypes = null;
+        String embeddedValue = null;
+        String serializedValue = null;
+        String dependentValue = null;
 
-            for (int i = 0; i < annotations.length; i++)
+        String embeddedOwnerField = null;
+        String embeddedNullIndicatorColumn = null;
+        String embeddedNullIndicatorValue = null;
+        Persistent[] embeddedMembers = null;
+        Persistent[] embeddedElementMembers = null;
+        Persistent[] embeddedKeyMembers = null;
+        Persistent[] embeddedValueMembers = null;
+
+        ColumnMetaData[] colmds = null;
+        JoinMetaData joinmd = null;
+        ElementMetaData elemmd = null;
+        KeyMetaData keymd = null;
+        ValueMetaData valuemd = null;
+        OrderMetaData ordermd = null;
+        IndexMetaData idxmd = null;
+        UniqueMetaData unimd = null;
+        ForeignKeyMetaData fkmd = null;
+        Map<String, String> extensions = null;
+        Class convertConverterCls = null;
+
+        for (AnnotationObject annotation : annotations)
+        {
+            String annName = annotation.getName();
+            Map<String, Object> annotationValues = annotation.getNameValueMap();
+
+            if (annName.equals(JDOAnnotationUtils.PERSISTENT))
             {
-                String annName = annotations[i].getName();
-                Map<String, Object> annotationValues = annotations[i].getNameValueMap();
-                if (annName.equals(JDOAnnotationUtils.PERSISTENT))
+                String pkStr = "" + annotationValues.get("primaryKey");
+                Boolean pk = null;
+                if (!StringUtils.isWhitespace(pkStr))
                 {
-                    String pkStr = "" + annotationValues.get("primaryKey");
-                    Boolean pk = null;
-                    if (!StringUtils.isWhitespace(pkStr))
-                    {
-                        pk = Boolean.valueOf(pkStr);
-                    }
-                    String dfgStr = (String) annotationValues.get("defaultFetchGroup");
-                    Boolean dfg = null;
-                    if (!StringUtils.isWhitespace(dfgStr))
-                    {
-                        dfg = Boolean.valueOf(dfgStr);
-                    }
-                    String nullValue = JDOAnnotationUtils.getNullValueString((NullValue) annotationValues.get("nullValue"));
-                    String embStr = (String) annotationValues.get("embedded");
-                    Boolean embedded = null;
-                    if (!StringUtils.isWhitespace(embStr))
-                    {
-                        embedded = Boolean.valueOf(embStr);
-                    }
-                    String serStr = (String) annotationValues.get("serialized");
-                    Boolean serialized = null;
-                    if (!StringUtils.isWhitespace(serStr))
-                    {
-                        serialized = Boolean.valueOf(serStr);
-                    }
-                    String depStr = (String) annotationValues.get("dependent");
-                    Boolean dependent = null;
-                    if (!StringUtils.isWhitespace(depStr))
-                    {
-                        dependent = Boolean.valueOf(depStr);
-                    }
-                    String valueStrategy = 
-                            JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
-                    String customValueStrategy = (String) annotationValues.get("customValueStrategy");
-                    if (!StringUtils.isWhitespace(customValueStrategy))
-                    {
-                        // User has provided an extension strategy
-                        valueStrategy = customValueStrategy;
-                    }
-                    FieldPersistenceModifier modifier = 
-                            JDOAnnotationUtils.getFieldPersistenceModifier((PersistenceModifier) annotationValues.get("persistenceModifier"));
-                    if (modifier == null)
-                    {
-                        modifier = FieldPersistenceModifier.PERSISTENT;
-                    }
-                    String sequence = (String) annotationValues.get("sequence");
-                    String mappedBy = (String) annotationValues.get("mappedBy");
-                    String table = (String) annotationValues.get("table");
-                    String column = (String) annotationValues.get("column");
-                    String loadFetchGroup = (String) annotationValues.get("loadFetchGroup");
-                    String fieldTypeName = null;
-                    int recursionDepth = ((Integer) annotationValues.get("recursionDepth")).intValue();
-                    cacheable = (String) annotationValues.get("cacheable");
-                    Class[] fieldTypes = (Class[]) annotationValues.get("types");
-                    if (fieldTypes != null && fieldTypes.length > 0)
-                    {
-                        StringBuilder typeStr = new StringBuilder();
-                        for (int j = 0; j < fieldTypes.length; j++)
-                        {
-                            if (typeStr.length() > 0)
-                            {
-                                typeStr.append(',');
-                            }
-                            if (fieldTypes[j] != null && fieldTypes[j] != void.class)
-                            {
-                                typeStr.append(fieldTypes[j].getName());
-                            }
-                        }
-                        fieldTypeName = typeStr.toString();
-                    }
-                    dependentElement = (String) annotationValues.get("dependentElement");
-                    serializedElement = (String) annotationValues.get("serializedElement");
-                    embeddedElement = (String) annotationValues.get("embeddedElement");
-                    dependentKey = (String) annotationValues.get("dependentKey");
-                    serializedKey = (String) annotationValues.get("serializedKey");
-                    embeddedKey = (String) annotationValues.get("embeddedKey");
-                    dependentValue = (String) annotationValues.get("dependentValue");
-                    serializedValue = (String) annotationValues.get("serializedValue");
-                    embeddedValue = (String) annotationValues.get("embeddedValue");
-                    Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == UseDefault.class)
-                    {
-                        converterCls = null;
-                    }
-                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
+                    pk = Boolean.valueOf(pkStr);
+                }
+                String dfgStr = (String) annotationValues.get("defaultFetchGroup");
+                Boolean dfg = null;
+                if (!StringUtils.isWhitespace(dfgStr))
+                {
+                    dfg = Boolean.valueOf(dfgStr);
+                }
+                String nullValue = JDOAnnotationUtils.getNullValueString((NullValue) annotationValues.get("nullValue"));
+                String embStr = (String) annotationValues.get("embedded");
+                Boolean embedded = null;
+                if (!StringUtils.isWhitespace(embStr))
+                {
+                    embedded = Boolean.valueOf(embStr);
+                }
+                String serStr = (String) annotationValues.get("serialized");
+                Boolean serialized = null;
+                if (!StringUtils.isWhitespace(serStr))
+                {
+                    serialized = Boolean.valueOf(serStr);
+                }
+                String depStr = (String) annotationValues.get("dependent");
+                Boolean dependent = null;
+                if (!StringUtils.isWhitespace(depStr))
+                {
+                    dependent = Boolean.valueOf(depStr);
+                }
 
-                    if (member.isProperty())
+                String valueStrategy = JDOAnnotationUtils.getValueGenerationStrategyString((IdGeneratorStrategy) annotationValues.get("valueStrategy"));
+                String customValueStrategy = (String) annotationValues.get("customValueStrategy");
+                if (!StringUtils.isWhitespace(customValueStrategy))
+                {
+                    // User has provided an extension strategy
+                    valueStrategy = customValueStrategy;
+                }
+
+                FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier((PersistenceModifier) annotationValues.get("persistenceModifier"));
+                if (modifier == null)
+                {
+                    modifier = FieldPersistenceModifier.PERSISTENT;
+                }
+                String sequence = (String) annotationValues.get("sequence");
+                String mappedBy = (String) annotationValues.get("mappedBy");
+                String table = (String) annotationValues.get("table");
+                String column = (String) annotationValues.get("column");
+                String loadFetchGroup = (String) annotationValues.get("loadFetchGroup");
+                String fieldTypeName = null;
+                int recursionDepth = ((Integer) annotationValues.get("recursionDepth")).intValue();
+                cacheable = (String) annotationValues.get("cacheable");
+                Class[] fieldTypes = (Class[]) annotationValues.get("types");
+                if (fieldTypes != null && fieldTypes.length > 0)
+                {
+                    StringBuilder typeStr = new StringBuilder();
+                    for (Class fieldType : fieldTypes)
                     {
-                        // Property
-                        mmd = new PropertyMetaData(cmd, member.getName());
+                        if (typeStr.length() > 0)
+                        {
+                            typeStr.append(',');
+                        }
+                        if (fieldType != null && fieldType != void.class)
+                        {
+                            typeStr.append(fieldType.getName());
+                        }
+                    }
+                    fieldTypeName = typeStr.toString();
+                }
+                dependentElement = (String) annotationValues.get("dependentElement");
+                serializedElement = (String) annotationValues.get("serializedElement");
+                embeddedElement = (String) annotationValues.get("embeddedElement");
+                dependentKey = (String) annotationValues.get("dependentKey");
+                serializedKey = (String) annotationValues.get("serializedKey");
+                embeddedKey = (String) annotationValues.get("embeddedKey");
+                dependentValue = (String) annotationValues.get("dependentValue");
+                serializedValue = (String) annotationValues.get("serializedValue");
+                embeddedValue = (String) annotationValues.get("embeddedValue");
+                Class converterCls = (Class) annotationValues.get("converter");
+                if (converterCls == UseDefault.class)
+                {
+                    converterCls = null;
+                }
+                Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
+
+                mmd = member.isProperty() ? new PropertyMetaData(cmd, member.getName()) : new FieldMetaData(cmd, member.getName());
+
+                if (isPersistenceContext())
+                {
+                    if (disableConversion != null && disableConversion)
+                    {
+                        mmd.setTypeConverterDisabled();
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+                        {
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, member.getType());
+                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                        }
+
+                        mmd.setTypeConverterName(converterCls.getName());
+                    }
+                }
+
+                if (modifier != null)
+                {
+                    mmd.setPersistenceModifier(modifier);
+                }
+                if (dfg != null)
+                {
+                    mmd.setDefaultFetchGroup(dfg);
+                }
+                if (pk != null)
+                {
+                    mmd.setPrimaryKey(pk);
+                }
+                if (embedded != null)
+                {
+                    mmd.setEmbedded(embedded);
+                }
+                if (serialized != null)
+                {
+                    mmd.setSerialised(serialized);
+                }
+                if (dependent != null)
+                {
+                    mmd.setDependent(dependent);
+                }
+                mmd.setNullValue(org.datanucleus.metadata.NullValue.getNullValue(nullValue));
+                mmd.setMappedBy(mappedBy);
+                mmd.setColumn(column);
+                mmd.setTable(table);
+                mmd.setRecursionDepth(recursionDepth);
+                mmd.setLoadFetchGroup(loadFetchGroup);
+                mmd.setValueStrategy(valueStrategy);
+                mmd.setSequence(sequence);
+                mmd.setFieldTypes(fieldTypeName);
+
+                // Add any columns defined on the @Persistent
+                Column[] columns = (Column[]) annotationValues.get("columns");
+                if (columns != null && columns.length > 0)
+                {
+                    for (Column col : columns)
+                    {
+                        mmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(col));
+                    }
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(mmd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
+            {
+                primaryKey = true;
+                if (cmd.getIdentityType() == IdentityType.DATASTORE)
+                {
+                    // ClassMetaData was created as DATASTORE so change it to APPLICATION
+                    cmd.setIdentityType(IdentityType.APPLICATION);
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.SERIALIZED))
+            {
+                serialised = true;
+            }
+            else if (annName.equals(JDOAnnotationUtils.NOTPERSISTENT))
+            {
+                nonPersistentField = true;
+            }
+            else if (annName.equals(JDOAnnotationUtils.TRANSACTIONAL))
+            {
+                transactionalField = true;
+            }
+            else if (annName.equals(JDOAnnotationUtils.COLUMNS))
+            {
+                // Multiple column specification
+                Column[] cols = (Column[]) annotationValues.get("value");
+                if (cols != null && cols.length > 0)
+                {
+                    colmds = new ColumnMetaData[cols.length];
+                    for (int j = 0; j < cols.length; j++)
+                    {
+                        colmds[j] = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
+                        JDOAnnotationUtils.addExtensionsToMetaData(colmds[j], cols[j].extensions());
+                    }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.COLUMN))
+            {
+                // Single column specification
+                colmds = new ColumnMetaData[1];
+                colmds[0] = JDOAnnotationUtils.getColumnMetaDataForAnnotations(annotationValues);
+                JDOAnnotationUtils.addExtensionsToMetaData(colmds[0], (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.JOIN))
+            {
+                String joinColumn = (String) annotationValues.get("column");
+                String joinOuter = (String) annotationValues.get("outer");
+                String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String pkName = (String) annotationValues.get("primaryKey");
+                String fkName = (String) annotationValues.get("foreignKey");
+                String generateFK = (String) annotationValues.get("generateForeignKey");
+                String indexed = (String) annotationValues.get("indexed");
+                String indexName = (String) annotationValues.get("index");
+                String unique = (String) annotationValues.get("unique");
+                String uniqueName = (String) annotationValues.get("uniqueKey");
+                String generatePK = (String) annotationValues.get("generatePrimaryKey");
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    unique = "true";
+                }
+                if (!StringUtils.isWhitespace(indexName))
+                {
+                    indexed = "true";
+                }
+                Column[] joinColumns = (Column[]) annotationValues.get("columns");
+                joinmd = new JoinMetaData();
+                joinmd.setColumnName(joinColumn);
+                joinmd.setOuter(MetaDataUtils.getBooleanForString(joinOuter, false));
+                joinmd.setIndexed(IndexedValue.getIndexedValue(indexed));
+                joinmd.setUnique(unique);
+                joinmd.setDeleteAction(deleteAction);
+
+                if (!StringUtils.isWhitespace(pkName))
+                {
+                    PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
+                    pkmd.setName(pkName);
+                    joinmd.setPrimaryKeyMetaData(pkmd);
+                }
+                else if (generatePK != null && generatePK.equalsIgnoreCase("true"))
+                {
+                    joinmd.setPrimaryKeyMetaData(new PrimaryKeyMetaData());
+                }
+
+                if (!StringUtils.isWhitespace(fkName))
+                {
+                    ForeignKeyMetaData joinFkmd = joinmd.getForeignKeyMetaData();
+                    if (joinFkmd == null)
+                    {
+                        joinFkmd = new ForeignKeyMetaData();
+                        joinFkmd.setName(fkName);
+                        joinmd.setForeignKeyMetaData(joinFkmd);
                     }
                     else
                     {
-                        // Field
-                        mmd = new FieldMetaData(cmd, member.getName());
+                        joinFkmd.setName(fkName);
                     }
-
-                    if (isPersistenceContext())
-                    {
-                        if (disableConversion != null && disableConversion)
-                        {
-                            mmd.setTypeConverterDisabled();
-                        }
-                        else if (converterCls != null)
-                        {
-                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
-                            {
-                                // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
-                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, member.getType());
-                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                                // Register the TypeConverter under the name of the AttributeConverter class
-                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
-                            }
-
-                            mmd.setTypeConverterName(converterCls.getName());
-                        }
-                    }
-
-                    if (modifier != null)
-                    {
-                        mmd.setPersistenceModifier(modifier);
-                    }
-                    if (dfg != null)
-                    {
-                        mmd.setDefaultFetchGroup(dfg);
-                    }
-                    if (pk != null)
-                    {
-                        mmd.setPrimaryKey(pk);
-                    }
-                    if (embedded != null)
-                    {
-                        mmd.setEmbedded(embedded);
-                    }
-                    if (serialized != null)
-                    {
-                        mmd.setSerialised(serialized);
-                    }
-                    if (dependent != null)
-                    {
-                        mmd.setDependent(dependent);
-                    }
-                    mmd.setNullValue(org.datanucleus.metadata.NullValue.getNullValue(nullValue));
-                    mmd.setMappedBy(mappedBy);
-                    mmd.setColumn(column);
-                    mmd.setTable(table);
-                    mmd.setRecursionDepth(recursionDepth);
-                    mmd.setLoadFetchGroup(loadFetchGroup);
-                    mmd.setValueStrategy(valueStrategy);
-                    mmd.setSequence(sequence);
-                    mmd.setFieldTypes(fieldTypeName);
-
-                    // Add any columns defined on the @Persistent
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-                    if (columns != null && columns.length > 0)
-                    {
-                        for (int j = 0; j < columns.length; j++)
-                        {
-                            mmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
-                        }
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(mmd, (Extension[]) annotationValues.get("extensions"));
                 }
-                else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
+                else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
                 {
-                    primaryKey = true;
-                    if (cmd.getIdentityType() == IdentityType.DATASTORE)
-                    {
-                        // ClassMetaData was created as DATASTORE so change it to APPLICATION
-                        cmd.setIdentityType(IdentityType.APPLICATION);
-                    }
+                    joinmd.setForeignKeyMetaData(new ForeignKeyMetaData());
                 }
-                else if (annName.equals(JDOAnnotationUtils.SERIALIZED))
+
+                if (!StringUtils.isWhitespace(indexName))
                 {
-                    serialised = true;
+                    IndexMetaData joinIdxmd = joinmd.getIndexMetaData();
+                    if (joinIdxmd == null)
+                    {
+                        joinIdxmd = new IndexMetaData();
+                        joinmd.setIndexMetaData(joinIdxmd);
+                    }
+                    joinIdxmd.setName(indexName);
                 }
-                else if (annName.equals(JDOAnnotationUtils.NOTPERSISTENT))
+
+                if (!StringUtils.isWhitespace(uniqueName))
                 {
-                    nonPersistentField = true;
+                    UniqueMetaData joinUnimd = joinmd.getUniqueMetaData();
+                    if (joinUnimd == null)
+                    {
+                        joinUnimd = new UniqueMetaData();
+                        joinmd.setUniqueMetaData(joinUnimd);
+                    }
+                    joinUnimd.setName(uniqueName);
                 }
-                else if (annName.equals(JDOAnnotationUtils.TRANSACTIONAL))
+                if (joinColumns != null && joinColumns.length > 0)
                 {
-                    transactionalField = true;
-                }
-                else if (annName.equals(JDOAnnotationUtils.COLUMNS))
-                {
-                    // Multiple column specification
-                    Column[] cols = (Column[]) annotationValues.get("value");
-                    if (cols != null && cols.length > 0)
+                    for (Column joinCol : joinColumns)
                     {
-                        colmds = new ColumnMetaData[cols.length];
-                        for (int j = 0; j < cols.length; j++)
-                        {
-                            colmds[j] = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(cols[j]);
-                            JDOAnnotationUtils.addExtensionsToMetaData(colmds[j], cols[j].extensions());
-                        }
+                        joinmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(joinCol));
                     }
                 }
-                else if (annName.equals(JDOAnnotationUtils.COLUMN))
-                {
-                    // Single column specification
-                    colmds = new ColumnMetaData[1];
-                    colmds[0] = JDOAnnotationUtils.getColumnMetaDataForAnnotations(annotationValues);
-                    JDOAnnotationUtils.addExtensionsToMetaData(colmds[0], (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.JOIN))
-                {
-                    String joinColumn = (String) annotationValues.get("column");
-                    String joinOuter = (String) annotationValues.get("outer");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String pkName = (String) annotationValues.get("primaryKey");
-                    String fkName = (String) annotationValues.get("foreignKey");
-                    String generateFK = (String) annotationValues.get("generateForeignKey");
-                    String indexed = (String) annotationValues.get("indexed");
-                    String indexName = (String) annotationValues.get("index");
-                    String unique = (String) annotationValues.get("unique");
-                    String uniqueName = (String) annotationValues.get("uniqueKey");
-                    String generatePK = (String) annotationValues.get("generatePrimaryKey");
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        unique = "true";
-                    }
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        indexed = "true";
-                    }
-                    Column[] joinColumns = (Column[]) annotationValues.get("columns");
-                    joinmd = new JoinMetaData();
-                    joinmd.setColumnName(joinColumn);
-                    joinmd.setOuter(MetaDataUtils.getBooleanForString(joinOuter, false));
-                    joinmd.setIndexed(IndexedValue.getIndexedValue(indexed));
-                    joinmd.setUnique(unique);
-                    joinmd.setDeleteAction(deleteAction);
-
-                    if (!StringUtils.isWhitespace(pkName))
-                    {
-                        PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
-                        pkmd.setName(pkName);
-                        joinmd.setPrimaryKeyMetaData(pkmd);
-                    }
-                    else if (generatePK != null && generatePK.equalsIgnoreCase("true"))
-                    {
-                        joinmd.setPrimaryKeyMetaData(new PrimaryKeyMetaData());
-                    }
-
-                    if (!StringUtils.isWhitespace(fkName))
-                    {
-                        ForeignKeyMetaData joinFkmd = joinmd.getForeignKeyMetaData();
-                        if (joinFkmd == null)
-                        {
-                            joinFkmd = new ForeignKeyMetaData();
-                            joinFkmd.setName(fkName);
-                            joinmd.setForeignKeyMetaData(joinFkmd);
-                        }
-                        else
-                        {
-                            joinFkmd.setName(fkName);
-                        }
-                    }
-                    else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
-                    {
-                        joinmd.setForeignKeyMetaData(new ForeignKeyMetaData());
-                    }
-
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        IndexMetaData joinIdxmd = joinmd.getIndexMetaData();
-                        if (joinIdxmd == null)
-                        {
-                            joinIdxmd = new IndexMetaData();
-                            joinmd.setIndexMetaData(joinIdxmd);
-                        }
-                        joinIdxmd.setName(indexName);
-                    }
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        UniqueMetaData joinUnimd = joinmd.getUniqueMetaData();
-                        if (joinUnimd == null)
-                        {
-                            joinUnimd = new UniqueMetaData();
-                            joinmd.setUniqueMetaData(joinUnimd);
-                        }
-                        joinUnimd.setName(uniqueName);
-                    }
-                    if (joinColumns != null && joinColumns.length > 0)
-                    {
-                        for (int j = 0; j < joinColumns.length; j++)
-                        {
-                            joinmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(joinColumns[j]));
-                        }
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.ELEMENT))
-                {
-                    // Element of a Collection/Array
-                    elementTypes = (Class[]) annotationValues.get("types");
-                    embeddedElement = (String) annotationValues.get("embedded");
-                    serializedElement = (String) annotationValues.get("serialized");
-                    dependentElement = (String) annotationValues.get("dependent");
-                    String elementTable = (String) annotationValues.get("table");
-                    String elementColumn = (String) annotationValues.get("column");
-                    String elementDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String elementUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
-                    String elementMappedBy = (String) annotationValues.get("mappedBy");
-                    Column[] elementColumns = (Column[]) annotationValues.get("columns");
-                    String fkName = (String) annotationValues.get("foreignKey");
-                    String generateFK = (String) annotationValues.get("generateForeignKey");
-                    String indexed = (String) annotationValues.get("indexed");
-                    String indexName = (String) annotationValues.get("index");
-                    String unique = (String) annotationValues.get("unique");
-                    String uniqueName = (String) annotationValues.get("uniqueKey");
-                    Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == UseDefault.class)
-                    {
-                        converterCls = null;
-                    }
-                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        unique = "true";
-                    }
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        indexed = "true";
-                    }
-                    elemmd = new ElementMetaData();
-                    elemmd.setTable(elementTable);
-                    elemmd.setColumnName(elementColumn);
-                    elemmd.setDeleteAction(elementDeleteAction);
-                    elemmd.setUpdateAction(elementUpdateAction);
-                    elemmd.setIndexed(IndexedValue.getIndexedValue(indexed));
-                    elemmd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
-                    elemmd.setMappedBy(elementMappedBy);
-                    if (!StringUtils.isWhitespace(fkName))
-                    {
-                        ForeignKeyMetaData elemFkmd = elemmd.getForeignKeyMetaData();
-                        if (elemFkmd == null)
-                        {
-                            elemFkmd = new ForeignKeyMetaData();
-                            elemFkmd.setName(fkName);
-                            elemmd.setForeignKeyMetaData(elemFkmd);
-                        }
-                        else
-                        {
-                            elemFkmd.setName(fkName);
-                        }
-                    }
-                    else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
-                    {
-                        elemmd.setForeignKeyMetaData(new ForeignKeyMetaData());
-                    }
-
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        IndexMetaData elemIdxmd = elemmd.getIndexMetaData();
-                        if (elemIdxmd == null)
-                        {
-                            elemIdxmd = new IndexMetaData();
-                            elemmd.setIndexMetaData(elemIdxmd);
-                        }
-                        elemIdxmd.setName(indexName);
-                    }
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        UniqueMetaData elemUnimd = elemmd.getUniqueMetaData();
-                        if (elemUnimd == null)
-                        {
-                            elemUnimd = new UniqueMetaData();
-                            elemmd.setUniqueMetaData(elemUnimd);
-                        }
-                        elemUnimd.setName(uniqueName);
-                    }
-                    if (elementColumns != null && elementColumns.length > 0)
-                    {
-                        for (int j = 0; j < elementColumns.length; j++)
-                        {
-                            elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementColumns[j]));
-                        }
-                    }
-
-                    if (isPersistenceContext())
-                    {
-                        if (disableConversion != null && disableConversion)
-                        {
-                            elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                        }
-                        else if (converterCls != null)
-                        {
-                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
-                            {
-                                // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
-                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                    ClassUtils.getCollectionElementType(member.getType(), member.getGenericType()));
-                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                                // Register the TypeConverter under the name of the AttributeConverter class
-                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
-                            }
-
-                            elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
-                        }
-                    }
-
-                    JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[]) annotationValues.get("extensions"));
-
-                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
-                    if (embeddedMappings != null && embeddedMappings.length > 0)
-                    {
-                        // Embedded element
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        embmd.setOwnerMember(embeddedMappings[0].ownerMember());
-                        embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
-                        embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
-                        try
-                        {
-                            Discriminator disc = embeddedMappings[0].discriminatorColumnName();
-                            if (disc != null)
-                            {
-                                DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
-                                dismd.setColumnName(disc.column());
-                                dismd.setStrategy(JDOAnnotationUtils.getDiscriminatorStrategyString(disc.strategy()));
-                                // TODO Support other attributes of discriminator?
-                            }
-                        }
-                        catch (Throwable thr)
-                        {
-                            // Ignore this. Maybe not using JDO3.1 jar
-                        }
-                        elemmd.setEmbeddedMetaData(embmd);
-                        embeddedElementMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedElementMembers til completion of this loop so we have the
-                        // element type
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.KEY))
-                {
-                    // Key of a Map
-                    keyTypes = (Class[]) annotationValues.get("types");
-                    embeddedKey = (String) annotationValues.get("embedded");
-                    serializedKey = (String) annotationValues.get("serialized");
-                    dependentKey = (String) annotationValues.get("dependent");
-                    String keyTable = (String) annotationValues.get("table");
-                    String keyColumn = (String) annotationValues.get("column");
-                    String keyDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String keyUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
-                    String keyMappedBy = (String) annotationValues.get("mappedBy");
-                    Column[] keyColumns = (Column[]) annotationValues.get("columns");
-                    String fkName = (String) annotationValues.get("foreignKey");
-                    String generateFK = (String) annotationValues.get("generateForeignKey");
-                    String indexed = (String) annotationValues.get("indexed");
-                    String indexName = (String) annotationValues.get("index");
-                    String unique = (String) annotationValues.get("unique");
-                    String uniqueName = (String) annotationValues.get("uniqueKey");
-                    Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == UseDefault.class)
-                    {
-                        converterCls = null;
-                    }
-                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        unique = "true";
-                    }
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        indexed = "true";
-                    }
-                    keymd = new KeyMetaData();
-                    keymd.setTable(keyTable);
-                    keymd.setColumnName(keyColumn);
-                    keymd.setDeleteAction(keyDeleteAction);
-                    keymd.setUpdateAction(keyUpdateAction);
-                    keymd.setIndexed(IndexedValue.getIndexedValue(indexed));
-                    keymd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
-                    keymd.setMappedBy(keyMappedBy);
-                    if (!StringUtils.isWhitespace(fkName))
-                    {
-                        ForeignKeyMetaData keyFkmd = keymd.getForeignKeyMetaData();
-                        if (keyFkmd == null)
-                        {
-                            keyFkmd = new ForeignKeyMetaData();
-                            keyFkmd.setName(fkName);
-                            keymd.setForeignKeyMetaData(keyFkmd);
-                        }
-                        else
-                        {
-                            keyFkmd.setName(fkName);
-                        }
-                    }
-                    else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
-                    {
-                        keymd.setForeignKeyMetaData(new ForeignKeyMetaData());
-                    }
-
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        IndexMetaData keyIdxmd = keymd.getIndexMetaData();
-                        if (keyIdxmd == null)
-                        {
-                            keyIdxmd = new IndexMetaData();
-                            keymd.setIndexMetaData(keyIdxmd);
-                        }
-                        keyIdxmd.setName(indexName);
-                    }
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        UniqueMetaData keyUnimd = keymd.getUniqueMetaData();
-                        if (keyUnimd == null)
-                        {
-                            keyUnimd = new UniqueMetaData();
-                            keymd.setUniqueMetaData(keyUnimd);
-                        }
-                        keyUnimd.setName(uniqueName);
-                    }
-                    if (keyColumns != null && keyColumns.length > 0)
-                    {
-                        for (int j = 0; j < keyColumns.length; j++)
-                        {
-                            keymd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(keyColumns[j]));
-                        }
-                    }
-
-                    if (isPersistenceContext())
-                    {
-                        if (disableConversion != null && disableConversion)
-                        {
-                            keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                        }
-                        else if (converterCls != null)
-                        {
-                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
-                            {
-                                // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
-                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                    ClassUtils.getMapKeyType(member.getType(), member.getGenericType()));
-                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                                // Register the TypeConverter under the name of the AttributeConverter class
-                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
-                            }
-
-                            keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
-                        }
-                    }
-
-                    JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[]) annotationValues.get("extensions"));
-
-                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
-                    if (embeddedMappings != null && embeddedMappings.length > 0)
-                    {
-                        // Embedded key
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        embmd.setOwnerMember(embeddedMappings[0].ownerMember());
-                        embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
-                        embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
-                        keymd.setEmbeddedMetaData(embmd);
-                        embeddedKeyMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedKeyMembers til completion of this loop so we have the key
-                        // type
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.VALUE))
-                {
-                    // Value of a Map
-                    valueTypes = (Class[]) annotationValues.get("types");
-                    embeddedValue = (String) annotationValues.get("embedded");
-                    serializedValue = (String) annotationValues.get("serialized");
-                    dependentValue = (String) annotationValues.get("dependent");
-                    String valueTable = (String) annotationValues.get("table");
-                    String valueColumn = (String) annotationValues.get("column");
-                    String valueDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String valueUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
-                    String valueMappedBy = (String) annotationValues.get("mappedBy");
-                    Column[] valueColumns = (Column[]) annotationValues.get("columns");
-                    String fkName = (String) annotationValues.get("foreignKey");
-                    String generateFK = (String) annotationValues.get("generateForeignKey");
-                    String indexed = (String) annotationValues.get("indexed");
-                    String indexName = (String) annotationValues.get("index");
-                    String unique = (String) annotationValues.get("unique");
-                    String uniqueName = (String) annotationValues.get("uniqueKey");
-                    Class converterCls = (Class) annotationValues.get("converter");
-                    if (converterCls == UseDefault.class)
-                    {
-                        converterCls = null;
-                    }
-                    Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        unique = "true";
-                    }
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        indexed = "true";
-                    }
-                    valuemd = new ValueMetaData();
-                    valuemd.setTable(valueTable);
-                    valuemd.setColumnName(valueColumn);
-                    valuemd.setDeleteAction(valueDeleteAction);
-                    valuemd.setUpdateAction(valueUpdateAction);
-                    valuemd.setIndexed(IndexedValue.getIndexedValue(indexed));
-                    valuemd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
-                    valuemd.setMappedBy(valueMappedBy);
-                    if (!StringUtils.isWhitespace(fkName))
-                    {
-                        ForeignKeyMetaData valueFkmd = valuemd.getForeignKeyMetaData();
-                        if (valueFkmd == null)
-                        {
-                            valueFkmd = new ForeignKeyMetaData();
-                            valueFkmd.setName(fkName);
-                            valuemd.setForeignKeyMetaData(valueFkmd);
-                        }
-                        else
-                        {
-                            valueFkmd.setName(fkName);
-                        }
-                    }
-                    else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
-                    {
-                        valuemd.setForeignKeyMetaData(new ForeignKeyMetaData());
-                    }
-
-                    if (!StringUtils.isWhitespace(indexName))
-                    {
-                        IndexMetaData valueIdxmd = valuemd.getIndexMetaData();
-                        if (valueIdxmd == null)
-                        {
-                            valueIdxmd = new IndexMetaData();
-                            valuemd.setIndexMetaData(valueIdxmd);
-                        }
-                        valueIdxmd.setName(indexName);
-                    }
-
-                    if (!StringUtils.isWhitespace(uniqueName))
-                    {
-                        UniqueMetaData valueUnimd = valuemd.getUniqueMetaData();
-                        if (valueUnimd == null)
-                        {
-                            valueUnimd = new UniqueMetaData();
-                            valuemd.setUniqueMetaData(valueUnimd);
-                        }
-                        valueUnimd.setName(uniqueName);
-                    }
-                    if (valueColumns != null && valueColumns.length > 0)
-                    {
-                        for (int j = 0; j < valueColumns.length; j++)
-                        {
-                            valuemd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(valueColumns[j]));
-                        }
-                    }
-
-                    if (isPersistenceContext())
-                    {
-                        if (disableConversion != null && disableConversion)
-                        {
-                            valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
-                        }
-                        else if (converterCls != null)
-                        {
-                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
-                            {
-                                // Not yet cached an instance of this converter so create one
-                                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
-                                Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
-                                    ClassUtils.getMapValueType(member.getType(), member.getGenericType()));
-                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
-
-                                // Register the TypeConverter under the name of the AttributeConverter class
-                                JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                                typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
-                            }
-
-                            valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
-                        }
-                    }
-
-                    JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[]) annotationValues.get("extensions"));
-
-                    Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
-                    if (embeddedMappings != null && embeddedMappings.length > 0)
-                    {
-                        // Embedded value
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        embmd.setOwnerMember(embeddedMappings[0].ownerMember());
-                        embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
-                        embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
-                        valuemd.setEmbeddedMetaData(embmd);
-                        embeddedValueMembers = embeddedMappings[0].members();
-                        // Delay addition of embeddedValueMembers til completion of this loop so we have the value type
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.ORDER))
-                {
-                    String orderColumn = (String) annotationValues.get("column");
-                    String orderMappedBy = (String) annotationValues.get("mappedBy");
-                    Column[] orderColumns = (Column[]) annotationValues.get("columns");
-                    ordermd = new OrderMetaData();
-                    ordermd.setColumnName(orderColumn);
-                    ordermd.setMappedBy(orderMappedBy);
-                    if (orderColumns != null && orderColumns.length > 0)
-                    {
-                        for (int j = 0; j < orderColumns.length; j++)
-                        {
-                            ordermd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(orderColumns[j]));
-                        }
-                    }
-                    JDOAnnotationUtils.addExtensionsToMetaData(ordermd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.EMBEDDED))
-                {
-                    embeddedMember = true;
-                    embeddedOwnerField = (String) annotationValues.get("ownerMember");
-                    if (StringUtils.isWhitespace(embeddedOwnerField))
-                    {
-                        embeddedOwnerField = null;
-                    }
-                    embeddedNullIndicatorColumn = (String) annotationValues.get("nullIndicatorColumn");
-                    if (StringUtils.isWhitespace(embeddedNullIndicatorColumn))
-                    {
-                        embeddedNullIndicatorColumn = null;
-                    }
-                    embeddedNullIndicatorValue = (String) annotationValues.get("nullIndicatorValue");
-                    if (StringUtils.isWhitespace(embeddedNullIndicatorValue))
-                    {
-                        embeddedNullIndicatorValue = null;
-                    }
-                    embeddedMembers = (Persistent[]) annotationValues.get("members");
-                    if (embeddedMembers != null && embeddedMembers.length == 0)
-                    {
-                        embeddedMembers = null;
-                    }
-                    // TODO Support discriminator
-                }
-                else if (annName.equals(JDOAnnotationUtils.INDEX))
-                {
-                    // Index for the field
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String unique = (String) annotationValues.get("unique");
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.UNIQUE))
-                {
-                    // Unique for the field
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String deferred = (String) annotationValues.get("deferred");
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
-                {
-                    // ForeignKey for field
-                    String name = (String) annotationValues.get("name");
-                    String table = (String) annotationValues.get("table");
-                    String unique = (String) annotationValues.get("unique");
-                    String deferred = (String) annotationValues.get("deferred");
-                    String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
-                    String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
-                    String[] members = (String[]) annotationValues.get("members");
-                    Column[] columns = (Column[]) annotationValues.get("columns");
-
-                    fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
-                    JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
-                }
-                else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
-                {
-                    String cache = (String) annotationValues.get("value");
-                    if (cache != null)
-                    {
-                        cacheable = cache;
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.CONVERT))
-                {
-                    convertConverterCls = (Class) annotationValues.get("value");
-                    if (convertConverterCls == UseDefault.class)
-                    {
-                        convertConverterCls = null;
-                    }
-                    Boolean enabled = (Boolean) annotationValues.get("enabled");
-                    if (!enabled)
-                    {
-                        convertConverterCls = null;
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
-                {
-                    Extension[] values = (Extension[]) annotationValues.get("value");
-                    if (values != null && values.length > 0)
-                    {
-                        extensions = new HashMap<String,String>(values.length);
-                        for (int j = 0; j < values.length; j++)
-                        {
-                            String vendorName = values[j].vendorName();
-                            if (StringUtils.isWhitespace(vendorName))
-                            {
-                                throw new InvalidMetaDataException("044160", vendorName, values[j].key().toString(), values[j].value().toString());
-                            }
-                            else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
-                            {
-                                extensions.put(values[j].key().toString(), values[j].value().toString());
-                            }
-                        }
-                    }
-                }
-                else if (annName.equals(JDOAnnotationUtils.EXTENSION))
-                {
-                    String vendorName = (String)annotationValues.get("vendorName");
-                    if (StringUtils.isWhitespace(vendorName))
-                    {
-                        throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
-                    }
-                    else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
-                    {
-                        extensions = new HashMap<String,String>(1);
-                        extensions.put((String)annotationValues.get("key"), (String)annotationValues.get("value"));
-                    }
-                }
-                else
-                {
-                    NucleusLogger.METADATA.debug(Localiser.msg("044211", cmd.getFullClassName(), member.getName(), annotations[i].getName()));
-                }
+                JDOAnnotationUtils.addExtensionsToMetaData(joinmd, (Extension[]) annotationValues.get("extensions"));
             }
-
-            if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || 
-                embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || 
-                ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null || convertConverterCls != null))
+            else if (annName.equals(JDOAnnotationUtils.ELEMENT))
             {
-                // @Persistent not supplied but other relevant annotations defined, so add default metadata
-                // element
-                if (member.isProperty())
-                {
-                    mmd = new PropertyMetaData(cmd, member.getName());
-                }
-                else
-                {
-                    mmd = new FieldMetaData(cmd, member.getName());
-                }
-                if (primaryKey)
-                {
-                    mmd.setPersistenceModifier(FieldPersistenceModifier.PERSISTENT);
-                    mmd.setPrimaryKey(primaryKey);
-                }
-                if (serialised)
-                {
-                    mmd.setPersistenceModifier(FieldPersistenceModifier.PERSISTENT);
-                }
-            }
+                // Element of a Collection/Array
+                elementTypes = (Class[]) annotationValues.get("types");
+                embeddedElement = (String) annotationValues.get("embedded");
+                serializedElement = (String) annotationValues.get("serialized");
+                dependentElement = (String) annotationValues.get("dependent");
 
-            if (mmd != null)
-            {
-                cmd.addMember(mmd);
+                String elementDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String elementUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                String fkName = (String) annotationValues.get("foreignKey");
+                String generateFK = (String) annotationValues.get("generateForeignKey");
+                String indexed = (String) annotationValues.get("indexed");
+                String indexName = (String) annotationValues.get("index");
+                String unique = (String) annotationValues.get("unique");
+                String uniqueName = (String) annotationValues.get("uniqueKey");
+                Class converterCls = (Class) annotationValues.get("converter");
+                if (converterCls == UseDefault.class)
+                {
+                    converterCls = null;
+                }
+                Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
 
-                if (primaryKey)
+                if (!StringUtils.isWhitespace(uniqueName))
                 {
-                    mmd.setPrimaryKey(true);
+                    unique = "true";
                 }
-                if (serialised)
+                if (!StringUtils.isWhitespace(indexName))
                 {
-                    mmd.setSerialised(true);
+                    indexed = "true";
                 }
-                if (embeddedMember)
+                elemmd = new ElementMetaData();
+                elemmd.setTable((String) annotationValues.get("table"));
+                elemmd.setColumnName((String) annotationValues.get("column"));
+                elemmd.setDeleteAction(elementDeleteAction);
+                elemmd.setUpdateAction(elementUpdateAction);
+                elemmd.setIndexed(IndexedValue.getIndexedValue(indexed));
+                elemmd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
+                elemmd.setMappedBy((String) annotationValues.get("mappedBy"));
+                if (!StringUtils.isWhitespace(fkName))
                 {
-                    mmd.setEmbedded(true);
+                    ForeignKeyMetaData elemFkmd = elemmd.getForeignKeyMetaData();
+                    if (elemFkmd == null)
+                    {
+                        elemFkmd = new ForeignKeyMetaData();
+                        elemFkmd.setName(fkName);
+                        elemmd.setForeignKeyMetaData(elemFkmd);
+                    }
+                    else
+                    {
+                        elemFkmd.setName(fkName);
+                    }
                 }
-                if (nonPersistentField)
+                else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
                 {
-                    mmd.setNotPersistent();
+                    elemmd.setForeignKeyMetaData(new ForeignKeyMetaData());
                 }
-                if (transactionalField)
+
+                if (!StringUtils.isWhitespace(indexName))
                 {
-                    mmd.setTransactional();
+                    IndexMetaData elemIdxmd = elemmd.getIndexMetaData();
+                    if (elemIdxmd == null)
+                    {
+                        elemIdxmd = new IndexMetaData();
+                        elemmd.setIndexMetaData(elemIdxmd);
+                    }
+                    elemIdxmd.setName(indexName);
+                }
+
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    UniqueMetaData elemUnimd = elemmd.getUniqueMetaData();
+                    if (elemUnimd == null)
+                    {
+                        elemUnimd = new UniqueMetaData();
+                        elemmd.setUniqueMetaData(elemUnimd);
+                    }
+                    elemUnimd.setName(uniqueName);
+                }
+
+                Column[] elementColumns = (Column[]) annotationValues.get("columns");
+                if (elementColumns != null && elementColumns.length > 0)
+                {
+                    for (Column elementCol : elementColumns)
+                    {
+                        elemmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(elementCol));
+                    }
                 }
 
                 if (isPersistenceContext())
                 {
-                    if (convertConverterCls != null)
+                    if (disableConversion != null && disableConversion)
+                    {
+                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
+                    }
+                    else if (converterCls != null)
                     {
                         TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                        if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                         {
                             // Not yet cached an instance of this converter so create one
-                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), convertConverterCls);
-                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
-                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
+                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                ClassUtils.getCollectionElementType(member.getType(), member.getGenericType()));
+                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
                             // Register the TypeConverter under the name of the AttributeConverter class
                             JDOTypeConverter typeConv = new JDOTypeConverter(conv);
-                            typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
 
-                        mmd.setTypeConverterName(convertConverterCls.getName());
+                        elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
                     }
                 }
 
-                // Add any embedded info
-                if (embeddedMember)
+                JDOAnnotationUtils.addExtensionsToMetaData(elemmd, (Extension[]) annotationValues.get("extensions"));
+
+                Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
+                if (embeddedMappings != null && embeddedMappings.length > 0)
                 {
-                    if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null)
+                    // Embedded element
+                    EmbeddedMetaData embmd = new EmbeddedMetaData();
+                    embmd.setOwnerMember(embeddedMappings[0].ownerMember());
+                    embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
+                    embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
+                    try
                     {
-                        EmbeddedMetaData embmd = new EmbeddedMetaData();
-                        embmd.setOwnerMember(embeddedOwnerField);
-                        embmd.setNullIndicatorColumn(embeddedNullIndicatorColumn);
-                        embmd.setNullIndicatorValue(embeddedNullIndicatorValue);
-                        mmd.setEmbeddedMetaData(embmd);
-                        if (embeddedMembers != null && embeddedMembers.length > 0)
+                        Discriminator disc = embeddedMappings[0].discriminatorColumnName();
+                        if (disc != null)
                         {
-                            for (int j = 0; j < embeddedMembers.length; j++)
-                            {
-                                // Add the metadata for the embedded field/property to the embedded metadata
-                                String memberName = embeddedMembers[j].name();
-                                if (memberName.indexOf('.') > 0)
-                                {
-                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
-                                }
-                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedMembers[j],
-                                    isMemberOfClassAField(member.getType(), memberName));
-                                embmd.addMember(embfmd);
-                            }
+                            DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
+                            dismd.setColumnName(disc.column());
+                            dismd.setStrategy(JDOAnnotationUtils.getDiscriminatorStrategyString(disc.strategy()));
+                            // TODO Support other attributes of discriminator?
                         }
                     }
-                }
-
-                TypeManager typeManager = mmgr.getNucleusContext().getTypeManager();
-                ContainerHandler containerHandler = typeManager.getContainerHandler(member.getType());
-                ContainerMetaData contmd = null;
-
-                // If the field is a container then add its container element
-                if (containerHandler != null)
-                {
-                    contmd = containerHandler.newMetaData();
-                }
-
-                if (contmd instanceof CollectionMetaData)
-                {
-                    Class collectionElementType = null;
-                    StringBuilder elementTypeStr = new StringBuilder();
-                    if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
+                    catch (Throwable thr)
                     {
-                        // User-specified element type(s)
-                        for (int j = 0; j < elementTypes.length; j++)
-                        {
-                            if (elementTypeStr.length() > 0)
-                            {
-                                elementTypeStr.append(',');
-                            }
-                            elementTypeStr.append(elementTypes[j].getName());
-                        }
-                        collectionElementType = elementTypes[0]; // Use the first only
+                        // Ignore this. Maybe not using JDO3.1 jar
+                    }
+                    elemmd.setEmbeddedMetaData(embmd);
+                    embeddedElementMembers = embeddedMappings[0].members();
+                    // Delay addition of embeddedElementMembers til completion of this loop so we have the
+                    // element type
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.KEY))
+            {
+                // Key of a Map
+                keyTypes = (Class[]) annotationValues.get("types");
+                embeddedKey = (String) annotationValues.get("embedded");
+                serializedKey = (String) annotationValues.get("serialized");
+                dependentKey = (String) annotationValues.get("dependent");
+
+                String keyDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String keyUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                String fkName = (String) annotationValues.get("foreignKey");
+                String generateFK = (String) annotationValues.get("generateForeignKey");
+                String indexed = (String) annotationValues.get("indexed");
+                String indexName = (String) annotationValues.get("index");
+                String unique = (String) annotationValues.get("unique");
+                String uniqueName = (String) annotationValues.get("uniqueKey");
+                Class converterCls = (Class) annotationValues.get("converter");
+                if (converterCls == UseDefault.class)
+                {
+                    converterCls = null;
+                }
+                Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
+
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    unique = "true";
+                }
+                if (!StringUtils.isWhitespace(indexName))
+                {
+                    indexed = "true";
+                }
+                keymd = new KeyMetaData();
+                keymd.setTable((String) annotationValues.get("table"));
+                keymd.setColumnName((String) annotationValues.get("column"));
+                keymd.setDeleteAction(keyDeleteAction);
+                keymd.setUpdateAction(keyUpdateAction);
+                keymd.setIndexed(IndexedValue.getIndexedValue(indexed));
+                keymd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
+                keymd.setMappedBy((String) annotationValues.get("mappedBy"));
+                if (!StringUtils.isWhitespace(fkName))
+                {
+                    ForeignKeyMetaData keyFkmd = keymd.getForeignKeyMetaData();
+                    if (keyFkmd == null)
+                    {
+                        keyFkmd = new ForeignKeyMetaData();
+                        keyFkmd.setName(fkName);
+                        keymd.setForeignKeyMetaData(keyFkmd);
                     }
                     else
                     {
-                        // Try to derive element type from generics info
-                        collectionElementType = ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
-                    }
-
-                    contmd = new CollectionMetaData();
-                    contmd.setParent(mmd);
-                    CollectionMetaData collmd = (CollectionMetaData) contmd;
-
-                    collmd.setElementType(elementTypeStr.toString());
-                    if (!StringUtils.isWhitespace(embeddedElement))
-                    {
-                        collmd.setEmbeddedElement(Boolean.valueOf(embeddedElement));
-                    }
-                    if (!StringUtils.isWhitespace(serializedElement))
-                    {
-                        collmd.setSerializedElement(Boolean.valueOf(serializedElement));
-                    }
-                    if (!StringUtils.isWhitespace(dependentElement))
-                    {
-                        collmd.setDependentElement(Boolean.valueOf(dependentElement));
-                    }
-
-                    if ((embeddedElementMembers != null || "true".equalsIgnoreCase(embeddedElement)) && elemmd == null)
-                    {
-                        elemmd = new ElementMetaData();
-                        mmd.setElementMetaData(elemmd);
-                    }
-                    if (elemmd != null)
-                    {
-                        if (embeddedElementMembers != null)
-                        {
-                            // Add any embedded element mappings
-                            EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
-                            if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
-                            {
-                                // Create EmbeddedMetaData for element since not existing
-                                embmd = elemmd.newEmbeddedMetaData();
-                            }
-                            for (int j = 0; j < embeddedElementMembers.length; j++)
-                            {
-                                // Add the metadata for the embedded element to the embedded metadata
-                                String memberName = embeddedElementMembers[j].name();
-                                if (memberName.indexOf('.') > 0)
-                                {
-                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
-                                }
-                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedElementMembers[j],
-                                    isMemberOfClassAField(collectionElementType, memberName));
-                                embmd.addMember(embfmd);
-                            }
-                        }
+                        keyFkmd.setName(fkName);
                     }
                 }
-                else if (contmd instanceof ArrayMetaData)
+                else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
                 {
-                    StringBuilder elementTypeStr = new StringBuilder();
-                    if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
+                    keymd.setForeignKeyMetaData(new ForeignKeyMetaData());
+                }
+
+                if (!StringUtils.isWhitespace(indexName))
+                {
+                    IndexMetaData keyIdxmd = keymd.getIndexMetaData();
+                    if (keyIdxmd == null)
                     {
-                        // User-specified element type(s)
-                        for (int j = 0; j < elementTypes.length; j++)
+                        keyIdxmd = new IndexMetaData();
+                        keymd.setIndexMetaData(keyIdxmd);
+                    }
+                    keyIdxmd.setName(indexName);
+                }
+
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    UniqueMetaData keyUnimd = keymd.getUniqueMetaData();
+                    if (keyUnimd == null)
+                    {
+                        keyUnimd = new UniqueMetaData();
+                        keymd.setUniqueMetaData(keyUnimd);
+                    }
+                    keyUnimd.setName(uniqueName);
+                }
+
+                Column[] keyColumns = (Column[]) annotationValues.get("columns");
+                if (keyColumns != null && keyColumns.length > 0)
+                {
+                    for (Column keyCol : keyColumns)
+                    {
+                        keymd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(keyCol));
+                    }
+                }
+
+                if (isPersistenceContext())
+                {
+                    if (disableConversion != null && disableConversion)
+                    {
+                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
+                    }
+                    else if (converterCls != null)
+                    {
+                        TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                         {
-                            if (elementTypeStr.length() > 0)
-                            {
-                                elementTypeStr.append(',');
-                            }
-                            elementTypeStr.append(elementTypes[j].getName());
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                ClassUtils.getMapKeyType(member.getType(), member.getGenericType()));
+                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
                         }
+
+                        keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                    }
+                }
+
+                JDOAnnotationUtils.addExtensionsToMetaData(keymd, (Extension[]) annotationValues.get("extensions"));
+
+                Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
+                if (embeddedMappings != null && embeddedMappings.length > 0)
+                {
+                    // Embedded key
+                    EmbeddedMetaData embmd = new EmbeddedMetaData();
+                    embmd.setOwnerMember(embeddedMappings[0].ownerMember());
+                    embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
+                    embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
+                    keymd.setEmbeddedMetaData(embmd);
+                    embeddedKeyMembers = embeddedMappings[0].members();
+                    // Delay addition of embeddedKeyMembers til completion of this loop so we have the key
+                    // type
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.VALUE))
+            {
+                // Value of a Map
+                valueTypes = (Class[]) annotationValues.get("types");
+                embeddedValue = (String) annotationValues.get("embedded");
+                serializedValue = (String) annotationValues.get("serialized");
+                dependentValue = (String) annotationValues.get("dependent");
+
+                String valueDeleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String valueUpdateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                String fkName = (String) annotationValues.get("foreignKey");
+                String generateFK = (String) annotationValues.get("generateForeignKey");
+                String indexed = (String) annotationValues.get("indexed");
+                String indexName = (String) annotationValues.get("index");
+                String unique = (String) annotationValues.get("unique");
+                String uniqueName = (String) annotationValues.get("uniqueKey");
+                Class converterCls = (Class) annotationValues.get("converter");
+                if (converterCls == UseDefault.class)
+                {
+                    converterCls = null;
+                }
+                Boolean disableConversion = (Boolean)annotationValues.get("useDefaultConversion");
+
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    unique = "true";
+                }
+                if (!StringUtils.isWhitespace(indexName))
+                {
+                    indexed = "true";
+                }
+                valuemd = new ValueMetaData();
+                valuemd.setTable((String) annotationValues.get("table"));
+                valuemd.setColumnName((String) annotationValues.get("column"));
+                valuemd.setDeleteAction(valueDeleteAction);
+                valuemd.setUpdateAction(valueUpdateAction);
+                valuemd.setIndexed(IndexedValue.getIndexedValue(indexed));
+                valuemd.setUnique(MetaDataUtils.getBooleanForString(unique, false));
+                valuemd.setMappedBy((String) annotationValues.get("mappedBy"));
+                if (!StringUtils.isWhitespace(fkName))
+                {
+                    ForeignKeyMetaData valueFkmd = valuemd.getForeignKeyMetaData();
+                    if (valueFkmd == null)
+                    {
+                        valueFkmd = new ForeignKeyMetaData();
+                        valueFkmd.setName(fkName);
+                        valuemd.setForeignKeyMetaData(valueFkmd);
                     }
                     else
                     {
-                        // Derive from component type
-                        elementTypeStr.append(member.getType().getComponentType().getName());
-                    }
-
-                    contmd = new ArrayMetaData();
-                    contmd.setParent(mmd);
-                    ArrayMetaData arrmd = (ArrayMetaData) contmd;
-
-                    arrmd.setElementType(elementTypeStr.toString());
-                    if (!StringUtils.isWhitespace(embeddedElement))
-                    {
-                        arrmd.setEmbeddedElement(Boolean.valueOf(embeddedElement));
-                    }
-                    if (!StringUtils.isWhitespace(serializedElement))
-                    {
-                        arrmd.setSerializedElement(Boolean.valueOf(serializedElement));
-                    }
-                    if (!StringUtils.isWhitespace(dependentElement))
-                    {
-                        arrmd.setDependentElement(Boolean.valueOf(dependentElement));
+                        valueFkmd.setName(fkName);
                     }
                 }
-                else if (contmd instanceof MapMetaData)
+                else if (generateFK != null && generateFK.equalsIgnoreCase("true"))
                 {
-                    Class mapKeyType = null;
-                    if (keyTypes != null && keyTypes.length > 0 && keyTypes[0] != void.class)
-                    {
-                        // User-specified key type TODO Support multiple keys (interface implementations)
-                        mapKeyType = keyTypes[0];
-                    }
-                    else
-                    {
-                        // Try to derive key type from generics info
-                        mapKeyType = ClassUtils.getMapKeyType(member.getType(), member.getGenericType());
-                    }
+                    valuemd.setForeignKeyMetaData(new ForeignKeyMetaData());
+                }
 
-                    Class mapValueType = null;
-                    if (valueTypes != null && valueTypes.length > 0 && valueTypes[0] != void.class)
+                if (!StringUtils.isWhitespace(indexName))
+                {
+                    IndexMetaData valueIdxmd = valuemd.getIndexMetaData();
+                    if (valueIdxmd == null)
                     {
-                        // User-specified value type TODO Support multiple values (interface implementations)
-                        mapValueType = valueTypes[0];
+                        valueIdxmd = new IndexMetaData();
+                        valuemd.setIndexMetaData(valueIdxmd);
                     }
-                    else
-                    {
-                        // Try to derive value type from generics info
-                        mapValueType = ClassUtils.getMapValueType(member.getType(), member.getGenericType());
-                    }
+                    valueIdxmd.setName(indexName);
+                }
 
-                    contmd = new MapMetaData();
-                    contmd.setParent(mmd);
-                    MapMetaData mapmd = (MapMetaData) contmd;
+                if (!StringUtils.isWhitespace(uniqueName))
+                {
+                    UniqueMetaData valueUnimd = valuemd.getUniqueMetaData();
+                    if (valueUnimd == null)
+                    {
+                        valueUnimd = new UniqueMetaData();
+                        valuemd.setUniqueMetaData(valueUnimd);
+                    }
+                    valueUnimd.setName(uniqueName);
+                }
 
-                    mapmd.setKeyType((mapKeyType != null ? mapKeyType.getName() : null));
-                    if (!StringUtils.isWhitespace(embeddedKey))
+                Column[] valueColumns = (Column[]) annotationValues.get("columns");
+                if (valueColumns != null && valueColumns.length > 0)
+                {
+                    for (Column valueCol : valueColumns)
                     {
-                        mapmd.setEmbeddedKey(Boolean.valueOf(embeddedKey));
+                        valuemd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(valueCol));
                     }
-                    if (!StringUtils.isWhitespace(serializedKey))
-                    {
-                        mapmd.setSerializedKey(Boolean.valueOf(serializedKey));
-                    }
-                    if (!StringUtils.isWhitespace(dependentKey))
-                    {
-                        mapmd.setDependentKey(Boolean.valueOf(dependentKey));
-                    }
+                }
 
-                    mapmd.setValueType((mapValueType != null ? mapValueType.getName() : null));
-                    if (!StringUtils.isWhitespace(embeddedValue))
+                if (isPersistenceContext())
+                {
+                    if (disableConversion != null && disableConversion)
                     {
-                        mapmd.setEmbeddedValue(Boolean.valueOf(embeddedValue));
+                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_DISABLED, "true");
                     }
-                    if (!StringUtils.isWhitespace(serializedValue))
+                    else if (converterCls != null)
                     {
-                        mapmd.setSerializedValue(Boolean.valueOf(serializedValue));
-                    }
-                    if (!StringUtils.isWhitespace(dependentValue))
-                    {
-                        mapmd.setDependentValue(Boolean.valueOf(dependentValue));
-                    }
-
-                    if ((embeddedKeyMembers != null || "true".equalsIgnoreCase(embeddedKey)) && keymd == null)
-                    {
-                        keymd = new KeyMetaData();
-                        mmd.setKeyMetaData(keymd);
-                    }
-                    if (keymd != null)
-                    {
-                        if (embeddedKeyMembers != null)
+                        TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                        if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                         {
-                            // Add any embedded key mappings
-                            EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
-                            if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
-                            {
-                                // Create EmbeddedMetaData for key since not existing
-                                embmd = keymd.newEmbeddedMetaData();
-                            }
-                            for (int j = 0; j < embeddedKeyMembers.length; j++)
-                            {
-                                // Add the metadata for the embedded key to the embedded metadata
-                                String memberName = embeddedKeyMembers[j].name();
-                                if (memberName.indexOf('.') > 0)
-                                {
-                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
-                                }
-                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMembers[j],
-                                    isMemberOfClassAField(mapKeyType, memberName));
-                                embmd.addMember(embfmd);
-                            }
+                            // Not yet cached an instance of this converter so create one
+                            AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                            Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, 
+                                ClassUtils.getMapValueType(member.getType(), member.getGenericType()));
+                            Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
+
+                            // Register the TypeConverter under the name of the AttributeConverter class
+                            JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                            typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                        }
+
+                        valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+                    }
+                }
+
+                JDOAnnotationUtils.addExtensionsToMetaData(valuemd, (Extension[]) annotationValues.get("extensions"));
+
+                Embedded[] embeddedMappings = (Embedded[]) annotationValues.get("embeddedMapping");
+                if (embeddedMappings != null && embeddedMappings.length > 0)
+                {
+                    // Embedded value
+                    EmbeddedMetaData embmd = new EmbeddedMetaData();
+                    embmd.setOwnerMember(embeddedMappings[0].ownerMember());
+                    embmd.setNullIndicatorColumn(embeddedMappings[0].nullIndicatorColumn());
+                    embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
+                    valuemd.setEmbeddedMetaData(embmd);
+                    embeddedValueMembers = embeddedMappings[0].members();
+                    // Delay addition of embeddedValueMembers til completion of this loop so we have the value type
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.ORDER))
+            {
+                ordermd = new OrderMetaData();
+                ordermd.setColumnName((String) annotationValues.get("column"));
+                ordermd.setMappedBy((String) annotationValues.get("mappedBy"));
+
+                Column[] orderColumns = (Column[]) annotationValues.get("columns");
+                if (orderColumns != null && orderColumns.length > 0)
+                {
+                    for (Column orderCol : orderColumns)
+                    {
+                        ordermd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(orderCol));
+                    }
+                }
+                JDOAnnotationUtils.addExtensionsToMetaData(ordermd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.EMBEDDED))
+            {
+                embeddedMember = true;
+                embeddedOwnerField = (String) annotationValues.get("ownerMember");
+                if (StringUtils.isWhitespace(embeddedOwnerField))
+                {
+                    embeddedOwnerField = null;
+                }
+                embeddedNullIndicatorColumn = (String) annotationValues.get("nullIndicatorColumn");
+                if (StringUtils.isWhitespace(embeddedNullIndicatorColumn))
+                {
+                    embeddedNullIndicatorColumn = null;
+                }
+                embeddedNullIndicatorValue = (String) annotationValues.get("nullIndicatorValue");
+                if (StringUtils.isWhitespace(embeddedNullIndicatorValue))
+                {
+                    embeddedNullIndicatorValue = null;
+                }
+                embeddedMembers = (Persistent[]) annotationValues.get("members");
+                if (embeddedMembers != null && embeddedMembers.length == 0)
+                {
+                    embeddedMembers = null;
+                }
+                // TODO Support discriminator
+            }
+            else if (annName.equals(JDOAnnotationUtils.INDEX))
+            {
+                // Index for the field
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String unique = (String) annotationValues.get("unique");
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                idxmd = JDOAnnotationUtils.getIndexMetaData(name, table, unique, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(idxmd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.UNIQUE))
+            {
+                // Unique for the field
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String deferred = (String) annotationValues.get("deferred");
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                unimd = JDOAnnotationUtils.getUniqueMetaData(name, table, deferred, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(unimd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.FOREIGNKEY))
+            {
+                // ForeignKey for field
+                String name = (String) annotationValues.get("name");
+                String table = (String) annotationValues.get("table");
+                String unique = (String) annotationValues.get("unique");
+                String deferred = (String) annotationValues.get("deferred");
+                String deleteAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("deleteAction"));
+                String updateAction = JDOAnnotationUtils.getForeignKeyActionString((ForeignKeyAction) annotationValues.get("updateAction"));
+                String[] members = (String[]) annotationValues.get("members");
+                Column[] columns = (Column[]) annotationValues.get("columns");
+
+                fkmd = JDOAnnotationUtils.getFKMetaData(name, table, unique, deferred, deleteAction, updateAction, members, columns);
+                JDOAnnotationUtils.addExtensionsToMetaData(fkmd, (Extension[]) annotationValues.get("extensions"));
+            }
+            else if (annName.equals(JDOAnnotationUtils.CACHEABLE))
+            {
+                String cache = (String) annotationValues.get("value");
+                if (cache != null)
+                {
+                    cacheable = cache;
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.CONVERT))
+            {
+                convertConverterCls = (Class) annotationValues.get("value");
+                if (convertConverterCls == UseDefault.class)
+                {
+                    convertConverterCls = null;
+                }
+                Boolean enabled = (Boolean) annotationValues.get("enabled");
+                if (!enabled)
+                {
+                    convertConverterCls = null;
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
+            {
+                Extension[] values = (Extension[]) annotationValues.get("value");
+                if (values != null && values.length > 0)
+                {
+                    extensions = new HashMap<String,String>(values.length);
+                    for (Extension ext : values)
+                    {
+                        String vendorName = ext.vendorName();
+                        if (StringUtils.isWhitespace(vendorName))
+                        {
+                            throw new InvalidMetaDataException("044160", vendorName, ext.key().toString(), ext.value().toString());
+                        }
+                        else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                        {
+                            extensions.put(ext.key().toString(), ext.value().toString());
                         }
                     }
+                }
+            }
+            else if (annName.equals(JDOAnnotationUtils.EXTENSION))
+            {
+                String vendorName = (String)annotationValues.get("vendorName");
+                if (StringUtils.isWhitespace(vendorName))
+                {
+                    throw new InvalidMetaDataException("044160", vendorName, annotationValues.get("key"), annotationValues.get("value"));
+                }
+                else if (vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
+                {
+                    extensions = new HashMap<String,String>(1);
+                    extensions.put((String)annotationValues.get("key"), (String)annotationValues.get("value"));
+                }
+            }
+            else
+            {
+                NucleusLogger.METADATA.debug(Localiser.msg("044211", cmd.getFullClassName(), member.getName(), annotation.getName()));
+            }
+        }
 
-                    if ((embeddedKeyMembers != null || "true".equalsIgnoreCase(embeddedKey)) && valuemd == null)
+        if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || 
+                embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || 
+                ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null || convertConverterCls != null))
+        {
+            // @Persistent not supplied but other relevant annotations defined, so add default metadata element
+            mmd = member.isProperty() ? new PropertyMetaData(cmd, member.getName()) : new FieldMetaData(cmd, member.getName());
+
+            if (primaryKey)
+            {
+                mmd.setPersistenceModifier(FieldPersistenceModifier.PERSISTENT);
+                mmd.setPrimaryKey(primaryKey);
+            }
+            if (serialised)
+            {
+                mmd.setPersistenceModifier(FieldPersistenceModifier.PERSISTENT);
+            }
+        }
+
+        if (mmd != null)
+        {
+            cmd.addMember(mmd);
+
+            if (primaryKey)
+            {
+                mmd.setPrimaryKey(true);
+            }
+            if (serialised)
+            {
+                mmd.setSerialised(true);
+            }
+            if (embeddedMember)
+            {
+                mmd.setEmbedded(true);
+            }
+            if (nonPersistentField)
+            {
+                mmd.setNotPersistent();
+            }
+            if (transactionalField)
+            {
+                mmd.setTransactional();
+            }
+
+            if (isPersistenceContext())
+            {
+                if (convertConverterCls != null)
+                {
+                    TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                    if (typeMgr.getTypeConverterForName(convertConverterCls.getName()) == null)
                     {
-                        valuemd = new ValueMetaData();
-                        mmd.setValueMetaData(valuemd);
+                        // Not yet cached an instance of this converter so create one
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), convertConverterCls);
+                        Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(convertConverterCls, member.getType());
+                        Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(convertConverterCls, attrType, null);
+
+                        // Register the TypeConverter under the name of the AttributeConverter class
+                        JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                        typeMgr.registerConverter(convertConverterCls.getName(), typeConv, attrType, dbType, false, null);
                     }
-                    if (valuemd != null)
+
+                    mmd.setTypeConverterName(convertConverterCls.getName());
+                }
+            }
+
+            // Add any embedded info
+            if (embeddedMember)
+            {
+                if (embeddedOwnerField != null || embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null)
+                {
+                    EmbeddedMetaData embmd = new EmbeddedMetaData();
+                    embmd.setOwnerMember(embeddedOwnerField);
+                    embmd.setNullIndicatorColumn(embeddedNullIndicatorColumn);
+                    embmd.setNullIndicatorValue(embeddedNullIndicatorValue);
+                    mmd.setEmbeddedMetaData(embmd);
+                    if (embeddedMembers != null && embeddedMembers.length > 0)
                     {
-                        if (embeddedValueMembers != null)
+                        for (Persistent embMember : embeddedMembers)
                         {
-                            // Add any embedded value mappings
-                            EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
-                            if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
+                            // Add the metadata for the embedded field/property to the embedded metadata
+                            String memberName = embMember.name();
+                            if (memberName.indexOf('.') > 0)
                             {
-                                // Create EmbeddedMetaData for value since not existing
-                                embmd = valuemd.newEmbeddedMetaData();
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
                             }
-                            for (int j = 0; j < embeddedValueMembers.length; j++)
-                            {
-                                // Add the metadata for the embedded value to the embedded metadata
-                                String memberName = embeddedValueMembers[j].name();
-                                if (memberName.indexOf('.') > 0)
-                                {
-                                    memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
-                                }
-                                AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMembers[j],
-                                    isMemberOfClassAField(mapValueType, memberName));
-                                embmd.addMember(embfmd);
-                            }
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embMember, isMemberOfClassAField(member.getType(), memberName));
+                            embmd.addMember(embfmd);
                         }
                     }
                 }
-                
-                if (contmd != null)
-                {
-                    mmd.setContainer(contmd);
+            }
 
-                    if (elemmd != null)
+            TypeManager typeManager = mmgr.getNucleusContext().getTypeManager();
+            ContainerHandler containerHandler = typeManager.getContainerHandler(member.getType());
+            ContainerMetaData contmd = null;
+
+            // If the field is a container then add its container element
+            if (containerHandler != null)
+            {
+                contmd = containerHandler.newMetaData();
+            }
+
+            if (contmd instanceof CollectionMetaData)
+            {
+                Class collectionElementType = null;
+                StringBuilder elementTypeStr = new StringBuilder();
+                if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
+                {
+                    // User-specified element type(s)
+                    for (Class elementType : elementTypes)
                     {
-                        elemmd.setParent(mmd);
-                        mmd.setElementMetaData(elemmd);
-                        if (elemmd.getMappedBy() != null && mmd.getMappedBy() == null)
+                        if (elementTypeStr.length() > 0)
                         {
-                            // With collection/array this is the same as mapped-by on the field
-                            mmd.setMappedBy(elemmd.getMappedBy());
+                            elementTypeStr.append(',');
+                        }
+                        elementTypeStr.append(elementType.getName());
+                    }
+                    collectionElementType = elementTypes[0]; // Use the first only
+                }
+                else
+                {
+                    // Try to derive element type from generics info
+                    collectionElementType = ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
+                }
+
+                contmd = new CollectionMetaData();
+                contmd.setParent(mmd);
+                CollectionMetaData collmd = (CollectionMetaData) contmd;
+
+                collmd.setElementType(elementTypeStr.toString());
+                if (!StringUtils.isWhitespace(embeddedElement))
+                {
+                    collmd.setEmbeddedElement(Boolean.valueOf(embeddedElement));
+                }
+                if (!StringUtils.isWhitespace(serializedElement))
+                {
+                    collmd.setSerializedElement(Boolean.valueOf(serializedElement));
+                }
+                if (!StringUtils.isWhitespace(dependentElement))
+                {
+                    collmd.setDependentElement(Boolean.valueOf(dependentElement));
+                }
+
+                if ((embeddedElementMembers != null || "true".equalsIgnoreCase(embeddedElement)) && elemmd == null)
+                {
+                    elemmd = new ElementMetaData();
+                    mmd.setElementMetaData(elemmd);
+                }
+                if (elemmd != null)
+                {
+                    if (embeddedElementMembers != null)
+                    {
+                        // Add any embedded element mappings
+                        EmbeddedMetaData embmd = elemmd.getEmbeddedMetaData();
+                        if ("true".equalsIgnoreCase(embeddedElement) && elemmd.getEmbeddedMetaData() == null)
+                        {
+                            // Create EmbeddedMetaData for element since not existing
+                            embmd = elemmd.newEmbeddedMetaData();
+                        }
+                        for (Persistent embeddedElementMember : embeddedElementMembers)
+                        {
+                            // Add the metadata for the embedded element to the embedded metadata
+                            String memberName = embeddedElementMember.name();
+                            if (memberName.indexOf('.') > 0)
+                            {
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                            }
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedElementMember, isMemberOfClassAField(collectionElementType, memberName));
+                            embmd.addMember(embfmd);
                         }
                     }
-                    if (keymd != null)
-                    {
-                        keymd.setParent(mmd);
-                        mmd.setKeyMetaData(keymd);
-                    }
-                    if (valuemd != null)
-                    {
-                        valuemd.setParent(mmd);
-                        mmd.setValueMetaData(valuemd);
-                    }
-                    if (ordermd != null)
-                    {
-                        ordermd.setParent(mmd);
-                        mmd.setOrderMetaData(ordermd);
-                    }
                 }
-                if (joinmd != null)
+            }
+            else if (contmd instanceof ArrayMetaData)
+            {
+                StringBuilder elementTypeStr = new StringBuilder();
+                if (elementTypes != null && elementTypes.length > 0 && elementTypes[0] != void.class)
                 {
-                    mmd.setJoinMetaData(joinmd);
-                }
-                if (colmds != null)
-                {
-                    for (int i = 0; i < colmds.length; i++)
+                    // User-specified element type(s)
+                    for (Class elementType : elementTypes)
                     {
-                        mmd.addColumn(colmds[i]);
+                        if (elementTypeStr.length() > 0)
+                        {
+                            elementTypeStr.append(',');
+                        }
+                        elementTypeStr.append(elementType.getName());
                     }
                 }
-                if (idxmd != null)
+                else
                 {
-                    mmd.setIndexMetaData(idxmd);
+                    // Derive from component type
+                    elementTypeStr.append(member.getType().getComponentType().getName());
                 }
-                if (unimd != null)
+
+                contmd = new ArrayMetaData();
+                contmd.setParent(mmd);
+                ArrayMetaData arrmd = (ArrayMetaData) contmd;
+
+                arrmd.setElementType(elementTypeStr.toString());
+                if (!StringUtils.isWhitespace(embeddedElement))
                 {
-                    mmd.setUniqueMetaData(unimd);
+                    arrmd.setEmbeddedElement(Boolean.valueOf(embeddedElement));
                 }
-                if (fkmd != null)
+                if (!StringUtils.isWhitespace(serializedElement))
                 {
-                    mmd.setForeignKeyMetaData(fkmd);
+                    arrmd.setSerializedElement(Boolean.valueOf(serializedElement));
                 }
-                if (cacheable != null && cacheable.equalsIgnoreCase("false"))
+                if (!StringUtils.isWhitespace(dependentElement))
                 {
-                    mmd.setCacheable(false);
+                    arrmd.setDependentElement(Boolean.valueOf(dependentElement));
                 }
-                if (extensions != null)
+            }
+            else if (contmd instanceof MapMetaData)
+            {
+                Class mapKeyType = null;
+                if (keyTypes != null && keyTypes.length > 0 && keyTypes[0] != void.class)
                 {
-                    mmd.addExtensions(extensions);
+                    // User-specified key type TODO Support multiple keys (interface implementations)
+                    mapKeyType = keyTypes[0];
                 }
+                else
+                {
+                    // Try to derive key type from generics info
+                    mapKeyType = ClassUtils.getMapKeyType(member.getType(), member.getGenericType());
+                }
+
+                Class mapValueType = null;
+                if (valueTypes != null && valueTypes.length > 0 && valueTypes[0] != void.class)
+                {
+                    // User-specified value type TODO Support multiple values (interface implementations)
+                    mapValueType = valueTypes[0];
+                }
+                else
+                {
+                    // Try to derive value type from generics info
+                    mapValueType = ClassUtils.getMapValueType(member.getType(), member.getGenericType());
+                }
+
+                contmd = new MapMetaData();
+                contmd.setParent(mmd);
+                MapMetaData mapmd = (MapMetaData) contmd;
+
+                mapmd.setKeyType((mapKeyType != null ? mapKeyType.getName() : null));
+                if (!StringUtils.isWhitespace(embeddedKey))
+                {
+                    mapmd.setEmbeddedKey(Boolean.valueOf(embeddedKey));
+                }
+                if (!StringUtils.isWhitespace(serializedKey))
+                {
+                    mapmd.setSerializedKey(Boolean.valueOf(serializedKey));
+                }
+                if (!StringUtils.isWhitespace(dependentKey))
+                {
+                    mapmd.setDependentKey(Boolean.valueOf(dependentKey));
+                }
+
+                mapmd.setValueType((mapValueType != null ? mapValueType.getName() : null));
+                if (!StringUtils.isWhitespace(embeddedValue))
+                {
+                    mapmd.setEmbeddedValue(Boolean.valueOf(embeddedValue));
+                }
+                if (!StringUtils.isWhitespace(serializedValue))
+                {
+                    mapmd.setSerializedValue(Boolean.valueOf(serializedValue));
+                }
+                if (!StringUtils.isWhitespace(dependentValue))
+                {
+                    mapmd.setDependentValue(Boolean.valueOf(dependentValue));
+                }
+
+                if ((embeddedKeyMembers != null || "true".equalsIgnoreCase(embeddedKey)) && keymd == null)
+                {
+                    keymd = new KeyMetaData();
+                    mmd.setKeyMetaData(keymd);
+                }
+                if (keymd != null)
+                {
+                    if (embeddedKeyMembers != null)
+                    {
+                        // Add any embedded key mappings
+                        EmbeddedMetaData embmd = keymd.getEmbeddedMetaData();
+                        if ("true".equalsIgnoreCase(embeddedKey) && keymd.getEmbeddedMetaData() == null)
+                        {
+                            // Create EmbeddedMetaData for key since not existing
+                            embmd = keymd.newEmbeddedMetaData();
+                        }
+                        for (Persistent embeddedKeyMember : embeddedKeyMembers)
+                        {
+                            // Add the metadata for the embedded key to the embedded metadata
+                            String memberName = embeddedKeyMember.name();
+                            if (memberName.indexOf('.') > 0)
+                            {
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                            }
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedKeyMember, isMemberOfClassAField(mapKeyType, memberName));
+                            embmd.addMember(embfmd);
+                        }
+                    }
+                }
+
+                if ((embeddedKeyMembers != null || "true".equalsIgnoreCase(embeddedKey)) && valuemd == null)
+                {
+                    valuemd = new ValueMetaData();
+                    mmd.setValueMetaData(valuemd);
+                }
+                if (valuemd != null)
+                {
+                    if (embeddedValueMembers != null)
+                    {
+                        // Add any embedded value mappings
+                        EmbeddedMetaData embmd = valuemd.getEmbeddedMetaData();
+                        if ("true".equalsIgnoreCase(embeddedValue) && valuemd.getEmbeddedMetaData() == null)
+                        {
+                            // Create EmbeddedMetaData for value since not existing
+                            embmd = valuemd.newEmbeddedMetaData();
+                        }
+                        for (Persistent embeddedValueMember : embeddedValueMembers)
+                        {
+                            // Add the metadata for the embedded value to the embedded metadata
+                            String memberName = embeddedValueMember.name();
+                            if (memberName.indexOf('.') > 0)
+                            {
+                                memberName = memberName.substring(memberName.lastIndexOf('.') + 1);
+                            }
+                            AbstractMemberMetaData embfmd = getFieldMetaDataForPersistent(embmd, embeddedValueMember, isMemberOfClassAField(mapValueType, memberName));
+                            embmd.addMember(embfmd);
+                        }
+                    }
+                }
+            }
+
+            if (contmd != null)
+            {
+                mmd.setContainer(contmd);
+
+                if (elemmd != null)
+                {
+                    elemmd.setParent(mmd);
+                    mmd.setElementMetaData(elemmd);
+                    if (elemmd.getMappedBy() != null && mmd.getMappedBy() == null)
+                    {
+                        // With collection/array this is the same as mapped-by on the field
+                        mmd.setMappedBy(elemmd.getMappedBy());
+                    }
+                }
+                if (keymd != null)
+                {
+                    keymd.setParent(mmd);
+                    mmd.setKeyMetaData(keymd);
+                }
+                if (valuemd != null)
+                {
+                    valuemd.setParent(mmd);
+                    mmd.setValueMetaData(valuemd);
+                }
+                if (ordermd != null)
+                {
+                    ordermd.setParent(mmd);
+                    mmd.setOrderMetaData(ordermd);
+                }
+            }
+            if (joinmd != null)
+            {
+                mmd.setJoinMetaData(joinmd);
+            }
+            if (colmds != null)
+            {
+                for (ColumnMetaData colmd : colmds)
+                {
+                    mmd.addColumn(colmd);
+                }
+            }
+            if (idxmd != null)
+            {
+                mmd.setIndexMetaData(idxmd);
+            }
+            if (unimd != null)
+            {
+                mmd.setUniqueMetaData(unimd);
+            }
+            if (fkmd != null)
+            {
+                mmd.setForeignKeyMetaData(fkmd);
+            }
+            if (cacheable != null && cacheable.equalsIgnoreCase("false"))
+            {
+                mmd.setCacheable(false);
+            }
+            if (extensions != null)
+            {
+                mmd.addExtensions(extensions);
             }
         }
 
@@ -2154,29 +2135,22 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         if (fieldTypes != null && fieldTypes.length > 0)
         {
             StringBuilder typeStr = new StringBuilder();
-            for (int j = 0; j < fieldTypes.length; j++)
+            for (Class fieldType : fieldTypes)
             {
                 if (typeStr.length() > 0)
                 {
                     typeStr.append(',');
                 }
-                if (fieldTypes[j] != null && fieldTypes[j] != void.class)
+                if (fieldType != null && fieldType != void.class)
                 {
-                    typeStr.append(fieldTypes[j].getName());
+                    typeStr.append(fieldType.getName());
                 }
             }
             fieldTypeName = typeStr.toString();
         }
 
-        AbstractMemberMetaData fmd = null;
-        if (isField)
-        {
-            fmd = new FieldMetaData(parent, member.name());
-        }
-        else
-        {
-            fmd = new PropertyMetaData(parent, member.name());
-        }
+        AbstractMemberMetaData fmd = isField ? new FieldMetaData(parent, member.name()) : new PropertyMetaData(parent, member.name());
+
         if (modifier != null)
         {
             fmd.setPersistenceModifier(modifier);
@@ -2214,9 +2188,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         Column[] columns = member.columns();
         if (columns != null && columns.length > 0)
         {
-            for (int j = 0; j < columns.length; j++)
+            for (Column column : columns)
             {
-                fmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[j]));
+                fmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(column));
             }
         }
         return fmd;
@@ -2249,12 +2223,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected AnnotationObject isClassPersistable(AnnotationObject[] annotations)
     {
-        for (int i = 0; i < annotations.length; i++)
+        for (AnnotationObject annotation : annotations)
         {
-            String annClassName = annotations[i].getName();
-            if (annClassName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
+            String annName = annotation.getName();
+            if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
             {
-                return annotations[i];
+                return annotation;
             }
         }
         return null;
@@ -2267,9 +2241,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected boolean isClassPersistenceAware(AnnotationObject[] annotations)
     {
-        for (int i = 0; i < annotations.length; i++)
+        for (AnnotationObject annotation : annotations)
         {
-            String annName = annotations[i].getName();
+            String annName = annotation.getName();
             if (annName.equals(JDOAnnotationUtils.PERSISTENCE_AWARE))
             {
                 return true;
@@ -2285,10 +2259,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected boolean doesClassHaveNamedQueries(AnnotationObject[] annotations)
     {
-        for (int i = 0; i < annotations.length; i++)
+        for (AnnotationObject annotation : annotations)
         {
-            String annClassName = annotations[i].getName();
-            if (annClassName.equals(JDOAnnotationUtils.QUERIES) || annClassName.equals(JDOAnnotationUtils.QUERY))
+            String annName = annotation.getName();
+            if (annName.equals(JDOAnnotationUtils.QUERIES) || annName.equals(JDOAnnotationUtils.QUERY))
             {
                 return true;
             }
