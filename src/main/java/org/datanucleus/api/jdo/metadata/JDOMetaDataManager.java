@@ -430,7 +430,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param clr the ClassLoaderResolver
      * @param queryName Name of the query
      * @return The QueryMetaData for the query for this class
-     **/
+     */
     public QueryMetaData getMetaDataForQuery(Class cls, ClassLoaderResolver clr, String queryName)
     {
         QueryMetaData qmd = super.getMetaDataForQuery(cls, clr, queryName);
@@ -468,12 +468,11 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             if (allowXML)
             {
                 // Query not stored in JDO/ORM files so try JDOQUERY
-                List locations = new ArrayList();
+                List<String> locations = new ArrayList<>();
                 locations.addAll(getValidMetaDataLocationsForClass(getJDOQueryFileSuffix(), null, cls.getName()));
 
-                for (int i=0; i<locations.size(); i++)
+                for (String location : locations)
                 {
-                    String location = (String) locations.get(i);
                     // Process all resources for this location
                     Enumeration resources;
                     try
@@ -522,15 +521,14 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         }
 
         // Query isn't scoped to a candidate class, so search the valid package-independent locations
-        List locations = new ArrayList();
+        List<String> locations = new ArrayList<>();
         locations.addAll(getValidMetaDataLocationsForItem(getJDOFileSuffix(), null, null, false));
         locations.addAll(getValidMetaDataLocationsForItem(getORMFileSuffix(), getORMMappingName(), null, false));
         locations.addAll(getValidMetaDataLocationsForItem(getJDOQueryFileSuffix(), null, null, false));
 
-        for (int i=0; i<locations.size(); i++)
+        for (String location : locations)
         {
             // Process all resources for this location
-            String location = (String) locations.get(i);
             Enumeration resources;
             try
             {
@@ -580,7 +578,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param clr the ClassLoaderResolver
      * @param packageSequenceName Fully qualified name of the sequence (inc package name)
      * @return The SequenceMetaData for this named sequence
-     **/
+     */
     public SequenceMetaData getMetaDataForSequence(ClassLoaderResolver clr, String packageSequenceName)
     {
         SequenceMetaData seqmd = super.getMetaDataForSequence(clr, packageSequenceName);
@@ -597,13 +595,12 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         }
 
         // Search valid JDO file locations ("jdo" and "orm" files for the specified package)
-        List locations = new ArrayList();
+        List<String> locations = new ArrayList<>();
         locations.addAll(getValidMetaDataLocationsForItem(getJDOFileSuffix(), null, packageName, false));
         locations.addAll(getValidMetaDataLocationsForItem(getORMFileSuffix(), getORMMappingName(), packageName, false));
 
-        for (int i=0; i<locations.size(); i++)
+        for (String location : locations)
         {
-            String location = (String) locations.get(i);
             // Process all resources for this location
             Enumeration resources;
             try
@@ -686,8 +683,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         if (allowXML)
         {
             // No ORM loaded for this class, so find if there is any ORM metadata available
-            FileMetaData filemdORM = loadXMLMetaDataForClass(c, clr, getORMMappingName(), getORMFileSuffix(), 
-                MetadataFileType.JDO_ORM_FILE, false);
+            FileMetaData filemdORM = loadXMLMetaDataForClass(c, clr, getORMMappingName(), getORMFileSuffix(), MetadataFileType.JDO_ORM_FILE, false);
             if (filemdORM != null)
             {
                 // The ORM file has now been registered, so find the class and merge it into the JDO definition
@@ -695,8 +691,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 if (ormCmd != null)
                 {
                     // Merge the ORM file into the JDO file
-                    MetaDataMerger.mergeFileORMData((FileMetaData)cmd.getPackageMetaData().getParent(),
-                        (FileMetaData)ormCmd.getPackageMetaData().getParent());
+                    MetaDataMerger.mergeFileORMData((FileMetaData)cmd.getPackageMetaData().getParent(), (FileMetaData)ormCmd.getPackageMetaData().getParent());
 
                     // Merge the ORM class into the JDO class
                     MetaDataMerger.mergeClassORMData(cmd, ormCmd, this);
@@ -710,17 +705,14 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 
     /**
      * Method to find the Meta-Data file for a specified class.
-     * Checks the locations one-by-one, and checks for existence of the
-     * specified class in the file. If a valid file is found it is loaded no matter
-     * if the file contains the actual class. When a file is found containing the class
-     * the process stops and the FileMetaData for that file (containing the class) returned.
+     * Checks the locations one-by-one, and checks for existence of the specified class in the file. 
+     * If a valid file is found it is loaded no matter if the file contains the actual class. 
+     * When a file is found containing the class the process stops and the FileMetaData for that file (containing the class) returned.
      * <P>
-     * Allows 2 variations on the naming above. The first is a modifier which
-     * caters for a JDO 2.0 requirement whereby the user can specify a modifier
-     * such as "mysql", which would mean that this should search for filenames
-     * "package-mysql.jdo". The second variation is the suffix of the file.
-     * This is "jdo" by default, but JDO 2.0 has situations where "orm", or
-     * "jdoquery" are required as a suffix.
+     * Allows 2 variations on the naming above. 
+     * The first is a modifier which caters for a JDO 2.0 requirement whereby the user can specify a modifier such as "mysql", 
+     * which would mean that this should search for filenames "package-mysql.jdo". The second variation is the suffix of the file.
+     * This is "jdo" by default, but JDO 2.0 has situations where "orm", or "jdoquery" are required as a suffix.
      * </P>
      * @param pc_class The class/interface to retrieve the metadata file for
      * @param clr the ClassLoaderResolver
@@ -731,15 +723,12 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @return FileMetaData for the file containing the class
      */
     protected FileMetaData loadXMLMetaDataForClass(Class pc_class, ClassLoaderResolver clr,
-            String mappingModifier, String metadataFileExtension, MetadataFileType metadataType,
-            boolean populate)
+            String mappingModifier, String metadataFileExtension, MetadataFileType metadataType, boolean populate)
     {
         // MetaData file locations
-        List validLocations = getValidMetaDataLocationsForClass(metadataFileExtension, mappingModifier, pc_class.getName());
-        Iterator locationsIter = validLocations.iterator();
-        while (locationsIter.hasNext())
+        List<String> validLocations = getValidMetaDataLocationsForClass(metadataFileExtension, mappingModifier, pc_class.getName());
+        for (String location : validLocations)
         {
-            String location = (String)locationsIter.next();
             Enumeration resources;
             try 
             {
@@ -809,7 +798,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param packageName The package name to look for
      * @return The list of valid locations
      */
-    public List getValidMetaDataLocationsForPackage(String fileExtension, String fileModifier, String packageName)
+    public List<String> getValidMetaDataLocationsForPackage(String fileExtension, String fileModifier, String packageName)
     {
         return getValidMetaDataLocationsForItem(fileExtension, fileModifier, packageName, false);
     }
@@ -821,7 +810,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param className The class name to look for
      * @return The list of valid locations
      */
-    public List getValidMetaDataLocationsForClass(String fileExtension, String fileModifier, String className)
+    public List<String> getValidMetaDataLocationsForClass(String fileExtension, String fileModifier, String className)
     {
         return getValidMetaDataLocationsForItem(fileExtension, fileModifier, className, true);
     }
@@ -835,19 +824,18 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     private static final String METADATA_LOCATION_WEBINF = "/WEB-INF/" + METADATA_PACKAGE;
 
     /**
-     * Method to return the valid metadata locations to contain a particular item. The
-     * "item" can be a package or a class. Will look in the locations appropriate for the
-     * setting of "locationDefintion".
+     * Method to return the valid metadata locations to contain a particular item. 
+     * The "item" can be a package or a class. Will look in the locations appropriate for the setting of "locationDefintion".
      * @param fileExtension File extension (e.g "jdo") accepts comma separated list
      * @param fileModifier Any modifier (for use when using ORM files package-mysql.orm, this is the "mysql" part)
      * @param itemName The name of the item (package or class)
      * @param isClass Whether this is a class
      * @return The list of valid locations
      */
-    List getValidMetaDataLocationsForItem(String fileExtension, String fileModifier, String itemName, boolean isClass)
+    List<String> getValidMetaDataLocationsForItem(String fileExtension, String fileModifier, String itemName, boolean isClass)
     {
         // Build up a list of valid locations
-        List locations = new ArrayList();
+        List<String> locations = new ArrayList<>();
 
         if (fileExtension == null)
         {
@@ -860,20 +848,20 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         }
         return locations;
     }
+
     /**
-     * Method to return the valid metadata locations to contain a particular item. The
-     * "item" can be a package or a class. Will look in the locations appropriate for the
-     * setting of "locationDefintion".
+     * Method to return the valid metadata locations to contain a particular item. 
+     * The "item" can be a package or a class. Will look in the locations appropriate for the setting of "locationDefintion".
      * @param fileExtension File extension (e.g "jdo")
      * @param fileModifier Any modifier (for use when using ORM files package-mysql.orm, this is the "mysql" part)
      * @param itemName The name of the item (package or class)
      * @param isClass Whether this is a class
      * @return The list of valid locations
      */
-    private List getValidMetaDataLocationsForSingleExtension(String fileExtension, String fileModifier, String itemName, boolean isClass)
+    private List<String> getValidMetaDataLocationsForSingleExtension(String fileExtension, String fileModifier, String itemName, boolean isClass)
     {
         // Build up a list of valid locations
-        List locations = new ArrayList();
+        List<String> locations = new ArrayList<>();
 
         String suffix = null;
         if (fileExtension == null)
