@@ -582,11 +582,11 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Throwable[] nestedExceptions = exc.getNestedExceptions();
         if (nestedExceptions != null)
         {
-            for (int i = 0; i < nestedExceptions.length; i++)
+            for (Throwable nestedExc : nestedExceptions)
             {
-                if (nestedExceptions[i] instanceof JDOException)
+                if (nestedExc instanceof JDOException)
                 {
-                    refreshAll((JDOException) nestedExceptions[i]);
+                    refreshAll((JDOException) nestedExc);
                 }
             }
         }
@@ -1186,16 +1186,15 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         // Detach the objects
         FetchPlanState state = new DetachState(ec.getApiAdapter());
         List detacheds = new ArrayList();
-        for (Iterator it = pcs.iterator(); it.hasNext();)
+        for (T pc : pcs)
         {
-            Object obj = it.next();
-            if (obj == null)
+            if (pc == null)
             {
                 detacheds.add(null);
             }
             else
             {
-                detacheds.add(jdoDetachCopy(obj, state));
+                detacheds.add(jdoDetachCopy(pc, state));
             }
         }
 
@@ -1520,9 +1519,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 org.datanucleus.FetchPlan fp = new org.datanucleus.FetchPlan(ec, clr);
                 fp.removeGroup(org.datanucleus.FetchPlan.DEFAULT);
                 FetchGroupMetaData[] fgmds = fpmd.getFetchGroupMetaData();
-                for (int i=0;i<fgmds.length;i++)
+                for (FetchGroupMetaData fgmd : fgmds)
                 {
-                    fp.addGroup(fgmds[i].getName());
+                    fp.addGroup(fgmd.getName());
                 }
                 fp.setMaxFetchDepth(fpmd.getMaxFetchDepth());
                 fp.setFetchSize(fpmd.getFetchSize());
@@ -2073,8 +2072,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 JDOOptimisticVerificationException[] jdoNested = new JDOOptimisticVerificationException[nested.length];
                 for (int i=0;i<nested.length;i++)
                 {
-                    jdoNested[i] = 
-                        (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException((NucleusException)nested[i]);
+                    jdoNested[i] = (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException((NucleusException)nested[i]);
                 }
                 throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
             }

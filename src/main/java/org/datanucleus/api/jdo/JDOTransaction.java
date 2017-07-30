@@ -153,8 +153,7 @@ public class JDOTransaction implements Transaction
                         {
                             nestedEx = new NucleusException(nested[i].getMessage(),nested[i]);                        
                         }
-                        jdoNested[i] =
-                                (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException(nestedEx);
+                        jdoNested[i] = (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException(nestedEx);
                     }
                     throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                 }
