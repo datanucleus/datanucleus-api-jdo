@@ -807,10 +807,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      * @param cmd The ClassMetaData/InterfaceMetaData to update
      * @param member The field/property
      * @param annotations Annotations for the field/property
-     * @param propertyAccessor if there are properties for this class
      * @return The FieldMetaData/PropertyMetaData that was added (if any)
      */
-    protected AbstractMemberMetaData processMemberAnnotations(AbstractClassMetaData cmd, Member member, AnnotationObject[] annotations, boolean propertyAccessor)
+    protected AbstractMemberMetaData processMemberAnnotations(AbstractClassMetaData cmd, Member member, AnnotationObject[] annotations)
     {
         if (annotations == null || annotations.length == 0)
         {
