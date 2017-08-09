@@ -440,37 +440,47 @@ public class JDOAdapter implements ApiAdapter
         return true;
     }
 
-    /**
-     * Returns the default cascade-persist. JDO defaults to persisting by reachability.
-     * @return The default value for cascade-persist (true)
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadePersistorField()
      */
+    @Override
     public boolean getDefaultCascadePersistForField()
     {
         return true;
     }
 
-    /**
-     * Returns the default cascade-update setting. JDO defaults to updating by reachability.
-     * @return The default cascade-update (true)
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeUpdateForField()
      */
+    @Override
     public boolean getDefaultCascadeUpdateForField()
     {
         return true;
     }
 
-    /**
-     * Returns the default cascade-delete setting. JDO defaults to not deleting by reachability (unless using delete dependent)
-     * @return The default cascade-delete (false)
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeDeleteForField()
      */
+    @Override
     public boolean getDefaultCascadeDeleteForField()
     {
+        // JDO defaults to not deleting by reachability (unless using delete dependent)
         return false;
     }
 
-    /**
-     * Returns the default cascade-refresh setting.
-     * @return The default cascade-refresh (false)
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeDetachForField()
      */
+    @Override
+    public boolean getDefaultCascadeDetachForField()
+    {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeRefreshForField()
+     */
+    @Override
     public boolean getDefaultCascadeRefreshForField()
     {
         return false;
