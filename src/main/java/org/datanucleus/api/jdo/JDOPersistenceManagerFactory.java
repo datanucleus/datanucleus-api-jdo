@@ -570,9 +570,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 {
                     // Register this TypeConverter (after checking that it is a valid TypeConverter)
                     Class attrConvCls = nucleusContext.getClassLoaderResolver(null).classForName(converterName);
-                    AttributeConverter attrConv = (AttributeConverter) ClassUtils.newInstance(attrConvCls, null, null);
-
-                    // Extract field and datastore types for this converter
                     Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(attrConvCls, null);
                     Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(attrConvCls, attrType, null);
 
@@ -580,6 +577,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     if (attrType != null)
                     {
                         // TODO Compare with typeName, should be the same (or inherited)
+                        AttributeConverter attrConv = JDOTypeConverterUtils.createAttributeConverter(nucleusContext, attrConvCls);
                         NucleusLogger.GENERAL.debug("Registering javaType=" + typeName + " as using converter with name=" + converterName + " conv=" + attrConv);
                         JDOTypeConverter conv = new JDOTypeConverter(attrConv);
                         nucleusContext.getTypeManager().registerConverter(converterName, conv, attrType, dbType, true, attrType.getName());
