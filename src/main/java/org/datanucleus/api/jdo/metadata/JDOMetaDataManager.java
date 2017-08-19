@@ -258,9 +258,8 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     {
         if (metaDataParser == null)
         {
-            metaDataParser = new MetaDataParser(this, nucleusContext.getPluginManager(), validateXML);
+            metaDataParser = new MetaDataParser(this, nucleusContext.getPluginManager(), validateXML, supportXMLNamespaces);
         }
-        metaDataParser.setNamespaceAware(supportXMLNamespaces);
         return (FileMetaData)metaDataParser.parseMetaDataURL(fileURL, "jdo");
     }
 

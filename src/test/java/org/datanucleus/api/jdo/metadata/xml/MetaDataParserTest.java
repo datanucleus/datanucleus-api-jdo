@@ -31,7 +31,7 @@ public class MetaDataParserTest extends TestCase
     public void testParseMetaDataURLnullURL()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
+        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         try
         {
             parser.parseMetaDataURL(null, "jdo");
@@ -46,7 +46,7 @@ public class MetaDataParserTest extends TestCase
     public void testParseMetaDataURLnullhandler()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
+        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         try
         {
             parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), null);

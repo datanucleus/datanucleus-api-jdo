@@ -31,7 +31,7 @@ public class PersistenceFileMetaDataHandlerTest extends TestCase
     public void testParseDefaultNamespace()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
+        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/persistence1.xml"), "persistence");
         assertNotNull(md);
     }
@@ -39,7 +39,7 @@ public class PersistenceFileMetaDataHandlerTest extends TestCase
     public void testParseNamespace()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true);
+        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/persistence2.xml"), "persistence");
         assertNotNull(md);
     }
