@@ -100,6 +100,9 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     /** Definition of which locations we accept for MetaData files. */
     protected int locationDefinition = ALL_JDO_LOCATIONS;
 
+    /** Parser for XML MetaData. */
+    protected MetaDataParser metaDataParser = null;
+
     /** Map of ClassMetaData from ORM files, keyed by the class name. */
     protected Map<String, AbstractClassMetaData> ormClassMetaDataByClass = new ConcurrentHashMap<String, AbstractClassMetaData>();
 

@@ -129,7 +129,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         cmd.setSchema(getAttr(attrs, "schema"));
         cmd.setRequiresExtent(getAttr(attrs, "requires-extent"));
         String detachableStr = getAttr(attrs, "detachable");
-        if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+        if (mmgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
             cmd.setDetachable(true);
         }
@@ -188,7 +188,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         imd.setCatalog(getAttr(attrs, "catalog"));
         imd.setSchema(getAttr(attrs, "schema"));
         String detachableStr = getAttr(attrs, "detachable");
-        if (mgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
+        if (mmgr.getNucleusContext().getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_ALWAYS_DETACHABLE))
         {
             imd.setDetachable(true);
         }
@@ -291,13 +291,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
         else if (!StringUtils.isWhitespace(converterAttr))
         {
-            TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-            ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+            ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
             Class converterCls = clr.classForName(converterAttr);
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
                 // Not yet cached an instance of this converter so create one
-                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mgr.getNucleusContext(), converterCls);
+                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -379,13 +379,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         }
         else if (!StringUtils.isWhitespace(converterAttr))
         {
-            TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-            ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+            ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
             Class converterCls = clr.classForName(converterAttr);
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
                 // Not yet cached an instance of this converter so create one
-                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mgr.getNucleusContext(), converterCls);
+                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -934,13 +934,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
-                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO element type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -975,13 +975,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
-                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO key type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -1017,13 +1017,13 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                 }
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
-                    TypeManager typeMgr = mgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mgr.getNucleusContext().getClassLoaderResolver(null);
+                    TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO value type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
