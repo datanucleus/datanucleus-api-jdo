@@ -96,7 +96,7 @@ Contributors:
 
     <!-- CALLBACK HANDLER -->
     <extension point="org.datanucleus.callbackhandler">
-        <callback-handler class-name="org.datanucleus.api.jdo.JDOCallbackHandler" name="JDO"/>
+        <callback-handler name="JDO" class-name="org.datanucleus.api.jdo.JDOCallbackHandler"/>
     </extension>
 
     <!-- QUERY METHODS (IN-MEMORY) -->
@@ -107,12 +107,12 @@ Contributors:
 
     <!-- METADATA MANAGER -->
     <extension point="org.datanucleus.metadata_manager">
-       <metadata-manager class="org.datanucleus.api.jdo.metadata.JDOMetaDataManager" name="JDO"/>
+       <metadata-manager name="JDO" class="org.datanucleus.api.jdo.metadata.JDOMetaDataManager"/>
     </extension>
 
     <!-- METADATA HANDLER -->
     <extension point="org.datanucleus.metadata_handler">
-        <handler class-name="org.datanucleus.api.jdo.metadata.JDOMetaDataHandler" name="JDO"/>
+        <handler name="JDO" class-name="org.datanucleus.api.jdo.metadata.JDOMetaDataHandler"/>
     </extension>
 
     <!-- METADATA ENTITY RESOLVERS -->
