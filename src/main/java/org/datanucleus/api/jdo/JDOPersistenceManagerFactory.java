@@ -80,6 +80,7 @@ import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
 import org.datanucleus.metadata.MetaDataManager;
+import org.datanucleus.metadata.MetaDataUtils;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
@@ -467,8 +468,13 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
                 try
                 {
-                    // Obtain any props defined for the persistence-unit
-                    pumd = nucleusContext.getMetaDataManager().getMetaDataForPersistenceUnit(persistenceUnitName);
+                    // Load the metadata for the persistence-unit
+                    String filename = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_PERSISTENCE_XML_FILENAME);
+                    boolean validateXML = nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_VALIDATE);
+                    boolean supportXMLNamespaces = nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_NAMESPACE_AWARE);
+                    ClassLoaderResolver clr = nucleusContext.getClassLoaderResolver(null);
+                    pumd = MetaDataUtils.getMetaDataForPersistenceUnit(nucleusContext.getPluginManager(), filename, persistenceUnitName, validateXML, supportXMLNamespaces, clr);
+
                     if (pumd != null)
                     {
                         // Add the properties for the unit
@@ -2483,8 +2489,14 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         PersistenceUnitMetaData pumd = null;
         if (getPersistenceUnitName() != null)
         {
-            pumd = nucleusContext.getMetaDataManager().getMetaDataForPersistenceUnit(getPersistenceUnitName());
+            // Load the metadata for the persistence-unit
+            String filename = nucleusContext.getConfiguration().getStringProperty(PropertyNames.PROPERTY_PERSISTENCE_XML_FILENAME);
+            boolean validateXML = nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_VALIDATE);
+            boolean supportXMLNamespaces = nucleusContext.getConfiguration().getBooleanProperty(PropertyNames.PROPERTY_METADATA_XML_NAMESPACE_AWARE);
+            ClassLoaderResolver clr = nucleusContext.getClassLoaderResolver(null);
+            pumd = MetaDataUtils.getMetaDataForPersistenceUnit(nucleusContext.getPluginManager(), filename, getPersistenceUnitName(), validateXML, supportXMLNamespaces, clr);
         }
+
         initialiseMetaData(pumd);
         processLifecycleListenersFromProperties(deserialisationProps);
         freezeConfiguration();
