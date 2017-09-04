@@ -23,7 +23,7 @@
     </scm>
 
     <properties>
-        <jdo.version>3.2.0-m7</jdo.version>
+        <dn.javax.jdo.version>3.2.0-m7</dn.javax.jdo.version>
         <dn.core.version>5.1.0-release</dn.core.version>
     </properties>
 
@@ -42,7 +42,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.datanucleus.api.jdo;singleton:=true</Bundle-SymbolicName>
                         <Import-Package>
-                            javax.jdo*;version="${jdo.version}",
+                            javax.jdo*;version="${dn.javax.jdo.version}",
                             org.datanucleus*;version="${dn.core.version}",
                             *;resolution:=optional
                         </Import-Package>
@@ -58,7 +58,7 @@
             <artifactId>jdo-api</artifactId-->
             <groupId>org.datanucleus</groupId>
             <artifactId>javax.jdo</artifactId>
-            <version>${jdo.version}</version>
+            <version>${dn.javax.jdo.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
