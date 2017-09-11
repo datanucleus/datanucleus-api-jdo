@@ -209,14 +209,15 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         public void registerClass(RegisterClassEvent ev)
         {
             // register the class / interface in metadata, and make sure it is initialised
-            NucleusLogger.METADATA.debug("Listener found initialisation for persistable class " + ev.getRegisteredClass().getName());
+            Class registeredClass = ev.getRegisteredClass();
+            NucleusLogger.METADATA.debug("Listener found initialisation for persistable class " + registeredClass.getName());
             try
             {
-                getMetaDataForClass(ev.getRegisteredClass(), nucleusContext.getClassLoaderResolver(ev.getRegisteredClass().getClassLoader()));
+                getMetaDataForClass(registeredClass, nucleusContext.getClassLoaderResolver(registeredClass.getClassLoader()));
             }
             catch (Exception e)
             {
-                NucleusLogger.METADATA.warn("Listener attempted to load metadata for " + ev.getRegisteredClass().getName() + " but an exception was thrown. Ignoring this class", e);
+                NucleusLogger.METADATA.warn("Listener attempted to load metadata for " + registeredClass.getName() + " but an exception was thrown. Ignoring this class", e);
             }
         }
     }
