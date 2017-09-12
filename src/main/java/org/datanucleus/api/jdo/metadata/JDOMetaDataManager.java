@@ -33,7 +33,6 @@ import org.datanucleus.Configuration;
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.enhancer.EnhancementHelper;
-import org.datanucleus.enhancer.EnhancementHelper.RegisterClassEvent;
 import org.datanucleus.enhancer.EnhancementHelper.RegisterClassListener;
 import org.datanucleus.enhancer.EnhancementNucleusContextImpl;
 import org.datanucleus.exceptions.NucleusException;
@@ -206,10 +205,9 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      */
     private class MetaDataRegisterClassListener implements RegisterClassListener
     {
-        public void registerClass(RegisterClassEvent ev)
+        public void registerClass(Class registeredClass)
         {
             // register the class / interface in metadata, and make sure it is initialised
-            Class registeredClass = ev.getRegisteredClass();
             NucleusLogger.METADATA.debug("Listener found initialisation for persistable class " + registeredClass.getName());
             try
             {
