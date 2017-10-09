@@ -117,10 +117,18 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
         // We support JDO standard and DataNucleus JDO extension annotations in this reader.
         setSupportedAnnotationPackages(new String[]{"javax.jdo", "org.datanucleus.api.jdo.annotations"});
+
+        // Create default AnnotationObject for PersistenceCapable to allow merging annotations
+        persistenceCapableDefaults = getAnnotationObjectsForAnnotations(PersistenceCapableModel.class.getSimpleName(), PersistenceCapableModel.class.getAnnotations())[0];
     }
 
+    @javax.jdo.annotations.PersistenceCapable
+    protected class PersistenceCapableModel {}
+
+    AnnotationObject persistenceCapableDefaults = null;
+
     /**
-     * Method to process the "class" level annotations and create the outline ClassMetaData object. 
+     * Method to process the "class" level annotations and create the outline ClassMetaData object.
      * Supports classes annotated with @PersistenceCapable, classes annotated with @PersistenceAware, and classes which have neither of those but have @Queries or @Query.
      * @param pmd Parent PackageMetaData
      * @param cls The class
@@ -2216,15 +2224,68 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     protected AnnotationObject isClassPersistable(AnnotationObject[] annotations)
     {
+        AnnotationObject result = null;
         for (AnnotationObject annotation : annotations)
         {
             String annName = annotation.getName();
             if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
             {
-                return annotation;
+                if (result == null)
+                {
+                    result = annotation;
+                }
+                else
+                {
+                    // Multiple annotations to be merged
+                    result = mergeAnnotation(persistenceCapableDefaults, result, annotation);
+                }
             }
         }
-        return null;
+        return result;
+    }
+
+    /**
+     * Merge a duplicated annotation into the original annotation. Iterate all values in the default annotation.
+     * If the duplicate annotation has a non-default value, add it to the base value.
+     * If both annotations have a non-default value, logs a warning.
+     */
+    AnnotationObject mergeAnnotation(AnnotationObject defaults, AnnotationObject base, AnnotationObject dup)
+    {
+        Map<String, Object> baseEntry = base.getNameValueMap();
+        Map<String, Object> dupEntry = dup.getNameValueMap();
+
+        for (java.util.Map.Entry<String, Object> entry : defaults.getNameValueMap().entrySet())
+        {
+            String key = entry.getKey();
+            Object defaultValue = entry.getValue();
+            Object dupValue = dupEntry.get(key);
+            if (!valueEqual(defaultValue, dupValue))
+            {
+                NucleusLogger.METADATA.warn("Merging duplicated PersistenceCapable annotation : using key=" + key + " with value=" + dupValue + " instead of " + baseEntry.get(key));
+                baseEntry.put(key, dupValue);
+            }
+        }
+        return base;
+    }
+
+    boolean valueEqual(Object defaultValue, Object dupValue)
+    {
+        if (defaultValue == null)
+        {
+            return dupValue == null;
+        }
+        else if (defaultValue == void.class)
+        {
+            return dupValue == void.class;
+        }
+        else if ("".equals(defaultValue))
+        {
+            return "".equals(dupValue);
+        }
+        else
+        {
+            return defaultValue.equals(dupValue);
+        }
     }
 
     /**
