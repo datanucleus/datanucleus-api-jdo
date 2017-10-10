@@ -37,6 +37,7 @@ import javax.jdo.annotations.Index;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.Join;
 import javax.jdo.annotations.NullValue;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PersistenceModifier;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Query;
@@ -120,6 +121,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
 
         // Create default AnnotationObject for PersistenceCapable to allow merging annotations
         persistenceCapableDefaults = getAnnotationObjectsForAnnotations(PersistenceCapableModel.class.getSimpleName(), PersistenceCapableModel.class.getAnnotations())[0];
+        addSupportedDuplicateAnnotations(PersistenceCapable.class.getName());
     }
 
     @javax.jdo.annotations.PersistenceCapable
