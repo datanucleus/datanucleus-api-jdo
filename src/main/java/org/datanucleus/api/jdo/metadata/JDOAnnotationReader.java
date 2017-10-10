@@ -185,20 +185,16 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         // Class is persistable so process annotations
         for (AnnotationObject annotation : annotations)
         {
-            if (annotation == pcAnnotation)
+            String annName = annotation.getName();
+            if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
             {
-                // Already processed above
+                // @PersistenceCapable is merged and processed above
                 continue;
             }
 
             Map<String, Object> annotationValues = annotation.getNameValueMap();
-            String annName = annotation.getName();
 
-            if (annName.equals(JDOAnnotationUtils.PERSISTENCE_CAPABLE))
-            {
-                processPersistenceCapableAnnotation(cls, cmd, annotationValues);
-            }
-            else if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
+            if (annName.equals(JDOAnnotationUtils.EMBEDDED_ONLY))
             {
                 cmd.setEmbeddedOnly(true);
             }
