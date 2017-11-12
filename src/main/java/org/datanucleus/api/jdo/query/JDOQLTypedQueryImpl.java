@@ -25,12 +25,11 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jdo.FetchPlan;
 import javax.jdo.JDOException;
@@ -325,7 +324,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
 
@@ -341,7 +340,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         StringExpressionImpl paramExpr = new StringExpressionImpl(String.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -356,7 +355,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         CharacterExpressionImpl paramExpr = new CharacterExpressionImpl(Character.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -372,7 +371,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         NumericExpressionImpl<Float> paramExpr = new NumericExpressionImpl(Number.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -387,7 +386,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         DateExpressionImpl paramExpr = new DateExpressionImpl(Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -402,7 +401,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         TimeExpressionImpl paramExpr = new TimeExpressionImpl(Time.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -417,7 +416,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         DateTimeExpressionImpl paramExpr = new DateTimeExpressionImpl(java.util.Date.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -432,7 +431,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         CollectionExpressionImpl paramExpr = new CollectionExpressionImpl(java.util.Collection.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -447,7 +446,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         MapExpressionImpl paramExpr = new MapExpressionImpl(java.util.Map.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -462,7 +461,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         ListExpressionImpl paramExpr = new ListExpressionImpl(java.util.List.class, name, ExpressionType.PARAMETER);
         if (parameterExprByName == null)
         {
-            parameterExprByName = new HashMap<String, ExpressionImpl>();
+            parameterExprByName = new ConcurrentHashMap<>();
         }
         parameterExprByName.put(name, paramExpr);
         return paramExpr;
@@ -703,7 +702,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         JDOQLTypedSubqueryImpl<S> subquery = new JDOQLTypedSubqueryImpl<S>(pm, candidateClass, candidateAlias, this);
         if (subqueries == null)
         {
-            subqueries = new HashSet<JDOQLTypedSubqueryImpl>();
+            subqueries = ConcurrentHashMap.newKeySet();
         }
         subqueries.add(subquery);
         return subquery;
@@ -719,7 +718,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         JDOQLTypedSubqueryImpl<T> subquery = new JDOQLTypedSubqueryImpl<T>(pm, this.candidateCls, candidateAlias, this);
         if (subqueries == null)
         {
-            subqueries = new HashSet<JDOQLTypedSubqueryImpl>();
+            subqueries = ConcurrentHashMap.newKeySet();
         }
         subqueries.add(subquery);
         return subquery;
@@ -741,7 +740,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         if (parameterValuesByName == null)
         {
-            parameterValuesByName = new HashMap<String, Object>();
+            parameterValuesByName = new ConcurrentHashMap<>();
         }
 
         Iterator<Map.Entry> entryIter = namedParamMap.entrySet().iterator();
@@ -789,7 +788,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         if (parameterValuesByName == null)
         {
-            parameterValuesByName = new HashMap<String, Object>();
+            parameterValuesByName = new ConcurrentHashMap<>();
         }
         parameterValuesByName.put(internalParamExpr.getAlias(), value);
         return this;
@@ -810,7 +809,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         if (parameterValuesByName == null)
         {
-            parameterValuesByName = new HashMap<String, Object>();
+            parameterValuesByName = new ConcurrentHashMap<String, Object>();
         }
         parameterValuesByName.put(paramName, value);
         return this;
@@ -1046,7 +1045,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         // Cache the internal query
         if (internalQueries == null)
         {
-            internalQueries = new HashSet<Query>();
+            internalQueries = ConcurrentHashMap.newKeySet();
         }
         internalQueries.add(internalQuery);
 
@@ -1409,7 +1408,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         assertIsOpen();
         if (extensions == null)
         {
-            extensions = new HashMap();
+            extensions = new ConcurrentHashMap<>();
         }
         extensions.put(key, value);
         return this;
@@ -1422,7 +1421,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public JDOQLTypedQuery<T> extensions(Map values)
     {
         assertIsOpen();
-        this.extensions = new HashMap(extensions);
+        this.extensions = new ConcurrentHashMap(extensions);
         return this;
     }
 
