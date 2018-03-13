@@ -32,6 +32,7 @@ import org.datanucleus.NucleusContext;
 import org.datanucleus.Configuration;
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.PropertyNames;
+import org.datanucleus.api.jdo.JDOPropertyNames;
 import org.datanucleus.enhancer.EnhancementHelper;
 import org.datanucleus.enhancer.EnhancementHelper.RegisterClassListener;
 import org.datanucleus.enhancer.EnhancementNucleusContextImpl;
@@ -87,17 +88,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
 {
     private static final long serialVersionUID = -2276240352978344222L;
 
-    /** MetaData files will be searched in all possible locations defined in JDO1.0, JDO1.0.1, JDO2.0 or later */
-    public static final int ALL_JDO_LOCATIONS = 1;
-
-    /** MetaData files will be searched in all locations defined in JDO 1.0 **/
-    public static final int JDO_1_0_0_LOCATIONS = 2;
-
-    /** MetaData files will be searched in all locations defined in JDO 1.0.1 **/
-    public static final int JDO_1_0_1_LOCATIONS = 3;
-
-    /** Definition of which locations we accept for MetaData files. */
-    protected int locationDefinition = ALL_JDO_LOCATIONS;
+    protected boolean allowXmlLocationsFromJDO1_0 = false;
 
     /** Parser for XML MetaData. */
     protected MetaDataParser metaDataParser = null;
@@ -122,7 +113,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     {
         super(ctxt);
 
-        locationDefinition = ALL_JDO_LOCATIONS;
+        allowXmlLocationsFromJDO1_0 = ctxt.getConfiguration().getBooleanProperty(JDOPropertyNames.PROPERTY_METADATA_XML_JDO_1_0, false);
 
         // Do we want to use the JDO class initialisation listener ?
         boolean useMetadataListener = false;
@@ -875,24 +866,19 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             suffix = EXTENSION_SEPARATOR + fileExtension;
         }
 
-        if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
-        {
-            locations.add((METADATA_LOCATION_METAINF + suffix)); // "/META-INF/package.jdo" (JDO 1.0.1)
-            locations.add((METADATA_LOCATION_WEBINF + suffix)); // "/WEB-INF/package.jdo" (JDO 1.0.1)
-            locations.add(PATH_SEPARATOR + METADATA_PACKAGE + suffix); // "/package.jdo" (JDO 1.0.1)
-        }
+        locations.add((METADATA_LOCATION_METAINF + suffix)); // "/META-INF/package.jdo"
+        locations.add((METADATA_LOCATION_WEBINF + suffix)); // "/WEB-INF/package.jdo"
+        locations.add(PATH_SEPARATOR + METADATA_PACKAGE + suffix); // "/package.jdo"
+
         if (itemName != null && itemName.length() > 0)
         {
             int separatorPosition = itemName.indexOf('.');
             if (separatorPosition < 0)
             {
                 // No dot, so just use top-level location(s)
-                if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
-                {
-                    // "/com/package.jdo" (JDO 1.0.1)
-                    locations.add(PATH_SEPARATOR + itemName + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
-                }
-                if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_0_LOCATIONS)
+                // "/com/package.jdo"
+                locations.add(PATH_SEPARATOR + itemName + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
+                if (allowXmlLocationsFromJDO1_0)
                 {
                     // "/com.jdo" (JDO 1.0.0)
                     locations.add(PATH_SEPARATOR + itemName + suffix);
@@ -904,12 +890,10 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 {
                     String name = itemName.substring(0, separatorPosition);
 
-                    if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
-                    {
-                        // "/com/xyz/package.jdo" (JDO 1.0.1+)
-                        locations.add(PATH_SEPARATOR + name.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
-                    }
-                    if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_0_LOCATIONS)
+                    // "/com/xyz/package.jdo"
+                    locations.add(PATH_SEPARATOR + name.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
+
+                    if (allowXmlLocationsFromJDO1_0)
                     {
                         // "/com/xyz.jdo" (JDO 1.0.0)
                         locations.add(PATH_SEPARATOR + name.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + suffix);
@@ -920,16 +904,18 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                     {
                         if (!isClass)
                         {
-                            if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_1_LOCATIONS)
+                            // "/com/xyz/uvw/package.jdo"
+                            locations.add(PATH_SEPARATOR + itemName.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
+
+                            if (allowXmlLocationsFromJDO1_0)
                             {
-                                // "/com/xyz/uvw/package.jdo" (JDO 1.0.1+)
-                                locations.add(PATH_SEPARATOR + itemName.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + PATH_SEPARATOR + METADATA_PACKAGE + suffix);
+                                // "/com/xyz/uvw.jdo"
+                                locations.add(PATH_SEPARATOR + itemName.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + suffix);
                             }
                         }
-
-                        if (locationDefinition == ALL_JDO_LOCATIONS || locationDefinition == JDO_1_0_0_LOCATIONS)
+                        else
                         {
-                            // "/com/xyz/uvw.jdo" (JDO 1.0.0)
+                            // "/com/xyz/uvw.jdo"
                             locations.add(PATH_SEPARATOR + itemName.replace(CLASS_SEPARATOR, PATH_SEPARATOR) + suffix);
                         }
                     }

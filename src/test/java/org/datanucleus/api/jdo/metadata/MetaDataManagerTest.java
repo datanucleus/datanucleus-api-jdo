@@ -19,11 +19,14 @@ Contributors:
 package org.datanucleus.api.jdo.metadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.datanucleus.PersistenceNucleusContextImpl;
+import org.datanucleus.api.jdo.JDOPropertyNames;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 
 /**
@@ -45,7 +48,9 @@ public class MetaDataManagerTest extends TestCase
      */
     public void testLocationsForPackage()
     {
-        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", null));
+        Map startupProps = new HashMap<>();
+        startupProps.put(JDOPropertyNames.PROPERTY_METADATA_XML_JDO_1_0, "true");
+        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", startupProps));
 
         // Try typical JDO package name
         String packageName = "org.jpox.samples";
@@ -107,7 +112,9 @@ public class MetaDataManagerTest extends TestCase
      */
     public void testLocationsForClass()
     {
-        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", null));
+        Map startupProps = new HashMap<>();
+        startupProps.put(JDOPropertyNames.PROPERTY_METADATA_XML_JDO_1_0, "true");
+        JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", startupProps));
 
         // Try typical JDO class name
         String className = "org.jpox.samples.store.Product";
