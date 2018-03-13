@@ -803,14 +803,6 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         return getValidMetaDataLocationsForItem(fileExtension, fileModifier, className, true);
     }
 
-    // Parameters used in the definition of MetaData file location
-    private static final char CLASS_SEPARATOR = '.';
-    private static final char PATH_SEPARATOR = '/';
-    private static final char EXTENSION_SEPARATOR = '.';
-    private static final String METADATA_PACKAGE = "package";
-    private static final String METADATA_LOCATION_METAINF = "/META-INF/" + METADATA_PACKAGE;
-    private static final String METADATA_LOCATION_WEBINF = "/WEB-INF/" + METADATA_PACKAGE;
-
     /**
      * Method to return the valid metadata locations to contain a particular item. 
      * The "item" can be a package or a class. Will look in the locations appropriate for the setting of "locationDefintion".
@@ -829,13 +821,21 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         {
             fileExtension = "jdo";
         }
-        StringTokenizer tokens = new StringTokenizer(fileExtension,",");
+        StringTokenizer tokens = new StringTokenizer(fileExtension, ",");
         while (tokens.hasMoreTokens())
         {
-            locations.addAll(getValidMetaDataLocationsForSingleExtension(tokens.nextToken(),fileModifier,itemName,isClass));
+            locations.addAll(getValidMetaDataLocationsForSingleExtension(tokens.nextToken(), fileModifier, itemName, isClass));
         }
         return locations;
     }
+
+    // Parameters used in the definition of MetaData file location
+    private static final char CLASS_SEPARATOR = '.';
+    private static final char PATH_SEPARATOR = '/';
+    private static final char EXTENSION_SEPARATOR = '.';
+    private static final String METADATA_PACKAGE = "package";
+    private static final String METADATA_LOCATION_METAINF = "/META-INF/" + METADATA_PACKAGE;
+    private static final String METADATA_LOCATION_WEBINF = "/WEB-INF/" + METADATA_PACKAGE;
 
     /**
      * Method to return the valid metadata locations to contain a particular item. 
