@@ -23,7 +23,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.datanucleus.ClassLoaderResolver;
-import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
@@ -297,7 +296,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
                 // Not yet cached an instance of this converter so create one
-                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -385,7 +384,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
                 // Not yet cached an instance of this converter so create one
-                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
                 Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO member type
                 Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -940,7 +939,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO element type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -981,7 +980,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO key type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 
@@ -1023,7 +1022,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
                         // Not yet cached an instance of this converter so create one
-                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter((PersistenceNucleusContext) mmgr.getNucleusContext(), converterCls);
+                        AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
                         Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, null); // TODO value type
                         Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
 

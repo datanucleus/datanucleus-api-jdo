@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import javax.jdo.AttributeConverter;
 
+import org.datanucleus.NucleusContext;
 import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.NucleusLogger;
@@ -83,18 +84,22 @@ public class JDOTypeConverterUtils
         return dbType;
     }
 
-    public static AttributeConverter createAttributeConverter(PersistenceNucleusContext nucCtx, Class converterCls)
+    public static AttributeConverter createAttributeConverter(NucleusContext nucCtx, Class converterCls)
     {
-        if (nucCtx != null && nucCtx.getCDIHandler() != null)
+        if (nucCtx != null && nucCtx instanceof PersistenceNucleusContext)
         {
-            try
+            PersistenceNucleusContext ctx = (PersistenceNucleusContext)nucCtx;
+            if (ctx.getCDIHandler() != null)
             {
-                // Create stateful AttributeConverter with any injected dependencies
-                return (AttributeConverter) nucCtx.getCDIHandler().createObjectWithInjectedDependencies(converterCls);
-            }
-            catch (Exception e)
-            {
-                NucleusLogger.PERSISTENCE.warn("Error creating AttributeConverter of type " + converterCls.getName() + " using CDI BeanHandler", e);
+                try
+                {
+                    // Create stateful AttributeConverter with any injected dependencies
+                    return (AttributeConverter) ctx.getCDIHandler().createObjectWithInjectedDependencies(converterCls);
+                }
+                catch (Exception e)
+                {
+                    NucleusLogger.PERSISTENCE.warn("Error creating AttributeConverter of type " + converterCls.getName() + " using CDI BeanHandler", e);
+                }
             }
         }
 
