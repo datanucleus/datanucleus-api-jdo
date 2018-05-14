@@ -1708,9 +1708,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             }
         }
 
-        if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || 
-                embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || 
-                ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null || convertConverterCls != null))
+        if (mmd == null && (transactionalField || nonPersistentField || primaryKey || colmds != null || serialised || embeddedOwnerField != null || embeddedMember ||
+            embeddedNullIndicatorColumn != null || embeddedNullIndicatorValue != null || embeddedMembers != null || elemmd != null || keymd != null || valuemd != null || 
+            ordermd != null || idxmd != null || unimd != null || fkmd != null || joinmd != null || extensions != null || convertConverterCls != null))
         {
             // @Persistent not supplied but other relevant annotations defined, so add default metadata element
             mmd = member.isProperty() ? new PropertyMetaData(cmd, member.getName()) : new FieldMetaData(cmd, member.getName());
