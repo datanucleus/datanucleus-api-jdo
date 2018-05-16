@@ -40,6 +40,8 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Automatic-Module-Name>org.datanucleus.api.jdo</Automatic-Module-Name>
+                        <Bundle-Vendor>DataNucleus</Bundle-Vendor>
                         <Bundle-SymbolicName>org.datanucleus.api.jdo;singleton:=true</Bundle-SymbolicName>
                         <Import-Package>
                             javax.jdo*;version="${dn.javax.jdo.version}",
