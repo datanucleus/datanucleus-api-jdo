@@ -2124,31 +2124,9 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
      */
     private AbstractMemberMetaData getFieldMetaDataForPersistent(MetaData parent, Persistent member, boolean isField)
     {
-        FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier(member.persistenceModifier());
-        String nullValue = JDOAnnotationUtils.getNullValueString(member.nullValue());
-        String valueStrategy = JDOAnnotationUtils.getValueGenerationStrategyString(member.valueStrategy());
-
-        String fieldTypeName = null;
-        Class[] fieldTypes = member.types();
-        if (fieldTypes != null && fieldTypes.length > 0)
-        {
-            StringBuilder typeStr = new StringBuilder();
-            for (Class fieldType : fieldTypes)
-            {
-                if (typeStr.length() > 0)
-                {
-                    typeStr.append(',');
-                }
-                if (fieldType != null && fieldType != void.class)
-                {
-                    typeStr.append(fieldType.getName());
-                }
-            }
-            fieldTypeName = typeStr.toString();
-        }
-
         AbstractMemberMetaData fmd = isField ? new FieldMetaData(parent, member.name()) : new PropertyMetaData(parent, member.name());
 
+        FieldPersistenceModifier modifier = JDOAnnotationUtils.getFieldPersistenceModifier(member.persistenceModifier());
         if (modifier != null)
         {
             fmd.setPersistenceModifier(modifier);
@@ -2173,14 +2151,76 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         {
             fmd.setDependent(Boolean.valueOf(member.dependent()));
         }
+
+        String nullValue = JDOAnnotationUtils.getNullValueString(member.nullValue());
         fmd.setNullValue(org.datanucleus.metadata.NullValue.getNullValue(nullValue));
+
         fmd.setMappedBy(member.mappedBy());
         fmd.setColumn(member.column());
         fmd.setTable(member.table());
         fmd.setLoadFetchGroup(member.loadFetchGroup());
+        fmd.setCacheable(Boolean.valueOf(member.cacheable()));
+        fmd.setRecursionDepth(member.recursionDepth());
+
+        String valueStrategy = JDOAnnotationUtils.getValueGenerationStrategyString(member.valueStrategy());
+        if (!StringUtils.isWhitespace(member.customValueStrategy()))
+        {
+            // User has provided an extension strategy
+            valueStrategy = member.customValueStrategy();
+        }
         fmd.setValueStrategy(valueStrategy);
         fmd.setSequence(member.sequence());
+
+        String fieldTypeName = null;
+        Class[] fieldTypes = member.types();
+        if (fieldTypes != null && fieldTypes.length > 0)
+        {
+            StringBuilder typeStr = new StringBuilder();
+            for (Class fieldType : fieldTypes)
+            {
+                if (typeStr.length() > 0)
+                {
+                    typeStr.append(',');
+                }
+                if (fieldType != null && fieldType != void.class)
+                {
+                    typeStr.append(fieldType.getName());
+                }
+            }
+            fieldTypeName = typeStr.toString();
+        }
         fmd.setFieldTypes(fieldTypeName);
+
+        Class converterCls = member.converter();
+        if (converterCls.getName().equals(UseDefault.class.getName()))
+        {
+            converterCls = null;
+        }
+        if (converterCls != null)
+        {
+            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+            {
+                // Not yet cached an instance of this converter so create one
+                // TODO We don't know the type of the member, so cannot do this
+                /*AttributeConverter conv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
+                if (fieldTypeName != null)
+                {
+                    Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(converterCls, clr.classForName(fieldTypeName));
+                    Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
+
+                    // Register the TypeConverter under the name of the AttributeConverter class
+                    JDOTypeConverter typeConv = new JDOTypeConverter(conv);
+                    typeMgr.registerConverter(converterCls.getName(), typeConv, attrType, dbType, false, null);
+                }*/
+            }
+
+            fmd.setTypeConverterName(converterCls.getName());
+        }
+        if (member.useDefaultConversion())
+        {
+            fmd.setTypeConverterDisabled();
+        }
 
         // Add any columns defined on the @Persistent
         Column[] columns = member.columns();
@@ -2191,6 +2231,17 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 fmd.addColumn(JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(column));
             }
         }
+
+        // Add any extensions defined on the @Persistent
+        Extension[] memberExts = member.extensions();
+        if (memberExts != null && memberExts.length > 0)
+        {
+            for (Extension memberExt : memberExts)
+            {
+                fmd.addExtension(memberExt.key(), memberExt.value());
+            }
+        }
+
         return fmd;
     }
 
