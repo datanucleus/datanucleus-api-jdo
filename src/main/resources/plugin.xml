@@ -118,69 +118,72 @@ Contributors:
     <!-- METADATA ENTITY RESOLVERS -->
     <extension point="org.datanucleus.metadata_entityresolver">
         <!-- JDO XML -->
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_1_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 1.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.1//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_2.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.2//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_3.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.3//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_1.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.1//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.2//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_1.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_2.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_1.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdo_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_1.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_2.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_1.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_2_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.dtd" identity="file:/javax/jdo/jdo.dtd" type="SYSTEM"/> <!-- Point to latest -->
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 1.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.3//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 3.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+       <entityresolver identity="file:/javax/jdo/jdo.dtd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.dtd"/>
+
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdo_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdo_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
        <entityresolver url="/org/datanucleus/api/jdo/jdo_3_2.xsd"/>
 
        <!-- JDO ORM XML -->
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_1.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.1//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_2.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.2//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_1.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.1//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.2//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_1.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_0.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_2.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_1.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_0.xsd" identity="http://java.sun.com/xml/ns/jdo/orm_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_1.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_2.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_1.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_2_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd" identity="file:/javax/jdo/orm.dtd" type="SYSTEM"/> <!-- Point to latest -->
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 2.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Mapping Metadata 3.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+       <entityresolver identity="file:/javax/jdo/orm.dtd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.dtd"/>
+
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/orm_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/orm_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
        <entityresolver url="/org/datanucleus/api/jdo/jdo_orm_3_2.xsd"/>
 
        <!-- JDO QUERY XML -->
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.1//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_2.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.2//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd" identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 3.0//EN" type="PUBLIC"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_2.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_1.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_0.xsd" identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_2.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_2.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_1.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_1.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_2_0.xsd" identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_0.xsd" type="SYSTEM"/>
-       <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd" identity="file:/javax/jdo/jdoquery.dtd" type="SYSTEM"/> <!-- Point to latest -->
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 3.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd"/>
+       <entityresolver identity="file:/javax/jdo/jdoquery.dtd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.dtd"/>
+
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_2_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_0.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_1.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://java.sun.com/xml/ns/jdo/jdoquery_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
+       <entityresolver identity="http://xmlns.jcp.org/xml/ns/jdo/jdoquery_3_2.xsd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd/>
        <entityresolver url="/org/datanucleus/api/jdo/jdoquery_3_0.xsd"/>
     </extension>
 </plugin>
