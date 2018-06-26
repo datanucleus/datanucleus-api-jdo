@@ -39,6 +39,7 @@ import org.datanucleus.api.ApiAdapter;
 import org.datanucleus.api.jdo.state.LifeCycleStateFactory;
 import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.NucleusException;
+import org.datanucleus.identity.IdentityManager;
 import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
@@ -343,7 +344,7 @@ public class JDOAdapter implements ApiAdapter
                     throw new InvalidPrimaryKeyException("019010", cmd.getFullClassName(), pkClass.getName(), fieldsInPkClass[i].getName());
                 }
 
-                if (fieldsInPkClass[i].getName().equals("targetClassName"))
+                if (fieldsInPkClass[i].getName().equals(IdentityManager.IDENTITY_CLASS_TARGET_CLASS_NAME_FIELD))
                 {
                     // Ignore any field named "targetClassName"
                 }
