@@ -47,6 +47,8 @@ import org.datanucleus.store.query.Query.QueryType;
  */
 public abstract class AbstractJDOQLTypedQuery<T>
 {
+    protected AbstractJDOQLTypedQuery parentQuery;
+
     protected QueryType type = QueryType.SELECT;
 
     /** Candidate class for the query. */
@@ -101,12 +103,13 @@ public abstract class AbstractJDOQLTypedQuery<T>
     /** The single-string query that this equates to (cached). */
     protected String queryString = null;
 
-    public AbstractJDOQLTypedQuery(PersistenceManager pm, Class<T> cls, String alias)
+    public AbstractJDOQLTypedQuery(PersistenceManager pm, Class<T> cls, String alias, AbstractJDOQLTypedQuery parentQuery)
     {
         this.pm = pm;
         this.ec = ((JDOPersistenceManager)pm).getExecutionContext();
         this.candidateCls = cls;
         this.candidateAlias = alias;
+        this.parentQuery = parentQuery;
     }
 
     /**
@@ -128,6 +131,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
     {
         SymbolTable symtbl = new SymbolTable();
         symtbl.setSymbolResolver(new JDOQLSymbolResolver(mmgr, clr, symtbl, candidateCls, candidateAlias));
+        if (parentQuery != null)
+        {
+            symtbl.setParentSymbolTable(parentQuery.compilation.getSymbolTable());
+        }
         symtbl.addSymbol(new PropertySymbol(candidateAlias, candidateCls));
 
         org.datanucleus.query.expression.Expression[] resultExprs = null;
