@@ -114,7 +114,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      */
     public JDOQLTypedQueryImpl(PersistenceManager pm, Class<T> candidateClass)
     {
-        super(pm, candidateClass, "this");
+        super(pm, candidateClass, "this", null);
     }
 
     /* (non-Javadoc)

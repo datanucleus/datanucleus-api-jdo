@@ -44,9 +44,9 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
 {
     private static final long serialVersionUID = 8872729615681952405L;
 
-    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias, JDOQLTypedQueryImpl parentQuery)
+    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias, AbstractJDOQLTypedQuery parentQuery)
     {
-        super(pm, candidateClass, candidateAlias);
+        super(pm, candidateClass, candidateAlias, parentQuery);
     }
 
     public String getAlias()
