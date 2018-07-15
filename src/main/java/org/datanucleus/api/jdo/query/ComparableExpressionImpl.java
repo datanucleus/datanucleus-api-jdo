@@ -53,9 +53,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#gt(org.datanucleus.query.typesafe.ComparableExpression)
+     * @see javax.jdo.query.ComparableExpression#gt(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression gt(ComparableExpression expr)
+    public BooleanExpression gt(ComparableExpression<T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -66,7 +66,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#gt(java.lang.Object)
+     * @see javax.jdo.query.ComparableExpression#gt(java.lang.Object)
      */
     public BooleanExpression gt(T t)
     {
@@ -79,9 +79,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#gteq(org.datanucleus.query.typesafe.ComparableExpression)
+     * @see javax.jdo.query.ComparableExpression#gteq(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression gteq(ComparableExpression expr)
+    public BooleanExpression gteq(ComparableExpression<T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -92,7 +92,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#gteq(java.lang.Object)
+     * @see javax.jdo.query.ComparableExpression#gteq(java.lang.Object)
      */
     public BooleanExpression gteq(T t)
     {
@@ -105,9 +105,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#lt(org.datanucleus.query.typesafe.ComparableExpression)
+     * @see javax.jdo.query.ComparableExpression#lt(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression lt(ComparableExpression expr)
+    public BooleanExpression lt(ComparableExpression<T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -118,7 +118,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#lt(java.lang.Object)
+     * @see javax.jdo.query.ComparableExpression#lt(java.lang.Object)
      */
     public BooleanExpression lt(T t)
     {
@@ -131,9 +131,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#lteq(org.datanucleus.query.typesafe.ComparableExpression)
+     * @see javax.jdo.query.ComparableExpression#lteq(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression lteq(ComparableExpression expr)
+    public BooleanExpression lteq(ComparableExpression<T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -144,7 +144,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#lteq(java.lang.Object)
+     * @see javax.jdo.query.ComparableExpression#lteq(java.lang.Object)
      */
     public BooleanExpression lteq(T t)
     {
@@ -157,9 +157,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#max()
+     * @see javax.jdo.query.ComparableExpression#max()
      */
-    public NumericExpression max()
+    public NumericExpression<T> max()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
@@ -168,9 +168,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#min()
+     * @see javax.jdo.query.ComparableExpression#min()
      */
-    public NumericExpression min()
+    public NumericExpression<T> min()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
@@ -179,17 +179,17 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#asc()
+     * @see javax.jdo.query.ComparableExpression#asc()
      */
-    public OrderExpression asc()
+    public OrderExpression<T> asc()
     {
         return new OrderExpressionImpl(this, OrderDirection.ASC);
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#desc()
+     * @see javax.jdo.query.ComparableExpression#desc()
      */
-    public OrderExpression desc()
+    public OrderExpression<T> desc()
     {
         return new OrderExpressionImpl(this, OrderDirection.DESC);
     }

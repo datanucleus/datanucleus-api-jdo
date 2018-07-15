@@ -80,7 +80,7 @@ public class ExpressionImpl<T> implements Expression<T>
      * @param name Name of the member to access
      * @param type The type, whether parameter or variable
      */
-    public ExpressionImpl(Class<T> cls, String name, ExpressionType type)
+    public ExpressionImpl(Class cls, String name, ExpressionType type)
     {
         if (type == ExpressionType.PARAMETER || type == ExpressionType.VARIABLE)
         {

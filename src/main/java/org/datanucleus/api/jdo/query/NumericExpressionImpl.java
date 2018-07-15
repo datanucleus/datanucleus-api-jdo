@@ -49,7 +49,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#add(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.query.NumericExpression#add(javax.jdo.query.Expression)
      */
     public NumericExpression add(Expression expr)
     {
@@ -62,7 +62,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#add(java.lang.Number)
+     * @see javax.jdo.query.NumericExpression#add(java.lang.Number)
      */
     public NumericExpression add(Number num)
     {
@@ -75,7 +75,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#mul(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.query.NumericExpression#mul(javax.jdo.query.Expression)
      */
     public NumericExpression mul(Expression expr)
     {
@@ -88,7 +88,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#mul(java.lang.Number)
+     * @see javax.jdo.query.NumericExpression#mul(java.lang.Number)
      */
     public NumericExpression mul(Number num)
     {
@@ -101,7 +101,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#sub(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.query.NumericExpression#sub(javax.jdo.query.Expression)
      */
     public NumericExpression sub(Expression expr)
     {
@@ -114,7 +114,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#sub(java.lang.Number)
+     * @see javax.jdo.query.NumericExpression#sub(java.lang.Number)
      */
     public NumericExpression sub(Number num)
     {
@@ -127,7 +127,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#div(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.query.NumericExpression#div(javax.jdo.query.Expression)
      */
     public NumericExpression div(Expression expr)
     {
@@ -140,7 +140,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#div(java.lang.Number)
+     * @see javax.jdo.query.NumericExpression#div(java.lang.Number)
      */
     public NumericExpression div(Number num)
     {
@@ -153,7 +153,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#mod(org.datanucleus.query.typesafe.Expression)
+     * @see javax.jdo.query.Expression#mod(javax.jdo.query.Expression)
      */
     public NumericExpression mod(Expression expr)
     {
@@ -166,7 +166,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#mod(java.lang.Number)
+     * @see javax.jdo.query.NumericExpression#mod(java.lang.Number)
      */
     public NumericExpression mod(Number num)
     {
@@ -179,18 +179,18 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#avg()
+     * @see javax.jdo.query.NumericExpression#avg()
      */
-    public NumericExpression<T> avg()
+    public NumericExpression<Double> avg()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "avg", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.Expression#sum()
+     * @see javax.jdo.query.NumericExpression#sum()
      */
     public NumericExpression<T> sum()
     {
@@ -201,7 +201,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#abs()
+     * @see javax.jdo.query.NumericExpression#abs()
      */
     public NumericExpression<T> abs()
     {
@@ -212,7 +212,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#sqrt()
+     * @see javax.jdo.query.NumericExpression#sqrt()
      */
     public NumericExpression<T> sqrt()
     {
@@ -223,7 +223,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#acos()
+     * @see javax.jdo.query.NumericExpression#acos()
      */
     public NumericExpression acos()
     {
@@ -234,7 +234,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#asin()
+     * @see javax.jdo.query.NumericExpression#asin()
      */
     public NumericExpression asin()
     {
@@ -245,7 +245,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#atan()
+     * @see javax.jdo.query.NumericExpression#atan()
      */
     public NumericExpression atan()
     {
@@ -256,7 +256,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#cos()
+     * @see javax.jdo.query.NumericExpression#cos()
      */
     public NumericExpression cos()
     {
@@ -267,7 +267,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#sin()
+     * @see javax.jdo.query.NumericExpression#sin()
      */
     public NumericExpression sin()
     {
@@ -278,7 +278,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#tan()
+     * @see javax.jdo.query.NumericExpression#tan()
      */
     public NumericExpression tan()
     {
@@ -289,7 +289,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#exp()
+     * @see javax.jdo.query.NumericExpression#exp()
      */
     public NumericExpression exp()
     {
@@ -300,7 +300,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#log()
+     * @see javax.jdo.query.NumericExpression#log()
      */
     public NumericExpression log()
     {
@@ -311,7 +311,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#ceil()
+     * @see javax.jdo.query.NumericExpression#ceil()
      */
     public NumericExpression ceil()
     {
@@ -322,7 +322,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
-     * @see org.datanucleus.query.typesafe.NumericExpression#floor()
+     * @see javax.jdo.query.NumericExpression#floor()
      */
     public NumericExpression floor()
     {

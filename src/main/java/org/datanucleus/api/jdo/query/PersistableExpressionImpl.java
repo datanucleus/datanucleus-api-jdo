@@ -37,7 +37,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         super(parent, name);
     }
 
-    public PersistableExpressionImpl(Class<T> cls, String name, ExpressionType type)
+    public PersistableExpressionImpl(Class cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }
@@ -50,7 +50,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getObjectId", args);
-        return new CharacterExpressionImpl(invokeExpr);
+        return new CharacterExpressionImpl(invokeExpr); // TODO Why CharacterExpressionImpl?
     }
 
     /* (non-Javadoc)
@@ -61,6 +61,6 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getVersion", args);
-        return new CharacterExpressionImpl(invokeExpr);
+        return new CharacterExpressionImpl(invokeExpr); // TODO Why CharacterExpressionImpl?
     }
 }
