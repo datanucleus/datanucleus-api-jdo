@@ -50,7 +50,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getObjectId", args);
-        return new CharacterExpressionImpl(invokeExpr); // TODO Why CharacterExpressionImpl?
+        return new ObjectExpressionImpl(invokeExpr);
     }
 
     /* (non-Javadoc)
@@ -61,6 +61,6 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getVersion", args);
-        return new CharacterExpressionImpl(invokeExpr); // TODO Why CharacterExpressionImpl?
+        return new ObjectExpressionImpl(invokeExpr);
     }
 }
