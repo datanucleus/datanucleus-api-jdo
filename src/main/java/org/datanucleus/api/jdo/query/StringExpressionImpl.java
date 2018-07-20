@@ -150,7 +150,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#indexOf(java.lang.String, int)
      */
-    public NumericExpression indexOf(String str, int pos)
+    public NumericExpression<Integer> indexOf(String str, int pos)
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
