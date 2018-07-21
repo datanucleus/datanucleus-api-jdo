@@ -422,6 +422,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
             {
                 str.append("!").append(getJDOQLForExpression(left));
             }
+            else if (dyExpr.getOperator() == Expression.OP_CAST)
+            {
+                str.append("(").append(((Literal)right).getLiteral()).append(")").append(getJDOQLForExpression(left));
+            }
             else
             {
                 if (left != null)

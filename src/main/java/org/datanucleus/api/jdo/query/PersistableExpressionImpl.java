@@ -42,6 +42,11 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         super(cls, name, type);
     }
 
+    public PersistableExpressionImpl(org.datanucleus.query.expression.Expression queryExpr)
+    {
+        super(queryExpr);
+    }
+
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.PersistableExpression#jdoObjectId()
      */
