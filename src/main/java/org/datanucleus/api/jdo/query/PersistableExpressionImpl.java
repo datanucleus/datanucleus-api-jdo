@@ -37,7 +37,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         super(parent, name);
     }
 
-    public PersistableExpressionImpl(Class<T> cls, String name, ExpressionType type)
+    public PersistableExpressionImpl(Class cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }
