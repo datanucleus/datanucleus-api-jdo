@@ -418,74 +418,86 @@ public abstract class AbstractJDOQLTypedQuery<T>
                 str.append("DISTINCT ");
             }
 
-            if (left != null)
+            if (left != null && dyExpr.getOperator() == Expression.OP_NOT)
             {
-                str.append(getJDOQLForExpression(left));
+                str.append("!").append(getJDOQLForExpression(left));
             }
-
-            // Special cases
-            if (dyExpr.getOperator() == Expression.OP_AND)
+            else if (dyExpr.getOperator() == Expression.OP_CAST)
             {
-                str.append(" && ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_OR)
-            {
-                str.append(" || ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_ADD)
-            {
-                str.append(" + ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_SUB)
-            {
-                str.append(" - ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_MUL)
-            {
-                str.append(" * ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_DIV)
-            {
-                str.append(" / ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_EQ)
-            {
-                str.append(" == ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_GT)
-            {
-                str.append(" > ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_LT)
-            {
-                str.append(" < ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_GTEQ)
-            {
-                str.append(" >= ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_LTEQ)
-            {
-                str.append(" <= ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_NOTEQ)
-            {
-                str.append(" != ");
-            }
-            else if (dyExpr.getOperator() == Expression.OP_DISTINCT)
-            {
-                // Processed above
+                str.append("(").append(((Literal)right).getLiteral()).append(")").append(getJDOQLForExpression(left));
             }
             else
             {
-                // TODO Support other operators
-                throw new UnsupportedOperationException("Dont currently support operator " + dyExpr.getOperator() + " in JDOQL conversion");
+                if (left != null)
+                {
+                    str.append(getJDOQLForExpression(left));
+                }
+
+                // Special cases
+                if (dyExpr.getOperator() == Expression.OP_AND)
+                {
+                    str.append(" && ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_OR)
+                {
+                    str.append(" || ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_ADD)
+                {
+                    str.append(" + ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_SUB)
+                {
+                    str.append(" - ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_MUL)
+                {
+                    str.append(" * ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_DIV)
+                {
+                    str.append(" / ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_EQ)
+                {
+                    str.append(" == ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_GT)
+                {
+                    str.append(" > ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_LT)
+                {
+                    str.append(" < ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_GTEQ)
+                {
+                    str.append(" >= ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_LTEQ)
+                {
+                    str.append(" <= ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_NOTEQ)
+                {
+                    str.append(" != ");
+                }
+                else if (dyExpr.getOperator() == Expression.OP_DISTINCT)
+                {
+                    // Processed above
+                }
+                else
+                {
+                    // TODO Support other operators
+                    throw new UnsupportedOperationException("Dont currently support operator " + dyExpr.getOperator() + " in JDOQL conversion");
+                }
+
+                if (right != null)
+                {
+                    str.append(getJDOQLForExpression(right));
+                }
             }
 
-            if (right != null)
-            {
-                str.append(getJDOQLForExpression(right));
-            }
             str.append(")");
             return str.toString();
         }

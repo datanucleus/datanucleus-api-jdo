@@ -205,8 +205,23 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public Expression cast(Class cls)
     {
-        throw new UnsupportedOperationException("cast not yet supported");
-        // TODO Auto-generated method stub
+        if (this instanceof PersistableExpressionImpl)
+        {
+            return new PersistableExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+        }
+        else if (this instanceof DateExpressionImpl)
+        {
+            return new DateExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+        }
+        else if (this instanceof TimeExpressionImpl)
+        {
+            return new TimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+        }
+        else if (this instanceof DateTimeExpressionImpl)
+        {
+            return new DateTimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+        }
+        throw new UnsupportedOperationException("cast not yet supported for expression of type " + this.getClass().getName());
     }
 
     /* (non-Javadoc)

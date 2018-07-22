@@ -842,15 +842,24 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         assertIsModifiable();
         discardCompiled();
 
-        result = null;
-        if (exprs != null && exprs.length > 0)
+        if (exprs != null && exprs.length == 1 && exprs[0] == candidate())
         {
-            result = new ArrayList<ExpressionImpl>();
-            for (int i=0;i<exprs.length;i++)
+            // User has set the result to "this", so just ignore
+            result = null;
+        }
+        else
+        {
+            result = null;
+            if (exprs != null && exprs.length > 0)
             {
-                result.add((ExpressionImpl)exprs[i]);
+                result = new ArrayList<ExpressionImpl>();
+                for (int i=0;i<exprs.length;i++)
+                {
+                    result.add((ExpressionImpl)exprs[i]);
+                }
             }
         }
+
         this.resultDistinct = distinct;
         return this;
     }

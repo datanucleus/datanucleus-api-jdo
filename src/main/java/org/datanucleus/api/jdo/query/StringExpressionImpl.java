@@ -66,6 +66,21 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
         return new StringExpressionImpl(queryExpr);
     }
 
+    /**
+     * Method to return an expression for this string added to the passed expression (String concatenation).
+     * @param str The other string
+     * @return The summation
+     */
+    public StringExpression add(String str)
+    {
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(str);
+
+        org.datanucleus.query.expression.Expression queryExpr =
+                new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_ADD, rightQueryExpr);
+        return new StringExpressionImpl(queryExpr);
+    }
+
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#charAt(int)
      */

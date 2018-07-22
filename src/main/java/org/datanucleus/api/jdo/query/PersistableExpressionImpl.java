@@ -42,6 +42,11 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         super(cls, name, type);
     }
 
+    public PersistableExpressionImpl(org.datanucleus.query.expression.Expression queryExpr)
+    {
+        super(queryExpr);
+    }
+
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.PersistableExpression#jdoObjectId()
      */
@@ -50,7 +55,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getObjectId", args);
-        return new CharacterExpressionImpl(invokeExpr);
+        return new ObjectExpressionImpl(invokeExpr);
     }
 
     /* (non-Javadoc)
@@ -61,6 +66,6 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getVersion", args);
-        return new CharacterExpressionImpl(invokeExpr);
+        return new ObjectExpressionImpl(invokeExpr);
     }
 }
