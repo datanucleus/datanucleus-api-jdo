@@ -17,6 +17,9 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.OptionalExpression;
 import javax.jdo.query.PersistableExpression;
@@ -46,7 +49,7 @@ public class OptionalExpressionImpl<T> extends ComparableExpressionImpl<java.uti
     public javax.jdo.query.Expression<T> get()
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", null);
-        // Would be nice to return NumericExpressionImpl when T implies that, or StringExpressionImpl, etc.
+        // TODO Would be nice to return NumericExpressionImpl when T implies that, or StringExpressionImpl, etc.
         return new ExpressionImpl(invokeExpr);
     }
 
@@ -58,5 +61,18 @@ public class OptionalExpressionImpl<T> extends ComparableExpressionImpl<java.uti
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isPresent", null);
         return new BooleanExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.OptionalExpression#orElse(javax.jdo.query.Expression)
+     */
+    @Override
+    public javax.jdo.query.Expression<T> orElse(javax.jdo.query.Expression<T> other)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList<>();
+        args.add(queryExpr);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "orElse", args);
+        // TODO Would be nice to return NumericExpressionImpl when T implies that, or StringExpressionImpl, etc.
+        return new ExpressionImpl(invokeExpr);
     }
 }
