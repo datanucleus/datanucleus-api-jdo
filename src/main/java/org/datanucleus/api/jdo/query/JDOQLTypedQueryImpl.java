@@ -752,7 +752,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
             if (key instanceof String)
             {
-                if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(key)))
+                if (parameterExprByName == null || !parameterExprByName.containsKey(key))
                 {
                     throw new JDOUserException("Parameter with name " + key + " doesnt exist for this query");
                 }
@@ -761,7 +761,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
             else if (key instanceof Expression)
             {
                 ParameterExpression internalParamExpr = (ParameterExpression) ((ExpressionImpl)key).getQueryExpression();
-                if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(internalParamExpr.getAlias())))
+                if (parameterExprByName == null || !parameterExprByName.containsKey(internalParamExpr.getAlias()))
                 {
                     throw new JDOUserException("Parameter with name " + internalParamExpr.getAlias() + " doesnt exist for this query");
                 }
@@ -781,7 +781,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         discardCompiled();
 
         ParameterExpression internalParamExpr = (ParameterExpression) ((ExpressionImpl)paramExpr).getQueryExpression();
-        if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(internalParamExpr.getAlias())))
+        if (parameterExprByName == null || !parameterExprByName.containsKey(internalParamExpr.getAlias()))
         {
             throw new JDOUserException("Parameter with name " + internalParamExpr.getAlias() + " doesnt exist for this query");
         }
@@ -802,7 +802,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         assertIsOpen();
         discardCompiled();
 
-        if (parameterExprByName == null || (parameterExprByName != null && !parameterExprByName.containsKey(paramName)))
+        if (parameterExprByName == null || !parameterExprByName.containsKey(paramName))
         {
             throw new JDOUserException("Parameter with name " + paramName + " doesnt exist for this query");
         }
