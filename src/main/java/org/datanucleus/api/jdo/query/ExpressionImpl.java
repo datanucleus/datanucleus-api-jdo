@@ -196,8 +196,10 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression instanceOf(Class cls)
     {
-        throw new UnsupportedOperationException("instanceOf not yet supported");
-        // TODO Auto-generated method stub
+        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(cls);
+
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_IS, rightQueryExpr));
     }
 
     /* (non-Javadoc)

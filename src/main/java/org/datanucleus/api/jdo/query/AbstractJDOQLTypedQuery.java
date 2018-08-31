@@ -486,6 +486,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
                 {
                     // Processed above
                 }
+                else if (dyExpr.getOperator() == Expression.OP_IS)
+                {
+                    str.append(" instanceof ");
+                }
                 else
                 {
                     // TODO Support other operators
@@ -557,6 +561,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
             if (value instanceof String || value instanceof Character)
             {
                 return "'" + value.toString() + "'";
+            }
+            else if (value instanceof Class)
+            {
+                return ((Class)value).getName();
             }
             else if (value instanceof Boolean)
             {
