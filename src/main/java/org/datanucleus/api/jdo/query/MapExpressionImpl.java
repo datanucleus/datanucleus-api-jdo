@@ -47,6 +47,26 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.query.MapExpression#get(javax.jdo.query.Expression)
+     */
+    @Override
+    public Expression<V> get(Expression<K> expr)
+    {
+        // TODO Support this
+        throw new UnsupportedOperationException("map(keyExpr) not yet supported");
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.MapExpression#get(java.lang.Object)
+     */
+    @Override
+    public Expression<V> get(K key)
+    {
+        // TODO Support this
+        throw new UnsupportedOperationException("map(key) not yet supported");
+    }
+
+    /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.MapExpression#containsEntry(java.util.Map.Entry)
      */
     public BooleanExpression containsEntry(Entry<K, V> entry)
