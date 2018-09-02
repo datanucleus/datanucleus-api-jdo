@@ -52,4 +52,16 @@ public class OrderExpressionImpl<T> implements OrderExpression<T>
     {
         return orderExpr;
     }
+
+    public OrderExpression<T> nullsFirst()
+    {
+        // TODO Set this
+        return this;
+    }
+
+    public OrderExpression<T> nullsLast()
+    {
+        // TODO Set this
+        return this;
+    }
 }
