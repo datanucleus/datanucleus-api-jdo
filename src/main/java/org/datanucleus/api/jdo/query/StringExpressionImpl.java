@@ -264,6 +264,42 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
         return new BooleanExpressionImpl(invokeExpr);
     }
 
+    public BooleanExpression startsWith(StringExpression expr, int pos)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)expr).getQueryExpression());
+        args.add(new Literal(pos));
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
+    public BooleanExpression startsWith(String str, int pos)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(str));
+        args.add(new Literal(pos));
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
+    public BooleanExpression startsWith(StringExpression expr, NumericExpression<Integer> pos)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)expr).getQueryExpression());
+        args.add(((ExpressionImpl)pos).getQueryExpression());
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
+    public BooleanExpression startsWith(String str, NumericExpression<Integer> pos)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(str));
+        args.add(((ExpressionImpl)pos).getQueryExpression());
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        return new BooleanExpressionImpl(invokeExpr);
+    }
+
     /* (non-Javadoc)
      * @see org.datanucleus.query.typesafe.StringExpression#substring(int, int)
      */
