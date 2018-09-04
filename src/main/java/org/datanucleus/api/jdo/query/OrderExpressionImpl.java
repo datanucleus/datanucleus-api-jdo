@@ -31,6 +31,9 @@ public class OrderExpressionImpl<T> implements OrderExpression<T>
     /** The order direction for this expression. */
     protected OrderDirection direction;
 
+    /** Positioning of nulls in the ordering. */
+    protected OrderNullsPosition nullsPosition;
+
     public OrderExpressionImpl(Expression<T> expr, OrderDirection dir)
     {
         this.orderExpr = expr;
@@ -53,15 +56,20 @@ public class OrderExpressionImpl<T> implements OrderExpression<T>
         return orderExpr;
     }
 
+    public OrderNullsPosition getNullsPosition()
+    {
+        return nullsPosition;
+    }
+
     public OrderExpression<T> nullsFirst()
     {
-        // TODO Set this
+        this.nullsPosition = OrderNullsPosition.FIRST;
         return this;
     }
 
     public OrderExpression<T> nullsLast()
     {
-        // TODO Set this
+        this.nullsPosition = OrderNullsPosition.LAST;
         return this;
     }
 }

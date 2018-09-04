@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.query.OrderExpression.OrderDirection;
+import javax.jdo.query.OrderExpression.OrderNullsPosition;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
@@ -203,9 +204,20 @@ public abstract class AbstractJDOQLTypedQuery<T>
             while (iter.hasNext())
             {
                 OrderExpressionImpl order = iter.next();
-                org.datanucleus.query.expression.OrderExpression orderExpr =
-                    new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
+                org.datanucleus.query.expression.OrderExpression orderExpr;
+                OrderNullsPosition nullsPos = order.getNullsPosition();
+                if (nullsPos != null)
+                {
+                    orderExpr = new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
+                        order.getDirection() == OrderDirection.ASC ? "ascending" : "descending",
+                        nullsPos == OrderNullsPosition.FIRST ? "nulls first" : "nulls last");
+                }
+                else
+                {
+                    orderExpr = new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
                         order.getDirection() == OrderDirection.ASC ? "ascending" : "descending");
+                }
+
                 orderExpr.bind(symtbl);
                 orderExprs[i++] = orderExpr;
             }
@@ -382,6 +394,11 @@ public abstract class AbstractJDOQLTypedQuery<T>
                         OrderExpressionImpl orderExpr = iter.next();
                         str.append(getJDOQLForExpression(((ExpressionImpl)orderExpr.getExpression()).getQueryExpression()));
                         str.append(" " + (orderExpr.getDirection() == OrderDirection.ASC ? "ASCENDING" : "DESCENDING"));
+                        OrderNullsPosition nullsPos = orderExpr.getNullsPosition();
+                        if (nullsPos != null)
+                        {
+                            str.append(" " + (nullsPos == OrderNullsPosition.FIRST ? "NULLS FIRST" : "NULLS LAST"));
+                        }
                         if (iter.hasNext())
                         {
                             str.append(",");
