@@ -569,8 +569,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     @Override
     public <V> IfElseExpression<V> ifElseExpression(Class<V> type)
     {
-        // TODO Create IfElseExpressionImpl
-        return null;
+        return new IfElseExpressionImpl(type);
     }
 
     /* (non-Javadoc)
