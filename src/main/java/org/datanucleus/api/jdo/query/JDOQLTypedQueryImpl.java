@@ -45,6 +45,7 @@ import javax.jdo.query.CollectionExpression;
 import javax.jdo.query.DateExpression;
 import javax.jdo.query.DateTimeExpression;
 import javax.jdo.query.Expression;
+import javax.jdo.query.IfElseExpression;
 import javax.jdo.query.ListExpression;
 import javax.jdo.query.MapExpression;
 import javax.jdo.query.NumericExpression;
@@ -560,6 +561,16 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
 
         return varExpr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifElseExpression(java.lang.Class)
+     */
+    @Override
+    public <V> IfElseExpression<V> ifElseExpression(Class<V> type)
+    {
+        // TODO Create IfElseExpressionImpl
+        return null;
     }
 
     /* (non-Javadoc)
