@@ -34,10 +34,8 @@ public class IfElseExpressionImpl<T> extends ComparableExpressionImpl<T> impleme
 
     public IfElseExpressionImpl(Class<T> type)
     {
-        super(type, null, ExpressionType.PATH);
-
-        caseExpr = new CaseExpression();
-        queryExpr = caseExpr;
+        super(new CaseExpression());
+        caseExpr = (CaseExpression) queryExpr;
     }
 
     /* (non-Javadoc)

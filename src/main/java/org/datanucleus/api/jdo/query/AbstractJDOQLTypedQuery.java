@@ -33,6 +33,8 @@ import org.datanucleus.query.compiler.JDOQLSymbolResolver;
 import org.datanucleus.query.compiler.PropertySymbol;
 import org.datanucleus.query.compiler.QueryCompilation;
 import org.datanucleus.query.compiler.SymbolTable;
+import org.datanucleus.query.expression.CaseExpression;
+import org.datanucleus.query.expression.CaseExpression.ExpressionPair;
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
@@ -595,6 +597,27 @@ public abstract class AbstractJDOQLTypedQuery<T>
                 }
                 return litExpr.getLiteral().toString();
             }
+        }
+        else if (expr instanceof CaseExpression)
+        {
+            CaseExpression caseExpr = (CaseExpression)expr;
+            List<ExpressionPair> conds = caseExpr.getConditions();
+            Expression elseExpr = caseExpr.getElseExpression();
+            StringBuilder str = new StringBuilder();
+            for (ExpressionPair pair : conds)
+            {
+                if (str.length() > 0)
+                {
+                    str.append(" ELSE ");
+                }
+                str.append("IF ").append(getJDOQLForExpression(pair.getWhenExpression())).append(" ");
+                str.append(getJDOQLForExpression(pair.getActionExpression()));
+            }
+            if (elseExpr != null)
+            {
+                str.append(" ELSE ").append(getJDOQLForExpression(elseExpr));
+            }
+            return str.toString();
         }
         else
         {
