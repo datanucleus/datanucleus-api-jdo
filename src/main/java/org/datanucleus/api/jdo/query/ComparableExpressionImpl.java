@@ -55,7 +55,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#gt(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression gt(ComparableExpression<T> expr)
+    public BooleanExpression gt(ComparableExpression<? extends T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -81,7 +81,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#gteq(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression gteq(ComparableExpression<T> expr)
+    public BooleanExpression gteq(ComparableExpression<? extends T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -107,7 +107,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#lt(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression lt(ComparableExpression<T> expr)
+    public BooleanExpression lt(ComparableExpression<? extends T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -133,7 +133,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#lteq(javax.jdo.query.ComparableExpression)
      */
-    public BooleanExpression lteq(ComparableExpression<T> expr)
+    public BooleanExpression lteq(ComparableExpression<? extends T> expr)
     {
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
