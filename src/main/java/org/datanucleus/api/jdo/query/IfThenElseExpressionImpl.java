@@ -19,60 +19,60 @@ package org.datanucleus.api.jdo.query;
 
 import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.Expression;
-import javax.jdo.query.IfElseExpression;
+import javax.jdo.query.IfThenElseExpression;
 
 import org.datanucleus.query.expression.CaseExpression;
 import org.datanucleus.query.expression.Literal;
 
 /**
- * Implementation of an IfElseExpression.
+ * Implementation of an IfThenElseExpression.
  * Generates an underlying generic CaseExpression.
  */
-public class IfElseExpressionImpl<T> extends ComparableExpressionImpl<T> implements IfElseExpression<T>
+public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> implements IfThenElseExpression<T>
 {
     CaseExpression caseExpr = null;
 
-    public IfElseExpressionImpl(Class<T> type)
+    public IfThenElseExpressionImpl(Class<T> type)
     {
         super(new CaseExpression());
         caseExpr = (CaseExpression) queryExpr;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.query.IfElseExpression#ifThen(javax.jdo.query.BooleanExpression, java.lang.Object)
+     * @see javax.jdo.query.IfThenElseExpression#when(javax.jdo.query.BooleanExpression, java.lang.Object)
      */
     @Override
-    public IfElseExpression<T> ifThen(BooleanExpression ifExpr, T value)
+    public IfThenElseExpression<T> when(BooleanExpression ifExpr, T value)
     {
         caseExpr.addCondition(((BooleanExpressionImpl)ifExpr).getQueryExpression(), new Literal(value));
         return this;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.query.IfElseExpression#ifThen(javax.jdo.query.BooleanExpression, javax.jdo.query.Expression)
+     * @see javax.jdo.query.IfThenElseExpression#when(javax.jdo.query.BooleanExpression, javax.jdo.query.Expression)
      */
     @Override
-    public IfElseExpression<T> ifThen(BooleanExpression ifExpr, Expression<T> valueExpr)
+    public IfThenElseExpression<T> when(BooleanExpression ifExpr, Expression<T> valueExpr)
     {
         caseExpr.addCondition(((BooleanExpressionImpl)ifExpr).getQueryExpression(), ((ExpressionImpl)valueExpr).getQueryExpression());
         return this;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.query.IfElseExpression#elseEnd(java.lang.Object)
+     * @see javax.jdo.query.IfThenElseExpression#otherwise(java.lang.Object)
      */
     @Override
-    public IfElseExpression<T> elseEnd(T value)
+    public IfThenElseExpression<T> otherwise(T value)
     {
         caseExpr.setElseExpression(new Literal(value));
         return this;
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.query.IfElseExpression#elseEnd(javax.jdo.query.Expression)
+     * @see javax.jdo.query.IfThenElseExpression#otherwise(javax.jdo.query.Expression)
      */
     @Override
-    public IfElseExpression<T> elseEnd(Expression<T> valueExpr)
+    public IfThenElseExpression<T> otherwise(Expression<T> valueExpr)
     {
         caseExpr.setElseExpression(((ExpressionImpl)valueExpr).getQueryExpression());
         return this;

@@ -45,7 +45,7 @@ import javax.jdo.query.CollectionExpression;
 import javax.jdo.query.DateExpression;
 import javax.jdo.query.DateTimeExpression;
 import javax.jdo.query.Expression;
-import javax.jdo.query.IfElseExpression;
+import javax.jdo.query.IfThenElseExpression;
 import javax.jdo.query.ListExpression;
 import javax.jdo.query.MapExpression;
 import javax.jdo.query.NumericExpression;
@@ -564,12 +564,36 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#ifElseExpression(java.lang.Class)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class)
      */
     @Override
-    public <V> IfElseExpression<V> ifElseExpression(Class<V> type)
+    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type)
     {
-        return new IfElseExpressionImpl(type);
+        return new IfThenElseExpressionImpl(type);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, V ifValue, V elseValue)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl(type);
+        expr.when(ifExpr, ifValue);
+        expr.otherwise(elseValue);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, javax.jdo.query.Expression, javax.jdo.query.Expression)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression<V> ifValueExpr, Expression<V> elseValueExpr)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl(type);
+        expr.when(ifExpr, ifValueExpr);
+        expr.otherwise(elseValueExpr);
+        return expr;
     }
 
     /* (non-Javadoc)
