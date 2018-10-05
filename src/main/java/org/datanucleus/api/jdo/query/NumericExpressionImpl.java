@@ -51,7 +51,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#add(javax.jdo.query.Expression)
      */
-    public NumericExpression add(Expression expr)
+    public NumericExpression<T> add(Expression expr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -64,7 +64,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#add(java.lang.Number)
      */
-    public NumericExpression add(Number num)
+    public NumericExpression<T> add(Number num)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(num);
@@ -77,7 +77,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#mul(javax.jdo.query.Expression)
      */
-    public NumericExpression mul(Expression expr)
+    public NumericExpression<T> mul(Expression expr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -90,7 +90,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#mul(java.lang.Number)
      */
-    public NumericExpression mul(Number num)
+    public NumericExpression<T> mul(Number num)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(num);
@@ -103,7 +103,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#sub(javax.jdo.query.Expression)
      */
-    public NumericExpression sub(Expression expr)
+    public NumericExpression<T> sub(Expression expr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -116,7 +116,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#sub(java.lang.Number)
      */
-    public NumericExpression sub(Number num)
+    public NumericExpression<T> sub(Number num)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(num);
@@ -129,7 +129,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#div(javax.jdo.query.Expression)
      */
-    public NumericExpression div(Expression expr)
+    public NumericExpression<T> div(Expression expr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -142,7 +142,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#div(java.lang.Number)
      */
-    public NumericExpression div(Number num)
+    public NumericExpression<T> div(Number num)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(num);
@@ -155,7 +155,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.Expression#mod(javax.jdo.query.Expression)
      */
-    public NumericExpression mod(Expression expr)
+    public NumericExpression<T> mod(Expression expr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
@@ -168,7 +168,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#mod(java.lang.Number)
      */
-    public NumericExpression mod(Number num)
+    public NumericExpression<T> mod(Number num)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(num);
@@ -214,78 +214,78 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#sqrt()
      */
-    public NumericExpression<T> sqrt()
+    public NumericExpression<Double> sqrt()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sqrt", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#acos()
      */
-    public NumericExpression acos()
+    public NumericExpression<Double> acos()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "acos", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#asin()
      */
-    public NumericExpression asin()
+    public NumericExpression<Double> asin()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "asin", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#atan()
      */
-    public NumericExpression atan()
+    public NumericExpression<Double> atan()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "atan", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#cos()
      */
-    public NumericExpression cos()
+    public NumericExpression<Double> cos()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "cos", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#sin()
      */
-    public NumericExpression sin()
+    public NumericExpression<Double> sin()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sin", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#tan()
      */
-    public NumericExpression tan()
+    public NumericExpression<Double> tan()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "tan", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
@@ -296,24 +296,24 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "exp", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#log()
      */
-    public NumericExpression log()
+    public NumericExpression<Double> log()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "log", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#ceil()
      */
-    public NumericExpression ceil()
+    public NumericExpression<T> ceil()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
@@ -336,7 +336,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
      * @see javax.jdo.query.NumericExpression#neg()
      */
     @Override
-    public NumericExpression neg()
+    public NumericExpression<T> neg()
     {
         org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NEG, this.queryExpr);
         return new NumericExpressionImpl(queryExpr);
@@ -346,7 +346,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
      * @see javax.jdo.query.NumericExpression#com()
      */
     @Override
-    public NumericExpression com()
+    public NumericExpression<T> com()
     {
         org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_COM, this.queryExpr);
         return new NumericExpressionImpl(queryExpr);
@@ -356,7 +356,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
      * @see javax.jdo.query.NumericExpression#bAnd(javax.jdo.query.NumericExpression)
      */
     @Override
-    public NumericExpression bAnd(NumericExpression bitExpr)
+    public NumericExpression<T> bAnd(NumericExpression bitExpr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();
@@ -370,7 +370,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
      * @see javax.jdo.query.NumericExpression#bOr(javax.jdo.query.NumericExpression)
      */
     @Override
-    public NumericExpression bOr(NumericExpression bitExpr)
+    public NumericExpression<T> bOr(NumericExpression bitExpr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();
@@ -384,7 +384,7 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
      * @see javax.jdo.query.NumericExpression#bXor(javax.jdo.query.NumericExpression)
      */
     @Override
-    public NumericExpression bXor(NumericExpression bitExpr)
+    public NumericExpression<T> bXor(NumericExpression bitExpr)
     {
         org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
         org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)bitExpr).getQueryExpression();

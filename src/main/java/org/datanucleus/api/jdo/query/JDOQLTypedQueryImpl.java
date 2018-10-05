@@ -564,23 +564,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class)
-     */
-    @Override
-    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type)
-    {
-        return new IfThenElseExpressionImpl(type);
-    }
-
-    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, java.lang.Object, java.lang.Object)
      */
     @Override
     public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, V ifValue, V elseValue)
     {
-        IfThenElseExpression expr = new IfThenElseExpressionImpl(type);
-        expr.when(ifExpr, ifValue);
-        expr.otherwise(elseValue);
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(ifExpr, ifValue);
+        expr.elseEnd(elseValue);
         return expr;
     }
 
@@ -588,11 +579,69 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, javax.jdo.query.Expression, javax.jdo.query.Expression)
      */
     @Override
-    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression<V> ifValueExpr, Expression<V> elseValueExpr)
+    public <V> IfThenElseExpression<V> ifThenElse(BooleanExpression ifExpr, Expression<V> ifValueExpr, Expression<V> elseValueExpr)
     {
-        IfThenElseExpression expr = new IfThenElseExpressionImpl(type);
-        expr.when(ifExpr, ifValueExpr);
-        expr.otherwise(elseValueExpr);
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(ifExpr, ifValueExpr);
+        expr.elseEnd(elseValueExpr);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(javax.jdo.query.BooleanExpression, java.lang.Object, javax.jdo.query.Expression)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThenElse(BooleanExpression cond, V thenValue, Expression<V> elseValueExpr)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(cond, thenValue);
+        expr.elseEnd(elseValueExpr);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(javax.jdo.query.BooleanExpression, javax.jdo.query.Expression, java.lang.Object)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThenElse(BooleanExpression cond, Expression<V> thenValueExpr, V elseValue)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(cond, thenValueExpr);
+        expr.elseEnd(elseValue);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThenElse(javax.jdo.query.BooleanExpression, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThenElse(BooleanExpression cond, V thenValue, V elseValue)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(cond, thenValue);
+        expr.elseEnd(elseValue);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThen(java.lang.Class, javax.jdo.query.BooleanExpression, javax.jdo.query.Expression)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThen(Class<V> type, BooleanExpression cond, Expression<V> thenValueExpr)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(cond, thenValueExpr);
+        return expr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#ifThen(javax.jdo.query.BooleanExpression, java.lang.Object)
+     */
+    @Override
+    public <V> IfThenElseExpression<V> ifThen(BooleanExpression cond, V thenValue)
+    {
+        IfThenElseExpression expr = new IfThenElseExpressionImpl();
+        expr.ifThen(cond, thenValue);
         return expr;
     }
 

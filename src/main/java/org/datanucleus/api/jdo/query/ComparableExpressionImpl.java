@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.ComparableExpression;
-import javax.jdo.query.NumericExpression;
 import javax.jdo.query.OrderExpression;
 import javax.jdo.query.OrderExpression.OrderDirection;
 import javax.jdo.query.PersistableExpression;
@@ -159,23 +158,23 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#max()
      */
-    public NumericExpression<T> max()
+    public ComparableExpression<T> max()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "max", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.ComparableExpression#min()
      */
-    public NumericExpression<T> min()
+    public ComparableExpression<T> min()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "min", args);
-        return new NumericExpressionImpl<T>(invokeExpr);
+        return new NumericExpressionImpl(invokeExpr);
     }
 
     /* (non-Javadoc)

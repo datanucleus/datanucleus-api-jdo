@@ -32,7 +32,7 @@ public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> imp
 {
     CaseExpression caseExpr = null;
 
-    public IfThenElseExpressionImpl(Class<T> type)
+    public IfThenElseExpressionImpl()
     {
         super(new CaseExpression());
         caseExpr = (CaseExpression) queryExpr;
@@ -42,7 +42,7 @@ public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> imp
      * @see javax.jdo.query.IfThenElseExpression#when(javax.jdo.query.BooleanExpression, java.lang.Object)
      */
     @Override
-    public IfThenElseExpression<T> when(BooleanExpression ifExpr, T value)
+    public IfThenElseExpression<T> ifThen(BooleanExpression ifExpr, T value)
     {
         caseExpr.addCondition(((BooleanExpressionImpl)ifExpr).getQueryExpression(), new Literal(value));
         return this;
@@ -52,7 +52,7 @@ public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> imp
      * @see javax.jdo.query.IfThenElseExpression#when(javax.jdo.query.BooleanExpression, javax.jdo.query.Expression)
      */
     @Override
-    public IfThenElseExpression<T> when(BooleanExpression ifExpr, Expression<T> valueExpr)
+    public IfThenElseExpression<T> ifThen(BooleanExpression ifExpr, Expression<T> valueExpr)
     {
         caseExpr.addCondition(((BooleanExpressionImpl)ifExpr).getQueryExpression(), ((ExpressionImpl)valueExpr).getQueryExpression());
         return this;
@@ -62,7 +62,7 @@ public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> imp
      * @see javax.jdo.query.IfThenElseExpression#otherwise(java.lang.Object)
      */
     @Override
-    public IfThenElseExpression<T> otherwise(T value)
+    public IfThenElseExpression<T> elseEnd(T value)
     {
         caseExpr.setElseExpression(new Literal(value));
         return this;
@@ -72,7 +72,7 @@ public class IfThenElseExpressionImpl<T> extends ComparableExpressionImpl<T> imp
      * @see javax.jdo.query.IfThenElseExpression#otherwise(javax.jdo.query.Expression)
      */
     @Override
-    public IfThenElseExpression<T> otherwise(Expression<T> valueExpr)
+    public IfThenElseExpression<T> elseEnd(Expression<T> valueExpr)
     {
         caseExpr.setElseExpression(((ExpressionImpl)valueExpr).getQueryExpression());
         return this;
