@@ -80,7 +80,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)position).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getStartPoint", args);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getPointN", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
