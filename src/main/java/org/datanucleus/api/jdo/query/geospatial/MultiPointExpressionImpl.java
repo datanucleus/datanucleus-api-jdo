@@ -17,42 +17,29 @@ Contributors:
  **********************************************************************/
 package org.datanucleus.api.jdo.query.geospatial;
 
-import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.PersistableExpression;
-import javax.jdo.query.geospatial.MultiLineStringExpression;
+import javax.jdo.query.geospatial.MultiPointExpression;
 
-import org.datanucleus.api.jdo.query.BooleanExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionType;
 import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
 
 /**
- * Implementation of a MultiLineStringExpression.
+ * Implementation of a MultiPointExpression.
  */
-public class MultiLineStringExpressionImpl<T> extends GeometryCollectionExpressionImpl<T> implements MultiLineStringExpression<T>
+public class MultiPointExpressionImpl<T> extends GeometryCollectionExpressionImpl<T> implements MultiPointExpression<T>
 {
-    public MultiLineStringExpressionImpl(PersistableExpression parent, String name)
+    public MultiPointExpressionImpl(PersistableExpression parent, String name)
     {
         super(parent, name);
     }
 
-    public MultiLineStringExpressionImpl(Expression queryExpr)
+    public MultiPointExpressionImpl(Expression queryExpr)
     {
         super(queryExpr);
     }
 
-    public MultiLineStringExpressionImpl(Class cls, String name, ExpressionType type)
+    public MultiPointExpressionImpl(Class cls, String name, ExpressionType type)
     {
         super(cls, name, type);
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.query.geospatial.LinearRingExpression#isClosed()
-     */
-    @Override
-    public BooleanExpression isClosed()
-    {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
-        return new BooleanExpressionImpl(invokeExpr);
     }
 }

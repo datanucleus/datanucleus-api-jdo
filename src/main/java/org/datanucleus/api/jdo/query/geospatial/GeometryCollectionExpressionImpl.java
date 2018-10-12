@@ -17,42 +17,29 @@ Contributors:
  **********************************************************************/
 package org.datanucleus.api.jdo.query.geospatial;
 
-import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.PersistableExpression;
-import javax.jdo.query.geospatial.MultiLineStringExpression;
+import javax.jdo.query.geospatial.GeometryCollectionExpression;
 
-import org.datanucleus.api.jdo.query.BooleanExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionType;
 import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
 
 /**
- * Implementation of a MultiLineStringExpression.
+ * Implementation of a GeometryCollectionExpression.
  */
-public class MultiLineStringExpressionImpl<T> extends GeometryCollectionExpressionImpl<T> implements MultiLineStringExpression<T>
+public class GeometryCollectionExpressionImpl<T> extends GeometryExpressionImpl<T> implements GeometryCollectionExpression<T>
 {
-    public MultiLineStringExpressionImpl(PersistableExpression parent, String name)
+    public GeometryCollectionExpressionImpl(PersistableExpression parent, String name)
     {
         super(parent, name);
     }
 
-    public MultiLineStringExpressionImpl(Expression queryExpr)
+    public GeometryCollectionExpressionImpl(Expression queryExpr)
     {
         super(queryExpr);
     }
 
-    public MultiLineStringExpressionImpl(Class cls, String name, ExpressionType type)
+    public GeometryCollectionExpressionImpl(Class cls, String name, ExpressionType type)
     {
         super(cls, name, type);
-    }
-
-    /* (non-Javadoc)
-     * @see javax.jdo.query.geospatial.LinearRingExpression#isClosed()
-     */
-    @Override
-    public BooleanExpression isClosed()
-    {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
-        return new BooleanExpressionImpl(invokeExpr);
     }
 }
