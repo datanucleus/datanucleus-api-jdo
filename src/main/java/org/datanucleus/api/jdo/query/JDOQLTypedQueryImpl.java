@@ -53,6 +53,7 @@ import javax.jdo.query.OrderExpression;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
+import javax.jdo.query.geospatial.GeospatialHelper;
 import javax.jdo.spi.JDOPermission;
 
 import org.datanucleus.ClassLoaderResolver;
@@ -60,6 +61,7 @@ import org.datanucleus.api.jdo.JDOFetchPlan;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.api.jdo.query.geospatial.GeospatialHelperImpl;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.flush.FlushMode;
@@ -1654,5 +1656,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             throw new JDOFatalUserException(Localiser.msg("011100"));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#geospatialHelper()
+     */
+    @Override
+    public GeospatialHelper geospatialHelper()
+    {
+        return new GeospatialHelperImpl();
     }
 }
