@@ -17,11 +17,12 @@ Contributors:
  **********************************************************************/
 package org.datanucleus.api.jdo.query.geospatial;
 
+import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
-import javax.jdo.query.geospatial.GeometryExpression;
 import javax.jdo.query.geospatial.PointExpression;
 
 import org.datanucleus.api.jdo.query.ExpressionType;
+import org.datanucleus.api.jdo.query.NumericExpressionImpl;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
 
@@ -49,19 +50,19 @@ public class PointExpressionImpl<T> extends GeometryExpressionImpl<T> implements
      * @see javax.jdo.query.geospatial.PointExpression#getX()
      */
     @Override
-    public GeometryExpression getX()
+    public NumericExpression<Double> getX()
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getX", null);
-        return new GeometryExpressionImpl(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
     /* (non-Javadoc)
      * @see javax.jdo.query.geospatial.PointExpression#getY()
      */
     @Override
-    public GeometryExpression getY()
+    public NumericExpression<Double> getY()
     {
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getY", null);
-        return new GeometryExpressionImpl(invokeExpr);
+        return new NumericExpressionImpl<Double>(invokeExpr);
     }
 }
