@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.query.NumericExpression;
+import javax.jdo.query.ObjectExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.geospatial.GeometryCollectionExpression;
 import javax.jdo.query.geospatial.GeometryExpression;
@@ -262,6 +263,230 @@ public class GeospatialHelperImpl implements GeospatialHelper
         args.add(new Literal(srid));
 
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromText", args);
+        return new MultiPolygonExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#geometryFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public GeometryExpression geometryFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
+        return new GeometryExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#geometryFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public GeometryExpression geometryFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
+        return new GeometryExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#geometryCollFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public GeometryCollectionExpression geometryCollFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
+        return new GeometryCollectionExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#geometryCollFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public GeometryCollectionExpression geometryCollFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
+        return new GeometryCollectionExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#pointFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public PointExpression pointFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
+        return new PointExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#pointFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public PointExpression pointFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
+        return new PointExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#lineStringFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public LineStringExpression lineStringFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
+        return new LineStringExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#lineStringFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public LineStringExpression lineStringFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
+        return new LineStringExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#polygonFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public PolygonExpression polygonFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
+        return new PolygonExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#polygonFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public PolygonExpression polygonFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
+        return new PolygonExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiPointFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public MultiPointExpression multiPointFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
+        return new MultiPointExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiPointFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public MultiPointExpression multiPointFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
+        return new MultiPointExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiLineStringFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public MultiLineStringExpression multiLineStringFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
+        return new MultiLineStringExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiLineStringFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public MultiLineStringExpression multiLineStringFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
+        return new MultiLineStringExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiPolygonFromWKB(javax.jdo.query.ObjectExpression, javax.jdo.query.NumericExpression)
+     */
+    @Override
+    public MultiPolygonExpression multiPolygonFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
+        args.add(((ExpressionImpl)sridExpr).getQueryExpression());
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
+        return new MultiPolygonExpressionImpl(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.geospatial.GeospatialHelper#multiPolygonFromWKB(java.lang.Object, java.lang.Integer)
+     */
+    @Override
+    public MultiPolygonExpression multiPolygonFromWKB(Object wkb, Integer srid)
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new Literal(wkb));
+        args.add(new Literal(srid));
+
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
         return new MultiPolygonExpressionImpl(invokeExpr);
     }
 }
