@@ -190,12 +190,36 @@ public class NumericExpressionImpl<T> extends ComparableExpressionImpl<Number> i
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#avgDistinct()
+     */
+    @Override
+    public NumericExpression<Double> avgDistinct()
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new DyadicExpression(org.datanucleus.query.expression.Expression.OP_DISTINCT, queryExpr));
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "avg", args);
+        return new NumericExpressionImpl<Double>(invokeExpr);
+    }
+
+    /* (non-Javadoc)
      * @see javax.jdo.query.NumericExpression#sum()
      */
     public NumericExpression<T> sum()
     {
         List<org.datanucleus.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
+        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sum", args);
+        return new NumericExpressionImpl<T>(invokeExpr);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.query.NumericExpression#sumDistinct()
+     */
+    @Override
+    public NumericExpression<T> sumDistinct()
+    {
+        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        args.add(new DyadicExpression(org.datanucleus.query.expression.Expression.OP_DISTINCT, queryExpr));
         org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "sum", args);
         return new NumericExpressionImpl<T>(invokeExpr);
     }
