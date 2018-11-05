@@ -110,6 +110,16 @@ public class ExpressionImpl<T> implements Expression<T>
         this.queryExpr = queryExpr;
     }
 
+    /* (non-Javadoc)
+     * @see javax.jdo.query.Expression#as(java.lang.String)
+     */
+    @Override
+    public Expression<T> as(String alias)
+    {
+        this.queryExpr.setAlias(alias);
+        return this;
+    }
+
     /**
      * Accessor for the underlying (generic) query expression.
      * @return The query expression
