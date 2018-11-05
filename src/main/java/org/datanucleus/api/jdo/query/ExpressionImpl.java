@@ -59,7 +59,7 @@ public class ExpressionImpl<T> implements Expression<T>
             {
                 tuples.addAll(((PrimaryExpression) parentQueryExpr).getTuples());
                 tuples.add(name);
-                queryExpr = new PrimaryExpression(tuples);
+                queryExpr = new PrimaryExpression(parentQueryExpr.getLeft(), tuples);
             }
             else
             {
