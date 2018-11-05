@@ -241,6 +241,10 @@ public abstract class AbstractJDOQLTypedQuery<T>
         }
 
         compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs, null, filterExpr, groupingExprs, havingExpr, orderExprs, updateExprs);
+        if (resultDistinct != null && resultDistinct.booleanValue())
+        {
+            compilation.setResultDistinct();
+        }
         compilation.setQueryLanguage(Query.LANGUAGE_JDOQL);
 
         return compilation;
