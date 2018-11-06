@@ -570,7 +570,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, javax.jdo.query.Expression, javax.jdo.query.Expression)
      */
     @Override
-    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression<V> thenValueExpr, Expression<V> elseValueExpr)
+    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression thenValueExpr, Expression elseValueExpr)
     {
         IfThenElseExpression expr = new IfThenElseExpressionImpl();
         expr.ifThen(ifExpr, thenValueExpr);
