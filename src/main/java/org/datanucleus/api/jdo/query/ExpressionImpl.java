@@ -26,12 +26,15 @@ import javax.jdo.query.Expression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
+import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.ClassLoaderResolverImpl;
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.InvokeExpression;
 import org.datanucleus.query.expression.Literal;
 import org.datanucleus.query.expression.ParameterExpression;
 import org.datanucleus.query.expression.PrimaryExpression;
 import org.datanucleus.query.expression.VariableExpression;
+import org.datanucleus.util.ClassUtils;
 
 /**
  * Implementation of the methods for Expression, to be extended by the XXXExpressionImpl classes.
@@ -55,7 +58,11 @@ public class ExpressionImpl<T> implements Expression<T>
         if (parent != null)
         {
             org.datanucleus.query.expression.Expression parentQueryExpr = ((ExpressionImpl)parent).getQueryExpression();
-            if (parentQueryExpr instanceof PrimaryExpression)
+            if (name == null && parentQueryExpr instanceof DyadicExpression && ((DyadicExpression)parentQueryExpr).getOperator() == org.datanucleus.query.expression.Expression.OP_CAST)
+            {
+                queryExpr = parentQueryExpr;
+            }
+            else if (parentQueryExpr instanceof PrimaryExpression)
             {
                 tuples.addAll(((PrimaryExpression) parentQueryExpr).getTuples());
                 tuples.add(name);
@@ -219,7 +226,23 @@ public class ExpressionImpl<T> implements Expression<T>
     {
         if (this instanceof PersistableExpressionImpl)
         {
-            return new PersistableExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+            // Need to create the equivalent Q expression for this cast class, with the CAST "queryExpr". 
+            // We fool it by passing in the query expression to the constructor with a null "name"
+            PersistableExpression castExpr = new PersistableExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+
+            Class[] ctrArgTypes = new Class[] {PersistableExpression.class, String.class, int.class};
+            Object[] ctrArgs = new Object[] {castExpr, null, 0};
+            String implClsName = ClassUtils.getPackageNameForClass(cls) + ".Q" + cls.getSimpleName();
+            ClassLoaderResolver clr = new ClassLoaderResolverImpl(cls.getClassLoader());
+            try
+            {
+                Class implCls = clr.classForName(implClsName);
+                return (Expression)ClassUtils.newInstance(implCls, ctrArgTypes, ctrArgs);
+            }
+            catch (Throwable thr)
+            {
+                throw new UnsupportedOperationException("Unable to cast to " + cls.getName() + " since this does not have an equivalent Q class present");
+            }
         }
         else if (this instanceof DateExpressionImpl)
         {
@@ -233,6 +256,7 @@ public class ExpressionImpl<T> implements Expression<T>
         {
             return new DateTimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
         }
+        // TODO Support casting of other types
         throw new UnsupportedOperationException("cast not yet supported for expression of type " + this.getClass().getName());
     }
 
