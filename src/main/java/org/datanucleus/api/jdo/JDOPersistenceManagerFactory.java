@@ -951,7 +951,15 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         return super.equals(obj);
     }
 
-    // TODO Provide hashCode to match equals
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        // Just base hashCode on the configuration
+        return nucleusContext.getConfiguration().hashCode();
+    }
 
     /**
      * Create a PMF using the (JNDI) location or reference information specified.
