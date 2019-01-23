@@ -369,7 +369,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.String)
      */
     @Override
-    public NumericExpression<?> numericParameter(String name)
+    public NumericExpression<? extends Number> numericParameter(String name)
     {
         assertIsOpen();
         NumericExpressionImpl<Float> paramExpr = new NumericExpressionImpl(Number.class, name, ExpressionType.PARAMETER);
