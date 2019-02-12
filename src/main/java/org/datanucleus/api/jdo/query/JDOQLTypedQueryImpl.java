@@ -382,6 +382,22 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.Class, java.lang.String)
+     */
+    @Override
+    public <N extends Number> NumericExpression<N> numericParameter(Class<N> type, String name)
+    {
+        assertIsOpen();
+        NumericExpressionImpl paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
+        if (parameterExprByName == null)
+        {
+            parameterExprByName = new ConcurrentHashMap<>();
+        }
+        parameterExprByName.put(name, paramExpr);
+        return paramExpr;
+    }
+
+    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#dateParameter(java.lang.String)
      */
     public DateExpression dateParameter(String name)
@@ -442,6 +458,22 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#collectionParameter(java.lang.Class, java.lang.String)
+     */
+    @Override
+    public <E> CollectionExpression<Collection<E>, E> collectionParameter(Class<E> elementType, String name)
+    {
+        assertIsOpen();
+        CollectionExpressionImpl paramExpr = new CollectionExpressionImpl(java.util.Collection.class, name, ExpressionType.PARAMETER);
+        if (parameterExprByName == null)
+        {
+            parameterExprByName = new ConcurrentHashMap<>();
+        }
+        parameterExprByName.put(name, paramExpr);
+        return paramExpr;
+    }
+
+    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#mapParameter(java.lang.String)
      */
     public MapExpression mapParameter(String name)
@@ -457,9 +489,41 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#mapParameter(java.lang.Class, java.lang.Class, java.lang.String)
+     */
+    @Override
+    public <K, V> MapExpression<Map<K, V>, K, V> mapParameter(Class<K> keyType, Class<V> valueType, String name)
+    {
+        assertIsOpen();
+        MapExpressionImpl paramExpr = new MapExpressionImpl(java.util.Map.class, name, ExpressionType.PARAMETER);
+        if (parameterExprByName == null)
+        {
+            parameterExprByName = new ConcurrentHashMap<>();
+        }
+        parameterExprByName.put(name, paramExpr);
+        return paramExpr;
+    }
+
+    /* (non-Javadoc)
      * @see javax.jdo.JDOQLTypedQuery#listParameter(java.lang.String)
      */
     public ListExpression listParameter(String name)
+    {
+        assertIsOpen();
+        ListExpressionImpl paramExpr = new ListExpressionImpl(java.util.List.class, name, ExpressionType.PARAMETER);
+        if (parameterExprByName == null)
+        {
+            parameterExprByName = new ConcurrentHashMap<>();
+        }
+        parameterExprByName.put(name, paramExpr);
+        return paramExpr;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#listParameter(java.lang.Class, java.lang.String)
+     */
+    @Override
+    public <E> ListExpression<List<E>, E> listParameter(Class<E> elementType, String name)
     {
         assertIsOpen();
         ListExpressionImpl paramExpr = new ListExpressionImpl(java.util.List.class, name, ExpressionType.PARAMETER);
