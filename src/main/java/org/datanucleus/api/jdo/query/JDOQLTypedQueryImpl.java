@@ -793,8 +793,8 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         assertIsOpen();
         discardCompiled();
-        this.rangeLowerExpr = new NumericExpressionImpl<T>(new Literal(lowerIncl));
-        this.rangeUpperExpr = new NumericExpressionImpl<T>(new Literal(upperExcl));
+        this.rangeLowerExpr = new NumericExpressionImpl(new Literal(lowerIncl));
+        this.rangeUpperExpr = new NumericExpressionImpl(new Literal(upperExcl));
         return this;
     }
 
