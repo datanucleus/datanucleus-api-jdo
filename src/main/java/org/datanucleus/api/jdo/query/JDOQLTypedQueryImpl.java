@@ -382,10 +382,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.Class, java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#numericParameter(java.lang.String, java.lang.Class)
      */
     @Override
-    public <N extends Number> NumericExpression<N> numericParameter(Class<N> type, String name)
+    public <N extends Number> NumericExpression<N> numericParameter(String name, Class<N> type)
     {
         assertIsOpen();
         NumericExpressionImpl paramExpr = new NumericExpressionImpl(type, name, ExpressionType.PARAMETER);
@@ -458,10 +458,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#collectionParameter(java.lang.Class, java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#collectionParameter(java.lang.String, java.lang.Class)
      */
     @Override
-    public <E> CollectionExpression<Collection<E>, E> collectionParameter(Class<E> elementType, String name)
+    public <E> CollectionExpression<Collection<E>, E> collectionParameter(String name, Class<E> elementType)
     {
         assertIsOpen();
         CollectionExpressionImpl paramExpr = new CollectionExpressionImpl(java.util.Collection.class, name, ExpressionType.PARAMETER);
@@ -489,10 +489,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#mapParameter(java.lang.Class, java.lang.Class, java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#mapParameter(java.lang.String, java.lang.Class, java.lang.Class)
      */
     @Override
-    public <K, V> MapExpression<Map<K, V>, K, V> mapParameter(Class<K> keyType, Class<V> valueType, String name)
+    public <K, V> MapExpression<Map<K, V>, K, V> mapParameter(String name, Class<K> keyType, Class<V> valueType)
     {
         assertIsOpen();
         MapExpressionImpl paramExpr = new MapExpressionImpl(java.util.Map.class, name, ExpressionType.PARAMETER);
@@ -520,10 +520,10 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     }
 
     /* (non-Javadoc)
-     * @see javax.jdo.JDOQLTypedQuery#listParameter(java.lang.Class, java.lang.String)
+     * @see javax.jdo.JDOQLTypedQuery#listParameter(java.lang.String, java.lang.Class)
      */
     @Override
-    public <E> ListExpression<List<E>, E> listParameter(Class<E> elementType, String name)
+    public <E> ListExpression<List<E>, E> listParameter(String name, Class<E> elementType)
     {
         assertIsOpen();
         ListExpressionImpl paramExpr = new ListExpressionImpl(java.util.List.class, name, ExpressionType.PARAMETER);
