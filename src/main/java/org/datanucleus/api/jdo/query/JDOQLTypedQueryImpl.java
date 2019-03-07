@@ -1009,9 +1009,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
         assertIsOpen();
-        if (result == null)
+        if (result == null && resultCls == null)
         {
-            throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
+            throw new JDOUserException("Cannot call executeResultList method when query has result AND resultClass unset. Call executeList instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
@@ -1029,9 +1029,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public <R> R executeResultUnique(Class<R> resultCls)
     {
         assertIsOpen();
-        if (result == null)
+        if (result == null && resultCls == null)
         {
-            throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
+            throw new JDOUserException("Cannot call executeResultUnique method when query has result AND resultClass unset. Call executeUnique instead.");
         }
         type = QueryType.SELECT;
         updateExprs = null;
