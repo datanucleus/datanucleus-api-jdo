@@ -165,7 +165,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
                 }
             }
         }
-        else if (resultClass != null)
+        else if (resultClass != null && resultClass != Object[].class)
         {
             // When result class specified and no result then default the result to "DISTINCT this". See also AbstractJDOQLQuery in datanucleus-core
             resultExprs = new Expression[1];
