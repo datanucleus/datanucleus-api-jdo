@@ -18,6 +18,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -163,6 +164,14 @@ public abstract class AbstractJDOQLTypedQuery<T>
                     resultExprs = null;
                 }
             }
+        }
+        else if (resultClass != null)
+        {
+            // When result class specified and no result then default the result to "DISTINCT this". See also AbstractJDOQLQuery in datanucleus-core
+            resultExprs = new Expression[1];
+            List<String> primExprTuples = new ArrayList<>();
+            primExprTuples.add("this");
+            resultExprs[0] = new DyadicExpression(Expression.OP_DISTINCT, new PrimaryExpression(primExprTuples));
         }
 
         org.datanucleus.query.expression.Expression filterExpr = null;
