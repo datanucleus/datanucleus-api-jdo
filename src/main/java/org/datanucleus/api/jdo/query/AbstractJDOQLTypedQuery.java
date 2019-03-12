@@ -171,7 +171,8 @@ public abstract class AbstractJDOQLTypedQuery<T>
             resultExprs = new Expression[1];
             List<String> primExprTuples = new ArrayList<>();
             primExprTuples.add("this");
-            resultExprs[0] = new DyadicExpression(Expression.OP_DISTINCT, new PrimaryExpression(primExprTuples));
+            resultExprs[0] = new PrimaryExpression(primExprTuples);
+            resultDistinct = true;
         }
 
         org.datanucleus.query.expression.Expression filterExpr = null;
