@@ -982,8 +982,12 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
 
         if (exprs != null && exprs.length == 1 && exprs[0] == candidate())
         {
-            // User has set the result to "this", so just ignore
+            // User has set the result to "this", so just ignore since default is "distinct this"
             result = null;
+            if (!distinct)
+            {
+                this.resultDistinct = distinct;
+            }
         }
         else
         {
@@ -996,9 +1000,9 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
                     result.add((ExpressionImpl)exprs[i]);
                 }
             }
+            this.resultDistinct = distinct;
         }
 
-        this.resultDistinct = distinct;
         return this;
     }
 
