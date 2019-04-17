@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -634,7 +635,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see javax.jdo.JDOQLTypedQuery#ifThenElse(java.lang.Class, javax.jdo.query.BooleanExpression, javax.jdo.query.Expression, javax.jdo.query.Expression)
      */
     @Override
-    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression thenValueExpr, Expression elseValueExpr)
+    public <V> IfThenElseExpression<V> ifThenElse(Class<V> type, BooleanExpression ifExpr, Expression<V> thenValueExpr, Expression<V> elseValueExpr)
     {
         IfThenElseExpression expr = new IfThenElseExpressionImpl();
         expr.ifThen(ifExpr, thenValueExpr);
@@ -860,6 +861,27 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
         subqueries.add(subquery);
         return subquery;
+    }
+
+    @Override
+    public <E> JDOQLTypedSubquery<E> subquery(CollectionExpression<Collection<E>, E> candidateCollection, String candidateAlias)
+    {
+        // TODO Implement me
+        throw new JDOException("Method not implemented. Please contribute an implementation via a GitHub pull request");
+    }
+
+    @Override
+    public <E> JDOQLTypedSubquery<E> subquery(ListExpression<List<E>, E> candidateList, String candidateAlias)
+    {
+        // TODO Implement me
+        throw new JDOException("Method not implemented. Please contribute an implementation via a GitHub pull request");
+    }
+
+    @Override
+    public <K, V> JDOQLTypedSubquery<Entry<K, V>> subquery(MapExpression<Map<K, V>, K, V> candidateMap, String candidateAlias)
+    {
+        // TODO Implement me
+        throw new JDOException("Method not implemented. Please contribute an implementation via a GitHub pull request");
     }
 
     /* (non-Javadoc)
