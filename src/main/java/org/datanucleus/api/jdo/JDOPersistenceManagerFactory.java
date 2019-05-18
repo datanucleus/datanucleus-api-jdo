@@ -957,8 +957,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     @Override
     public int hashCode()
     {
-        // Just base hashCode on the configuration
-        return nucleusContext.getConfiguration().hashCode();
+        return super.hashCode();
     }
 
     /**
