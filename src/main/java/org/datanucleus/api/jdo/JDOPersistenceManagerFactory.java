@@ -849,6 +849,10 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
             synchronized (this)
             {
+                if (!isConfigurable())
+                {
+                    return;
+                }
                 try
                 {
                     // Initialise the NucleusContext
