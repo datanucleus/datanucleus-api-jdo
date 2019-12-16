@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jdo.JDOException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.query.OrderExpression.OrderDirection;
 import javax.jdo.query.OrderExpression.OrderNullsPosition;
@@ -36,6 +37,7 @@ import org.datanucleus.query.compiler.QueryCompilation;
 import org.datanucleus.query.compiler.SymbolTable;
 import org.datanucleus.query.expression.CaseExpression;
 import org.datanucleus.query.expression.CaseExpression.ExpressionPair;
+import org.datanucleus.query.expression.ClassExpression;
 import org.datanucleus.query.expression.DyadicExpression;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
@@ -57,6 +59,9 @@ public abstract class AbstractJDOQLTypedQuery<T>
 
     /** Candidate class for the query. */
     protected Class candidateCls;
+
+    /** Candidate expression for the query */
+    protected ExpressionImpl candidates;
 
     /** Whether to include subclasses of the candidate in the query. */
     protected boolean subclasses = true;
@@ -114,6 +119,13 @@ public abstract class AbstractJDOQLTypedQuery<T>
         this.candidateCls = cls;
         this.candidateAlias = alias;
         this.parentQuery = parentQuery;
+    }
+
+    public AbstractJDOQLTypedQuery(PersistenceManager pm, Class<T> cls, ExpressionImpl<T> candidates, String alias,
+                                   AbstractJDOQLTypedQuery parentQuery)
+    {
+        this(pm, cls, alias, parentQuery);
+        this.candidates = candidates;
     }
 
     /**
@@ -250,7 +262,26 @@ public abstract class AbstractJDOQLTypedQuery<T>
             }
         }
 
-        compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs, null, filterExpr, groupingExprs, havingExpr, orderExprs, updateExprs);
+        Expression[] fromExprs = null;
+        if (candidates != null)
+        {
+            org.datanucleus.query.expression.Expression queryExpr = candidates.getQueryExpression();
+            if (queryExpr instanceof PrimaryExpression) {
+                String path = ((PrimaryExpression)queryExpr).getId();
+                ClassExpression cExpr = new ClassExpression("e");
+                cExpr.setCandidateExpression(path);
+                cExpr.bind(symtbl);
+                fromExprs = new Expression[] {cExpr};
+            } else {
+                // TODO Implement me
+                throw new JDOException(
+                        "Method not implemented for subquery candidate expressions that are not relationships fields. " +
+                        "Please contribute an implementation via a GitHub pull request");
+            }
+        }
+
+        compilation = new QueryCompilation(candidateCls, candidateAlias, symtbl, resultExprs, fromExprs, filterExpr,
+                groupingExprs, havingExpr, orderExprs, updateExprs);
         if (resultDistinct != null && resultDistinct.booleanValue())
         {
             compilation.setResultDistinct();
