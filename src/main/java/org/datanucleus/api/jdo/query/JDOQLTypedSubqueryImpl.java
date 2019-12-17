@@ -49,6 +49,12 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
         super(pm, candidateClass, candidateAlias, parentQuery);
     }
 
+    public JDOQLTypedSubqueryImpl(PersistenceManager pm, Class<T> candidateClass, String candidateAlias,
+                                  ExpressionImpl<T> candidates, AbstractJDOQLTypedQuery parentQuery)
+    {
+        super(pm, candidateClass, candidates, candidateAlias, parentQuery);
+    }
+
     public String getAlias()
     {
         return "VAR_" + candidateAlias.toUpperCase();
