@@ -266,17 +266,19 @@ public abstract class AbstractJDOQLTypedQuery<T>
         if (candidates != null)
         {
             org.datanucleus.query.expression.Expression queryExpr = candidates.getQueryExpression();
-            if (queryExpr instanceof PrimaryExpression) {
-                String path = ((PrimaryExpression)queryExpr).getId();
+            if (queryExpr instanceof PrimaryExpression)
+            {
+                String path = ((PrimaryExpression) queryExpr).getId();
                 ClassExpression cExpr = new ClassExpression("e");
                 cExpr.setCandidateExpression(path);
                 cExpr.bind(symtbl);
-                fromExprs = new Expression[] {cExpr};
-            } else {
+                fromExprs = new Expression[]{cExpr};
+            }
+            else
+            {
                 // TODO Implement me
                 throw new JDOException(
-                        "Method not implemented for subquery candidate expressions that are not relationships fields. " +
-                        "Please contribute an implementation via a GitHub pull request");
+                        "Method not implemented for subquery candidate expressions that are not relationships fields. " + "Please contribute an implementation via a GitHub pull request");
             }
         }
 
