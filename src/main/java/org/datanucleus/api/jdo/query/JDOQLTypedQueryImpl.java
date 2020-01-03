@@ -863,43 +863,16 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         return subquery;
     }
 
+    /* (non-Javadoc)
+     * @see javax.jdo.JDOQLTypedQuery#subquery(CollectionExpression, Class, String)
+     */
     @Override
     public <E> JDOQLTypedSubquery<E> subquery(CollectionExpression<Collection<E>, E> candidateCollection, Class<E> candidateClass, String candidateAlias)
     {
         assertIsOpen();
         discardCompiled();
-        JDOQLTypedSubqueryImpl<E> subquery = new JDOQLTypedSubqueryImpl<E>(pm, this.candidateCls, candidateAlias,
+        JDOQLTypedSubqueryImpl<E> subquery = new JDOQLTypedSubqueryImpl<E>(pm, candidateClass, candidateAlias,
                 (CollectionExpressionImpl)candidateCollection, this);
-        if (subqueries == null)
-        {
-            subqueries = ConcurrentHashMap.newKeySet();
-        }
-        subqueries.add(subquery);
-        return subquery;
-    }
-
-    @Override
-    public <E> JDOQLTypedSubquery<E> subquery(ListExpression<List<E>, E> candidateList, Class<E> candidateClass, String candidateAlias)
-    {
-        assertIsOpen();
-        discardCompiled();
-        JDOQLTypedSubqueryImpl<E> subquery = new JDOQLTypedSubqueryImpl<E>(pm, this.candidateCls, candidateAlias,
-                (ListExpressionImpl)candidateList, this);
-        if (subqueries == null)
-        {
-            subqueries = ConcurrentHashMap.newKeySet();
-        }
-        subqueries.add(subquery);
-        return subquery;
-    }
-
-    @Override
-    public <K, V> JDOQLTypedSubquery<Entry<K, V>> subquery(MapExpression<Map<K, V>, K, V> candidateMap, Class<Entry<K, V>> candidateClass, String candidateAlias)
-    {
-        assertIsOpen();
-        discardCompiled();
-        JDOQLTypedSubqueryImpl<Entry<K, V>> subquery = new JDOQLTypedSubqueryImpl<Entry<K, V>>(pm, this.candidateCls,
-                candidateAlias, (MapExpressionImpl)candidateMap, this);
         if (subqueries == null)
         {
             subqueries = ConcurrentHashMap.newKeySet();
