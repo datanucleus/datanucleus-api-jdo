@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -871,8 +870,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     {
         assertIsOpen();
         discardCompiled();
-        JDOQLTypedSubqueryImpl<E> subquery = new JDOQLTypedSubqueryImpl<E>(pm, candidateClass, candidateAlias,
-                (CollectionExpressionImpl)candidateCollection, this);
+        JDOQLTypedSubqueryImpl<E> subquery = new JDOQLTypedSubqueryImpl<E>(pm, candidateClass, candidateAlias, (CollectionExpressionImpl)candidateCollection, this);
         if (subqueries == null)
         {
             subqueries = ConcurrentHashMap.newKeySet();
