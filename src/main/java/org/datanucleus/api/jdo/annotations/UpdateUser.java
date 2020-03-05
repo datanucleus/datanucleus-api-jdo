@@ -30,4 +30,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UpdateUser
 {
+    /**
+     * Name of the update user column in the table for this class when this is a surrogate (class-level) column.
+     * @return The update user column name
+     */
+    String column() default "UPDATE_USER";
+
+    /**
+     * Length of the update user column.
+     * @return Length of the update user column.
+     */
+    int columnLength() default -1;
 }

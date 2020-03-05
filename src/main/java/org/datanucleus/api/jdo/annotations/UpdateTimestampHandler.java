@@ -17,9 +17,12 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.annotations;
 
+import java.util.Map;
+
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
 
@@ -35,6 +38,13 @@ public class UpdateTimestampHandler implements MemberAnnotationHandler
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension("update-timestamp", "true");
+        cmd.addExtension(MetaData.EXTENSION_CLASS_UPDATETIMESTAMP, "true");
+
+        Map<String, Object> annotationValues = annotation.getNameValueMap();
+        String column = (String)annotationValues.get("column");
+        if (column != null && column.length() > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_UPDATETIMESTAMP_COLUMN_NAME, column);
+        }
     }
 }

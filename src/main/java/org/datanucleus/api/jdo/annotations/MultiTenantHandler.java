@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractClassMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 
@@ -36,20 +37,25 @@ public class MultiTenantHandler implements ClassAnnotationHandler
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
         Map<String, Object> annotationValues = annotation.getNameValueMap();
-        String column = (String)annotationValues.get("column");
-        if (column != null && column.length() > 0)
+        String columnName = (String)annotationValues.get("column");
+        if (columnName != null && columnName.length() > 0)
         {
-            cmd.addExtension("multitenancy-column-name", column);
+            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME, columnName);
         }
         Integer colLength = (Integer)annotationValues.get("columnLength");
         if (colLength != null && colLength > 0)
         {
-            cmd.addExtension("multitenancy-column-length", "" + colLength);
+            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH, "" + colLength);
         }
         Boolean disabled = (Boolean)annotationValues.get("disabled");
         if (disabled != null && !disabled)
         {
-            cmd.addExtension("multitenancy-disable", "true");
+            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_DISABLE, "true");
+        }
+        String jdbcType = (String)annotationValues.get("jdbcType");
+        if (jdbcType != null && jdbcType.length() > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_JDBC_TYPE, jdbcType);
         }
     }
 }

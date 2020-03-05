@@ -36,9 +36,9 @@ public class SoftDeleteHandler implements ClassAnnotationHandler
     @Override
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        Map<String, Object> annotationValues = annotation.getNameValueMap();
         cmd.addExtension(MetaData.EXTENSION_CLASS_SOFTDELETE, "true");
 
+        Map<String, Object> annotationValues = annotation.getNameValueMap();
         String column = (String)annotationValues.get("column");
         if (column != null && column.length() > 0)
         {

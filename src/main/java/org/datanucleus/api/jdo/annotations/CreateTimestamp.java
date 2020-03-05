@@ -30,4 +30,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CreateTimestamp
 {
+    /**
+     * Name of the create timestamp column in the table for this class when this is a surrogate (class-level) column.
+     * @return The create timestamp column name
+     */
+    String column() default "CREATE_TIMESTAMP";
 }

@@ -17,16 +17,20 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.annotations;
 
+import java.util.Map;
+
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
+import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
 
 /**
  * Handler for the {@link UpdateUser} annotation when applied to a field/property or surrogate column of a persistable class.
  */
-public class UpdateUserHandler implements MemberAnnotationHandler
+public class UpdateUserHandler implements MemberAnnotationHandler, ClassAnnotationHandler
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
@@ -35,6 +39,19 @@ public class UpdateUserHandler implements MemberAnnotationHandler
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension("update-user", "true");
+        cmd.addExtension(MetaData.EXTENSION_CLASS_UPDATEUSER, "true");
+
+        Map<String, Object> annotationValues = annotation.getNameValueMap();
+        String colName = (String)annotationValues.get("column");
+        if (colName != null && colName.length() > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_UPDATEUSER_COLUMN_NAME, colName);
+        }
+
+        Integer colLength = (Integer)annotationValues.get("columnLength");
+        if (colLength != null && colLength > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_UPDATEUSER_COLUMN_LENGTH, "" + colLength);
+        }
     }
 }

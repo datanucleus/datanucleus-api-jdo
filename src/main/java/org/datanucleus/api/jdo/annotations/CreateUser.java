@@ -30,4 +30,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CreateUser
 {
+    /**
+     * Name of the create user column in the table for this class when this is a surrogate (class-level) column.
+     * @return The create user column name
+     */
+    String column() default "CREATE_USER";
+
+    /**
+     * Length of the create user column.
+     * @return Length of the create user column.
+     */
+    int columnLength() default -1;
 }

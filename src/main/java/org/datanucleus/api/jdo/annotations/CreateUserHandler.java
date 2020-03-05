@@ -17,9 +17,12 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.annotations;
 
+import java.util.Map;
+
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
@@ -31,11 +34,24 @@ public class CreateUserHandler implements MemberAnnotationHandler, ClassAnnotati
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("create-user", "true");
+        mmd.addExtension("create-user", "true"); // TODO Use METADATA.EXTENSION_ enums
     }
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension("create-user", "true");
+        cmd.addExtension(MetaData.EXTENSION_CLASS_CREATEUSER, "true");
+
+        Map<String, Object> annotationValues = annotation.getNameValueMap();
+        String colName = (String)annotationValues.get("column");
+        if (colName != null && colName.length() > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_CREATEUSER_COLUMN_NAME, colName);
+        }
+
+        Integer colLength = (Integer)annotationValues.get("columnLength");
+        if (colLength != null && colLength > 0)
+        {
+            cmd.addExtension(MetaData.EXTENSION_CLASS_CREATEUSER_COLUMN_LENGTH, "" + colLength);
+        }
     }
 }

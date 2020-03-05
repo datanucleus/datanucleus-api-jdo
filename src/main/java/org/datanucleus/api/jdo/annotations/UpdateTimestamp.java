@@ -30,4 +30,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UpdateTimestamp
 {
+    /**
+     * Name of the update timestamp column in the table for this class when this is a surrogate (class-level) column.
+     * @return The update timestamp column name
+     */
+    String column() default "UPDATE_TIMESTAMP";
 }
