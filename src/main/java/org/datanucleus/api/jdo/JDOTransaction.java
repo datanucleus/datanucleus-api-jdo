@@ -86,14 +86,6 @@ public class JDOTransaction implements Transaction
             // TODO Should it be an error to begin a tx when the pm is closed?
         }
 
-        internalBegin();
-    }
-
-    /**
-     * Called by PMF under required synchronization
-     */
-    protected void internalBegin()
-    {
         tx.begin();
     }
 
