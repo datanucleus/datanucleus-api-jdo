@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.JDOPropertyNames;
-import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 
 /**
  * Component tests for the MetaDataManager class.

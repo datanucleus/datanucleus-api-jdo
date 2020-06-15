@@ -24,8 +24,6 @@ import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.LocalTimeExpression;
 
 import org.datanucleus.api.jdo.query.ComparableExpressionImpl;
-import org.datanucleus.api.jdo.query.ExpressionType;
-import org.datanucleus.api.jdo.query.NumericExpressionImpl;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
 
