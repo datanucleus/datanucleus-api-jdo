@@ -23,7 +23,6 @@ import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.LocalDateExpression;
 
-import org.datanucleus.api.jdo.query.ComparableExpressionImpl;
 import org.datanucleus.query.expression.Expression;
 import org.datanucleus.query.expression.InvokeExpression;
 
