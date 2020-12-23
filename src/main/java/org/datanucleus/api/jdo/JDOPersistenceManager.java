@@ -469,7 +469,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010036"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010036"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -545,7 +545,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010037"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010037"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -683,7 +683,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010038"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010038"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -745,7 +745,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T[] makePersistentAll(T... pcs)
     {
-        return (T[]) makePersistentAll(Arrays.asList(pcs)).toArray();
+        return (T[]) makePersistentAll(Arrays.asList(pcs)).toArray(new Object[0]);
     }
 
     /**
@@ -761,12 +761,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         try
         {
-            Object[] persistedPcs = ec.persistObjects(pcs.toArray());
-            Collection persisted = new ArrayList();
-            for (int i=0;i<persistedPcs.length;i++)
-            {
-                persisted.add(persistedPcs[i]);
-            }
+            Object[] persistedPcs = ec.persistObjects(pcs.toArray(new Object[0]));
+            Collection persisted = Arrays.asList(persistedPcs);
             return persisted;
         }
         catch (NucleusUserException nue)
@@ -831,7 +827,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         try
         {
-            ec.deleteObjects(pcs.toArray());
+            ec.deleteObjects(pcs.toArray(new Object[0]));
         }
         catch (NucleusUserException nue)
         {
@@ -938,7 +934,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010041"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010041"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -1017,7 +1013,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010042"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010042"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -1100,7 +1096,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010043"), (Exception[]) failures.toArray(new Exception[failures.size()]));
+            throw new JDOUserException(Localiser.msg("010043"), (Exception[]) failures.toArray(new Exception[0]));
         }
     }
 
@@ -1169,7 +1165,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public <T> T[] detachCopyAll(T... pcs)
     {
-        return (T[]) detachCopyAll(Arrays.asList(pcs)).toArray();
+        return (T[]) detachCopyAll(Arrays.asList(pcs)).toArray(new Object[0]);
     }
 
     /**
@@ -1840,11 +1836,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         Object[] objs = ec.findObjectsById(oidArray, validate);
 
-        Collection objects = new ArrayList(oids.size());
-        for (int i=0;i<objs.length;i++)
-        {
-            objects.add(objs[i]);
-        }
+        Collection objects = Arrays.asList(objs);
         return objects;
     }
 
