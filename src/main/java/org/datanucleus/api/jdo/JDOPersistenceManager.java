@@ -458,9 +458,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
+            Object pc = i.next();
             try
             {
-                jdoEvict(i.next());
+                jdoEvict(pc);
             }
             catch (JDOException e)
             {
@@ -534,9 +535,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator iter = pcs.iterator();
         while (iter.hasNext())
         {
+            Object pc = iter.next();
             try
             {
-                jdoRefresh(iter.next());
+                jdoRefresh(pc);
             }
             catch (JDOException e)
             {
@@ -672,10 +674,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
-            Object currentElem = i.next();
+            Object pc = i.next();
             try
             {
-                jdoRetrieve(currentElem, useFetchPlan);
+                jdoRetrieve(pc, useFetchPlan);
             }
             catch (RuntimeException e)
             {
@@ -924,9 +926,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         while (i.hasNext())
         {
+            Object pc = i.next();
             try
             {
-                jdoMakeTransient(i.next(), state);
+                jdoMakeTransient(pc, state);
             }
             catch (RuntimeException e)
             {
@@ -1003,9 +1006,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
+            Object pc = i.next();
             try
             {
-                jdoMakeTransactional(i.next());
+                jdoMakeTransactional(pc);
             }
             catch (RuntimeException e)
             {
@@ -1086,9 +1090,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
+            Object pc = i.next();
             try
             {
-                jdoMakeNontransactional(i.next());
+                jdoMakeNontransactional(pc);
             }
             catch (RuntimeException e)
             {
