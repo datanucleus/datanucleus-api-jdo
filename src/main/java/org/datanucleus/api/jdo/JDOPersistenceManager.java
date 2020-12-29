@@ -672,9 +672,10 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
+            Object currentElem = i.next();
             try
             {
-                jdoRetrieve(i.next(), useFetchPlan);
+                jdoRetrieve(currentElem, useFetchPlan);
             }
             catch (RuntimeException e)
             {
