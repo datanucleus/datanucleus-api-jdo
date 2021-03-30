@@ -42,16 +42,19 @@ public class MultiTenantHandler implements ClassAnnotationHandler
         {
             cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME, columnName);
         }
+
         Integer colLength = (Integer)annotationValues.get("columnLength");
         if (colLength != null && colLength > 0)
         {
             cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH, "" + colLength);
         }
-        Boolean disabled = (Boolean)annotationValues.get("disabled");
-        if (disabled != null && !disabled)
+
+        Boolean disabled = (Boolean)annotationValues.get("disable");
+        if (disabled != null && disabled)
         {
             cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_DISABLE, "true");
         }
+
         String jdbcType = (String)annotationValues.get("jdbcType");
         if (jdbcType != null && jdbcType.length() > 0)
         {
