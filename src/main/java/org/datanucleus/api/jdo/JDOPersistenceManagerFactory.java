@@ -876,9 +876,9 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get an instance of <tt>PersistenceManager</tt> from this factory. The instance has default values for options.
+     * Get an instance of <i>PersistenceManager</i> from this factory. The instance has default values for options.
      * <p>After the first use of getPersistenceManager, no "set" methods will succeed.</p>
-     * @return a <tt>PersistenceManager</tt> instance with default options.
+     * @return a <i>PersistenceManager</i> instance with default options.
      */
     public PersistenceManager getPersistenceManager()
     {
@@ -887,13 +887,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get an instance of <tt>PersistenceManager</tt> from this factory.
-     * The instance has default values for options. The parameters user-id/password are used when obtaining
-     * datastore connections from the connection pool.
+     * Get an instance of <i>PersistenceManager</i> from this factory.
+     * The instance has default values for options. The parameters user-id/password are used when obtaining datastore connections from the connection pool.
      * <p>After the first use of getPersistenceManager, no "set" methods will succeed.</p>
      * @param userName the user name for the connection
      * @param password the password for the connection
-     * @return <tt>PersistenceManager</tt> instance with default options.
+     * @return <i>PersistenceManager</i> instance with default options.
      */
     public PersistenceManager getPersistenceManager(String userName, String password)
     {
@@ -1450,7 +1449,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default Multithreaded setting for all <tt>PersistenceManager</tt>
+     * Set the default Multithreaded setting for all <i>PersistenceManager</i>
      * instances obtained from this factory.
      * @param flag the default Multithreaded setting.
      */
@@ -1461,7 +1460,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default Optimistic setting for all <tt>PersistenceManager</tt>
+     * Set the default Optimistic setting for all <i>PersistenceManager</i>
      * instances obtained from this factory.
      * @param flag the default Optimistic setting.
      */
@@ -1472,7 +1471,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default RetainValues setting for all <tt>PersistenceManager</tt>
+     * Set the default RetainValues setting for all <i>PersistenceManager</i>
      * instances obtained from this factory.
      * @param flag the default RetainValues setting.
      */
@@ -1483,8 +1482,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default RestoreValues setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Set the default RestoreValues setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default RestoreValues setting.
      */
     public void setRestoreValues(boolean flag)
@@ -1494,8 +1492,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default NontransactionalRead setting for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Set the default NontransactionalRead setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default NontransactionalRead setting.
      */
     public void setNontransactionalRead(boolean flag)
@@ -1505,8 +1502,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default NontransactionalWrite setting for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Set the default NontransactionalWrite setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default NontransactionalWrite setting.
      */
     public void setNontransactionalWrite(boolean flag)
@@ -1516,8 +1512,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default for whether to auto-commit non-tx writes for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Set the default for whether to auto-commit non-tx writes for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag whether to auto-commit non-tx writes
      */
     public void setNontransactionalWriteAutoCommit(boolean flag)
@@ -1527,8 +1522,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default IgnoreCache setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Set the default IgnoreCache setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default IgnoreCache setting.
      */
     public void setIgnoreCache(boolean flag)
@@ -1677,8 +1671,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the readOnly setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Set the readOnly setting for all <i>PersistenceManager</i>* instances obtained from this factory.
      * @param flag the default readOnly setting.
      */
     public void setReadOnly(boolean flag)
@@ -1782,8 +1775,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default Multithreaded setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default Multithreaded setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default Multithreaded setting.
      */
     public boolean getMultithreaded()
@@ -1792,8 +1784,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default Optimistic setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default Optimistic setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default Optimistic setting.
      */
     public boolean getOptimistic()
@@ -1802,8 +1793,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default RetainValues setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default RetainValues setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default RetainValues setting.
      */
     public boolean getRetainValues()
@@ -1812,8 +1802,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default RestoreValues setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default RestoreValues setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default RestoreValues setting.
      */
     public boolean getRestoreValues()
@@ -1822,8 +1811,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default NontransactionalRead setting for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Get the default NontransactionalRead setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default NontransactionalRead setting.
      */
     public boolean getNontransactionalRead()
@@ -1832,8 +1820,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default NontransactionalWrite setting for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Get the default NontransactionalWrite setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default NontransactionalWrite setting.
      */
     public boolean getNontransactionalWrite()
@@ -1842,8 +1829,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default auto-commit setting for non-tx writes for all
-     * <tt>PersistenceManager</tt> instances obtained from this factory.
+     * Get the default auto-commit setting for non-tx writes for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default auto-commit non-tx write setting.
      */
     public boolean getNontransactionalWriteAutoCommit()
@@ -1852,8 +1838,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default IgnoreCache setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default IgnoreCache setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the IgnoreCache setting.
      */
     public boolean getIgnoreCache()
@@ -1964,8 +1949,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the default readOnly setting for all <tt>PersistenceManager</tt>
-     * instances obtained from this factory.
+     * Get the default readOnly setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @return the default readOnly setting.
      */
     public boolean getReadOnly()
@@ -2064,7 +2048,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     // -------------------------------- Lifecycle Listeners -------------------------------
 
     /**
-     * @return Returns either <tt>null</tt> or a <tt>List</tt> with instances of <tt>LifecycleListenerSpecification</tt>.
+     * @return Returns either <i>null</i> or a <i>List</i> with instances of <i>LifecycleListenerSpecification</i>.
      * @deprecated
      */
     @Deprecated

@@ -725,7 +725,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      * JDO method to persist an object.
      * Will also attach a previously detached object.
      * @param obj The object
-     * @return The persistent object
      * @return The persisted object
      */
     public <T> T makePersistent(T obj)

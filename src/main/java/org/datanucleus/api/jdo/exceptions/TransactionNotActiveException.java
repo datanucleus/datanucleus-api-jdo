@@ -25,8 +25,7 @@ import javax.jdo.JDOUserException;
 import org.datanucleus.util.Localiser;
 
 /**
- * An <tt>TransactionNotActiveException</tt> is thrown if a transaction is not
- * active and an operation is performed that requires that a transaction be
+ * A <i>TransactionNotActiveException</i> is thrown if a transaction is not active and an operation is performed that requires that a transaction be
  * active (such as committing a transaction).
  */
 public class TransactionNotActiveException extends JDOUserException

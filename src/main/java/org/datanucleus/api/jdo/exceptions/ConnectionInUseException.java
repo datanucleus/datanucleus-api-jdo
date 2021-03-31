@@ -25,10 +25,8 @@ import javax.jdo.JDOUserException;
 import org.datanucleus.util.Localiser;
 
 /**
- * An <tt>ConnectionInUseException</tt> is thrown if an operation is attempted
- * that requires a new database connection (such as Transaction.begin()) and a
- * previously obtained database connection (such as for non-transactional read
- * or write) is still in-use.
+ * An <i>ConnectionInUseException</i> is thrown if an operation is attempted that requires a new database connection (such as Transaction.begin()) and a
+ * previously obtained database connection (such as for non-transactional read or write) is still in-use.
  */
 public class ConnectionInUseException extends JDOUserException
 {

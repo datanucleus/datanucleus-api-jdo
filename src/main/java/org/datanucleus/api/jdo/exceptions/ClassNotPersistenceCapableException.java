@@ -23,9 +23,8 @@ package org.datanucleus.api.jdo.exceptions;
 import javax.jdo.JDOUserException;
 
 /**
- * A <tt>ClassNotPersistenceCapableException</tt> is thrown if an attempt is
- * made to persist an object whose class is not persistence-capable. This may
- * be because the class has not been appropriately enhanced to be made persistence-capable.
+ * A <i>ClassNotPersistenceCapableException</i> is thrown if an attempt is made to persist an object whose class is not persistence-capable. 
+ * This may be because the class has not been appropriately enhanced to be made persistence-capable.
  */
 public class ClassNotPersistenceCapableException extends JDOUserException
 {

@@ -20,8 +20,7 @@ package org.datanucleus.api.jdo.exceptions;
 import org.datanucleus.util.Localiser;
 
 /**
- * An TransactionNotReadableException is thrown if an operation needs either of
- * an active transaction or non-transactional read and neither is true.
+ * A <i>TransactionNotReadableException</i> is thrown if an operation needs either of an active transaction or non-transactional read and neither is true.
  */
 public class TransactionNotWritableException extends TransactionNotActiveException
 {

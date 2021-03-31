@@ -25,8 +25,7 @@ import javax.jdo.JDOUserException;
 import org.datanucleus.util.Localiser;
 
 /**
- * An <tt>TransactionCommiting</tt> is thrown if a transaction is commiting or
- * rolling back and an operation is performed that changes the transaction state or
+ * A <i>TransactionCommitingException</i> is thrown if a transaction is committing or rolling back and an operation is performed that changes the transaction state or
  * behaviour (such as beginning setRetainValues).
  */
 public class TransactionCommitingException extends JDOUserException

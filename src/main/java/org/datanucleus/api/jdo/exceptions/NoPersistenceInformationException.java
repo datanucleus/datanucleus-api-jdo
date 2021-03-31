@@ -20,8 +20,7 @@ package org.datanucleus.api.jdo.exceptions;
 import javax.jdo.JDOUserException;
 
 /**
- * Exception thrown when a class is required to have persistence information (metadata/annotations) yet none
- * can be found.
+ * Exception thrown when a class is required to have persistence information (metadata/annotations) yet none can be found.
  */
 public class NoPersistenceInformationException extends JDOUserException
 {
