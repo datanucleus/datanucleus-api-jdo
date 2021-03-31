@@ -35,7 +35,7 @@ public class MetaDataManagerTest extends TestCase
 {
     /**
      * Start of the test, so log it and initialise.
-     * @param name Name of the <tt>TestCase</tt>.
+     * @param name Name of the <i>TestCase</i>.
      */
     public MetaDataManagerTest(String name)
     {
