@@ -26,6 +26,7 @@ import org.datanucleus.enhancer.DataNucleusEnhancer;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.MetaDataManager;
+import org.datanucleus.util.NucleusLogger;
 
 /**
  * Implementation of a JDO-compliant Enhancer.
@@ -218,7 +219,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) 
     throws IllegalClassFormatException
     {
-        // TODO Auto-generated method stub
+        NucleusLogger.GENERAL.warn("JDOEnhancer.transform not implemented. Report where this was called from", new Exception());
         return null;
     }
 }
