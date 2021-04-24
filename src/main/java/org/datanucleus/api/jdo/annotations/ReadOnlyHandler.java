@@ -20,6 +20,7 @@ package org.datanucleus.api.jdo.annotations;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
+import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
 import org.datanucleus.metadata.annotations.MemberAnnotationHandler;
@@ -31,8 +32,8 @@ public class ReadOnlyHandler implements MemberAnnotationHandler, ClassAnnotation
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("insertable", "false");
-        mmd.addExtension("updateable", "false");
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_INSERTABLE, "false");
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_UPDATEABLE, "false");
     }
 
     /* (non-Javadoc)
@@ -41,6 +42,6 @@ public class ReadOnlyHandler implements MemberAnnotationHandler, ClassAnnotation
     @Override
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension("read-only", "true");
+        cmd.addExtension(MetaData.EXTENSION_CLASS_READ_ONLY, "true");
     }
 }

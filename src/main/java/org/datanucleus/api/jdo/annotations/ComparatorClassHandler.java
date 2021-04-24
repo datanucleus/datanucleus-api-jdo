@@ -31,7 +31,7 @@ public class ComparatorClassHandler implements MemberAnnotationHandler
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
         Class value = (Class)ann.getNameValueMap().get("value");
-        
+
         mmd.addExtension(MetaData.EXTENSION_MEMBER_COMPARATOR_NAME, value.getName());
     }
 }
