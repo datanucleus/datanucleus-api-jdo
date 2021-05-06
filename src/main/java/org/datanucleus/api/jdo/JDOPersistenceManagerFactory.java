@@ -105,7 +105,7 @@ import org.datanucleus.util.StringUtils;
  * When a PMF is serialised its persistence properties are serialised with it, but dynamic state
  * (fetch groups, listeners, L2 cache, etc) are not serialised with it.
  */
-public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable
+public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, ObjectFactory, Referenceable, AutoCloseable
 {
     private static final long serialVersionUID = -575257641123665920L;
 
@@ -755,7 +755,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                         // Try default constructor
                         try
                         {
-                            listener = (InstanceLifecycleListener)listenerCls.newInstance();
+                            listener = (InstanceLifecycleListener)listenerCls.getDeclaredConstructor().newInstance();
                         }
                         catch (Exception e)
                         {
@@ -1314,7 +1314,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     protected void finalize() throws Throwable 
     {
         close();
-        super.finalize();
     }
 
     /**
