@@ -864,6 +864,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         ForeignKeyMetaData fkmd = null;
         Map<String, String> extensions = null;
         Class convertConverterCls = null;
+        FieldPersistenceModifier updateModifier = null;
 
         for (AnnotationObject annotation : annotations)
         {
@@ -1434,8 +1435,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     embmd.setNullIndicatorValue(embeddedMappings[0].nullIndicatorValue());
                     keymd.setEmbeddedMetaData(embmd);
                     embeddedKeyMembers = embeddedMappings[0].members();
-                    // Delay addition of embeddedKeyMembers til completion of this loop so we have the key
-                    // type
+                    // Delay addition of embeddedKeyMembers til completion of this loop so we have the key type
                 }
             }
             else if (annName.equals(JDOAnnotationUtils.VALUE))
@@ -1668,6 +1668,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 {
                     convertConverterCls = null;
                 }
+                if (convertConverterCls != null)
+                {
+                	// We have a converter so assume this field is to be persisted
+                    updateModifier = FieldPersistenceModifier.PERSISTENT;
+                }
             }
             else if (annName.equals(JDOAnnotationUtils.EXTENSIONS))
             {
@@ -1715,6 +1720,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             // @Persistent not supplied but other relevant annotations defined, so add default metadata element
             mmd = member.isProperty() ? new PropertyMetaData(cmd, member.getName()) : new FieldMetaData(cmd, member.getName());
 
+            if (updateModifier != null && mmd.getPersistenceModifier() == FieldPersistenceModifier.DEFAULT)
+            {
+                mmd.setPersistenceModifier(updateModifier);
+            }
             if (primaryKey)
             {
                 mmd.setPersistenceModifier(FieldPersistenceModifier.PERSISTENT);
