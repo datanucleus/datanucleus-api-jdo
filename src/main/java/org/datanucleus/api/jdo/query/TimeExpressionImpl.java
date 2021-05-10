@@ -23,8 +23,8 @@ import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.TimeExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a Time expression.
@@ -51,7 +51,7 @@ public class TimeExpressionImpl extends ComparableExpressionImpl<Time> implement
      */
     public NumericExpression<Integer> getHour()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getHour", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getHour", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -60,7 +60,7 @@ public class TimeExpressionImpl extends ComparableExpressionImpl<Time> implement
      */
     public NumericExpression<Integer> getMinute()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMinute", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMinute", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -69,7 +69,7 @@ public class TimeExpressionImpl extends ComparableExpressionImpl<Time> implement
      */
     public NumericExpression<Integer> getSecond()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getSecond", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getSecond", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }

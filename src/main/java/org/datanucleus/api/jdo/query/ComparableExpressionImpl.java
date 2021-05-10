@@ -24,12 +24,13 @@ import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.ComparableExpression;
 import javax.jdo.query.OrderExpression;
 import javax.jdo.query.OrderExpression.OrderDirection;
-import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
+
+import javax.jdo.query.PersistableExpression;
 
 /**
  * Implementation of the methods for ComparableExpression.
@@ -59,8 +60,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_GT, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_GT, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -72,8 +73,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_GT, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_GT, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -85,8 +86,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_GTEQ, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_GTEQ, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -98,8 +99,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_GTEQ, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_GTEQ, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -111,8 +112,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_LT, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_LT, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -124,8 +125,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_LT, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_LT, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -137,8 +138,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_LTEQ, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_LTEQ, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -150,8 +151,8 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = new Literal(t);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_LTEQ, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_LTEQ, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -160,9 +161,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public ComparableExpression<T> max()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "max", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "max", args);
         return new NumericExpressionImpl(invokeExpr);
     }
 
@@ -171,9 +172,9 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public ComparableExpression<T> min()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "min", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "min", args);
         return new NumericExpressionImpl(invokeExpr);
     }
 

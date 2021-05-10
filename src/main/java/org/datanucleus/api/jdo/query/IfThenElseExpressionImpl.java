@@ -21,8 +21,8 @@ import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.Expression;
 import javax.jdo.query.IfThenElseExpression;
 
-import org.datanucleus.query.expression.CaseExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.CaseExpression;
+import org.datanucleus.store.query.expression.Literal;
 
 /**
  * Implementation of an IfThenElseExpression.

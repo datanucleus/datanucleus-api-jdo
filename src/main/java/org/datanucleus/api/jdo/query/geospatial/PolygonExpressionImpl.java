@@ -28,8 +28,8 @@ import javax.jdo.query.geospatial.PolygonExpression;
 import org.datanucleus.api.jdo.query.ExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionType;
 import org.datanucleus.api.jdo.query.NumericExpressionImpl;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a PolygonExpression.
@@ -57,7 +57,7 @@ public class PolygonExpressionImpl<T> extends GeometryExpressionImpl<T> implemen
     @Override
     public GeometryExpression getExteriorRing()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getExteriorRing", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getExteriorRing", null);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -67,7 +67,7 @@ public class PolygonExpressionImpl<T> extends GeometryExpressionImpl<T> implemen
     @Override
     public NumericExpression getNumInteriorRings()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getNumInteriorRings", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getNumInteriorRings", null);
         return new NumericExpressionImpl(invokeExpr);
     }
 
@@ -77,9 +77,9 @@ public class PolygonExpressionImpl<T> extends GeometryExpressionImpl<T> implemen
     @Override
     public GeometryExpression getInteriorRingN(NumericExpression position)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)position).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getInteriorRingN", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getInteriorRingN", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 }

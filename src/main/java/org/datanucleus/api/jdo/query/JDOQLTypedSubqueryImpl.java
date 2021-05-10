@@ -35,7 +35,7 @@ import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
 
-import org.datanucleus.query.expression.VariableExpression;
+import org.datanucleus.store.query.expression.VariableExpression;
 
 /**
  * Implementation of a JDOQLTypedSubquery.
@@ -200,7 +200,7 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
         VariableExpression varExpr = new VariableExpression(getAlias());
         try
         {
-            Constructor ctr = implClass.getConstructor(new Class[] {org.datanucleus.query.expression.Expression.class});
+            Constructor ctr = implClass.getConstructor(new Class[] {org.datanucleus.store.query.expression.Expression.class});
             return (Expression)ctr.newInstance(new Object[] {varExpr});
         }
         catch (NoSuchMethodException nsme)

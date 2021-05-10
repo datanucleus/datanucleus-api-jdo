@@ -25,8 +25,8 @@ import javax.jdo.query.ListExpression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
 
 /**
  * Implementation of a ListExpression.
@@ -50,7 +50,7 @@ public class ListExpressionImpl<T extends List<E>, E> extends CollectionExpressi
     {
         List args = new ArrayList();
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
         return new ExpressionImpl(invokeExpr);
     }
 
@@ -61,7 +61,7 @@ public class ListExpressionImpl<T extends List<E>, E> extends CollectionExpressi
     {
         List args = new ArrayList();
         args.add(((ExpressionImpl)posExpr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
         return new ExpressionImpl(invokeExpr);
     }
 }

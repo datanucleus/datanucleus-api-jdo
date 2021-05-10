@@ -21,10 +21,11 @@ import java.time.LocalDate;
 
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
-import javax.jdo.query.LocalDateExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
+
+import javax.jdo.query.LocalDateExpression;
 
 /**
  * Implementation of a LocalDate expression.
@@ -51,7 +52,7 @@ public class LocalDateExpressionImpl extends ComparableExpressionImpl<LocalDate>
      */
     public NumericExpression<Integer> getDayOfMonth()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDayOfMonth", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDayOfMonth", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -60,7 +61,7 @@ public class LocalDateExpressionImpl extends ComparableExpressionImpl<LocalDate>
      */
     public NumericExpression<Integer> getMonthValue()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonthValue", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonthValue", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -69,7 +70,7 @@ public class LocalDateExpressionImpl extends ComparableExpressionImpl<LocalDate>
      */
     public NumericExpression<Integer> getYear()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }

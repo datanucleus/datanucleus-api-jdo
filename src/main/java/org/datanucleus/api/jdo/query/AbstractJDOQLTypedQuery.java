@@ -31,22 +31,22 @@ import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.metadata.MetaDataManager;
-import org.datanucleus.query.compiler.JDOQLSymbolResolver;
-import org.datanucleus.query.compiler.PropertySymbol;
-import org.datanucleus.query.compiler.QueryCompilation;
-import org.datanucleus.query.compiler.SymbolTable;
-import org.datanucleus.query.expression.CaseExpression;
-import org.datanucleus.query.expression.CaseExpression.ExpressionPair;
-import org.datanucleus.query.expression.ClassExpression;
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.expression.ParameterExpression;
-import org.datanucleus.query.expression.PrimaryExpression;
-import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.store.query.Query;
 import org.datanucleus.store.query.Query.QueryType;
+import org.datanucleus.store.query.compiler.JDOQLSymbolResolver;
+import org.datanucleus.store.query.compiler.PropertySymbol;
+import org.datanucleus.store.query.compiler.QueryCompilation;
+import org.datanucleus.store.query.compiler.SymbolTable;
+import org.datanucleus.store.query.expression.CaseExpression;
+import org.datanucleus.store.query.expression.ClassExpression;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
+import org.datanucleus.store.query.expression.ParameterExpression;
+import org.datanucleus.store.query.expression.PrimaryExpression;
+import org.datanucleus.store.query.expression.VariableExpression;
+import org.datanucleus.store.query.expression.CaseExpression.ExpressionPair;
 
 /**
  * Abstract base for a typesafe query. Extended by JDOTypesafeQuery and JDOTypesafeSubquery.
@@ -153,16 +153,16 @@ public abstract class AbstractJDOQLTypedQuery<T>
         }
         symtbl.addSymbol(new PropertySymbol(candidateAlias, candidateCls));
 
-        org.datanucleus.query.expression.Expression[] resultExprs = null;
+        org.datanucleus.store.query.expression.Expression[] resultExprs = null;
         if (result != null && !result.isEmpty())
         {
-            resultExprs = new org.datanucleus.query.expression.Expression[result.size()];
+            resultExprs = new org.datanucleus.store.query.expression.Expression[result.size()];
             Iterator iter = result.iterator();
             int i=0;
             while (iter.hasNext())
             {
                 ExpressionImpl result = (ExpressionImpl)iter.next();
-                org.datanucleus.query.expression.Expression resultExpr = result.getQueryExpression();
+                org.datanucleus.store.query.expression.Expression resultExpr = result.getQueryExpression();
                 resultExpr.bind(symtbl);
                 resultExprs[i++] = resultExpr;
             }
@@ -187,7 +187,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
             resultDistinct = true;
         }
 
-        org.datanucleus.query.expression.Expression filterExpr = null;
+        org.datanucleus.store.query.expression.Expression filterExpr = null;
         if (filter != null)
         {
             filterExpr = filter.getQueryExpression();
@@ -197,48 +197,48 @@ public abstract class AbstractJDOQLTypedQuery<T>
             }
         }
 
-        org.datanucleus.query.expression.Expression[] groupingExprs = null;
+        org.datanucleus.store.query.expression.Expression[] groupingExprs = null;
         if (grouping != null && !grouping.isEmpty())
         {
-            groupingExprs = new org.datanucleus.query.expression.Expression[grouping.size()];
+            groupingExprs = new org.datanucleus.store.query.expression.Expression[grouping.size()];
             Iterator iter = grouping.iterator();
             int i=0;
             while (iter.hasNext())
             {
                 ExpressionImpl grp = (ExpressionImpl)iter.next();
-                org.datanucleus.query.expression.Expression groupingExpr = grp.getQueryExpression();
+                org.datanucleus.store.query.expression.Expression groupingExpr = grp.getQueryExpression();
                 groupingExpr.bind(symtbl);
                 groupingExprs[i++] = groupingExpr;
             }
         }
 
-        org.datanucleus.query.expression.Expression havingExpr = null;
+        org.datanucleus.store.query.expression.Expression havingExpr = null;
         if (having != null)
         {
             havingExpr = having.getQueryExpression();
             havingExpr.bind(symtbl);
         }
 
-        org.datanucleus.query.expression.Expression[] orderExprs = null;
+        org.datanucleus.store.query.expression.Expression[] orderExprs = null;
         if (ordering != null && !ordering.isEmpty())
         {
-            orderExprs = new org.datanucleus.query.expression.Expression[ordering.size()];
+            orderExprs = new org.datanucleus.store.query.expression.Expression[ordering.size()];
             Iterator<OrderExpressionImpl> iter = ordering.iterator();
             int i=0;
             while (iter.hasNext())
             {
                 OrderExpressionImpl order = iter.next();
-                org.datanucleus.query.expression.OrderExpression orderExpr;
+                org.datanucleus.store.query.expression.OrderExpression orderExpr;
                 OrderNullsPosition nullsPos = order.getNullsPosition();
                 if (nullsPos != null)
                 {
-                    orderExpr = new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
+                    orderExpr = new org.datanucleus.store.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
                         order.getDirection() == OrderDirection.ASC ? "ascending" : "descending",
                         nullsPos == OrderNullsPosition.FIRST ? "nulls first" : "nulls last");
                 }
                 else
                 {
-                    orderExpr = new org.datanucleus.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
+                    orderExpr = new org.datanucleus.store.query.expression.OrderExpression(((ExpressionImpl)order.getExpression()).getQueryExpression(), 
                         order.getDirection() == OrderDirection.ASC ? "ascending" : "descending");
                 }
 
@@ -247,7 +247,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
             }
         }
 
-        org.datanucleus.query.expression.Expression[] updateExprs = null;
+        org.datanucleus.store.query.expression.Expression[] updateExprs = null;
         if (this.updateExprs != null)
         {
             Iterator<ExpressionImpl> expIter = this.updateExprs.iterator();
@@ -265,7 +265,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
         Expression[] fromExprs = null;
         if (candidates != null)
         {
-            org.datanucleus.query.expression.Expression queryExpr = candidates.getQueryExpression();
+            org.datanucleus.store.query.expression.Expression queryExpr = candidates.getQueryExpression();
             if (queryExpr instanceof PrimaryExpression)
             {
                 String path = ((PrimaryExpression) queryExpr).getId();

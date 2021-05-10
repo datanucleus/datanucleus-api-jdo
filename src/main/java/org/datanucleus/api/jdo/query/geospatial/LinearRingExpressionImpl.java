@@ -23,8 +23,8 @@ import javax.jdo.query.geospatial.LinearRingExpression;
 
 import org.datanucleus.api.jdo.query.BooleanExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionType;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a LinearRingExpression.
@@ -52,7 +52,7 @@ public class LinearRingExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public BooleanExpression isClosed()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
         return new BooleanExpressionImpl(invokeExpr);
     }
 }

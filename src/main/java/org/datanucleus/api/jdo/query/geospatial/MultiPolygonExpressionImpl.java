@@ -21,7 +21,7 @@ import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.geospatial.MultiPolygonExpression;
 
 import org.datanucleus.api.jdo.query.ExpressionType;
-import org.datanucleus.query.expression.Expression;
+import org.datanucleus.store.query.expression.Expression;
 
 /**
  * Implementation of a MultiPolygonExpression.

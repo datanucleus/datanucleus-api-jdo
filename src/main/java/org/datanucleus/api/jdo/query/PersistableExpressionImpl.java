@@ -23,7 +23,7 @@ import java.util.List;
 import javax.jdo.query.Expression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * (Base) implementation of a persistable expression.
@@ -42,7 +42,7 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
         super(cls, name, type);
     }
 
-    public PersistableExpressionImpl(org.datanucleus.query.expression.Expression queryExpr)
+    public PersistableExpressionImpl(org.datanucleus.store.query.expression.Expression queryExpr)
     {
         super(queryExpr);
     }
@@ -52,9 +52,9 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
      */
     public Expression jdoObjectId()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getObjectId", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getObjectId", args);
         return new ObjectExpressionImpl(invokeExpr);
     }
 
@@ -63,9 +63,9 @@ public class PersistableExpressionImpl<T> extends ExpressionImpl<T> implements P
      */
     public Expression jdoVersion()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getVersion", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "JDOHelper.getVersion", args);
         return new ObjectExpressionImpl(invokeExpr);
     }
 }

@@ -20,9 +20,9 @@ package org.datanucleus.api.jdo.query;
 import javax.jdo.query.CharacterExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a CharacterExpression
@@ -50,7 +50,7 @@ public class CharacterExpressionImpl<T> extends ComparableExpressionImpl<Charact
     @Override
     public CharacterExpression toLowerCase()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toLowerCase", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toLowerCase", null);
         return new CharacterExpressionImpl(invokeExpr);
     }
 
@@ -60,7 +60,7 @@ public class CharacterExpressionImpl<T> extends ComparableExpressionImpl<Charact
     @Override
     public CharacterExpression toUpperCase()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toUpperCase", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toUpperCase", null);
         return new CharacterExpressionImpl(invokeExpr);
     }
 
@@ -70,7 +70,7 @@ public class CharacterExpressionImpl<T> extends ComparableExpressionImpl<Charact
     @Override
     public CharacterExpression neg()
     {
-        org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NEG, this.queryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_NEG, this.queryExpr);
         return new CharacterExpressionImpl(queryExpr);
     }
 
@@ -80,7 +80,7 @@ public class CharacterExpressionImpl<T> extends ComparableExpressionImpl<Charact
     @Override
     public CharacterExpression com()
     {
-        org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_COM, this.queryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_COM, this.queryExpr);
         return new CharacterExpressionImpl(queryExpr);
     }
 }

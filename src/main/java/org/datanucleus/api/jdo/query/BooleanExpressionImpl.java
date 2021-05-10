@@ -20,8 +20,8 @@ package org.datanucleus.api.jdo.query;
 import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.Expression;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.Expression;
 
 /**
  * Implementation of a BooleanExpression
@@ -51,8 +51,8 @@ public class BooleanExpressionImpl<T> extends ComparableExpressionImpl<Boolean> 
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_AND, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_AND, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -63,8 +63,8 @@ public class BooleanExpressionImpl<T> extends ComparableExpressionImpl<Boolean> 
     {
         Expression rightQueryExpr = queryExpr;
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NOT, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_NOT, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -76,8 +76,8 @@ public class BooleanExpressionImpl<T> extends ComparableExpressionImpl<Boolean> 
         Expression leftQueryExpr = queryExpr;
         Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_OR, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_OR, rightQueryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 
@@ -87,7 +87,7 @@ public class BooleanExpressionImpl<T> extends ComparableExpressionImpl<Boolean> 
     @Override
     public BooleanExpression neg()
     {
-        org.datanucleus.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.query.expression.Expression.OP_NEG, this.queryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr = new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_NEG, this.queryExpr);
         return new BooleanExpressionImpl(queryExpr);
     }
 }

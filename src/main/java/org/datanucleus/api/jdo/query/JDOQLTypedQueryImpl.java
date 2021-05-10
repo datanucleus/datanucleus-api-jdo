@@ -66,13 +66,13 @@ import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.flush.FlushMode;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.QueryMetaData;
-import org.datanucleus.query.compiler.QueryCompilation;
-import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.expression.ParameterExpression;
-import org.datanucleus.query.expression.VariableExpression;
 import org.datanucleus.store.query.NoQueryResultsException;
 import org.datanucleus.store.query.Query;
 import org.datanucleus.store.query.Query.QueryType;
+import org.datanucleus.store.query.compiler.QueryCompilation;
+import org.datanucleus.store.query.expression.Literal;
+import org.datanucleus.store.query.expression.ParameterExpression;
+import org.datanucleus.store.query.expression.VariableExpression;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
 
@@ -1333,7 +1333,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         }
 
         ExpressionImpl valExpr = null;
-        org.datanucleus.query.expression.Expression literalExpr = new Literal(val);
+        org.datanucleus.store.query.expression.Expression literalExpr = new Literal(val);
         if (val instanceof String)
         {
             valExpr = new StringExpressionImpl(literalExpr);
@@ -1687,7 +1687,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
      * @see org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery#getJDOQLForExpression(org.datanucleus.query.expression.Expression)
      */
     @Override
-    public String getJDOQLForExpression(org.datanucleus.query.expression.Expression expr)
+    public String getJDOQLForExpression(org.datanucleus.store.query.expression.Expression expr)
     {
         if (expr instanceof VariableExpression)
         {

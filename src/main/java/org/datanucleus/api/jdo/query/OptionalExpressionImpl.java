@@ -24,8 +24,8 @@ import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.OptionalExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of an Optional expression.
@@ -48,7 +48,7 @@ public class OptionalExpressionImpl<T> extends ComparableExpressionImpl<java.uti
     @Override
     public javax.jdo.query.Expression<T> get()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", null);
         // TODO Would be nice to return NumericExpressionImpl when T implies that, or StringExpressionImpl, etc.
         return new ExpressionImpl(invokeExpr);
     }
@@ -59,7 +59,7 @@ public class OptionalExpressionImpl<T> extends ComparableExpressionImpl<java.uti
     @Override
     public BooleanExpression isPresent()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isPresent", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isPresent", null);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -69,9 +69,9 @@ public class OptionalExpressionImpl<T> extends ComparableExpressionImpl<java.uti
     @Override
     public javax.jdo.query.Expression<T> orElse(javax.jdo.query.Expression<T> other)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList<>();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "orElse", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "orElse", args);
         // TODO Would be nice to return NumericExpressionImpl when T implies that, or StringExpressionImpl, etc.
         return new ExpressionImpl(invokeExpr);
     }

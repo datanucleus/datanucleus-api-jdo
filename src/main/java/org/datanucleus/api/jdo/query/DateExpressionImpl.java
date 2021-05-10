@@ -23,8 +23,8 @@ import javax.jdo.query.DateExpression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a Date expression.
@@ -51,7 +51,7 @@ public class DateExpressionImpl extends ComparableExpressionImpl<Date> implement
      */
     public NumericExpression<Integer> getDay()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDay", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDay", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -60,7 +60,7 @@ public class DateExpressionImpl extends ComparableExpressionImpl<Date> implement
      */
     public NumericExpression<Integer> getMonth()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonth", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonth", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -69,7 +69,7 @@ public class DateExpressionImpl extends ComparableExpressionImpl<Date> implement
      */
     public NumericExpression<Integer> getYear()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }

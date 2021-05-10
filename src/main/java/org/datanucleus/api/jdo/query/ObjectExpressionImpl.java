@@ -20,7 +20,7 @@ package org.datanucleus.api.jdo.query;
 import javax.jdo.query.ObjectExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.Expression;
+import org.datanucleus.store.query.expression.Expression;
 
 /**
  * Implementation of an expression for all unsupported types.

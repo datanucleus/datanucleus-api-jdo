@@ -29,8 +29,8 @@ import javax.jdo.query.geospatial.LineStringExpression;
 import org.datanucleus.api.jdo.query.BooleanExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionImpl;
 import org.datanucleus.api.jdo.query.ExpressionType;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a LineStringExpression.
@@ -58,7 +58,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public BooleanExpression isRing()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isRing", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isRing", null);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -68,7 +68,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public GeometryExpression getStartPoint()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getStartPoint", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getStartPoint", null);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -78,9 +78,9 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public GeometryExpression getPointN(NumericExpression position)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)position).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getPointN", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getPointN", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -90,7 +90,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public GeometryExpression getEndPoint()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getEndPoint", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getEndPoint", null);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -100,7 +100,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public BooleanExpression isClosed()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isClosed", null);
         return new BooleanExpressionImpl(invokeExpr);
     }
 }

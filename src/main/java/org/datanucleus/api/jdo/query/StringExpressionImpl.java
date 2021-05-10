@@ -27,9 +27,9 @@ import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
 
 /**
  * Implementation of a StringExpression
@@ -41,7 +41,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
         super(parent, name);
     }
 
-    public StringExpressionImpl(org.datanucleus.query.expression.Expression queryExpr)
+    public StringExpressionImpl(org.datanucleus.store.query.expression.Expression queryExpr)
     {
         super(queryExpr);
     }
@@ -58,11 +58,11 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression add(Expression expr)
     {
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_ADD, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_ADD, rightQueryExpr);
         return new StringExpressionImpl(queryExpr);
     }
 
@@ -73,11 +73,11 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression add(String str)
     {
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(str);
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = new Literal(str);
 
-        org.datanucleus.query.expression.Expression queryExpr =
-            new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_ADD, rightQueryExpr);
+        org.datanucleus.store.query.expression.Expression queryExpr =
+            new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_ADD, rightQueryExpr);
         return new StringExpressionImpl(queryExpr);
     }
 
@@ -86,9 +86,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public CharacterExpression charAt(int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "charAt", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "charAt", args);
         return new CharacterExpressionImpl(invokeExpr);
     }
 
@@ -97,9 +97,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public CharacterExpression charAt(NumericExpression pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "charAt", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "charAt", args);
         return new CharacterExpressionImpl(invokeExpr);
     }
 
@@ -108,9 +108,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression endsWith(String str)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "endsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "endsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -119,9 +119,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression endsWith(StringExpression expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "endsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "endsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -130,9 +130,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression equalsIgnoreCase(String str)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "equalsIgnoreCase", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "equalsIgnoreCase", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -141,9 +141,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression equalsIgnoreCase(StringExpression expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "equalsIgnoreCase", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "equalsIgnoreCase", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -152,10 +152,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(String str, int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -164,10 +164,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(String str, NumericExpression pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -176,9 +176,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(String str)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -187,10 +187,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(StringExpression expr, int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -199,10 +199,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(StringExpression expr, NumericExpression pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -211,9 +211,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> indexOf(StringExpression expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "indexOf", args);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -222,23 +222,23 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public NumericExpression<Integer> length()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "length", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "length", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
     public BooleanExpression matches(StringExpression expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
     public BooleanExpression matches(String str)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "matches", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -247,9 +247,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression startsWith(String str)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -258,45 +258,45 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public BooleanExpression startsWith(StringExpression expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
     public BooleanExpression startsWith(StringExpression expr, int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
     public BooleanExpression startsWith(String str, int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
     public BooleanExpression startsWith(StringExpression expr, NumericExpression<Integer> pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
     public BooleanExpression startsWith(String str, NumericExpression<Integer> pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(str));
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "startsWith", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -305,10 +305,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression substring(int startPos, int endPos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(startPos));
         args.add(new Literal(endPos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -317,9 +317,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression substring(int pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(pos));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -328,10 +328,10 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression substring(NumericExpression<Integer> startPos, NumericExpression<Integer> endPos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)startPos).getQueryExpression());
         args.add(((ExpressionImpl)endPos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -340,9 +340,9 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression substring(NumericExpression<Integer> pos)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)pos).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "substring", args);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -351,7 +351,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression toLowerCase()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toLowerCase", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toLowerCase", null);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -360,7 +360,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression toUpperCase()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toUpperCase", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "toUpperCase", null);
         return new StringExpressionImpl(invokeExpr);
     }
 
@@ -369,7 +369,7 @@ public class StringExpressionImpl extends ComparableExpressionImpl<String> imple
      */
     public StringExpression trim()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "trim", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "trim", null);
         return new StringExpressionImpl(invokeExpr);
     }
 }

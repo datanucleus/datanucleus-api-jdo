@@ -34,8 +34,8 @@ import javax.jdo.query.geospatial.PointExpression;
 import javax.jdo.query.geospatial.PolygonExpression;
 
 import org.datanucleus.api.jdo.query.ExpressionImpl;
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
 
 /**
  * Implementation of a Geospatial helper for JDOQLTypedQuery.
@@ -48,11 +48,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryExpression geometryFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromText", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -62,11 +62,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryExpression geometryFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromText", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -76,11 +76,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryCollectionExpression geometryCollFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromText", args);
         return new GeometryCollectionExpressionImpl(invokeExpr);
     }
 
@@ -90,11 +90,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryCollectionExpression geometryCollFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromText", args);
         return new GeometryCollectionExpressionImpl(invokeExpr);
     }
 
@@ -104,11 +104,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PointExpression pointFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromText", args);
         return new PointExpressionImpl(invokeExpr);
     }
 
@@ -118,11 +118,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PointExpression pointFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromText", args);
         return new PointExpressionImpl(invokeExpr);
     }
 
@@ -132,11 +132,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public LineStringExpression lineStringFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromText", args);
         return new LineStringExpressionImpl(invokeExpr);
     }
 
@@ -146,11 +146,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public LineStringExpression lineStringFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromText", args);
         return new LineStringExpressionImpl(invokeExpr);
     }
 
@@ -160,11 +160,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PolygonExpression polygonFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromText", args);
         return new PolygonExpressionImpl(invokeExpr);
     }
 
@@ -174,11 +174,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PolygonExpression polygonFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromText", args);
         return new PolygonExpressionImpl(invokeExpr);
     }
 
@@ -188,11 +188,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPointExpression multiPointFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromText", args);
         return new MultiPointExpressionImpl(invokeExpr);
     }
 
@@ -202,11 +202,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPointExpression multiPointFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromText", args);
         return new MultiPointExpressionImpl(invokeExpr);
     }
 
@@ -216,11 +216,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiLineStringExpression multiLineStringFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromText", args);
         return new MultiLineStringExpressionImpl(invokeExpr);
     }
 
@@ -230,11 +230,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiLineStringExpression multiLineStringFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromText", args);
         return new MultiLineStringExpressionImpl(invokeExpr);
     }
 
@@ -244,11 +244,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPolygonExpression multiPolygonFromText(StringExpression wktExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wktExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromText", args);
         return new MultiPolygonExpressionImpl(invokeExpr);
     }
 
@@ -258,11 +258,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPolygonExpression multiPolygonFromText(String wkt, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkt));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromText", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromText", args);
         return new MultiPolygonExpressionImpl(invokeExpr);
     }
 
@@ -272,11 +272,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryExpression geometryFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -286,11 +286,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryExpression geometryFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomFromWKB", args);
         return new GeometryExpressionImpl(invokeExpr);
     }
 
@@ -300,11 +300,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryCollectionExpression geometryCollFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
         return new GeometryCollectionExpressionImpl(invokeExpr);
     }
 
@@ -314,11 +314,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public GeometryCollectionExpression geometryCollFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.geomCollFromWKB", args);
         return new GeometryCollectionExpressionImpl(invokeExpr);
     }
 
@@ -328,11 +328,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PointExpression pointFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
         return new PointExpressionImpl(invokeExpr);
     }
 
@@ -342,11 +342,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PointExpression pointFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.pointFromWKB", args);
         return new PointExpressionImpl(invokeExpr);
     }
 
@@ -356,11 +356,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public LineStringExpression lineStringFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
         return new LineStringExpressionImpl(invokeExpr);
     }
 
@@ -370,11 +370,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public LineStringExpression lineStringFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.lineFromWKB", args);
         return new LineStringExpressionImpl(invokeExpr);
     }
 
@@ -384,11 +384,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PolygonExpression polygonFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
         return new PolygonExpressionImpl(invokeExpr);
     }
 
@@ -398,11 +398,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public PolygonExpression polygonFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.polyFromWKB", args);
         return new PolygonExpressionImpl(invokeExpr);
     }
 
@@ -412,11 +412,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPointExpression multiPointFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
         return new MultiPointExpressionImpl(invokeExpr);
     }
 
@@ -426,11 +426,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPointExpression multiPointFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPointFromWKB", args);
         return new MultiPointExpressionImpl(invokeExpr);
     }
 
@@ -440,11 +440,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiLineStringExpression multiLineStringFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
         return new MultiLineStringExpressionImpl(invokeExpr);
     }
 
@@ -454,11 +454,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiLineStringExpression multiLineStringFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mLineFromWKB", args);
         return new MultiLineStringExpressionImpl(invokeExpr);
     }
 
@@ -468,11 +468,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPolygonExpression multiPolygonFromWKB(ObjectExpression wkbExpr, NumericExpression<Integer> sridExpr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)wkbExpr).getQueryExpression());
         args.add(((ExpressionImpl)sridExpr).getQueryExpression());
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
         return new MultiPolygonExpressionImpl(invokeExpr);
     }
 
@@ -482,11 +482,11 @@ public class GeospatialHelperImpl implements GeospatialHelper
     @Override
     public MultiPolygonExpression multiPolygonFromWKB(Object wkb, Integer srid)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(wkb));
         args.add(new Literal(srid));
 
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "Spatial.mPolyFromWKB", args);
         return new MultiPolygonExpressionImpl(invokeExpr);
     }
 }

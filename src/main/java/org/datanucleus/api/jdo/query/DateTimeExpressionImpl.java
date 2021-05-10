@@ -23,8 +23,8 @@ import javax.jdo.query.DateTimeExpression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a DateTime expression.
@@ -51,7 +51,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getDay()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDay", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getDay", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -60,7 +60,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getHour()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getHour", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getHour", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -69,7 +69,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getMinute()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMinute", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMinute", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -78,7 +78,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getMonth()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonth", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getMonth", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -87,7 +87,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getSecond()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getSecond", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getSecond", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 
@@ -96,7 +96,7 @@ public class DateTimeExpressionImpl extends ComparableExpressionImpl<Date> imple
      */
     public NumericExpression<Integer> getYear()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getYear", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }

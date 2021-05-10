@@ -23,8 +23,8 @@ import javax.jdo.query.geospatial.PointExpression;
 
 import org.datanucleus.api.jdo.query.ExpressionType;
 import org.datanucleus.api.jdo.query.NumericExpressionImpl;
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of a PointExpression.
@@ -52,7 +52,7 @@ public class PointExpressionImpl<T> extends GeometryExpressionImpl<T> implements
     @Override
     public NumericExpression<Double> getX()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getX", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getX", null);
         return new NumericExpressionImpl<Double>(invokeExpr);
     }
 
@@ -62,7 +62,7 @@ public class PointExpressionImpl<T> extends GeometryExpressionImpl<T> implements
     @Override
     public NumericExpression<Double> getY()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getY", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getY", null);
         return new NumericExpressionImpl<Double>(invokeExpr);
     }
 }

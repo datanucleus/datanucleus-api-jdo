@@ -21,8 +21,8 @@ import javax.jdo.query.EnumExpression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.Expression;
-import org.datanucleus.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Expression;
+import org.datanucleus.store.query.expression.InvokeExpression;
 
 /**
  * Implementation of an Enum expression.
@@ -49,7 +49,7 @@ public class EnumExpressionImpl<T> extends ComparableExpressionImpl<Enum> implem
      */
     public NumericExpression<Integer> ordinal()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "ordinal", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "ordinal", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }

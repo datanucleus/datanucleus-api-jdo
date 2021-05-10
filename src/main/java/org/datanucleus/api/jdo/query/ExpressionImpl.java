@@ -28,12 +28,12 @@ import javax.jdo.query.PersistableExpression;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ClassLoaderResolverImpl;
-import org.datanucleus.query.expression.DyadicExpression;
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
-import org.datanucleus.query.expression.ParameterExpression;
-import org.datanucleus.query.expression.PrimaryExpression;
-import org.datanucleus.query.expression.VariableExpression;
+import org.datanucleus.store.query.expression.DyadicExpression;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
+import org.datanucleus.store.query.expression.ParameterExpression;
+import org.datanucleus.store.query.expression.PrimaryExpression;
+import org.datanucleus.store.query.expression.VariableExpression;
 import org.datanucleus.util.ClassUtils;
 
 /**
@@ -42,7 +42,7 @@ import org.datanucleus.util.ClassUtils;
 public class ExpressionImpl<T> implements Expression<T>
 {
     /** The generic query expression that represents this typesafe expression. */
-    protected org.datanucleus.query.expression.Expression queryExpr;
+    protected org.datanucleus.store.query.expression.Expression queryExpr;
 
     /** Type of this expression. */
     protected ExpressionType exprType = ExpressionType.PATH;
@@ -57,8 +57,8 @@ public class ExpressionImpl<T> implements Expression<T>
         List<String> tuples = new ArrayList<String>();
         if (parent != null)
         {
-            org.datanucleus.query.expression.Expression parentQueryExpr = ((ExpressionImpl)parent).getQueryExpression();
-            if (name == null && parentQueryExpr instanceof DyadicExpression && ((DyadicExpression)parentQueryExpr).getOperator() == org.datanucleus.query.expression.Expression.OP_CAST)
+            org.datanucleus.store.query.expression.Expression parentQueryExpr = ((ExpressionImpl)parent).getQueryExpression();
+            if (name == null && parentQueryExpr instanceof DyadicExpression && ((DyadicExpression)parentQueryExpr).getOperator() == org.datanucleus.store.query.expression.Expression.OP_CAST)
             {
                 queryExpr = parentQueryExpr;
             }
@@ -112,7 +112,7 @@ public class ExpressionImpl<T> implements Expression<T>
      * Constructor taking in the query expression being represented.
      * @param queryExpr The (generic) query expression
      */
-    public ExpressionImpl(org.datanucleus.query.expression.Expression queryExpr)
+    public ExpressionImpl(org.datanucleus.store.query.expression.Expression queryExpr)
     {
         this.queryExpr = queryExpr;
     }
@@ -131,7 +131,7 @@ public class ExpressionImpl<T> implements Expression<T>
      * Accessor for the underlying (generic) query expression.
      * @return The query expression
      */
-    public org.datanucleus.query.expression.Expression getQueryExpression()
+    public org.datanucleus.store.query.expression.Expression getQueryExpression()
     {
         return queryExpr;
     }
@@ -163,10 +163,10 @@ public class ExpressionImpl<T> implements Expression<T>
             return this.eq((T)null);
         }
 
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr));
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_EQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -174,10 +174,10 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression eq(T t)
     {
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(t);
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = new Literal(t);
 
-        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_EQ, rightQueryExpr));
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_EQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -191,10 +191,10 @@ public class ExpressionImpl<T> implements Expression<T>
             return this.ne((T)null);
         }
 
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = ((ExpressionImpl)expr).getQueryExpression();
 
-        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -202,10 +202,10 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression ne(T t)
     {
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(t);
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = new Literal(t);
 
-        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_NOTEQ, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -213,10 +213,10 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public BooleanExpression instanceOf(Class cls)
     {
-        org.datanucleus.query.expression.Expression leftQueryExpr = queryExpr;
-        org.datanucleus.query.expression.Expression rightQueryExpr = new Literal(cls);
+        org.datanucleus.store.query.expression.Expression leftQueryExpr = queryExpr;
+        org.datanucleus.store.query.expression.Expression rightQueryExpr = new Literal(cls);
 
-        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.query.expression.Expression.OP_IS, rightQueryExpr));
+        return new BooleanExpressionImpl(new DyadicExpression(leftQueryExpr, org.datanucleus.store.query.expression.Expression.OP_IS, rightQueryExpr));
     }
 
     /* (non-Javadoc)
@@ -228,7 +228,7 @@ public class ExpressionImpl<T> implements Expression<T>
         {
             // Need to create the equivalent Q expression for this cast class, with the CAST "queryExpr". 
             // We fool it by passing in the query expression to the constructor with a null "name"
-            PersistableExpression castExpr = new PersistableExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+            PersistableExpression castExpr = new PersistableExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.store.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
 
             Class[] ctrArgTypes = new Class[] {PersistableExpression.class, String.class, int.class};
             Object[] ctrArgs = new Object[] {castExpr, null, 0};
@@ -246,15 +246,15 @@ public class ExpressionImpl<T> implements Expression<T>
         }
         else if (this instanceof DateExpressionImpl)
         {
-            return new DateExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+            return new DateExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.store.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
         }
         else if (this instanceof TimeExpressionImpl)
         {
-            return new TimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+            return new TimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.store.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
         }
         else if (this instanceof DateTimeExpressionImpl)
         {
-            return new DateTimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
+            return new DateTimeExpressionImpl(new DyadicExpression(queryExpr, org.datanucleus.store.query.expression.Expression.OP_CAST, new Literal(cls.getName())));
         }
         // TODO Support casting of other types
         throw new UnsupportedOperationException("cast not yet supported for expression of type " + this.getClass().getName());
@@ -265,9 +265,9 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public NumericExpression<Long> count()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(queryExpr);
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
         return new NumericExpressionImpl<Long>(invokeExpr);
     }
 
@@ -276,9 +276,9 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public NumericExpression<Long> countDistinct()
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
-        args.add(new DyadicExpression(org.datanucleus.query.expression.Expression.OP_DISTINCT, queryExpr));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        args.add(new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_DISTINCT, queryExpr));
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
         return new NumericExpressionImpl<Long>(invokeExpr);
     }
 }

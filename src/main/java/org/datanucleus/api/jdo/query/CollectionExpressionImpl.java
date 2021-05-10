@@ -27,8 +27,8 @@ import javax.jdo.query.Expression;
 import javax.jdo.query.NumericExpression;
 import javax.jdo.query.PersistableExpression;
 
-import org.datanucleus.query.expression.InvokeExpression;
-import org.datanucleus.query.expression.Literal;
+import org.datanucleus.store.query.expression.InvokeExpression;
+import org.datanucleus.store.query.expression.Literal;
 
 /**
  * Implementation of a CollectionExpression
@@ -50,9 +50,9 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public BooleanExpression contains(E elem)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(new Literal(elem));
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -61,9 +61,9 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public BooleanExpression contains(Expression<E> expr)
     {
-        List<org.datanucleus.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
         args.add(((ExpressionImpl)expr).getQueryExpression());
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -72,7 +72,7 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public BooleanExpression isEmpty()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isEmpty", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "isEmpty", null);
         return new BooleanExpressionImpl(invokeExpr);
     }
 
@@ -81,7 +81,7 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public NumericExpression<Integer> size()
     {
-        org.datanucleus.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "size", null);
+        org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "size", null);
         return new NumericExpressionImpl<Integer>(invokeExpr);
     }
 }
