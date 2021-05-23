@@ -139,6 +139,12 @@ public class JDOAdapter implements ApiAdapter
         return new JDOMetaDataHelper().getXMLForMetaData(cmd, prefix, indent);
     }
 
+    @Override
+    public String getDefaultMappingFileLocation() 
+    {
+        return null;
+    }
+
     // ------------------------------ Object Lifecycle --------------------------------
 
     /**
@@ -518,6 +524,12 @@ public class JDOAdapter implements ApiAdapter
         props.put(PropertyNames.PROPERTY_VALIDATION_MODE, "none"); // Default to no validation unless enabled
         props.put(PropertyNames.PROPERTY_EXECUTION_CONTEXT_CLOSE_ACTIVE_TX_ACTION, "rollback"); // JDO 3.2 changes to use this
         return props;
+    }
+
+    @Override
+    public boolean getDefaultPersistentPropertyWhenNotSpecified()
+    {
+        return false;
     }
 
     /**
