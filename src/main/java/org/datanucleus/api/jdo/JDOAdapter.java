@@ -559,6 +559,6 @@ public class JDOAdapter implements ApiAdapter
      */
     public RuntimeException getApiExceptionForNucleusException(NucleusException ne)
     {
-        return NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+        return DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
     }
 }

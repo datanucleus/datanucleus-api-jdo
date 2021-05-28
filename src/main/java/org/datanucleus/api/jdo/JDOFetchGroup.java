@@ -188,7 +188,7 @@ public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
         }
         catch (NucleusUserException nue)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(nue);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(nue);
         }
     }
 
@@ -208,7 +208,7 @@ public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
         }
         catch (NucleusUserException nue)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(nue);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(nue);
         }
     }
 
@@ -228,7 +228,7 @@ public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
         }
         catch (NucleusUserException nue)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(nue);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(nue);
         }
     }
 
@@ -248,7 +248,7 @@ public class JDOFetchGroup implements javax.jdo.FetchGroup, Serializable
         }
         catch (NucleusUserException nue)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(nue);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(nue);
         }
     }
 

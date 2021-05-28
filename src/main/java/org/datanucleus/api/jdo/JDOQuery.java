@@ -159,7 +159,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -176,7 +176,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -193,7 +193,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -210,7 +210,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -453,7 +453,7 @@ public class JDOQuery<T> implements Query<T>
         catch (NucleusException jpe)
         {
             // Convert any exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
         finally
         {
@@ -527,7 +527,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
         finally
         {
@@ -599,7 +599,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -616,7 +616,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -633,7 +633,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -707,7 +707,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -731,7 +731,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -782,7 +782,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -823,7 +823,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -841,7 +841,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -865,7 +865,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -882,7 +882,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -899,7 +899,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -926,7 +926,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -967,7 +967,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
@@ -1077,7 +1077,7 @@ public class JDOQuery<T> implements Query<T>
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 

@@ -38,7 +38,7 @@ import javax.jdo.metadata.TypeMetadata;
 import javax.jdo.metadata.UniqueMetadata;
 import javax.jdo.metadata.VersionMetadata;
 
-import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.api.jdo.DataNucleusHelperJDO;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ColumnMetaData;
@@ -523,7 +523,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
     {
         if (!StringUtils.isWhitespace(clsName))
         {
-            getInternal().setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(clsName));
+            getInternal().setObjectIdClass(DataNucleusHelperJDO.getObjectIdClassForInputIdClass(clsName));
         }
         return this;
     }

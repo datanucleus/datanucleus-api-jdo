@@ -27,7 +27,7 @@ import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.JDOTypeConverterUtils;
-import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.api.jdo.DataNucleusHelperJDO;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractElementMetaData;
@@ -139,7 +139,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         String objIdCls = getAttr(attrs, "objectid-class");
         if (!StringUtils.isWhitespace(objIdCls))
         {
-            cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
+            cmd.setObjectIdClass(DataNucleusHelperJDO.getObjectIdClassForInputIdClass(objIdCls));
         }
         cmd.setEmbeddedOnly(getAttr(attrs, "embedded-only"));
         cmd.setPersistenceModifier(ClassPersistenceModifier.getClassPersistenceModifier(getAttr(attrs, "persistence-modifier")));
@@ -199,7 +199,7 @@ public class JDOMetaDataHandler extends AbstractMetaDataHandler
         String objIdCls = getAttr(attrs, "objectid-class");
         if (!StringUtils.isWhitespace(objIdCls))
         {
-            imd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(objIdCls));
+            imd.setObjectIdClass(DataNucleusHelperJDO.getObjectIdClassForInputIdClass(objIdCls));
         }
         imd.setEmbeddedOnly(getAttr(attrs, "embedded-only"));
         imd.setIdentityType(IdentityType.getIdentityType(getAttr(attrs, "identity-type")));

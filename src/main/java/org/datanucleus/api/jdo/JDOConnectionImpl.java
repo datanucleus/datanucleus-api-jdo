@@ -53,7 +53,7 @@ public class JDOConnectionImpl implements JDOConnection
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -70,7 +70,7 @@ public class JDOConnectionImpl implements JDOConnection
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 

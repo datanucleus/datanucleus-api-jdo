@@ -126,7 +126,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -141,7 +141,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -159,7 +159,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -209,7 +209,7 @@ public class JDOEnhancer implements javax.jdo.JDOEnhancer
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 

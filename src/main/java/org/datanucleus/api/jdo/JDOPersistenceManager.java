@@ -191,7 +191,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
 
         userObject = null;
@@ -373,7 +373,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -403,7 +403,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -433,7 +433,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -499,7 +499,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -564,7 +564,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -611,7 +611,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -717,7 +717,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -790,7 +790,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -855,7 +855,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -967,7 +967,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1037,7 +1037,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1123,7 +1123,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1151,7 +1151,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1306,7 +1306,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
 
         if (ec.getFlushMode() == FlushMode.QUERY)
@@ -1557,7 +1557,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
     
@@ -1593,7 +1593,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1614,7 +1614,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1718,14 +1718,14 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             if (id instanceof javax.jdo.identity.SingleFieldIdentity)
             {
                 // Convert to DN own internal types
-                theId = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
+                theId = DataNucleusHelperJDO.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
             }
             return ec.findObject(theId, validate);
         }
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1744,7 +1744,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1771,7 +1771,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 if (oids[i] instanceof javax.jdo.identity.SingleFieldIdentity)
                 {
                     // Convert to DN own internal types
-                    theOids[i] = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)oids[i]);
+                    theOids[i] = DataNucleusHelperJDO.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)oids[i]);
                 }
                 else
                 {
@@ -1834,7 +1834,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             if (id != null && id instanceof javax.jdo.identity.SingleFieldIdentity)
             {
                 // Convert to DN own internal types
-                id = NucleusJDOHelper.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
+                id = DataNucleusHelperJDO.getDataNucleusIdentityForSingleFieldIdentity((SingleFieldIdentity)id);
             }
             oidArray[j++] = id;
         }
@@ -1862,7 +1862,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         catch (NucleusException ne)
         {
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -1883,7 +1883,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 if (id != null && id instanceof SingleFieldId)
                 {
                     // Convert to javax.jdo.identity.*
-                    id = NucleusJDOHelper.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId)id, pc.getClass());
+                    id = DataNucleusHelperJDO.getSingleFieldIdentityForDataNucleusIdentity((SingleFieldId)id, pc.getClass());
                 }
                 return id;
             }
@@ -2069,13 +2069,13 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
                 JDOOptimisticVerificationException[] jdoNested = new JDOOptimisticVerificationException[nested.length];
                 for (int i=0;i<nested.length;i++)
                 {
-                    jdoNested[i] = (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException((NucleusException)nested[i]);
+                    jdoNested[i] = (JDOOptimisticVerificationException)DataNucleusHelperJDO.getJDOExceptionForNucleusException((NucleusException)nested[i]);
                 }
                 throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
             }
 
             // Convert any DataNucleus exceptions into what JDO expects
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -2301,7 +2301,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -2363,7 +2363,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 

@@ -50,7 +50,7 @@ import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
 import org.datanucleus.api.jdo.JDOTypeConverterUtils;
-import org.datanucleus.api.jdo.NucleusJDOHelper;
+import org.datanucleus.api.jdo.DataNucleusHelperJDO;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ArrayMetaData;
@@ -656,7 +656,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         Class idClass = (Class) annotationValues.get("objectIdClass");
         if (idClass != null && idClass != void.class)
         {
-            cmd.setObjectIdClass(NucleusJDOHelper.getObjectIdClassForInputIdClass(idClass.getName()));
+            cmd.setObjectIdClass(DataNucleusHelperJDO.getObjectIdClassForInputIdClass(idClass.getName()));
         }
 
         cmd.setEmbeddedOnly((String) annotationValues.get("embeddedOnly"));

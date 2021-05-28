@@ -71,7 +71,7 @@ public class JDOSequence implements Sequence, NucleusSequence
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -88,7 +88,7 @@ public class JDOSequence implements Sequence, NucleusSequence
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -104,7 +104,7 @@ public class JDOSequence implements Sequence, NucleusSequence
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -121,7 +121,7 @@ public class JDOSequence implements Sequence, NucleusSequence
         }
         catch (NucleusException ne)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 }

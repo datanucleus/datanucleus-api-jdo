@@ -114,7 +114,7 @@ public class JDOTransaction implements Transaction
                         for (int i=0;i<numNested;i++)
                         {
                             NucleusException nested = (NucleusOptimisticException)ne.getNestedExceptions()[i];
-                            jdoNested[i] = (JDOOptimisticVerificationException) NucleusJDOHelper.getJDOExceptionForNucleusException(nested);
+                            jdoNested[i] = (JDOOptimisticVerificationException) DataNucleusHelperJDO.getJDOExceptionForNucleusException(nested);
                         }
                         throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                     }
@@ -145,7 +145,7 @@ public class JDOTransaction implements Transaction
                         {
                             nestedEx = new NucleusException(nested[i].getMessage(),nested[i]);                        
                         }
-                        jdoNested[i] = (JDOOptimisticVerificationException)NucleusJDOHelper.getJDOExceptionForNucleusException(nestedEx);
+                        jdoNested[i] = (JDOOptimisticVerificationException)DataNucleusHelperJDO.getJDOExceptionForNucleusException(nestedEx);
                     }
                     throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                 }
@@ -159,10 +159,10 @@ public class JDOTransaction implements Transaction
                 {
                     ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(),ne.getNestedExceptions()[0]);                        
                 }
-                throw NucleusJDOHelper.getJDOExceptionForNucleusException(ex);
+                throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ex);
             }
 
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(ne);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
         }
     }
 
@@ -177,7 +177,7 @@ public class JDOTransaction implements Transaction
         }
         catch (NucleusException jpe)
         {
-            throw NucleusJDOHelper.getJDOExceptionForNucleusException(jpe);
+            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
         }
     }
 
