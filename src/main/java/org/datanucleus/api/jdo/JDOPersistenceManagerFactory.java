@@ -558,7 +558,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         catch (NucleusException ne)
         {
             // Only throw JDOException and subclasses
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
+            throw JDOAdapter.getJDOExceptionForNucleusException(ne);
         }
         // TODO Throw exception if the properties are incomplete. e.g inadequate datastore definition supplied
 
@@ -591,7 +591,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 }
                 catch (NucleusException ne)
                 {
-                    throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
+                    throw JDOAdapter.getJDOExceptionForNucleusException(ne);
                 }
             }
         }
@@ -869,7 +869,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 }
                 catch (NucleusException ne)
                 {
-                    throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
+                    throw JDOAdapter.getJDOExceptionForNucleusException(ne);
                 }
             }
         }
@@ -2216,7 +2216,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
         catch (NucleusException ne)
         {
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(ne);
+            throw JDOAdapter.getJDOExceptionForNucleusException(ne);
         }
     }
 

@@ -59,7 +59,7 @@ import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.api.jdo.JDOFetchPlan;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.api.jdo.JDOQuery;
-import org.datanucleus.api.jdo.DataNucleusHelperJDO;
+import org.datanucleus.api.jdo.JDOAdapter;
 import org.datanucleus.api.jdo.query.geospatial.GeospatialHelperImpl;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
@@ -1234,7 +1234,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         catch (NucleusException jpe)
         {
             // Convert any exceptions into what JDO expects
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
+            throw JDOAdapter.getJDOExceptionForNucleusException(jpe);
         }
         finally
         {
@@ -1273,7 +1273,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         catch (NucleusException jpe)
         {
             // Convert any exceptions into what JDO expects
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
+            throw JDOAdapter.getJDOExceptionForNucleusException(jpe);
         }
         finally
         {

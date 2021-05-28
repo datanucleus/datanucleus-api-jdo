@@ -159,7 +159,7 @@ public class JDOFetchPlan implements FetchPlan, Serializable
         }
         catch (NucleusException jpe)
         {
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
+            throw JDOAdapter.getJDOExceptionForNucleusException(jpe);
         }
         return this;
     }
@@ -204,7 +204,7 @@ public class JDOFetchPlan implements FetchPlan, Serializable
         }
         catch (NucleusException jpe)
         {
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
+            throw JDOAdapter.getJDOExceptionForNucleusException(jpe);
         }
         return this;
     }
@@ -222,7 +222,7 @@ public class JDOFetchPlan implements FetchPlan, Serializable
         }
         catch (NucleusException jpe)
         {
-            throw DataNucleusHelperJDO.getJDOExceptionForNucleusException(jpe);
+            throw JDOAdapter.getJDOExceptionForNucleusException(jpe);
         }
         return this;
     }

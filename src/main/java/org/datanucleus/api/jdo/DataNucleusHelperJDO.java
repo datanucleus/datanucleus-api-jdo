@@ -18,21 +18,9 @@ Contributors:
 package org.datanucleus.api.jdo;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.Collection;
 
-import javax.jdo.JDOCanRetryException;
-import javax.jdo.JDODataStoreException;
-import javax.jdo.JDOException;
-import javax.jdo.JDOFatalDataStoreException;
-import javax.jdo.JDOFatalInternalException;
-import javax.jdo.JDOFatalUserException;
 import javax.jdo.JDOHelper;
-import javax.jdo.JDOObjectNotFoundException;
-import javax.jdo.JDOOptimisticVerificationException;
-import javax.jdo.JDOQueryInterruptedException;
-import javax.jdo.JDOUnsupportedOptionException;
-import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.identity.ByteIdentity;
@@ -44,24 +32,10 @@ import javax.jdo.identity.ShortIdentity;
 import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.identity.StringIdentity;
 
-import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ClassNameConstants;
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.api.jdo.exceptions.ClassNotPersistenceCapableException;
 import org.datanucleus.enhancement.Persistable;
-import org.datanucleus.exceptions.ClassNotPersistableException;
-import org.datanucleus.exceptions.DatastoreReadOnlyException;
-import org.datanucleus.exceptions.NoPersistenceInformationException;
-import org.datanucleus.exceptions.NucleusCanRetryException;
-import org.datanucleus.exceptions.NucleusDataStoreException;
 import org.datanucleus.exceptions.NucleusException;
-import org.datanucleus.exceptions.NucleusObjectNotFoundException;
-import org.datanucleus.exceptions.NucleusOptimisticException;
-import org.datanucleus.exceptions.NucleusUnsupportedOptionException;
-import org.datanucleus.exceptions.NucleusUserException;
-import org.datanucleus.exceptions.TransactionNotActiveException;
-import org.datanucleus.exceptions.TransactionNotReadableException;
-import org.datanucleus.exceptions.TransactionNotWritableException;
 import org.datanucleus.identity.ByteId;
 import org.datanucleus.identity.CharId;
 import org.datanucleus.identity.IntId;
@@ -73,8 +47,6 @@ import org.datanucleus.identity.StringId;
 import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.state.ObjectProvider;
-import org.datanucleus.store.query.QueryInterruptedException;
-import org.datanucleus.store.query.QueryTimeoutException;
 import org.datanucleus.util.ClassUtils;
 
 /**
@@ -417,275 +389,5 @@ public class DataNucleusHelperJDO
         int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
         boolean[] dirtyFieldNumbers = op.getDirtyFields();
         return dirtyFieldNumbers[position];
-    }
-
-    // ------------------------------ Convenience --------------------------------
-
-    /**
-     * Convenience method to convert an exception into a JDO exception.
-     * If the incoming exception has a "failed object" then create the new exception with
-     * a failed object. Otherwise if the incoming exception has nested exceptions then
-     * create this exception with those nested exceptions. Else create this exception with
-     * the incoming exception as its nested exception.
-     * @param ne NucleusException
-     * @return The JDOException
-     */
-    public static JDOException getJDOExceptionForNucleusException(NucleusException ne)
-    {
-        // Specific exceptions first
-        if (ne instanceof ClassNotPersistableException)
-        {
-            return new ClassNotPersistenceCapableException(ne.getMessage(), ne);
-        }
-        else if (ne instanceof NoPersistenceInformationException)
-        {
-            return new org.datanucleus.api.jdo.exceptions.NoPersistenceInformationException(ne.getMessage(), ne);
-        }
-        else if (ne instanceof TransactionNotReadableException)
-        {
-            return new org.datanucleus.api.jdo.exceptions.TransactionNotReadableException(ne.getMessage(), ne.getCause());
-        }
-        else if (ne instanceof TransactionNotWritableException)
-        {
-            return new org.datanucleus.api.jdo.exceptions.TransactionNotWritableException(ne.getMessage(), ne.getCause());
-        }
-        else if (ne instanceof TransactionNotActiveException)
-        {
-            return new org.datanucleus.api.jdo.exceptions.TransactionNotActiveException(ne.getMessage(), ne);
-        }
-        else if (ne instanceof QueryInterruptedException)
-        {
-            return new JDOQueryInterruptedException(ne.getMessage());
-        }
-        else if (ne instanceof QueryTimeoutException)
-        {
-            return new JDODataStoreException(ne.getMessage(), ne);
-        }
-        else if (ne instanceof NucleusUnsupportedOptionException)
-        {
-            return new JDOUnsupportedOptionException(ne.getMessage(), ne);
-        }
-        else if (ne instanceof DatastoreReadOnlyException)
-        {
-            ClassLoaderResolver clr = ((DatastoreReadOnlyException)ne).getClassLoaderResolver();
-            try
-            {
-                Class cls = clr.classForName("javax.jdo.JDOReadOnlyException");
-                throw (JDOUserException)ClassUtils.newInstance(cls, 
-                    new Class[] {String.class}, new Object[] {ne.getMessage()});
-            }
-            catch (NucleusException ne2)
-            {
-                // No JDOReadOnlyException so JDO1.0-JDO2.1
-                throw new JDOUserException(ne2.getMessage());
-            }
-        }
-        else if (ne instanceof NucleusDataStoreException)
-        {
-            if (ne.isFatal())
-            {
-                //sadly JDOFatalDataStoreException dont allow nested exceptions and failed objects together
-                if (ne.getFailedObject() != null)
-                {
-                    return new JDOFatalDataStoreException(ne.getMessage(), ne.getFailedObject());
-                }
-                else if (ne.getNestedExceptions() != null)
-                {
-                    return new JDOFatalDataStoreException(ne.getMessage(), ne.getNestedExceptions());
-                }
-                else
-                {
-                    return new JDOFatalDataStoreException(ne.getMessage(), ne);
-                }
-            }
-
-            if (ne.getNestedExceptions() != null)
-            {
-                if (ne.getFailedObject() != null)
-                {
-                    return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                }
-                return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else if (ne.getFailedObject() != null)
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDODataStoreException(ne.getMessage(), ne.getFailedObject());
-            }
-            else
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDODataStoreException(ne.getMessage(), ne);
-            }
-        }
-        else if (ne instanceof NucleusObjectNotFoundException)
-        {
-            if (ne.getFailedObject() != null)
-            {
-                if (ne.getNestedExceptions() != null)
-                {
-                    return new JDOObjectNotFoundException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                }
-                return new JDOObjectNotFoundException(ne.getMessage(), ne, ne.getFailedObject());
-            }
-            else if (ne.getNestedExceptions() != null)
-            {
-                return new JDOObjectNotFoundException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else
-            {
-                return new JDOObjectNotFoundException(ne.getMessage(), new Throwable[]{ne});
-            }
-        }
-        else if (ne instanceof NucleusCanRetryException)
-        {
-            if (ne.getNestedExceptions() != null)
-            {
-                if (ne.getFailedObject() != null)
-                {
-                    return new JDOCanRetryException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                }
-                return new JDOCanRetryException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else if (ne.getFailedObject() != null)
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDOCanRetryException(ne.getMessage(), ne.getFailedObject());
-            }
-            else
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDOCanRetryException(ne.getMessage(), ne);
-            }
-        }
-        else if (ne instanceof NucleusUserException)
-        {
-            if (ne.isFatal())
-            {
-                if (ne.getNestedExceptions() != null)
-                {
-                    if (ne.getFailedObject() != null)
-                    {
-                        return new JDOFatalUserException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                    }
-                    return new JDOFatalUserException(ne.getMessage(), ne.getNestedExceptions());
-                }
-                else if (ne.getFailedObject() != null)
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDOFatalUserException(ne.getMessage(), ne.getFailedObject());
-                }
-                else
-                {
-                    JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                    return new JDOFatalUserException(ne.getMessage(), ne);
-                }
-            }
-
-            if (ne.getNestedExceptions() != null)
-            {
-                if (ne.getFailedObject() != null)
-                {
-                    return new JDOUserException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
-                }
-                return new JDOUserException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else if (ne.getFailedObject() != null)
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDOUserException(ne.getMessage(), ne.getFailedObject());
-            }
-            else
-            {
-                JDOPersistenceManager.LOGGER.info("Exception thrown", ne);
-                return new JDOUserException(ne.getMessage(), ne);
-            }
-        }
-        else if (ne instanceof NucleusOptimisticException)
-        {
-            //sadly JDOOptimisticVerificationException dont allow nested exceptions and failed objects together
-            if (ne.getFailedObject() != null)
-            {
-                return new JDOOptimisticVerificationException(ne.getMessage(), ne.getFailedObject());
-            }
-            else if (ne.getNestedExceptions() != null)
-            {
-                return new JDOOptimisticVerificationException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else
-            {
-                return new JDOOptimisticVerificationException(ne.getMessage(), ne);
-            }
-        }
-        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException && ne.getNestedExceptions().length == 1 &&
-                ne.getNestedExceptions()[0].getCause() instanceof SQLException) 
-        {
-            return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions()[0].getCause());
-        }
-        else if (ne instanceof org.datanucleus.transaction.HeuristicRollbackException && ne.getNestedExceptions().length == 1 &&
-                ne.getNestedExceptions()[0] instanceof NucleusDataStoreException) 
-        {
-            return new JDODataStoreException(ne.getMessage(), ne.getNestedExceptions()[0].getCause());
-        }
-        else
-        {
-            if (ne.isFatal())
-            {
-                if (ne.getNestedExceptions() != null)
-                {
-                    return new JDOFatalInternalException(ne.getMessage(), ne.getNestedExceptions());
-                }
-                return new JDOFatalInternalException(ne.getMessage(), ne);
-            }
-            else if (ne.getNestedExceptions() != null)
-            {
-                return new JDOException(ne.getMessage(), ne.getNestedExceptions());
-            }
-            else
-            {
-                return new JDOException(ne.getMessage(), ne);
-            }
-        }
-    }
-
-    // ---------------------------------- Replication -------------------------------
-
-    /**
-     * Convenience method to replicate a group of objects from one datastore (managed by PMF1)
-     * to a second datastore (managed by PMF2).
-     * @param pmf1 PersistenceManagerFactory for the source of the objects
-     * @param pmf2 PersistenceManagerFactory for the target of the objects
-     * @param oids Identities of the objects to replicate
-     */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, Object... oids)
-    {
-        JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
-        replicator.replicate(oids);
-    }
-
-    /**
-     * Convenience method to replicate objects of particular types from one datastore (managed by PMF1)
-     * to a second datastore (managed by PMF2).
-     * @param pmf1 PersistenceManagerFactory for the source of the objects
-     * @param pmf2 PersistenceManagerFactory for the target of the objects
-     * @param types Types of objects to replicate
-     */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, Class... types)
-    {
-        JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
-        replicator.replicate(types);
-    }
-
-    /**
-     * Convenience method to replicate objects of particular types from one datastore (managed by PMF1)
-     * to a second datastore (managed by PMF2).
-     * @param pmf1 PersistenceManagerFactory for the source of the objects
-     * @param pmf2 PersistenceManagerFactory for the target of the objects
-     * @param classNames Names of classes to replicate
-     */
-    public static void replicate(PersistenceManagerFactory pmf1, PersistenceManagerFactory pmf2, String... classNames)
-    {
-        JDOReplicationManager replicator = new JDOReplicationManager(pmf1, pmf2);
-        replicator.replicate(classNames);
     }
 }
