@@ -251,8 +251,8 @@ public class DataNucleusHelperJDO
         {
             return null;
         }
-        Persistable pc = (Persistable)obj;
 
+        Persistable pc = (Persistable)obj;
         if (JDOHelper.isDetached(pc))
         {
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
@@ -319,14 +319,14 @@ public class DataNucleusHelperJDO
      * @param pm PersistenceManager (if the object is detached)
      * @return Whether the member is loaded
      */
-    public static Boolean isLoaded(Object obj, String memberName, PersistenceManager pm)
+    public static Boolean isFieldLoaded(Object obj, String memberName, PersistenceManager pm)
     {
         if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        Persistable pc = (Persistable)obj;
 
+        Persistable pc = (Persistable)obj;
         if (JDOHelper.isDetached(pc))
         {
             // Temporarily attach a StateManager to access the detached field information
@@ -358,14 +358,14 @@ public class DataNucleusHelperJDO
      * @param pm PersistenceManager (if the object is detached)
      * @return Whether the member is dirty
      */
-    public static Boolean isDirty(Object obj, String memberName, PersistenceManager pm)
+    public static Boolean isFieldDirty(Object obj, String memberName, PersistenceManager pm)
     {
         if (obj == null || !(obj instanceof Persistable))
         {
             return null;
         }
-        Persistable pc = (Persistable)obj;
 
+        Persistable pc = (Persistable)obj;
         if (JDOHelper.isDetached(pc))
         {
             // Temporarily attach a StateManager to access the detached field information
