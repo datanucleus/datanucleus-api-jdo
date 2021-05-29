@@ -267,7 +267,7 @@ public class DataNucleusHelperJDO
             return dirtyFieldNames;
         }
 
-        ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
+        ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
         ObjectProvider op = ec.findObjectProvider(pc);
         if (op == null)
         {
@@ -303,7 +303,7 @@ public class DataNucleusHelperJDO
             return loadedFieldNames;
         }
 
-        ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
+        ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
         ObjectProvider op = ec.findObjectProvider(pc);
         if (op == null)
         {
