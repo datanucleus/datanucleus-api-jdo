@@ -70,7 +70,6 @@ import org.datanucleus.FetchPlanState;
 import org.datanucleus.Configuration;
 import org.datanucleus.DetachState;
 import org.datanucleus.PropertyNames;
-import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionNotActiveException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.api.jdo.query.JDOQLTypedQueryImpl;
@@ -93,6 +92,7 @@ import org.datanucleus.metadata.SequenceMetaData;
 import org.datanucleus.store.NucleusConnection;
 import org.datanucleus.store.NucleusSequence;
 import org.datanucleus.store.StoreManager;
+import org.datanucleus.transaction.TransactionEventListener;
 import org.datanucleus.util.NucleusLogger;
 import org.datanucleus.util.Localiser;
 

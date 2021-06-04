@@ -22,10 +22,10 @@ package org.datanucleus.api.jdo.state;
 
 import javax.jdo.JDOUserException;
 
-import org.datanucleus.Transaction;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.transaction.Transaction;
 import org.datanucleus.util.Localiser;
 
 /**

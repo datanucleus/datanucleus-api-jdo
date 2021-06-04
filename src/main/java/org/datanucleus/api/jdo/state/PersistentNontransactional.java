@@ -22,12 +22,12 @@ Contributors:
 package org.datanucleus.api.jdo.state;
 
 import org.datanucleus.FetchPlan;
-import org.datanucleus.Transaction;
 import org.datanucleus.api.jdo.exceptions.TransactionNotReadableException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.state.IllegalStateTransitionException;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.transaction.Transaction;
 import org.datanucleus.util.Localiser;
 
 /**

@@ -29,11 +29,11 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Transaction;
 import javax.transaction.Synchronization;
 
-import org.datanucleus.TransactionEventListener;
 import org.datanucleus.api.jdo.exceptions.TransactionActiveException;
 import org.datanucleus.api.jdo.exceptions.TransactionCommitingException;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusOptimisticException;
+import org.datanucleus.transaction.TransactionEventListener;
 import org.datanucleus.transaction.TransactionUtils;
 
 /**
@@ -42,7 +42,7 @@ import org.datanucleus.transaction.TransactionUtils;
 public class JDOTransaction implements Transaction
 {
     /** The underlying transaction */
-    org.datanucleus.Transaction tx;
+    org.datanucleus.transaction.Transaction tx;
 
     /** JDO PersistenceManager. */
     JDOPersistenceManager pm;
@@ -52,7 +52,7 @@ public class JDOTransaction implements Transaction
      * @param pm The JDO PersistenceManager
      * @param tx The real transaction
      */
-    public JDOTransaction(JDOPersistenceManager pm, org.datanucleus.Transaction tx)
+    public JDOTransaction(JDOPersistenceManager pm, org.datanucleus.transaction.Transaction tx)
     {
         this.tx = tx;
         this.pm = pm;
@@ -356,7 +356,7 @@ public class JDOTransaction implements Transaction
         }
 
         int isolationLevel = TransactionUtils.getTransactionIsolationLevelForName(level);
-        tx.setOption(org.datanucleus.Transaction.TRANSACTION_ISOLATION_OPTION, isolationLevel);
+        tx.setOption(org.datanucleus.transaction.Transaction.TRANSACTION_ISOLATION_OPTION, isolationLevel);
     }
 
     /**
@@ -366,7 +366,7 @@ public class JDOTransaction implements Transaction
     public String getIsolationLevel()
     {
         Map<String, Object> txOptions = tx.getOptions();
-        Object value = (txOptions != null ? txOptions.get(org.datanucleus.Transaction.TRANSACTION_ISOLATION_OPTION) : null);
+        Object value = (txOptions != null ? txOptions.get(org.datanucleus.transaction.Transaction.TRANSACTION_ISOLATION_OPTION) : null);
         if (value != null)
         {
             return TransactionUtils.getNameForTransactionIsolationLevel(((Integer)value).intValue());

@@ -17,9 +17,9 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.state;
 
-import org.datanucleus.Transaction;
 import org.datanucleus.state.LifeCycleState;
 import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.transaction.Transaction;
 
 /**
  * This class represents TransientClean state specific state transitions as requested by ObjectProvider. 
