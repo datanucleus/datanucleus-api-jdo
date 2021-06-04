@@ -50,15 +50,15 @@ public abstract class AbstractMetadataImpl implements Metadata
     {
         if (internalMD instanceof FileMetaData)
         {
-            return new JDOMetaDataHelper().getXMLForMetaData((FileMetaData)internalMD, "", "    ");
+            return new JDOXmlMetaDataHelper().getXMLForMetaData((FileMetaData)internalMD, "", "    ");
         }
         else if (internalMD instanceof PackageMetaData)
         {
-            return new JDOMetaDataHelper().getXMLForMetaData((PackageMetaData)internalMD, "", "    ");
+            return new JDOXmlMetaDataHelper().getXMLForMetaData((PackageMetaData)internalMD, "", "    ");
         }
         else if (internalMD instanceof AbstractClassMetaData)
         {
-            return new JDOMetaDataHelper().getXMLForMetaData((AbstractClassMetaData)internalMD, "", "    ");
+            return new JDOXmlMetaDataHelper().getXMLForMetaData((AbstractClassMetaData)internalMD, "", "    ");
         }
         return super.toString();
     }

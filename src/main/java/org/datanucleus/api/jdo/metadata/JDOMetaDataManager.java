@@ -50,7 +50,7 @@ import org.datanucleus.metadata.MetadataFileType;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
-import org.datanucleus.metadata.xml.MetaDataParser;
+import org.datanucleus.metadata.xml.XmlMetaDataParser;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
@@ -64,8 +64,8 @@ import org.datanucleus.util.StringUtils;
  * PackageMetaData, which contains ClassMetaData, and so on. This maps exactly
  * to the users model of their metadata. The users access point is 
  * <B>getMetaDataForClass()</B> which will check the known classes without metadata,
- * then check the existing registered metdata, then check the valid locations for 
- * metdata files. This way, the metadata is managed from this single point.
+ * then check the existing registered metadata, then check the valid locations for 
+ * metadata files. This way, the metadata is managed from this single point.
  * </P>
  * <P>
  * When the MetaData is requested for a class, if it isn't already found, the valid
@@ -91,7 +91,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     protected boolean allowXmlLocationsFromJDO1_0 = false;
 
     /** Parser for XML MetaData. */
-    protected MetaDataParser metaDataParser = null;
+    protected XmlMetaDataParser xmlMetaDataParser = null;
 
     /** Map of ClassMetaData from ORM files, keyed by the class name. */
     protected Map<String, AbstractClassMetaData> ormClassMetaDataByClass = new ConcurrentHashMap<String, AbstractClassMetaData>();
@@ -240,17 +240,17 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     }
 
     /**
-     * Utility to parse a file, using the "jdo" MetaData handler.
+     * Utility to parse an XML file, using the "jdo" MetaData handler.
      * @param fileURL URL of the file
      * @return The FileMetaData for this file
      */
-    protected FileMetaData parseFile(URL fileURL)
+    protected FileMetaData parseXmlFile(URL fileURL)
     {
-        if (metaDataParser == null)
+        if (xmlMetaDataParser == null)
         {
-            metaDataParser = new MetaDataParser(this, nucleusContext.getPluginManager(), validateXML, supportXMLNamespaces);
+            xmlMetaDataParser = new XmlMetaDataParser(this, nucleusContext.getPluginManager(), validateXML, supportXMLNamespaces);
         }
-        return (FileMetaData)metaDataParser.parseMetaDataURL(fileURL, "jdo");
+        return (FileMetaData)xmlMetaDataParser.parseXmlMetaDataURL(fileURL, "jdo");
     }
 
     /**
@@ -477,7 +477,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         if (fileMetaDataByURLString.get(fileURL.toString()) == null)
                         {
                             // File hasn't been loaded so load it
-                            FileMetaData filemd = parseFile(fileURL);
+                            FileMetaData filemd = parseXmlFile(fileURL);
                             filemd.setType(MetadataFileType.JDO_QUERY_FILE); // TODO Remove this since set in the parser at <jdoquery>
                             registerFile(fileURL.toString(), filemd, clr);
 
@@ -532,7 +532,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 if (fileMetaDataByURLString.get(fileURL.toString()) == null)
                 {
                     // File hasn't been loaded so load it
-                    FileMetaData filemd = parseFile(fileURL);
+                    FileMetaData filemd = parseXmlFile(fileURL);
                     registerFile(fileURL.toString(), filemd, clr);
 
                     // Populate all classes in this file we've just parsed
@@ -605,7 +605,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 if (fileMetaDataByURLString.get(fileURL.toString()) == null)
                 {
                     // File hasn't been loaded so load it
-                    FileMetaData filemd = parseFile(fileURL);
+                    FileMetaData filemd = parseXmlFile(fileURL);
                     registerFile(fileURL.toString(), filemd, clr);
 
                     // Populate all classes in this file we've just parsed
@@ -741,7 +741,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                     if (filemd == null)
                     {
                         // Not registered so load the file from the URL
-                        filemd = parseFile(url);
+                        filemd = parseXmlFile(url);
                         if (filemd.getType() != metadataType)
                         {
                             // Wrong type of file so ignore it

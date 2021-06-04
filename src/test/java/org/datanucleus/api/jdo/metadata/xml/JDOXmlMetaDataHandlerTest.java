@@ -24,23 +24,23 @@ import org.datanucleus.NucleusContext;
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 import org.datanucleus.metadata.MetaData;
-import org.datanucleus.metadata.xml.MetaDataParser;
+import org.datanucleus.metadata.xml.XmlMetaDataParser;
 
-public class JDOMetaDataHandlerTest extends TestCase
+public class JDOXmlMetaDataHandlerTest extends TestCase
 {
     public void testParseDefaultNamespace()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
-        MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package1.jdo"), "jdo");
+        XmlMetaDataParser parser = new XmlMetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
+        MetaData md = parser.parseXmlMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package1.jdo"), "jdo");
         assertNotNull(md);
     }
 
     public void testParseNamespace()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
-        MetaData md = parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), "jdo");
+        XmlMetaDataParser parser = new XmlMetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
+        MetaData md = parser.parseXmlMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), "jdo");
         assertNotNull(md);
     }
 

@@ -61,9 +61,9 @@ import org.datanucleus.util.StringUtils;
 /**
  * Helper class that can convert internal metadata into (JDO) XML metadata.
  */
-public class JDOMetaDataHelper
+public class JDOXmlMetaDataHelper
 {
-    public JDOMetaDataHelper()
+    public JDOXmlMetaDataHelper()
     {
     }
 

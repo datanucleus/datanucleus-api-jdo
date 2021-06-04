@@ -24,17 +24,17 @@ import org.datanucleus.NucleusContext;
 import org.datanucleus.PersistenceNucleusContextImpl;
 import org.datanucleus.api.jdo.metadata.JDOMetaDataManager;
 import org.datanucleus.exceptions.NucleusException;
-import org.datanucleus.metadata.xml.MetaDataParser;
+import org.datanucleus.metadata.xml.XmlMetaDataParser;
 
-public class MetaDataParserTest extends TestCase
+public class XmlMetaDataParserTest extends TestCase
 {
     public void testParseMetaDataURLnullURL()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
+        XmlMetaDataParser parser = new XmlMetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         try
         {
-            parser.parseMetaDataURL(null, "jdo");
+            parser.parseXmlMetaDataURL(null, "jdo");
             fail("expected JPOXException");
         }
         catch(NucleusException ex)
@@ -46,10 +46,10 @@ public class MetaDataParserTest extends TestCase
     public void testParseMetaDataURLnullhandler()
     {
         NucleusContext nucCtx = new PersistenceNucleusContextImpl("JDO", null);
-        MetaDataParser parser = new MetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
+        XmlMetaDataParser parser = new XmlMetaDataParser(new JDOMetaDataManager(nucCtx), nucCtx.getPluginManager(), true, true);
         try
         {
-            parser.parseMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), null);
+            parser.parseXmlMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), null);
             fail("expected JPOXException");
         }
         catch(NucleusException ex)

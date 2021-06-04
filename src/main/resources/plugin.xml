@@ -112,7 +112,7 @@ Contributors:
 
     <!-- METADATA HANDLER -->
     <extension point="org.datanucleus.metadata_handler">
-        <handler name="JDO" class-name="org.datanucleus.api.jdo.metadata.JDOMetaDataHandler"/>
+        <handler name="JDO" class-name="org.datanucleus.api.jdo.metadata.JDOXmlMetaDataHandler"/>
     </extension>
 
     <!-- METADATA ENTITY RESOLVERS -->
