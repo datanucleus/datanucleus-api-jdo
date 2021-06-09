@@ -160,8 +160,6 @@ public class JDOAnnotationUtils
 
     public static final String CONVERT = Convert.class.getName();
 
-    public static final String CONVERTS = "javax.jdo.annotations.Converts"; // TODO Use annotation direct if ever part of JDO 3.2
-
     /**
      * Convenience accessor for the query language to a valid internal value.
      * @param value The query language name
