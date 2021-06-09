@@ -18,12 +18,14 @@ Contributors:
 package org.datanucleus.api.jdo.metadata;
 
 import java.lang.reflect.Method;
+//import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.jdo.AttributeConverter;
 import javax.jdo.AttributeConverter.UseDefault;
 import javax.jdo.annotations.Column;
+//import javax.jdo.annotations.Convert;
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.Embedded;
@@ -97,6 +99,7 @@ import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.Member;
 import org.datanucleus.store.types.ContainerHandler;
 import org.datanucleus.store.types.TypeManager;
+//import org.datanucleus.store.types.converters.TypeConverter;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
@@ -1656,6 +1659,106 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     cacheable = cache;
                 }
             }
+//            else if (annName.equals(JDOAnnotationUtils.CONVERTS))
+//            {
+//                if (isPersistenceContext()) // Don't process this when enhancing since not needed
+//                {
+//                    // Multiple @Convert annotations (for embedded field)
+//                    Convert[] converts = (Convert[])annotationValues.get("value");
+//                    if (converts == null || converts.length == 0)
+//                    {
+//                        // Do nothing
+//                    }
+//                    else if (converts.length > 1)
+//                    {
+//                        NucleusLogger.METADATA.warn("Dont currently support @Converts annotation for embedded fields");
+//                    }
+//                    else if (converts.length == 1)
+//                    {
+//                        Class converterCls = converts[0].value();
+//                        String convAttrName = converts[0].attributeName();
+//                        boolean disable = !converts[0].enabled();
+//                        if (disable)
+//                        {
+//                            mmd.setTypeConverterDisabled();
+//                        }
+//                        else
+//                        {
+//                            TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
+//                            if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
+//                            {
+//                                // Not yet cached an instance of this converter so create one
+//                                // TODO Support injectable AttributeConverters
+//                                AttributeConverter entityConv = JDOTypeConverterUtils.createAttributeConverter(mmgr.getNucleusContext(), converterCls);
+//
+//                                // Extract field and datastore types for this converter
+//                                Class attrType = member.getType();
+//                                if ("key".equals(convAttrName))
+//                                {
+//                                    attrType = ClassUtils.getMapKeyType(member.getType(), member.getGenericType());
+//                                }
+//                                else if ("value".equals(convAttrName))
+//                                {
+//                                    attrType = ClassUtils.getMapValueType(member.getType(), member.getGenericType());
+//                                }
+//                                else if (!StringUtils.isWhitespace(convAttrName) && Collection.class.isAssignableFrom(member.getType()))
+//                                {
+//                                    attrType = ClassUtils.getCollectionElementType(member.getType(), member.getGenericType());
+//                                }
+//                                Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(converterCls, attrType, null);
+//
+//                                // Register the TypeConverter under the name of the AttributeConverter class
+//                                TypeConverter conv = new JDOTypeConverter(entityConv);
+//                                typeMgr.registerConverter(converterCls.getName(), conv, attrType, dbType, false, null);
+//                            }
+//
+//                            if (StringUtils.isWhitespace(convAttrName))
+//                            {
+//                                if (Collection.class.isAssignableFrom(member.getType()))
+//                                {
+//                                    if (elemmd == null)
+//                                    {
+//                                        elemmd = new ElementMetaData();
+//                                        mmd.setElementMetaData(elemmd);
+//                                    }
+//                                    elemmd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+//                                }
+//                                else
+//                                {
+//                                    mmd.setTypeConverterName(converterCls.getName());
+//                                }
+//                            }
+//                            else
+//                            {
+//                                if ("key".equals(convAttrName))
+//                                {
+//                                    if (keymd == null)
+//                                    {
+//                                        keymd = new KeyMetaData();
+//                                        mmd.setKeyMetaData(keymd);
+//                                    }
+//                                    keymd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+//                                }
+//                                else if ("value".equals(convAttrName))
+//                                {
+//                                    if (valuemd == null)
+//                                    {
+//                                        valuemd = new ValueMetaData();
+//                                        mmd.setValueMetaData(valuemd);
+//                                    }
+//                                    valuemd.addExtension(MetaData.EXTENSION_MEMBER_TYPE_CONVERTER_NAME, converterCls.getName());
+//                                }
+//                                else
+//                                {
+//                                    // TODO Support attributeName to convert field of embedded object, or field of key/value
+//                                    NucleusLogger.METADATA.warn("Field " + mmd.getFullFieldName() + 
+//                                        " has @Convert annotation for attribute " + convAttrName + " but this is not yet fully supported. Ignored");
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             else if (annName.equals(JDOAnnotationUtils.CONVERT))
             {
                 convertConverterCls = (Class) annotationValues.get("value");

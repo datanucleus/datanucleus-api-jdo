@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.jdo.annotations.Cacheable;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Columns;
+import javax.jdo.annotations.Convert;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.Element;
@@ -157,7 +158,9 @@ public class JDOAnnotationUtils
 
     public static final String CACHEABLE = Cacheable.class.getName();
 
-    public static final String CONVERT = "javax.jdo.annotations.Convert";/*Convert.class.getName();*/ // TODO Swap this when JDO3.2 is the min requirement
+    public static final String CONVERT = Convert.class.getName();
+
+    public static final String CONVERTS = "javax.jdo.annotations.Converts"; // TODO Use annotation direct if ever part of JDO 3.2
 
     /**
      * Convenience accessor for the query language to a valid internal value.
