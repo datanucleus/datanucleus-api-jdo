@@ -590,7 +590,7 @@ public class JDOQuery<T> implements Query<T>
         {
             if (extent == null)
             {
-                query.setCandidates((org.datanucleus.store.Extent)null);
+                query.setCandidates((org.datanucleus.store.query.Extent)null);
             }
             else
             {
