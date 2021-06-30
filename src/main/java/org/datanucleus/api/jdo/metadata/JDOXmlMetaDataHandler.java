@@ -665,7 +665,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 if (md instanceof FetchGroupMetaData)
                 {
                     FetchGroupMetaData fgmd = (FetchGroupMetaData) md;
-                    FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(md, getAttr(attrs, "name"));
+                    FetchGroupMemberMetaData fgmmd = new FetchGroupMemberMetaData(fgmd, getAttr(attrs, "name"));
                     fgmmd.setRecursionDepth(getAttr(attrs, "recursion-depth"));
                     fgmd.addMember(fgmmd);
                     pushStack(fgmmd);
