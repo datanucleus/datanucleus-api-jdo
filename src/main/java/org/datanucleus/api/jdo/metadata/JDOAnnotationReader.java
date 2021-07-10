@@ -17,6 +17,7 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 //import java.util.Collection;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ import org.datanucleus.metadata.ContainerMetaData;
 import org.datanucleus.metadata.DiscriminatorMetaData;
 import org.datanucleus.metadata.ElementMetaData;
 import org.datanucleus.metadata.EmbeddedMetaData;
+import org.datanucleus.metadata.EventListenerMetaData;
 import org.datanucleus.metadata.FetchGroupMemberMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
@@ -2117,14 +2119,38 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
     }
 
     /**
-     * Method to take the passed in outline ClassMetaData and process the annotations for method adding any
-     * necessary MetaData to the ClassMetaData.
+     * Method to take the passed in outline ClassMetaData and process the annotations for method adding any necessary MetaData to the ClassMetaData.
      * @param cmd The ClassMetaData/InterfaceMetaData (to be updated)
      * @param method The method
      */
     protected void processMethodAnnotations(AbstractClassMetaData cmd, Method method)
     {
-        // do nothing
+        Annotation[] annotations = method.getAnnotations();
+        if (annotations != null && annotations.length > 0)
+        {
+            EventListenerMetaData elmd = cmd.getListenerForClass(cmd.getFullClassName());
+            for (Annotation annotation : annotations)
+            {
+                String annotationTypeName = annotation.annotationType().getName();
+                if (annotationTypeName.equals(JDOAnnotationUtils.PRESTORE) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.PREDELETE) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.PREATTACH) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.POSTATTACH) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.PREDETACH) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.POSTDETACH) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.PRECLEAR) ||
+                    annotationTypeName.equals(JDOAnnotationUtils.POSTLOAD))
+                {
+                    if (elmd == null)
+                    {
+                        // TODO Make use of "order"
+                        elmd = new EventListenerMetaData(cmd.getFullClassName());
+                        cmd.addListener(elmd);
+                    }
+                    elmd.addCallback(annotationTypeName, method.getDeclaringClass().getName(), method.getName());
+                }
+            }
+        }
     }
 
     /**

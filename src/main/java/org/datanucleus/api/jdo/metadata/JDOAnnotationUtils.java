@@ -160,6 +160,16 @@ public class JDOAnnotationUtils
 
     public static final String CONVERT = Convert.class.getName();
 
+    // TODO Use annotations when part of an official JDO API
+    public static final String PRESTORE = "javax.jdo.annotations.PreStore";
+    public static final String PREDELETE = "javax.jdo.annotations.PreDelete";
+    public static final String PREATTACH = "javax.jdo.annotations.PreAttach";
+    public static final String POSTATTACH = "javax.jdo.annotations.PostAttach";
+    public static final String PRECLEAR = "javax.jdo.annotations.PreClear";
+    public static final String PREDETACH = "javax.jdo.annotations.PreDetach";
+    public static final String POSTDETACH = "javax.jdo.annotations.PostDetach";
+    public static final String POSTLOAD = "javax.jdo.annotations.PostLoad";
+
     /**
      * Convenience accessor for the query language to a valid internal value.
      * @param value The query language name

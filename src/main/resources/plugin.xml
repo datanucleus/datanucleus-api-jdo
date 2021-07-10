@@ -54,6 +54,7 @@ Contributors:
         <persistence-property name="javax.jdo.option.Multitenancy" internal-name="datanucleus.tenantID"/>
 
         <persistence-property name="datanucleus.allowListenerUpdateAfterInit" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="datanucleus.allowInstanceCallbackAnnotations" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
 
         <persistence-property name="datanucleus.query.closeable" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
         <persistence-property name="datanucleus.singletonPMFForName" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>

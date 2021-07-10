@@ -62,7 +62,6 @@ import javax.jdo.datastore.Sequence;
 import javax.jdo.identity.SingleFieldIdentity;
 import javax.jdo.listener.InstanceLifecycleListener;
 
-import org.datanucleus.BeanValidationHandler;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.FetchGroup;
@@ -129,8 +128,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     /**
      * Constructor.
      * @param pmf Persistence Manager Factory
-     * @param userName Username for the datastore. Note that this is currently ignored
-     * @param password Password for the datastore. Note that this is currently ignored
+     * @param userName Username for the datastore
+     * @param password Password for the datastore
      */
     public JDOPersistenceManager(JDOPersistenceManagerFactory pmf, String userName, String password)
     {
@@ -141,12 +140,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         this.pmf = pmf;
         this.fetchPlan = new JDOFetchPlan(ec.getFetchPlan());
         this.jdotx = new JDOTransaction(this, ec.getTransaction());
-
-        BeanValidationHandler beanValidator = pmf.getNucleusContext().getBeanValidationHandler(ec);
-        if (beanValidator != null)
-        {
-            ec.getCallbackHandler().setBeanValidationHandler(beanValidator);
-        }
     }
 
     /**

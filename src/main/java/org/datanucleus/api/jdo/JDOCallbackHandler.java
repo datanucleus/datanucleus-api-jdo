@@ -18,8 +18,13 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,33 +47,37 @@ import javax.jdo.listener.StoreCallback;
 import javax.jdo.listener.StoreLifecycleListener;
 
 import org.datanucleus.BeanValidationHandler;
+import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.PersistenceNucleusContext;
+import org.datanucleus.api.jdo.metadata.JDOAnnotationUtils;
+import org.datanucleus.metadata.AbstractClassMetaData;
+import org.datanucleus.metadata.EventListenerMetaData;
 import org.datanucleus.state.CallbackHandler;
 import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.util.Localiser;
+import org.datanucleus.util.NucleusLogger;
 
 /**
  * CallbackHandler implementation for JDO.
  */
 public class JDOCallbackHandler implements CallbackHandler
 {
-    PersistenceNucleusContext nucleusCtx;
+    ExecutionContext ec;
 
     private final Map<InstanceLifecycleListener, LifecycleListenerForClass> listeners = new IdentityHashMap<InstanceLifecycleListener, LifecycleListenerForClass>(1);
 
     private List<LifecycleListenerForClass> listenersWorkingCopy = null;
 
     BeanValidationHandler beanValidationHandler;
+    
+    boolean allowAnnotatedCallbacks = false;
 
-    public JDOCallbackHandler(PersistenceNucleusContext nucleusCtx)
+    public JDOCallbackHandler(ExecutionContext ec)
     {
-        this.nucleusCtx = nucleusCtx;
-    }
+        this.ec = ec;
+        this.beanValidationHandler = ec.getNucleusContext().getBeanValidationHandler(ec);
 
-    public void setBeanValidationHandler(BeanValidationHandler handler)
-    {
-        beanValidationHandler = handler;
+        allowAnnotatedCallbacks = ec.getNucleusContext().getConfiguration().getBooleanProperty("datanucleus.allowInstanceCallbackAnnotations", false);
     }
 
     /**
@@ -109,11 +118,9 @@ public class JDOCallbackHandler implements CallbackHandler
         {
             if (listener.forClass(pc.getClass()) && listener.getListener() instanceof StoreLifecycleListener)
             {
-                ExecutionContext ec = nucleusCtx.getApiAdapter().getExecutionContext(pc);
-                String[] fieldNames = null;
                 // PRE_STORE will return the fields being stored (DataNucleus extension)
                 ObjectProvider op = ec.findObjectProvider(pc);
-                fieldNames = op.getDirtyFieldNames();
+                String[] fieldNames = op.getDirtyFieldNames();
                 if (fieldNames == null)
                 {
                     // Must be persisting so just return all loaded fields
@@ -123,8 +130,14 @@ public class JDOCallbackHandler implements CallbackHandler
             }
         }
 
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.PRESTORE, false);
+        }
+
         if (pc instanceof StoreCallback)
         {
+            // Has a jdoPreStore method
             try
             {
                 ((StoreCallback) pc).jdoPreStore();
@@ -137,7 +150,7 @@ public class JDOCallbackHandler implements CallbackHandler
 
         if (beanValidationHandler != null)
         {
-            ObjectProvider op = nucleusCtx.getApiAdapter().getExecutionContext(pc).findObjectProvider(pc);
+            ObjectProvider op = ec.findObjectProvider(pc);
             if (!op.getLifecycleState().isNew())
             {
                 // Don't fire this when persisting new since we will have done prePersist
@@ -175,8 +188,14 @@ public class JDOCallbackHandler implements CallbackHandler
             }
         }
 
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.PRECLEAR, false);
+        }
+
         if (pc instanceof ClearCallback)
         {
+            // Has a jdoPreClear method
             try
             {
                 ((ClearCallback) pc).jdoPreClear();
@@ -217,8 +236,14 @@ public class JDOCallbackHandler implements CallbackHandler
             }
         }
 
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.PREDELETE, false);
+        }
+
         if (pc instanceof DeleteCallback)
         {
+            // Has a jdoPreDelete method
             try
             {
                 ((DeleteCallback) pc).jdoPreDelete();
@@ -286,8 +311,14 @@ public class JDOCallbackHandler implements CallbackHandler
      */
     public void postLoad(Object pc)
     {
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.POSTLOAD, false);
+        }
+
         if (pc instanceof LoadCallback)
         {
+            // Has a jdoPostLoad method
             try
             {
                 ((LoadCallback) pc).jdoPostLoad();
@@ -330,8 +361,14 @@ public class JDOCallbackHandler implements CallbackHandler
             }
         }
 
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.PREDETACH, false);
+        }
+
         if (pc instanceof DetachCallback)
         {
+            // Has a jdoPreDetach method
             try
             {
                 ((DetachCallback) pc).jdoPreDetach();
@@ -350,8 +387,14 @@ public class JDOCallbackHandler implements CallbackHandler
      */
     public void postDetach(Object pc, Object detachedPC)
     {
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.POSTDETACH, true);
+        }
+
         if (pc instanceof DetachCallback)
         {
+            // Has a jdoPostDetach method
             try
             {
                 ((DetachCallback) detachedPC).jdoPostDetach(pc);
@@ -385,8 +428,14 @@ public class JDOCallbackHandler implements CallbackHandler
             }
         }
 
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.PREATTACH, false);
+        }
+
         if (pc instanceof AttachCallback)
         {
+            // Has a jdoPreAttach method
             try
             {
                 ((AttachCallback) pc).jdoPreAttach();
@@ -405,8 +454,14 @@ public class JDOCallbackHandler implements CallbackHandler
      */
     public void postAttach(Object pc,Object detachedPC)
     {
+        if (allowAnnotatedCallbacks)
+        {
+            invokeCallback(pc, JDOAnnotationUtils.POSTATTACH, true);
+        }
+
         if (pc instanceof AttachCallback)
         {
+            // Has a jdoPostAttach method
             try
             {
                 ((AttachCallback) pc).jdoPostAttach(detachedPC);
@@ -484,9 +539,119 @@ public class JDOCallbackHandler implements CallbackHandler
     {
         if (listenersWorkingCopy == null)
         {
-            listenersWorkingCopy = new ArrayList<LifecycleListenerForClass>(listeners.values());
+            listenersWorkingCopy = new ArrayList<>(listeners.values());
         }
 
         return listenersWorkingCopy;
+    }
+
+    /**
+     * Method to invoke all listeners for a particular callback.
+     * @param pc The PC object causing the event
+     * @param callbackClass The callback type to call
+     * @param pcArgument Whether to pass a PC argument to the callback
+     */
+    private void invokeCallback(final Object pc, final String callbackClassName, boolean pcArgument)
+    {
+        final ClassLoaderResolver clr = ec.getClassLoaderResolver();
+
+        // Class listeners for this class
+        AbstractClassMetaData acmd = ec.getMetaDataManager().getMetaDataForClass(pc.getClass(), clr);
+        List<String> entityMethodsToInvoke = null;
+        while (acmd != null)
+        {
+            List<EventListenerMetaData> listenerMetaData = acmd.getListeners();
+            if (listenerMetaData != null && !listenerMetaData.isEmpty())
+            {
+                // Class has listeners so go through them in the same order
+                Iterator<EventListenerMetaData> listenerIter = listenerMetaData.iterator();
+                while (listenerIter.hasNext())
+                {
+                    EventListenerMetaData elmd = listenerIter.next();
+                    if (elmd.getClassName().equals(acmd.getFullClassName()))
+                    {
+                        // Only looking for calling methods in the class of the object since these are annotated methods
+                        String methodName = elmd.getMethodNameForCallbackClass(callbackClassName);
+                        if (methodName != null)
+                        {
+                            if (entityMethodsToInvoke == null)
+                            {
+                                entityMethodsToInvoke = new ArrayList<String>();
+                            }
+                            if (!entityMethodsToInvoke.contains(methodName))
+                            {
+                                // Only add the method if is not already present (allows for inherited listener methods)
+                                entityMethodsToInvoke.add(methodName);
+                            }
+                        }
+                    }
+                }
+                if (acmd.isExcludeSuperClassListeners())
+                {
+                    break;
+                }
+            }
+
+            // Move up to superclass
+            acmd = acmd.getSuperAbstractClassMetaData();
+        }
+
+        if (entityMethodsToInvoke != null && !entityMethodsToInvoke.isEmpty())
+        {
+            // Invoke all listener methods on the entity
+            for (int i=0;i<entityMethodsToInvoke.size();i++)
+            {
+                String methodName = entityMethodsToInvoke.get(i);
+                invokeCallbackMethod(pc, methodName, clr, pcArgument);
+            }
+        }
+    }
+
+    /**
+     * Method to invoke a method of a listener where the Entity is the listener.
+     * Means that the method invoked takes no arguments as input.
+     * @param listener Listener object
+     * @param methodName The method name, including the class name prefixed
+     * @param pcArgument Whether to pass a PC argument to the callback
+     */
+    private void invokeCallbackMethod(final Object pc, final String methodName, ClassLoaderResolver clr, boolean pcArgument)
+    {
+        final String callbackClassName = methodName.substring(0, methodName.lastIndexOf('.'));
+        final String callbackMethodName = methodName.substring(methodName.lastIndexOf('.')+1);
+        final Class callbackClass = callbackClassName.equals(pc.getClass().getName()) ? pc.getClass() : clr.classForName(callbackClassName);
+
+        // Need to have privileges to perform invoke on private methods
+        AccessController.doPrivileged(
+            new PrivilegedAction<Object>()
+            {
+                @SuppressWarnings("deprecation")
+                public Object run()
+                {
+                    try
+                    {
+                        Class[] classArgs = pcArgument ? new Class[]{Object.class} : null;
+                        Object[] methodArgs = pcArgument ? new Object[] {pc} : null;
+                        Method m = callbackClass.getDeclaredMethod(callbackMethodName, classArgs);
+                        if (!m.isAccessible())
+                        {
+                            m.setAccessible(true);
+                        }
+                        m.invoke(pc, methodArgs);
+                    }
+                    catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException e)
+                    {
+                        NucleusLogger.GENERAL.warn("Exception in JDOCallbackHandler", e);
+                    }
+                    catch (InvocationTargetException e)
+                    {
+                        if (e.getTargetException() instanceof RuntimeException)
+                        {
+                            throw (RuntimeException) e.getTargetException();
+                        }
+                        throw new RuntimeException(e.getTargetException());
+                    }
+                    return null;
+                }
+            });
     }
 }
