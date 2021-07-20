@@ -81,11 +81,6 @@ public class JDOTransaction implements Transaction
      */
     public void begin()
     {
-        if (pm.isClosed())
-        {
-            // TODO Should it be an error to begin a tx when the pm is closed?
-        }
-
         tx.begin();
     }
 

@@ -1226,7 +1226,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             return newQuery(language, obj);
         }
 
-        // TODO What situation is this ?
         return newQuery(null, obj);
     }
 

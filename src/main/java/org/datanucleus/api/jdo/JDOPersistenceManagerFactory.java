@@ -295,12 +295,22 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 try
                 {
-                    // TODO Use the primaryClassLoader if passed in?
                     pmfClass = Class.forName(pmfClassName);
                 }
                 catch (ClassNotFoundException e)
                 {
-                    // Class not found
+                    if (props.containsKey(PropertyNames.PROPERTY_CLASSLOADER_PRIMARY))
+                    {
+                        // Fallback to user-provided primary class loader
+                        try
+                        {
+                            pmfClass = Class.forName(pmfClassName, true, (ClassLoader) props.get(PropertyNames.PROPERTY_CLASSLOADER_PRIMARY));
+                        }
+                        catch (ClassNotFoundException e2)
+                        {
+                            // Class not found
+                        }
+                    }
                 }
             }
         }
