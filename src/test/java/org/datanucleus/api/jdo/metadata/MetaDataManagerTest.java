@@ -52,7 +52,7 @@ public class MetaDataManagerTest extends TestCase
         JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", startupProps));
 
         // Try typical JDO package name
-        String packageName = "org.jpox.samples";
+        String packageName = "org.datanucleus.samples";
         List locations = mgr.getValidMetaDataLocationsForPackage("jdo", null, packageName);
         assertTrue("Locations returned from MetaData Manager was null!", locations != null);
         List validLocations = new ArrayList();
@@ -61,10 +61,10 @@ public class MetaDataManagerTest extends TestCase
         validLocations.add("/package.jdo");
         validLocations.add("/org.jdo");
         validLocations.add("/org/package.jdo");
-        validLocations.add("/org/jpox.jdo");
-        validLocations.add("/org/jpox/package.jdo");
-        validLocations.add("/org/jpox/samples.jdo");
-        validLocations.add("/org/jpox/samples/package.jdo");
+        validLocations.add("/org/datanucleus.jdo");
+        validLocations.add("/org/datanucleus/package.jdo");
+        validLocations.add("/org/datanucleus/samples.jdo");
+        validLocations.add("/org/datanucleus/samples/package.jdo");
         checkLocations(packageName, locations, validLocations);
 
         // Try 1 level package name
@@ -90,19 +90,19 @@ public class MetaDataManagerTest extends TestCase
         checkLocations(packageName, locations, validLocations);
 
         // Try typical ORM package name
-        packageName = "org.jpox.samples";
-        locations = mgr.getValidMetaDataLocationsForPackage("orm", "jpox", packageName);
+        packageName = "org.datanucleus.samples";
+        locations = mgr.getValidMetaDataLocationsForPackage("orm", "datanucleus", packageName);
         assertTrue("Locations returned from MetaData Manager was null!", locations != null);
         validLocations.clear();
-        validLocations.add("/META-INF/package-jpox.orm");
-        validLocations.add("/WEB-INF/package-jpox.orm");
-        validLocations.add("/package-jpox.orm");
-        validLocations.add("/org-jpox.orm");
-        validLocations.add("/org/package-jpox.orm");
-        validLocations.add("/org/jpox-jpox.orm");
-        validLocations.add("/org/jpox/package-jpox.orm");
-        validLocations.add("/org/jpox/samples-jpox.orm");
-        validLocations.add("/org/jpox/samples/package-jpox.orm");
+        validLocations.add("/META-INF/package-datanucleus.orm");
+        validLocations.add("/WEB-INF/package-datanucleus.orm");
+        validLocations.add("/package-datanucleus.orm");
+        validLocations.add("/org-datanucleus.orm");
+        validLocations.add("/org/package-datanucleus.orm");
+        validLocations.add("/org/datanucleus-datanucleus.orm");
+        validLocations.add("/org/datanucleus/package-datanucleus.orm");
+        validLocations.add("/org/datanucleus/samples-datanucleus.orm");
+        validLocations.add("/org/datanucleus/samples/package-datanucleus.orm");
         checkLocations(packageName, locations, validLocations);
     }
 
@@ -116,7 +116,7 @@ public class MetaDataManagerTest extends TestCase
         JDOMetaDataManager mgr = new JDOMetaDataManager(new PersistenceNucleusContextImpl("JDO", startupProps));
 
         // Try typical JDO class name
-        String className = "org.jpox.samples.store.Product";
+        String className = "org.datanucleus.samples.store.Product";
         List locations = mgr.getValidMetaDataLocationsForClass("jdo", null, className);
         assertTrue("Locations returned from MetaData Manager was null!", locations != null);
         List validLocations = new ArrayList();
@@ -125,13 +125,13 @@ public class MetaDataManagerTest extends TestCase
         validLocations.add("/package.jdo");
         validLocations.add("/org.jdo");
         validLocations.add("/org/package.jdo");
-        validLocations.add("/org/jpox.jdo");
-        validLocations.add("/org/jpox/package.jdo");
-        validLocations.add("/org/jpox/samples.jdo");
-        validLocations.add("/org/jpox/samples/package.jdo");
-        validLocations.add("/org/jpox/samples/store.jdo");
-        validLocations.add("/org/jpox/samples/store/package.jdo");
-        validLocations.add("/org/jpox/samples/store/Product.jdo");
+        validLocations.add("/org/datanucleus.jdo");
+        validLocations.add("/org/datanucleus/package.jdo");
+        validLocations.add("/org/datanucleus/samples.jdo");
+        validLocations.add("/org/datanucleus/samples/package.jdo");
+        validLocations.add("/org/datanucleus/samples/store.jdo");
+        validLocations.add("/org/datanucleus/samples/store/package.jdo");
+        validLocations.add("/org/datanucleus/samples/store/Product.jdo");
         checkLocations(className, locations, validLocations);
     }
 
