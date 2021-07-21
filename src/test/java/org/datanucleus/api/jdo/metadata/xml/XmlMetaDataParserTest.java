@@ -35,7 +35,7 @@ public class XmlMetaDataParserTest extends TestCase
         try
         {
             parser.parseXmlMetaDataURL(null, "jdo");
-            fail("expected JPOXException");
+            fail("expected NucleusException");
         }
         catch(NucleusException ex)
         {
@@ -50,7 +50,7 @@ public class XmlMetaDataParserTest extends TestCase
         try
         {
             parser.parseXmlMetaDataURL(getClass().getResource("/org/datanucleus/api/jdo/metadata/xml/package2.jdo"), null);
-            fail("expected JPOXException");
+            fail("expected NucleusException");
         }
         catch(NucleusException ex)
         {
