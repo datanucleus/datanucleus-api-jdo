@@ -42,7 +42,7 @@
 <!ATTLIST interface serialize-read (true|false) 'false'>
 <!ATTLIST interface use-default-conversion (true|false) 'false'>
 
-<!ELEMENT property (extension*, (array|collection|map)?, join?, embedded?, element?, key?, value?, order?, column*, foreign-key?, index?, unique?, extension*)>
+<!ELEMENT property (extension*, (array|collection|map)?, join?, embedded?, element?, key?, value?, order?, column*, foreign-key?, index?, unique?, version?, extension*)>
 <!ATTLIST property name CDATA #REQUIRED>
 <!ATTLIST property persistence-modifier (persistent|transactional|none) #IMPLIED>
 <!ATTLIST property default-fetch-group (true|false) #IMPLIED>
@@ -130,7 +130,7 @@
 <!ATTLIST column insert-value CDATA #IMPLIED>
 <!ATTLIST column position CDATA #IMPLIED>
 
-<!ELEMENT field (extension*, (array|collection|map)?, join?, embedded?, element?, key?, value?, order?, column*, foreign-key?, index?, unique?, extension*)>
+<!ELEMENT field (extension*, (array|collection|map)?, join?, embedded?, element?, key?, value?, order?, column*, foreign-key?, index?, unique?, version?, extension*)>
 <!ATTLIST field name CDATA #REQUIRED>
 <!ATTLIST field persistence-modifier (persistent|transactional|none) #IMPLIED>
 <!ATTLIST field field-type CDATA #IMPLIED>

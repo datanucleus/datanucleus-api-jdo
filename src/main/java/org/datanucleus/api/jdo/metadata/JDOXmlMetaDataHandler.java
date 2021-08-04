@@ -1078,16 +1078,33 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             }
             else if (localName.equals("version"))
             {
-                AbstractClassMetaData cmd = (AbstractClassMetaData) getStack();
-                VersionMetaData vermd = cmd.newVersionMetadata();
-                String strategy = getAttr(attrs, "strategy");
-                if (!StringUtils.isWhitespace(strategy))
+                MetaData md = getStack();
+                AbstractClassMetaData cmd = null;
+                String memberName = null;
+                if (md instanceof AbstractClassMetaData)
                 {
-                    vermd.setStrategy(strategy);
+                    cmd = (AbstractClassMetaData)md;
                 }
-                vermd.setColumnName(getAttr(attrs, "column"));
-                vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
-                pushStack(vermd);
+                else if (md instanceof AbstractMemberMetaData)
+                {
+                    AbstractMemberMetaData mmd = (AbstractMemberMetaData)md;
+                    cmd = mmd.getAbstractClassMetaData();
+                    memberName = mmd.getName();
+                }
+
+                if (cmd != null)
+                {
+                    VersionMetaData vermd = cmd.newVersionMetadata();
+                    String strategy = getAttr(attrs, "strategy");
+                    vermd.setStrategy(StringUtils.isWhitespace(strategy) ? "version-number" : strategy);
+                    vermd.setColumnName(getAttr(attrs, "column"));
+                    vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
+                    if (memberName != null)
+                    {
+                        vermd.setFieldName(memberName);
+                    }
+                    pushStack(vermd);
+                }
             }
             else if (localName.equals("index"))
             {

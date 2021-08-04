@@ -1057,6 +1057,15 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             {
                 transactionalField = true;
             }
+            else if (annName.equals(JDOAnnotationUtils.VERSION))
+            {
+                // Tag this field as the version field
+                VersionMetaData vermd = cmd.newVersionMetadata();
+                vermd.setFieldName(member.getName());
+                vermd.setStrategy(org.datanucleus.metadata.VersionStrategy.VERSION_NUMBER);
+                JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
+                // TODO Process rest of annotation
+            }
             else if (annName.equals(JDOAnnotationUtils.COLUMNS))
             {
                 // Multiple column specification

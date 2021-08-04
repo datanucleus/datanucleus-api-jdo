@@ -186,6 +186,7 @@
                 <xs:element ref="foreign-key"/>
                 <xs:element ref="index"/>
                 <xs:element ref="unique"/>
+                <xs:element ref="version"/> <!--  DN Extension -->
             </xs:choice>
             <xs:attributeGroup ref="attlist.property"/>
         </xs:complexType>
@@ -645,6 +646,7 @@
                 <xs:element ref="foreign-key"/>
                 <xs:element ref="index"/>
                 <xs:element ref="unique"/>
+                <xs:element ref="version"/> <!--  DN Extension -->
             </xs:choice>
             <xs:attributeGroup ref="attlist.field"/>
         </xs:complexType>
