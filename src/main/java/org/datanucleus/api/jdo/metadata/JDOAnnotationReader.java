@@ -19,6 +19,10 @@ package org.datanucleus.api.jdo.metadata;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 //import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -1059,12 +1063,31 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             }
             else if (annName.equals(JDOAnnotationUtils.VERSION))
             {
-                // Tag this field as the version field
+                // Tag this field as the version field. We ignore the column/columns attributes since specifiable on the field itself
                 VersionMetaData vermd = cmd.newVersionMetadata();
                 vermd.setFieldName(member.getName());
-                vermd.setStrategy(org.datanucleus.metadata.VersionStrategy.VERSION_NUMBER);
+                VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
+                String strategy = null;
+                if (versionStrategy == VersionStrategy.UNSPECIFIED)
+                {
+                    if (Number.class.isAssignableFrom(member.getType()))
+                    {
+                        strategy = "version-number";
+                    }
+                    else if (Date.class.isAssignableFrom(member.getType()) || Instant.class.isAssignableFrom(member.getType()) || 
+                            LocalTime.class.isAssignableFrom(member.getType()) || LocalDateTime.class.isAssignableFrom(member.getType()))
+                    {
+                        strategy = "date-time";
+                    }
+                }
+                else
+                {
+                    strategy = JDOAnnotationUtils.getVersionStrategyString(versionStrategy);
+                }
+                vermd.setStrategy(strategy);
+                String indexed = (String) annotationValues.get("indexed");
+                vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
                 JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
-                // TODO Process rest of annotation
             }
             else if (annName.equals(JDOAnnotationUtils.COLUMNS))
             {
