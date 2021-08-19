@@ -590,25 +590,6 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     // ------------------------------- Retrieve ------------------------------------------
 
     /**
-     * JDO Convenience method to wrap any DataNucleus exceptions for the retrieve process.
-     * @param obj The object to retrieve
-     * @param useFetchPlan whether to retrieve only the current fetch plan fields
-     * @throws JDOUserException thrown if the object could not be retrieved
-     */
-    private void jdoRetrieve(Object obj, boolean useFetchPlan)
-    {
-        try
-        {
-            ec.retrieveObject(obj, useFetchPlan);
-        }
-        catch (NucleusException ne)
-        {
-            // Convert any DataNucleus exceptions into what JDO expects
-            throw JDOAdapter.getJDOExceptionForNucleusException(ne);
-        }
-    }
-
-    /**
      * Method to retrieve the fields of an object.
      * @param pc The object
      * @param useFetchPlan whether to retrieve only the current fetch plan fields
@@ -616,7 +597,15 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void retrieve(Object pc, boolean useFetchPlan)
     {
         assertIsOpen();
-        jdoRetrieve(pc, useFetchPlan);
+
+        try
+        {
+            ec.retrieveObjects(useFetchPlan, pc);   
+        }
+        catch (NucleusException ne)
+        {
+            throw new JDOUserException(Localiser.msg("010038"), ne);
+        }
     }
 
     /**
@@ -634,58 +623,58 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public void retrieveAll(Object... pcs)
     {
-        retrieveAll(Arrays.asList(pcs), false);
+        retrieveAll(false, pcs);
     }
 
     /**
      * Retrieve field values of instances from the store.
-     * As the equivalent method but arguments reversed for JDK1.5+.
      * @param useFetchPlan whether to retrieve only the current fetch plan fields
      * @param pcs the instances
      */
     public void retrieveAll(boolean useFetchPlan, Object... pcs)
     {
-        retrieveAll(Arrays.asList(pcs), useFetchPlan);
+        assertIsOpen();
+
+        if (pcs == null)
+        {
+            throw new NullPointerException();
+        }
+
+        try
+        {
+            ec.retrieveObjects(useFetchPlan, pcs);   
+        }
+        catch (NucleusException ne)
+        {
+            Throwable[] nesteds = ne.getNestedExceptions();
+            if (nesteds == null || nesteds.length == 0)
+            {
+                throw new JDOUserException(Localiser.msg("010038"), ne);
+            }
+            throw new JDOUserException(Localiser.msg("010038"), nesteds);
+        }
     }
 
     /**
-     * Retrieve field values of instances from the store. This tells the
-     * <code>PersistenceManager</code> that the application intends to use the
-     * instances, and their field values should be retrieved. The fields in the
-     * current fetch group must be retrieved, and the implementation might
-     * retrieve more fields than the current fetch group.
-     * <P>
-     * The <code>PersistenceManager</code> might use policy information about
-     * the class to retrieve associated instances.
+     * Retrieve field values of instances from the store. 
+     * This tells the <code>PersistenceManager</code> that the application intends to use the instances, and their field values should be retrieved. 
+     * The fields in the current fetch group must be retrieved, and the implementation might retrieve more fields than the current fetch group.
+     * The <code>PersistenceManager</code> might use policy information about the class to retrieve associated instances.
      * @param pcs the instances
      * @param useFetchPlan whether to retrieve only the current fetch plan fields
      */
     public void retrieveAll(Collection pcs, boolean useFetchPlan)
     {
-        assertIsOpen();
-        ArrayList failures = new ArrayList();
-        Iterator i = pcs.iterator();
-        while (i.hasNext())
+        if (pcs == null)
         {
-            Object pc = i.next();
-            try
-            {
-                jdoRetrieve(pc, useFetchPlan);
-            }
-            catch (RuntimeException e)
-            {
-                failures.add(e);
-            }
+            throw new NullPointerException();
         }
-        if (!failures.isEmpty())
-        {
-            throw new JDOUserException(Localiser.msg("010038"), (Exception[]) failures.toArray(new Exception[0]));
-        }
+        retrieveAll(useFetchPlan, pcs.toArray());
     }
 
     /**
-     * Method to retrieve a collection of objects. Throws a JDOUserException if
-     * instances could not be retrieved.
+     * Method to retrieve a collection of objects. 
+     * Throws a JDOUserException if instances could not be retrieved.
      * @param pcs The objects
      */
     public void retrieveAll(Collection pcs)
