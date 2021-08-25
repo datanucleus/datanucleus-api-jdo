@@ -36,6 +36,8 @@ public class MultiTenantHandler implements ClassAnnotationHandler
     @Override
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
+        cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANT, "true");
+
         Map<String, Object> annotationValues = annotation.getNameValueMap();
         String columnName = (String)annotationValues.get("column");
         if (columnName != null && columnName.length() > 0)
@@ -47,12 +49,6 @@ public class MultiTenantHandler implements ClassAnnotationHandler
         if (colLength != null && colLength > 0)
         {
             cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH, "" + colLength);
-        }
-
-        Boolean disabled = (Boolean)annotationValues.get("disable");
-        if (disabled != null && disabled)
-        {
-            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_DISABLE, "true");
         }
 
         String jdbcType = (String)annotationValues.get("jdbcType");

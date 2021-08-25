@@ -42,12 +42,6 @@ public @interface MultiTenant
     int columnLength() default -1;
 
     /**
-     * Whether you want to disable multitenancy for this class (when enabled globally).
-     * @return Whether multitenancy is disabled
-     */
-    boolean disable() default false;
-
-    /**
      * JDBC Type of the multitenancy column in the table for this class.
      * @return The multitenancy column JDBC Type
      */
