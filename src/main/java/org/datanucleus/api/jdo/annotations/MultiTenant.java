@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.jdo.annotations.Column;
+
 /**
  * Extension annotation allowing for specifying a class as multitenant, meaning that it will have a surrogate column in its table storing the tenant id.
  */
@@ -36,14 +38,14 @@ public @interface MultiTenant
     String column() default "TENANT_ID";
 
     /**
-     * Length of the multitenancy column for this class.
-     * @return Length of the multitenancy column.
+     * The column making up the multitenancy discriminator.
+     * @return the column making up the multitenancy discriminator
      */
-    int columnLength() default -1;
+    Column[] columns() default {};
 
     /**
-     * JDBC Type of the multitenancy column in the table for this class.
-     * @return The multitenancy column JDBC Type
+     * Whether the multitenancy discriminator is indexed.
+     * @return whether the multitenancy discriminator is indexed
      */
-    String jdbcType() default "";
+    String indexed() default "";
 }

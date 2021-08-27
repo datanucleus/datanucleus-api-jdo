@@ -19,11 +19,16 @@ package org.datanucleus.api.jdo.annotations;
 
 import java.util.Map;
 
+import javax.jdo.annotations.Column;
+
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.api.jdo.metadata.JDOAnnotationUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
-import org.datanucleus.metadata.MetaData;
+import org.datanucleus.metadata.ColumnMetaData;
+import org.datanucleus.metadata.MultitenancyMetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Handler for the {@link MultiTenant} annotation when applied to a class.
@@ -36,25 +41,29 @@ public class MultiTenantHandler implements ClassAnnotationHandler
     @Override
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANT, "true");
+        MultitenancyMetaData mtmd = cmd.newMultitenancyMetaData();
 
         Map<String, Object> annotationValues = annotation.getNameValueMap();
+
         String columnName = (String)annotationValues.get("column");
-        if (columnName != null && columnName.length() > 0)
+        Column[] columns = (Column[])annotationValues.get("columns");
+
+        if (columns != null && columns.length > 0)
         {
-            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME, columnName);
+            // Only use the first column
+            ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+            colmd.setName(columnName);
+            mtmd.setColumnMetaData(colmd);
+        }
+        else
+        {
+            mtmd.setColumnName(columnName);
         }
 
-        Integer colLength = (Integer)annotationValues.get("columnLength");
-        if (colLength != null && colLength > 0)
+        String indexed = (String)annotationValues.get("indexed");
+        if (!StringUtils.isWhitespace(indexed))
         {
-            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH, "" + colLength);
-        }
-
-        String jdbcType = (String)annotationValues.get("jdbcType");
-        if (jdbcType != null && jdbcType.length() > 0)
-        {
-            cmd.addExtension(MetaData.EXTENSION_CLASS_MULTITENANCY_JDBC_TYPE, jdbcType);
+            mtmd.setIndexed(Boolean.parseBoolean(indexed));
         }
     }
 }

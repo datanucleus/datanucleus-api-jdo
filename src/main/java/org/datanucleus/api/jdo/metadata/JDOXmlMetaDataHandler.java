@@ -65,6 +65,7 @@ import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.MetaDataUtils;
 import org.datanucleus.metadata.MetadataFileType;
+import org.datanucleus.metadata.MultitenancyMetaData;
 import org.datanucleus.metadata.NullValue;
 import org.datanucleus.metadata.OrderMetaData;
 import org.datanucleus.metadata.PackageMetaData;
@@ -1073,7 +1074,35 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 }
                 if (vendorName != null && vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                 {
-                    md.addExtension(getAttr(attrs, "key"), getAttr(attrs, "value"));
+                    // Multitenancy TODO Put this within a <multitenancy> block and process like that
+                    String extKey = getAttr(attrs, "key");
+                    if (extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANT) || extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME) ||
+                        extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_JDBC_TYPE) || extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH))
+                    {
+                        AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                        MultitenancyMetaData mtmd = cmd.getMultitenancyMetaData();
+                        if (mtmd == null)
+                        {
+                            mtmd = cmd.newMultitenancyMetaData();
+                        }
+                        if (extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME))
+                        {
+                            mtmd.setColumnName(getAttr(attrs, "value"));
+                        }
+                        else if (extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH))
+                        {
+                            ColumnMetaData colmd = mtmd.getColumnMetaData();
+                            if (colmd == null)
+                            {
+                                colmd = mtmd.newColumnMetaData();
+                            }
+                            colmd.setLength(getAttr(attrs, "value"));
+                        }
+                    }
+                    else
+                    {
+                        md.addExtension(extKey, getAttr(attrs, "value"));
+                    }
                 }
             }
             else if (localName.equals("version"))
