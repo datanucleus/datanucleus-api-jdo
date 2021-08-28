@@ -19,11 +19,16 @@ package org.datanucleus.api.jdo.annotations;
 
 import java.util.Map;
 
+import javax.jdo.annotations.Column;
+
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.api.jdo.metadata.JDOAnnotationUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
-import org.datanucleus.metadata.MetaData;
+import org.datanucleus.metadata.ColumnMetaData;
+import org.datanucleus.metadata.SoftDeleteMetaData;
 import org.datanucleus.metadata.annotations.AnnotationObject;
 import org.datanucleus.metadata.annotations.ClassAnnotationHandler;
+import org.datanucleus.util.StringUtils;
 
 /**
  * Handler for the {@link SoftDelete} annotation when applied to a class.
@@ -36,13 +41,32 @@ public class SoftDeleteHandler implements ClassAnnotationHandler
     @Override
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
     {
-        cmd.addExtension(MetaData.EXTENSION_CLASS_SOFTDELETE, "true");
+        SoftDeleteMetaData sdmd = cmd.newSoftDeleteMetaData();
 
         Map<String, Object> annotationValues = annotation.getNameValueMap();
-        String column = (String)annotationValues.get("column");
-        if (column != null && column.length() > 0)
+
+        String columnName = (String)annotationValues.get("column");
+        Column[] columns = (Column[])annotationValues.get("columns");
+
+        if (columns != null && columns.length > 0)
         {
-            cmd.addExtension(MetaData.EXTENSION_CLASS_SOFTDELETE_COLUMN_NAME, column);
+            // Only use the first column
+            ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
+            if (StringUtils.isWhitespace(colmd.getName()))
+            {
+                colmd.setName(columnName);
+            }
+            sdmd.setColumnMetaData(colmd);
+        }
+        else
+        {
+            sdmd.setColumnName(columnName);
+        }
+
+        String indexed = (String)annotationValues.get("indexed");
+        if (!StringUtils.isWhitespace(indexed))
+        {
+            sdmd.setIndexed(Boolean.parseBoolean(indexed));
         }
     }
 }

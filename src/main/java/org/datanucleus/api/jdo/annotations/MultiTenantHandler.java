@@ -52,7 +52,10 @@ public class MultiTenantHandler implements ClassAnnotationHandler
         {
             // Only use the first column
             ColumnMetaData colmd = JDOAnnotationUtils.getColumnMetaDataForColumnAnnotation(columns[0]);
-            colmd.setName(columnName);
+            if (StringUtils.isWhitespace(colmd.getName()))
+            {
+                colmd.setName(columnName);
+            }
             mtmd.setColumnMetaData(colmd);
         }
         else

@@ -22,8 +22,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.jdo.annotations.Column;
+
 /**
- * Extension annotation allowing for specifying a class as using soft delete, meaning that it will have a surrogate column in its table storing whether it is deleted (rather than deleting it).
+ * Extension annotation allowing for specifying a class as using soft delete, meaning that it will have a surrogate column in its table storing 
+ * whether it is deleted (rather than deleting it).
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,4 +37,16 @@ public @interface SoftDelete
      * @return The soft delete column name
      */
     String column() default "DELETED";
+
+    /**
+     * The column making up the soft delete indicator.
+     * @return the column making up the soft delete indicator.
+     */
+    Column[] columns() default {};
+
+    /**
+     * Whether the soft delete column is indexed.
+     * @return whether the soft delete column is indexed
+     */
+    String indexed() default "";
 }

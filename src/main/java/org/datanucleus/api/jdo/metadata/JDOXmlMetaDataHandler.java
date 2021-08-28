@@ -1074,11 +1074,11 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 }
                 if (vendorName != null && vendorName.equalsIgnoreCase(MetaData.VENDOR_NAME))
                 {
-                    // Multitenancy TODO Put this within a <multitenancy> block and process like that
                     String extKey = getAttr(attrs, "key");
                     if (extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANT) || extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_NAME) ||
                         extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_JDBC_TYPE) || extKey.equals(MetaData.EXTENSION_CLASS_MULTITENANCY_COLUMN_LENGTH))
                     {
+                        // Multitenancy TODO Put this within a <multitenancy> block and process like that
                         AbstractClassMetaData cmd = (AbstractClassMetaData)md;
                         MultitenancyMetaData mtmd = cmd.getMultitenancyMetaData();
                         if (mtmd == null)
@@ -1097,6 +1097,20 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                                 colmd = mtmd.newColumnMetaData();
                             }
                             colmd.setLength(getAttr(attrs, "value"));
+                        }
+                    }
+                    else if (extKey.equals(MetaData.EXTENSION_CLASS_SOFTDELETE) || extKey.equals(MetaData.EXTENSION_CLASS_SOFTDELETE_COLUMN_NAME))
+                    {
+                        // SoftDelete TODO Put this within a <soft-delete> block and process like that
+                        AbstractClassMetaData cmd = (AbstractClassMetaData)md;
+                        MultitenancyMetaData mtmd = cmd.getMultitenancyMetaData();
+                        if (mtmd == null)
+                        {
+                            mtmd = cmd.newMultitenancyMetaData();
+                        }
+                        if (extKey.equals(MetaData.EXTENSION_CLASS_SOFTDELETE_COLUMN_NAME))
+                        {
+                            mtmd.setColumnName(getAttr(attrs, "value"));
                         }
                     }
                     else
