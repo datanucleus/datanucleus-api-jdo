@@ -45,7 +45,7 @@ import org.datanucleus.metadata.ColumnMetaData;
 import org.datanucleus.metadata.FetchGroupMetaData;
 import org.datanucleus.metadata.FieldMetaData;
 import org.datanucleus.metadata.ForeignKeyMetaData;
-import org.datanucleus.metadata.IdentityMetaData;
+import org.datanucleus.metadata.DatastoreIdentityMetaData;
 import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.InheritanceMetaData;
 import org.datanucleus.metadata.JoinMetaData;
@@ -159,7 +159,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public DatastoreIdentityMetadata getDatastoreIdentityMetadata()
     {
-        IdentityMetaData internalIdmd = getInternal().getIdentityMetaData();
+        DatastoreIdentityMetaData internalIdmd = getInternal().getDatastoreIdentityMetaData();
         DatastoreIdentityMetadataImpl idmd = new DatastoreIdentityMetadataImpl(internalIdmd);
         idmd.parent = this;
         return idmd;
@@ -394,7 +394,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public DatastoreIdentityMetadata newDatastoreIdentityMetadata()
     {
-        IdentityMetaData idmd = getInternal().newIdentityMetadata();
+        DatastoreIdentityMetaData idmd = getInternal().newDatastoreIdentityMetadata();
         DatastoreIdentityMetadataImpl dimd = new DatastoreIdentityMetadataImpl(idmd);
         dimd.parent = this;
         return dimd;

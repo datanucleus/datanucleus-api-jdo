@@ -48,7 +48,7 @@ import org.datanucleus.metadata.FieldPersistenceModifier;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.ForeignKeyAction;
 import org.datanucleus.metadata.ForeignKeyMetaData;
-import org.datanucleus.metadata.IdentityMetaData;
+import org.datanucleus.metadata.DatastoreIdentityMetaData;
 import org.datanucleus.metadata.ValueGenerationStrategy;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.ImplementsMetaData;
@@ -536,11 +536,11 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             else if (localName.equals("datastore-identity"))
             {
                 AbstractClassMetaData acmd = (AbstractClassMetaData) getStack();
-                IdentityMetaData idmd = new IdentityMetaData();
+                DatastoreIdentityMetaData idmd = new DatastoreIdentityMetaData();
                 idmd.setColumnName(getAttr(attrs, "column"));
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
                 idmd.setSequence(getAttr(attrs, "sequence"));
-                acmd.setIdentityMetaData(idmd);
+                acmd.setDatastoreIdentityMetaData(idmd);
                 pushStack(idmd);
             }
             else if (localName.equals("inheritance"))
@@ -860,9 +860,9 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                     JoinMetaData jnmd = (JoinMetaData) md;
                     jnmd.addColumn(colmd);
                 }
-                else if (md instanceof IdentityMetaData)
+                else if (md instanceof DatastoreIdentityMetaData)
                 {
-                    IdentityMetaData idmd = (IdentityMetaData) md;
+                    DatastoreIdentityMetaData idmd = (DatastoreIdentityMetaData) md;
                     idmd.setColumnMetaData(colmd);
                 }
                 else if (md instanceof ForeignKeyMetaData)

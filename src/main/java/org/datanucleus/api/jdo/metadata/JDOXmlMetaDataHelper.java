@@ -39,7 +39,7 @@ import org.datanucleus.metadata.FetchPlanMetaData;
 import org.datanucleus.metadata.FieldMetaData;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.ForeignKeyMetaData;
-import org.datanucleus.metadata.IdentityMetaData;
+import org.datanucleus.metadata.DatastoreIdentityMetaData;
 import org.datanucleus.metadata.IndexMetaData;
 import org.datanucleus.metadata.InheritanceMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
@@ -127,9 +127,9 @@ public class JDOXmlMetaDataHelper
         str.append(">\n");
 
         // Identity
-        if (cmd.getIdentityMetaData() != null)
+        if (cmd.getDatastoreIdentityMetaData() != null)
         {
-            str.append(getXMLForMetaData(cmd.getIdentityMetaData(), prefix + indent,indent));
+            str.append(getXMLForMetaData(cmd.getDatastoreIdentityMetaData(), prefix + indent,indent));
         }
 
         // PrimaryKey
@@ -241,7 +241,7 @@ public class JDOXmlMetaDataHelper
         return str.toString();
     }
 
-    public String getXMLForMetaData(IdentityMetaData idmd, String prefix, String indent)
+    public String getXMLForMetaData(DatastoreIdentityMetaData idmd, String prefix, String indent)
     {
         StringBuilder str = new StringBuilder();
         if (idmd.getValueStrategy() != null)

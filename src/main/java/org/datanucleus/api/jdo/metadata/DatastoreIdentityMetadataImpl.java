@@ -22,7 +22,7 @@ import javax.jdo.metadata.ColumnMetadata;
 import javax.jdo.metadata.DatastoreIdentityMetadata;
 
 import org.datanucleus.metadata.ColumnMetaData;
-import org.datanucleus.metadata.IdentityMetaData;
+import org.datanucleus.metadata.DatastoreIdentityMetaData;
 import org.datanucleus.metadata.ValueGenerationStrategy;
 
 /**
@@ -30,14 +30,14 @@ import org.datanucleus.metadata.ValueGenerationStrategy;
  */
 public class DatastoreIdentityMetadataImpl extends AbstractMetadataImpl implements DatastoreIdentityMetadata
 {
-    public DatastoreIdentityMetadataImpl(IdentityMetaData idmd)
+    public DatastoreIdentityMetadataImpl(DatastoreIdentityMetaData idmd)
     {
         super(idmd);
     }
 
-    public IdentityMetaData getInternal()
+    public DatastoreIdentityMetaData getInternal()
     {
-        return (IdentityMetaData)internalMD;
+        return (DatastoreIdentityMetaData)internalMD;
     }
 
     /* (non-Javadoc)

@@ -76,7 +76,7 @@ import org.datanucleus.metadata.FieldMetaData;
 import org.datanucleus.metadata.FieldPersistenceModifier;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.ForeignKeyMetaData;
-import org.datanucleus.metadata.IdentityMetaData;
+import org.datanucleus.metadata.DatastoreIdentityMetaData;
 import org.datanucleus.metadata.ValueGenerationStrategy;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.IndexMetaData;
@@ -242,7 +242,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String sequence = (String) annotationValues.get("sequence");
                 String column = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                IdentityMetaData idmd = new IdentityMetaData();
+                DatastoreIdentityMetaData idmd = new DatastoreIdentityMetaData();
                 idmd.setColumnName(column);
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
                 idmd.setSequence(sequence);
@@ -255,7 +255,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
 
                 idmd.setParent(cmd);
-                cmd.setIdentityMetaData(idmd);
+                cmd.setDatastoreIdentityMetaData(idmd);
             }
             else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
             {
