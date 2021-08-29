@@ -215,7 +215,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String indexed = (String) annotationValues.get("indexed");
                 String column = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                VersionMetaData vermd = new VersionMetaData();
+                VersionMetaData vermd = cmd.newVersionMetadata();
                 vermd.setStrategy(strategy);
                 vermd.setColumnName(column);
                 vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
@@ -226,9 +226,6 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     vermd.setColumnMetaData(colmd);
                 }
                 JDOAnnotationUtils.addExtensionsToMetaData(vermd, (Extension[]) annotationValues.get("extensions"));
-
-                vermd.setParent(cmd);
-                cmd.setVersionMetaData(vermd);
             }
             else if (annName.equals(JDOAnnotationUtils.DATASTORE_IDENTITY))
             {
@@ -242,7 +239,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String sequence = (String) annotationValues.get("sequence");
                 String column = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                DatastoreIdentityMetaData idmd = new DatastoreIdentityMetaData();
+                DatastoreIdentityMetaData idmd = cmd.newDatastoreIdentityMetadata();
                 idmd.setColumnName(column);
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
                 idmd.setSequence(sequence);
@@ -253,16 +250,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     idmd.setColumnMetaData(colmd);
                 }
                 JDOAnnotationUtils.addExtensionsToMetaData(idmd, (Extension[]) annotationValues.get("extensions"));
-
-                idmd.setParent(cmd);
-                cmd.setDatastoreIdentityMetaData(idmd);
             }
             else if (annName.equals(JDOAnnotationUtils.PRIMARY_KEY))
             {
                 String pkName = (String) annotationValues.get("name");
                 String pkColumn = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                PrimaryKeyMetaData pkmd = new PrimaryKeyMetaData();
+                PrimaryKeyMetaData pkmd = cmd.newPrimaryKeyMetadata();
                 pkmd.setName(pkName);
                 pkmd.setColumnName(pkColumn);
                 if (columns != null && columns.length > 0)
@@ -273,9 +267,6 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                 }
                 JDOAnnotationUtils.addExtensionsToMetaData(pkmd, (Extension[]) annotationValues.get("extensions"));
-
-                pkmd.setParent(cmd);
-                cmd.setPrimaryKeyMetaData(pkmd);
             }
             else if (annName.equals(JDOAnnotationUtils.JOINS))
             {

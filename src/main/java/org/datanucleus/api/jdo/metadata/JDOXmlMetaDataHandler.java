@@ -536,20 +536,20 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             else if (localName.equals("datastore-identity"))
             {
                 AbstractClassMetaData acmd = (AbstractClassMetaData) getStack();
-                DatastoreIdentityMetaData idmd = new DatastoreIdentityMetaData();
+                DatastoreIdentityMetaData idmd = acmd.newDatastoreIdentityMetadata();
                 idmd.setColumnName(getAttr(attrs, "column"));
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
                 idmd.setSequence(getAttr(attrs, "sequence"));
-                acmd.setDatastoreIdentityMetaData(idmd);
+
                 pushStack(idmd);
             }
             else if (localName.equals("inheritance"))
             {
                 MetaData parent = getStack();
                 AbstractClassMetaData acmd = (AbstractClassMetaData) parent;
-                InheritanceMetaData inhmd = new InheritanceMetaData();
+                InheritanceMetaData inhmd = acmd.newInheritanceMetadata();
                 inhmd.setStrategy(getAttr(attrs, "strategy"));
-                acmd.setInheritanceMetaData(inhmd);
+
                 pushStack(inhmd);
             }
             else if (localName.equals("discriminator"))
