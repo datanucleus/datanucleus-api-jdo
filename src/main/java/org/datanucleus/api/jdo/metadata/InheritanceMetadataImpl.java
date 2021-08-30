@@ -113,7 +113,7 @@ public class InheritanceMetadataImpl extends AbstractMetadataImpl implements Inh
      */
     public DiscriminatorMetadata newDiscriminatorMetadata()
     {
-        DiscriminatorMetaData internalDismd = getInternal().newDiscriminatorMetadata();
+        DiscriminatorMetaData internalDismd = getInternal().newDiscriminatorMetaData();
         DiscriminatorMetadataImpl dismd = new DiscriminatorMetadataImpl(internalDismd);
         dismd.parent = this;
         return dismd;
@@ -124,7 +124,7 @@ public class InheritanceMetadataImpl extends AbstractMetadataImpl implements Inh
      */
     public JoinMetadata newJoinMetadata()
     {
-        JoinMetaData internalJoinmd = getInternal().newJoinMetadata();
+        JoinMetaData internalJoinmd = getInternal().newJoinMetaData();
         JoinMetadataImpl joinmd = new JoinMetadataImpl(internalJoinmd);
         joinmd.parent = this;
         return joinmd;

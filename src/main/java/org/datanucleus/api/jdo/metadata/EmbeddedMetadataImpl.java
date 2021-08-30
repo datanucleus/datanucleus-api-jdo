@@ -165,7 +165,7 @@ public class EmbeddedMetadataImpl extends AbstractMetadataImpl implements Embedd
 
     public DiscriminatorMetadata newDiscriminatorMetadata()
     {
-        DiscriminatorMetaData internalDismd = getInternal().newDiscriminatorMetadata();
+        DiscriminatorMetaData internalDismd = getInternal().newDiscriminatorMetaData();
         DiscriminatorMetadataImpl dismd = new DiscriminatorMetadataImpl(internalDismd);
         dismd.parent = this;
         return dismd;

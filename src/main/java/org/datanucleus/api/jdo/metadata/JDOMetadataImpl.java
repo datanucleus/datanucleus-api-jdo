@@ -28,7 +28,7 @@ import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.FetchPlanMetaData;
 import org.datanucleus.metadata.FileMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
-import org.datanucleus.metadata.MetadataFileType;
+import org.datanucleus.metadata.MetaDataFileType;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.util.ClassUtils;
@@ -41,7 +41,7 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
     public JDOMetadataImpl()
     {
         super(new FileMetaData());
-        getInternal().setType(MetadataFileType.JDO_FILE);
+        getInternal().setType(MetaDataFileType.JDO_FILE);
     }
 
     public JDOMetadataImpl(FileMetaData filemd)
@@ -79,7 +79,7 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
      */
     public FetchPlanMetadata newFetchPlanMetadata(String name)
     {
-        FetchPlanMetaData internalFpmd = getInternal().newFetchPlanMetadata(name);
+        FetchPlanMetaData internalFpmd = getInternal().newFetchPlanMetaData(name);
         FetchPlanMetadataImpl fpmd = new FetchPlanMetadataImpl(internalFpmd);
         fpmd.parent = this;
         return fpmd;
@@ -126,7 +126,7 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
      */
     public QueryMetadata newQueryMetadata(String name)
     {
-        QueryMetaData internalQmd = getInternal().newQueryMetadata(name);
+        QueryMetaData internalQmd = getInternal().newQueryMetaData(name);
         QueryMetadataImpl qmd = new QueryMetadataImpl(internalQmd);
         qmd.parent = this;
         return qmd;
@@ -159,7 +159,7 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
      */
     public PackageMetadata newPackageMetadata(String name)
     {
-        PackageMetaData internalPmd = getInternal().newPackageMetadata(name);
+        PackageMetaData internalPmd = getInternal().newPackageMetaData(name);
         PackageMetadataImpl pmd = new PackageMetadataImpl(internalPmd);
         pmd.parent = this;
         return pmd;
@@ -170,7 +170,7 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
      */
     public PackageMetadata newPackageMetadata(Package pkg)
     {
-        PackageMetaData internalPmd = getInternal().newPackageMetadata(pkg.getName());
+        PackageMetaData internalPmd = getInternal().newPackageMetaData(pkg.getName());
         PackageMetadataImpl pmd = new PackageMetadataImpl(internalPmd);
         pmd.parent = this;
         return pmd;
@@ -182,12 +182,12 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
     public ClassMetadata newClassMetadata(Class cls)
     {
         String packageName = ClassUtils.getPackageNameForClass(cls);
-        PackageMetaData internalPmd = getInternal().newPackageMetadata(packageName); // Adds if necessary
+        PackageMetaData internalPmd = getInternal().newPackageMetaData(packageName); // Adds if necessary
         PackageMetadataImpl pmd = new PackageMetadataImpl(internalPmd);
         pmd.parent = this;
 
         String className = ClassUtils.getClassNameForClass(cls);
-        ClassMetaData internalCmd = internalPmd.newClassMetadata(className);
+        ClassMetaData internalCmd = internalPmd.newClassMetaData(className);
         ClassMetadataImpl cmd = new ClassMetadataImpl(internalCmd);
         cmd.parent = pmd;
         return cmd;
@@ -199,12 +199,12 @@ public class JDOMetadataImpl extends AbstractMetadataImpl implements JDOMetadata
     public InterfaceMetadata newInterfaceMetadata(Class cls)
     {
         String packageName = ClassUtils.getPackageNameForClass(cls);
-        PackageMetaData internalPmd = getInternal().newPackageMetadata(packageName); // Adds if necessary
+        PackageMetaData internalPmd = getInternal().newPackageMetaData(packageName); // Adds if necessary
         PackageMetadataImpl pmd = new PackageMetadataImpl(internalPmd);
         pmd.parent = this;
 
         String className = ClassUtils.getClassNameForClass(cls);
-        InterfaceMetaData internalImd = internalPmd.newInterfaceMetadata(className);
+        InterfaceMetaData internalImd = internalPmd.newInterfaceMetaData(className);
         InterfaceMetadataImpl imd = new InterfaceMetadataImpl(internalImd);
         imd.parent = pmd;
         return imd;

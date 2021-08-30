@@ -46,7 +46,7 @@ import org.datanucleus.metadata.ImplementsMetaData;
 import org.datanucleus.metadata.InterfaceMetaData;
 import org.datanucleus.metadata.MetaDataManagerImpl;
 import org.datanucleus.metadata.MetaDataMerger;
-import org.datanucleus.metadata.MetadataFileType;
+import org.datanucleus.metadata.MetaDataFileType;
 import org.datanucleus.metadata.PackageMetaData;
 import org.datanucleus.metadata.QueryMetaData;
 import org.datanucleus.metadata.SequenceMetaData;
@@ -279,7 +279,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         registerTableGeneratorsForFile(filemd);
 
         // Register the classes and interfaces for later use
-        if (filemd.getType() != MetadataFileType.JDO_QUERY_FILE)
+        if (filemd.getType() != MetaDataFileType.JDO_QUERY_FILE)
         {
             for (int i = 0; i < filemd.getNoOfPackages(); i++)
             {
@@ -294,11 +294,11 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         // Remove from unknown classes now that we have some metadata
                         classesWithoutPersistenceInfo.remove(cmd.getFullClassName());
                     }
-                    if (filemd.getType() == MetadataFileType.JDO_FILE || filemd.getType() == MetadataFileType.ANNOTATIONS)
+                    if (filemd.getType() == MetaDataFileType.JDO_FILE || filemd.getType() == MetaDataFileType.ANNOTATIONS)
                     {
                         registerMetaDataForClass(cmd.getFullClassName(), cmd);
                     }
-                    else if (filemd.getType() == MetadataFileType.JDO_ORM_FILE)
+                    else if (filemd.getType() == MetaDataFileType.JDO_ORM_FILE)
                     {
                         ormClassMetaDataByClass.put(cmd.getFullClassName(), cmd);
                     }
@@ -329,11 +329,11 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 for (int j = 0; j < pmd.getNoOfInterfaces(); j++)
                 {
                     InterfaceMetaData intfmd = pmd.getInterface(j);
-                    if (filemd.getType() == MetadataFileType.JDO_FILE || filemd.getType() == MetadataFileType.ANNOTATIONS)
+                    if (filemd.getType() == MetaDataFileType.JDO_FILE || filemd.getType() == MetaDataFileType.ANNOTATIONS)
                     {
                         registerMetaDataForClass(intfmd.getFullClassName(), intfmd);
                     }
-                    else if (filemd.getType() == MetadataFileType.JDO_ORM_FILE)
+                    else if (filemd.getType() == MetaDataFileType.JDO_ORM_FILE)
                     {
                         ormClassMetaDataByClass.put(intfmd.getFullClassName(), intfmd);
                     }
@@ -366,7 +366,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
             if (allowXML)
             {
                 // Search valid location for a JDO XML definition (package.jdo etc) for this class and load all classes specified in the file
-                FileMetaData filemd = loadXMLMetaDataForClass(c, clr, null, getJDOFileSuffix(), MetadataFileType.JDO_FILE, true);
+                FileMetaData filemd = loadXMLMetaDataForClass(c, clr, null, getJDOFileSuffix(), MetaDataFileType.JDO_FILE, true);
                 if (filemd != null)
                 {
                     // Class has had its metadata loaded
@@ -478,7 +478,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         {
                             // File hasn't been loaded so load it
                             FileMetaData filemd = parseXmlFile(fileURL);
-                            filemd.setType(MetadataFileType.JDO_QUERY_FILE); // TODO Remove this since set in the parser at <jdoquery>
+                            filemd.setType(MetaDataFileType.JDO_QUERY_FILE); // TODO Remove this since set in the parser at <jdoquery>
                             registerFile(fileURL.toString(), filemd, clr);
 
                             // Populate all classes in this file we've just parsed
@@ -671,7 +671,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         if (allowXML)
         {
             // No ORM loaded for this class, so find if there is any ORM metadata available
-            FileMetaData filemdORM = loadXMLMetaDataForClass(c, clr, getORMMappingName(), getORMFileSuffix(), MetadataFileType.JDO_ORM_FILE, false);
+            FileMetaData filemdORM = loadXMLMetaDataForClass(c, clr, getORMMappingName(), getORMFileSuffix(), MetaDataFileType.JDO_ORM_FILE, false);
             if (filemdORM != null)
             {
                 // The ORM file has now been registered, so find the class and merge it into the JDO definition
@@ -711,7 +711,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @return FileMetaData for the file containing the class
      */
     protected FileMetaData loadXMLMetaDataForClass(Class pc_class, ClassLoaderResolver clr,
-            String mappingModifier, String metadataFileExtension, MetadataFileType metadataType, boolean populate)
+            String mappingModifier, String metadataFileExtension, MetaDataFileType metadataType, boolean populate)
     {
         // MetaData file locations
         List<String> validLocations = getValidMetaDataLocationsForClass(metadataFileExtension, mappingModifier, pc_class.getName());
@@ -758,8 +758,8 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                         }
                     }
 
-                    if (((filemd.getType() == MetadataFileType.JDO_FILE && classMetaDataByClass.get(pc_class.getName()) != null) ||
-                         (filemd.getType() == MetadataFileType.JDO_ORM_FILE && ormClassMetaDataByClass.get(pc_class.getName()) != null)))
+                    if (((filemd.getType() == MetaDataFileType.JDO_FILE && classMetaDataByClass.get(pc_class.getName()) != null) ||
+                         (filemd.getType() == MetaDataFileType.JDO_ORM_FILE && ormClassMetaDataByClass.get(pc_class.getName()) != null)))
                     {
                         // We now have the class, so it must have been in this file
                         if (NucleusLogger.METADATA.isDebugEnabled())

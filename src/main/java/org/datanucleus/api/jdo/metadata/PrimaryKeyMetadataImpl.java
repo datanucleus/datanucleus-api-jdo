@@ -87,7 +87,7 @@ public class PrimaryKeyMetadataImpl extends AbstractMetadataImpl implements Prim
      */
     public ColumnMetadata newColumnMetadata()
     {
-        ColumnMetaData internalColmd = getInternal().newColumnMetadata();
+        ColumnMetaData internalColmd = getInternal().newColumnMetaData();
         ColumnMetadataImpl colmd = new ColumnMetadataImpl(internalColmd);
         colmd.parent = this;
         return colmd;

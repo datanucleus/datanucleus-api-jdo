@@ -80,7 +80,7 @@ public class ClassMetadataImpl extends TypeMetadataImpl implements ClassMetadata
      */
     public FieldMetadata newFieldMetadata(String name)
     {
-        FieldMetaData internalFmd = getInternal().newFieldMetadata(name);
+        FieldMetaData internalFmd = getInternal().newFieldMetaData(name);
         FieldMetadataImpl fmd = new FieldMetadataImpl(internalFmd);
         fmd.parent = this;
         return fmd;
@@ -91,7 +91,7 @@ public class ClassMetadataImpl extends TypeMetadataImpl implements ClassMetadata
      */
     public FieldMetadata newFieldMetadata(Field fld)
     {
-        FieldMetaData internalFmd = getInternal().newFieldMetadata(fld.getName());
+        FieldMetaData internalFmd = getInternal().newFieldMetaData(fld.getName());
         FieldMetadataImpl fmd = new FieldMetadataImpl(internalFmd);
         fmd.parent = this;
         return fmd;

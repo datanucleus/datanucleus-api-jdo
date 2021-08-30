@@ -64,7 +64,7 @@ import org.datanucleus.metadata.MapMetaData;
 import org.datanucleus.metadata.MetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.MetaDataUtils;
-import org.datanucleus.metadata.MetadataFileType;
+import org.datanucleus.metadata.MetaDataFileType;
 import org.datanucleus.metadata.MultitenancyMetaData;
 import org.datanucleus.metadata.NullValue;
 import org.datanucleus.metadata.OrderMetaData;
@@ -429,26 +429,26 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             if (localName.equals("jdo"))
             {
                 FileMetaData filemd = (FileMetaData) getStack();
-                filemd.setType(MetadataFileType.JDO_FILE);
+                filemd.setType(MetaDataFileType.JDO_FILE);
                 filemd.setCatalog(getAttr(attrs, "catalog"));
                 filemd.setSchema(getAttr(attrs, "schema"));
             }
             else if (localName.equals("orm"))
             {
                 FileMetaData filemd = (FileMetaData) getStack();
-                filemd.setType(MetadataFileType.JDO_ORM_FILE);
+                filemd.setType(MetaDataFileType.JDO_ORM_FILE);
                 filemd.setCatalog(getAttr(attrs, "catalog"));
                 filemd.setSchema(getAttr(attrs, "schema"));
             }
             else if (localName.equals("jdoquery"))
             {
                 FileMetaData filemd = (FileMetaData) getStack();
-                filemd.setType(MetadataFileType.JDO_QUERY_FILE);
+                filemd.setType(MetaDataFileType.JDO_QUERY_FILE);
             }
             else if (localName.equals("fetch-plan"))
             {
                 FileMetaData filemd = (FileMetaData) metadata;
-                FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata(getAttr(attrs, "name"));
+                FetchPlanMetaData fpmd = filemd.newFetchPlanMetaData(getAttr(attrs, "name"));
                 fpmd.setMaxFetchDepth(getAttr(attrs, "max-fetch-depth"));
                 fpmd.setFetchSize(getAttr(attrs, "fetch-size"));
                 pushStack(fpmd);
@@ -456,7 +456,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             else if (localName.equals("package"))
             {
                 FileMetaData filemd = (FileMetaData) getStack();
-                PackageMetaData pmd = filemd.newPackageMetadata(getAttr(attrs, "name"));
+                PackageMetaData pmd = filemd.newPackageMetaData(getAttr(attrs, "name"));
                 pmd.setCatalog(getAttr(attrs, "catalog"));
                 pmd.setSchema(getAttr(attrs, "schema"));
                 pushStack(pmd);
@@ -536,7 +536,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             else if (localName.equals("datastore-identity"))
             {
                 AbstractClassMetaData acmd = (AbstractClassMetaData) getStack();
-                DatastoreIdentityMetaData idmd = acmd.newDatastoreIdentityMetadata();
+                DatastoreIdentityMetaData idmd = acmd.newDatastoreIdentityMetaData();
                 idmd.setColumnName(getAttr(attrs, "column"));
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(getAttr(attrs, "strategy")));
                 idmd.setSequence(getAttr(attrs, "sequence"));
@@ -547,7 +547,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             {
                 MetaData parent = getStack();
                 AbstractClassMetaData acmd = (AbstractClassMetaData) parent;
-                InheritanceMetaData inhmd = acmd.newInheritanceMetadata();
+                InheritanceMetaData inhmd = acmd.newInheritanceMetaData();
                 inhmd.setStrategy(getAttr(attrs, "strategy"));
 
                 pushStack(inhmd);
@@ -558,7 +558,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 if (md instanceof InheritanceMetaData)
                 {
                     InheritanceMetaData inhmd = (InheritanceMetaData) md;
-                    DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetadata();
+                    DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetaData();
                     dismd.setColumnName(getAttr(attrs, "column"));
                     dismd.setValue(getAttr(attrs, "value"));
                     dismd.setStrategy(getAttr(attrs, "strategy"));
@@ -568,7 +568,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (md instanceof EmbeddedMetaData)
                 {
                     EmbeddedMetaData embmd = (EmbeddedMetaData) md;
-                    DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
+                    DiscriminatorMetaData dismd = embmd.newDiscriminatorMetaData();
                     dismd.setColumnName(getAttr(attrs, "column"));
                     dismd.setValue(getAttr(attrs, "value"));
                     dismd.setStrategy(getAttr(attrs, "strategy"));
@@ -633,7 +633,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (emd instanceof FileMetaData)
                 {
                     FileMetaData filemd = (FileMetaData) emd;
-                    QueryMetaData qmd = filemd.newQueryMetadata(name);
+                    QueryMetaData qmd = filemd.newQueryMetaData(name);
                     qmd.setLanguage(lang);
                     qmd.setUnmodifiable(getAttr(attrs, "unmodifiable"));
                     qmd.setResultClass(getAttr(attrs, "result-class"));
@@ -645,7 +645,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
             else if (localName.equals("sequence"))
             {
                 PackageMetaData pmd = (PackageMetaData) getStack();
-                SequenceMetaData seqmd = pmd.newSequenceMetadata(getAttr(attrs, "name"), getAttr(attrs, "strategy"));
+                SequenceMetaData seqmd = pmd.newSequenceMetaData(getAttr(attrs, "name"), getAttr(attrs, "strategy"));
                 seqmd.setFactoryClass(getAttr(attrs, "factory-class"));
                 seqmd.setDatastoreSequence(getAttr(attrs, "datastore-sequence"));
                 String seqSize = getAttr(attrs, "allocation-size");
@@ -726,7 +726,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (parent instanceof InheritanceMetaData)
                 {
                     InheritanceMetaData inhmd = (InheritanceMetaData) parent;
-                    joinmd = inhmd.newJoinMetadata();
+                    joinmd = inhmd.newJoinMetaData();
                 }
                 else
                 {
@@ -1137,7 +1137,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
 
                 if (cmd != null)
                 {
-                    VersionMetaData vermd = cmd.newVersionMetadata();
+                    VersionMetaData vermd = cmd.newVersionMetaData();
                     String strategy = getAttr(attrs, "strategy");
                     vermd.setStrategy(StringUtils.isWhitespace(strategy) ? "version-number" : strategy);
                     vermd.setColumnName(getAttr(attrs, "column"));

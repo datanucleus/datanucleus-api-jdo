@@ -111,7 +111,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
      */
     public PropertyMetadata newPropertyMetadata(String name)
     {
-        PropertyMetaData internalPmd = getInternal().newPropertyMetadata(name);
+        PropertyMetaData internalPmd = getInternal().newPropertyMetaData(name);
         PropertyMetadataImpl pmd = new PropertyMetadataImpl(internalPmd);
         pmd.parent = this;
         return pmd;
@@ -141,7 +141,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
             throw new JDOUserException("Method " + methodName + " is not a Java-bean method");
         }
         String propertyName = name.substring(0,1).toLowerCase() + name.substring(1);
-        PropertyMetaData internalPmd = getInternal().newPropertyMetadata(propertyName);
+        PropertyMetaData internalPmd = getInternal().newPropertyMetaData(propertyName);
         PropertyMetadataImpl pmd = new PropertyMetadataImpl(internalPmd);
         pmd.parent = this;
         return pmd;
@@ -394,7 +394,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public DatastoreIdentityMetadata newDatastoreIdentityMetadata()
     {
-        DatastoreIdentityMetaData idmd = getInternal().newDatastoreIdentityMetadata();
+        DatastoreIdentityMetaData idmd = getInternal().newDatastoreIdentityMetaData();
         DatastoreIdentityMetadataImpl dimd = new DatastoreIdentityMetadataImpl(idmd);
         dimd.parent = this;
         return dimd;
@@ -410,7 +410,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public ForeignKeyMetadata newForeignKeyMetadata()
     {
-        ForeignKeyMetaData internalFkmd = getInternal().newForeignKeyMetadata();
+        ForeignKeyMetaData internalFkmd = getInternal().newForeignKeyMetaData();
         ForeignKeyMetadataImpl fkmd = new ForeignKeyMetadataImpl(internalFkmd);
         fkmd.parent = this;
         return fkmd;
@@ -418,7 +418,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public IndexMetadata newIndexMetadata()
     {
-        IndexMetaData internalIdxmd = getInternal().newIndexMetadata();
+        IndexMetaData internalIdxmd = getInternal().newIndexMetaData();
         IndexMetadataImpl idxmd = new IndexMetadataImpl(internalIdxmd);
         idxmd.parent = this;
         return idxmd;
@@ -426,7 +426,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public InheritanceMetadata newInheritanceMetadata()
     {
-        InheritanceMetaData internalInhmd = getInternal().newInheritanceMetadata();
+        InheritanceMetaData internalInhmd = getInternal().newInheritanceMetaData();
         InheritanceMetadataImpl inhmd = new InheritanceMetadataImpl(internalInhmd);
         inhmd.parent = this;
         return inhmd;
@@ -442,7 +442,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public PrimaryKeyMetadata newPrimaryKeyMetadata()
     {
-        PrimaryKeyMetaData internalPkmd = getInternal().newPrimaryKeyMetadata();
+        PrimaryKeyMetaData internalPkmd = getInternal().newPrimaryKeyMetaData();
         PrimaryKeyMetadataImpl pkmd = new PrimaryKeyMetadataImpl(internalPkmd);
         pkmd.parent = this;
         return pkmd;
@@ -450,7 +450,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public QueryMetadata newQueryMetadata(String name)
     {
-        QueryMetaData internalQmd = getInternal().newQueryMetadata(name);
+        QueryMetaData internalQmd = getInternal().newQueryMetaData(name);
         QueryMetadataImpl qmd = new QueryMetadataImpl(internalQmd);
         qmd.parent = this;
         return qmd;
@@ -458,7 +458,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public UniqueMetadata newUniqueMetadata()
     {
-        UniqueMetaData internalUnimd = getInternal().newUniqueMetadata();
+        UniqueMetaData internalUnimd = getInternal().newUniqueMetaData();
         UniqueMetadataImpl unimd = new UniqueMetadataImpl(internalUnimd);
         unimd.parent = this;
         return unimd;
@@ -466,7 +466,7 @@ public abstract class TypeMetadataImpl extends AbstractMetadataImpl implements T
 
     public VersionMetadata newVersionMetadata()
     {
-        VersionMetaData internalVermd = getInternal().newVersionMetadata();
+        VersionMetaData internalVermd = getInternal().newVersionMetaData();
         VersionMetadataImpl vermd = new VersionMetadataImpl(internalVermd);
         vermd.parent = this;
         return vermd;

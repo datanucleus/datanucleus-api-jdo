@@ -114,7 +114,7 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
      */
     public ClassMetadata newClassMetadata(String name)
     {
-        ClassMetaData internalCmd = getInternal().newClassMetadata(name);
+        ClassMetaData internalCmd = getInternal().newClassMetaData(name);
         ClassMetadataImpl cmd = new ClassMetadataImpl(internalCmd);
         cmd.parent = this;
         return cmd;
@@ -129,7 +129,7 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
         {
             throw new JDOUserException("Canot create new class metadata for " + cls.getName() + " since it is an interface!");
         }
-        ClassMetaData internalCmd = getInternal().newClassMetadata(ClassUtils.getClassNameForClass(cls));
+        ClassMetaData internalCmd = getInternal().newClassMetaData(ClassUtils.getClassNameForClass(cls));
         ClassMetadataImpl cmd = new ClassMetadataImpl(internalCmd);
         cmd.parent = this;
         return cmd;
@@ -162,7 +162,7 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
      */
     public InterfaceMetadata newInterfaceMetadata(String name)
     {
-        InterfaceMetaData internalImd = getInternal().newInterfaceMetadata(name);
+        InterfaceMetaData internalImd = getInternal().newInterfaceMetaData(name);
         InterfaceMetadataImpl imd = new InterfaceMetadataImpl(internalImd);
         imd.parent = this;
         return imd;
@@ -177,7 +177,7 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
         {
             throw new JDOUserException("Canot create new interface metadata for " + cls.getName() + " since not interface!");
         }
-        InterfaceMetaData internalImd = getInternal().newInterfaceMetadata(ClassUtils.getClassNameForClass(cls));
+        InterfaceMetaData internalImd = getInternal().newInterfaceMetaData(ClassUtils.getClassNameForClass(cls));
         InterfaceMetadataImpl imd = new InterfaceMetadataImpl(internalImd);
         imd.parent = this;
         return imd;
@@ -229,7 +229,7 @@ public class PackageMetadataImpl extends AbstractMetadataImpl implements Package
         {
             str = org.datanucleus.metadata.SequenceStrategy.NONTRANSACTIONAL.toString();
         }
-        SequenceMetaData internalSeqmd = getInternal().newSequenceMetadata(name, str);
+        SequenceMetaData internalSeqmd = getInternal().newSequenceMetaData(name, str);
         SequenceMetadataImpl seqmd = new SequenceMetadataImpl(internalSeqmd);
         seqmd.parent = this;
         return seqmd;

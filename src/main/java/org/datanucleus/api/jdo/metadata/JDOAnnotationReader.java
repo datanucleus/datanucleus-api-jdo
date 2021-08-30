@@ -159,7 +159,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         if (pcAnnotation != null)
         {
             // PersistenceCapable class
-            cmd = (cls.isInterface()) ? pmd.newInterfaceMetadata(ClassUtils.getClassNameForClass(cls)) : pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd = (cls.isInterface()) ? pmd.newInterfaceMetaData(ClassUtils.getClassNameForClass(cls)) : pmd.newClassMetaData(ClassUtils.getClassNameForClass(cls));
             cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_CAPABLE);
 
             // Process all attributes here in case needed for other annotations
@@ -168,13 +168,13 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         else if (isClassPersistenceAware(annotations))
         {
             // PersistenceAware class
-            cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd = pmd.newClassMetaData(ClassUtils.getClassNameForClass(cls));
             cmd.setPersistenceModifier(ClassPersistenceModifier.PERSISTENCE_AWARE);
         }
         else if (doesClassHaveNamedQueries(annotations))
         {
             // Class with named query specified
-            cmd = pmd.newClassMetadata(ClassUtils.getClassNameForClass(cls));
+            cmd = pmd.newClassMetaData(ClassUtils.getClassNameForClass(cls));
             cmd.setPersistenceModifier(ClassPersistenceModifier.NON_PERSISTENT);
         }
         else
@@ -215,7 +215,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String indexed = (String) annotationValues.get("indexed");
                 String column = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                VersionMetaData vermd = cmd.newVersionMetadata();
+                VersionMetaData vermd = cmd.newVersionMetaData();
                 vermd.setStrategy(strategy);
                 vermd.setColumnName(column);
                 vermd.setIndexed(IndexedValue.getIndexedValue(indexed));
@@ -239,7 +239,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String sequence = (String) annotationValues.get("sequence");
                 String column = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                DatastoreIdentityMetaData idmd = cmd.newDatastoreIdentityMetadata();
+                DatastoreIdentityMetaData idmd = cmd.newDatastoreIdentityMetaData();
                 idmd.setColumnName(column);
                 idmd.setValueStrategy(ValueGenerationStrategy.getIdentityStrategy(strategy));
                 idmd.setSequence(sequence);
@@ -256,7 +256,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 String pkName = (String) annotationValues.get("name");
                 String pkColumn = (String) annotationValues.get("column");
                 Column[] columns = (Column[]) annotationValues.get("columns");
-                PrimaryKeyMetaData pkmd = cmd.newPrimaryKeyMetadata();
+                PrimaryKeyMetaData pkmd = cmd.newPrimaryKeyMetaData();
                 pkmd.setName(pkName);
                 pkmd.setColumnName(pkColumn);
                 if (columns != null && columns.length > 0)
@@ -310,7 +310,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
                 if (inhmd == null)
                 {
-                    inhmd = cmd.newInheritanceMetadata();
+                    inhmd = cmd.newInheritanceMetaData();
                 }
                 inhmd.setStrategy(strategy);
             }
@@ -326,10 +326,10 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 InheritanceMetaData inhmd = cmd.getInheritanceMetaData();
                 if (inhmd == null)
                 {
-                    inhmd = cmd.newInheritanceMetadata();
+                    inhmd = cmd.newInheritanceMetaData();
                 }
 
-                DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetadata();
+                DiscriminatorMetaData dismd = inhmd.newDiscriminatorMetaData();
                 dismd.setColumnName(column);
                 dismd.setValue(value);
                 dismd.setStrategy(strategy);
@@ -348,7 +348,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 FetchPlan[] plans = (FetchPlan[]) annotationValues.get("value");
                 for (FetchPlan plan : plans)
                 {
-                    FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata(plan.name());
+                    FetchPlanMetaData fpmd = filemd.newFetchPlanMetaData(plan.name());
                     fpmd.setFetchSize(plan.fetchSize());
                     fpmd.setMaxFetchDepth(plan.maxFetchDepth());
                     int numGroups = plan.fetchGroups().length;
@@ -361,7 +361,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             else if (annName.equals(JDOAnnotationUtils.FETCHPLAN))
             {
                 FileMetaData filemd = (FileMetaData) pmd.getParent();
-                FetchPlanMetaData fpmd = filemd.newFetchPlanMetadata((String)annotationValues.get("name"));
+                FetchPlanMetaData fpmd = filemd.newFetchPlanMetaData((String)annotationValues.get("name"));
                 fpmd.setFetchSize(((Integer) annotationValues.get("fetchSize")).intValue());
                 fpmd.setMaxFetchDepth(((Integer) annotationValues.get("maxFetchDepth")).intValue());
                 String[] fpFetchGroups = (String[]) annotationValues.get("fetchGroups");
@@ -1055,7 +1055,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             else if (annName.equals(JDOAnnotationUtils.VERSION))
             {
                 // Tag this field as the version field. We ignore the column/columns attributes since specifiable on the field itself
-                VersionMetaData vermd = cmd.newVersionMetadata();
+                VersionMetaData vermd = cmd.newVersionMetaData();
                 vermd.setFieldName(member.getName());
                 VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
                 String strategy = null;
@@ -1320,7 +1320,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         Discriminator disc = embeddedMappings[0].discriminatorColumnName();
                         if (disc != null)
                         {
-                            DiscriminatorMetaData dismd = embmd.newDiscriminatorMetadata();
+                            DiscriminatorMetaData dismd = embmd.newDiscriminatorMetaData();
                             dismd.setColumnName(disc.column());
                             dismd.setStrategy(JDOAnnotationUtils.getDiscriminatorStrategyString(disc.strategy()));
                             // TODO Support other attributes of discriminator?
