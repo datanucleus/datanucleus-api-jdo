@@ -25,7 +25,6 @@ import java.io.InvalidObjectException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,7 +33,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -2055,20 +2053,6 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     // -------------------------------- Lifecycle Listeners -------------------------------
-
-    /**
-     * @return Returns either <i>null</i> or a <i>List</i> with instances of <i>LifecycleListenerSpecification</i>.
-     * @deprecated
-     */
-    @Deprecated
-    public List<LifecycleListenerForClass> getLifecycleListenerSpecifications()
-    {
-        if (lifecycleListeners == null)
-        {
-            return Collections.EMPTY_LIST;
-        }
-        return new ArrayList(lifecycleListeners.values());
-    }
 
     /**
      * Method to add lifecycle listeners for particular classes.
