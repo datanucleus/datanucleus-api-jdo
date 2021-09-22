@@ -44,33 +44,20 @@ class PersistentNew extends LifeCycleState
         stateType = P_NEW;
     }
 
-    /**
-     * Method to transition to delete-persistent.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionDeletePersistent(ObjectProvider op)
     {
         op.clearLoadedFlags();        
         return changeState(op, P_NEW_DELETED);
     }
 
-    /**
-     * Method to transition to nontransactional.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {
         throw new NucleusUserException(Localiser.msg("027013"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to transition to transient.
-     * @param op ObjectProvider.
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (detachAllOnCommit)
@@ -80,12 +67,7 @@ class PersistentNew extends LifeCycleState
         throw new NucleusUserException(Localiser.msg("027014"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         op.clearSavedFields();
@@ -100,12 +82,7 @@ class PersistentNew extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to rollback state.
-     * @param op ObjectProvider.
-     * @param tx The transaction
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
     {
         if (tx.getRestoreValues())
@@ -116,11 +93,7 @@ class PersistentNew extends LifeCycleState
         return changeState(op, TRANSIENT);
     }
 
-    /**
-     * Method to transition to detached-clean.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionDetach(ObjectProvider op)
     {
         return changeState(op, DETACHED_CLEAN);

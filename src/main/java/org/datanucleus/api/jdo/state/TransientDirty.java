@@ -22,8 +22,7 @@ import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.transaction.Transaction;
 
 /**
- * This class represents TransientDirty state specific state transitions as requested by ObjectProviderImpl. 
- * This state is the result of a wrie operation on a TransientClean instance
+ * Class representing the life cycle state of TransientDirty.
  */
 class TransientDirty extends LifeCycleState
 {
@@ -42,44 +41,27 @@ class TransientDirty extends LifeCycleState
         stateType =  T_DIRTY;
     }
 
-    /**
-     * @param op The ObjectProvider 
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     * @see LifeCycleState#transitionMakeTransient(ObjectProvider op)
-     **/
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
- 
-    /**
-     * @param op The ObjectProvider 
-     * @see LifeCycleState#transitionMakePersistent(ObjectProvider op)
-     */
+
+    @Override
     public LifeCycleState transitionMakePersistent(ObjectProvider op)
     {
         op.registerTransactional();
         return changeState(op,P_NEW);
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
     	op.clearSavedFields();
         return changeTransientState(op,T_CLEAN);
     }
- 
-    /**
-     * @param op The ObjectProvider
-     * @param tx The Transaction 
-     * @see LifeCycleState#transitionRollback(ObjectProviderImpl op,Transaction tx)
-     */
+
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
     {
         if (tx.getRestoreValues() || op.isRestoreValues())

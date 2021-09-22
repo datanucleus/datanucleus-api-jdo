@@ -22,9 +22,7 @@ import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.transaction.Transaction;
 
 /**
- * This class represents TransientClean state specific state transitions as requested by ObjectProvider. 
- * This state is the result of a call to makeTransactional on a Transient instance, or commit or rollback 
- * of a TransientDirty instance.
+ * Class representing the life cycle state of TransientClean.
  */
 class TransientClean extends LifeCycleState
 {
@@ -43,21 +41,13 @@ class TransientClean extends LifeCycleState
         stateType = T_CLEAN;
     }
 
-    /**
-     * @param op The ObjectProvider 
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     * @see LifeCycleState#transitionMakeTransient(ObjectProvider op)
-     */
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
 
-    /**
-     * @param op The ObjectProvider 
-     * @see LifeCycleState#transitionMakeNontransactional(ObjectProvider op)
-     */
+    @Override
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {  
         try
@@ -70,30 +60,20 @@ class TransientClean extends LifeCycleState
         }
     }
 
-    /**
-     * @param op The ObjectProvider 
-     * @see LifeCycleState#transitionMakePersistent(ObjectProvider op)
-     */
+    @Override
     public LifeCycleState transitionMakePersistent(ObjectProvider op)
     {    
         op.registerTransactional();
         return changeState(op,P_NEW);
     }
-    
-    /**
-     * @param op The ObjectProvider
-     * @param isLoaded if the field was previously loaded.
-     * @see LifeCycleState#transitionReadField(ObjectProvider op, boolean isLoaded)
-     */
+
+    @Override
     public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
     {
         return this;
     }
 
-    /**
-     * @param op The ObjectProvider
-     * @see LifeCycleState#transitionWriteField(ObjectProvider op)
-     */
+    @Override
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
         Transaction tx = op.getExecutionContext().getTransaction();
@@ -105,23 +85,13 @@ class TransientClean extends LifeCycleState
         return this;
     }
 
-    /**
-     * Method to transition to commit state.
-     * This is a no-op.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         return this;
     }
 
-    /**
-     * @param op The ObjectProvider
-     * @param tx The Transaction
-     * @see LifeCycleState#transitionRollback(ObjectProvider op,Transaction tx)
-     */
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
     {
         return this;

@@ -48,23 +48,14 @@ class Hollow extends LifeCycleState
         stateType = HOLLOW;
     }
 
-    /**
-     * Method to transition to delete persistent.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionDeletePersistent(ObjectProvider op)
     {
         op.clearLoadedFlags();
         return changeState(op, P_DELETED);
     }
 
-    /**
-     * Method to transition to transactional.
-     * @param op ObjectProvider.
-     * @param refreshFields Whether to refresh loaded fields
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionMakeTransactional(ObjectProvider op, boolean refreshFields)
     {
         if (refreshFields)
@@ -74,12 +65,7 @@ class Hollow extends LifeCycleState
         return changeState(op, P_CLEAN);
     }
 
-    /**
-     * Method to transition to transient.
-     * @param op ObjectProvider.
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
@@ -89,32 +75,19 @@ class Hollow extends LifeCycleState
         return changeState(op, TRANSIENT);
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
-    public LifeCycleState transitionCommit(ObjectProvider op)
+    @Override
+    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "commit", op);
     }
 
-    /**
-     * Method to transition to rollback state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
-    public LifeCycleState transitionRollback(ObjectProvider op)
+    @Override
+    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "rollback", op);
     }
 
-    /**
-     * Method to transition to read-field state.
-     * @param op ObjectProvider.
-     * @param isLoaded if the field was previously loaded
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
     {
         Transaction tx = op.getExecutionContext().getTransaction();
@@ -137,11 +110,7 @@ class Hollow extends LifeCycleState
         return changeState(op, P_NONTRANS);
     }
 
-    /**
-     * Method to transition to write-field state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
         Transaction tx = op.getExecutionContext().getTransaction();
@@ -152,12 +121,7 @@ class Hollow extends LifeCycleState
         return changeState(op, tx.isActive() ? P_DIRTY : P_NONTRANS);
     }
 
-    /**
-     * Method to transition to retrieve state.
-     * @param op ObjectProvider.
-     * @param fgOnly only the current fetch group fields
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionRetrieve(ObjectProvider op, boolean fgOnly)
     {
         if (fgOnly)
@@ -179,13 +143,8 @@ class Hollow extends LifeCycleState
         }
         return super.transitionRetrieve(op, fgOnly);
     }
-    
-    /**
-     * Method to transition to retrieve state.
-     * @param op ObjectProvider.
-     * @param fetchPlan the fetch plan to load fields
-     * @return new LifeCycle state.
-     */
+
+    @Override
     public LifeCycleState transitionRetrieve(ObjectProvider op, FetchPlan fetchPlan)
     {
         op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
@@ -201,11 +160,7 @@ class Hollow extends LifeCycleState
         return super.transitionRetrieve(op, fetchPlan);
     }
 
-    /**
-     * Method to transition to refresh state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionRefresh(ObjectProvider op)
     {
         op.clearSavedFields();
@@ -218,21 +173,13 @@ class Hollow extends LifeCycleState
         return this;
     }
 
-    /**
-     * Method to transition to detached-clean.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionDetach(ObjectProvider op)
     {
         return changeState(op, DETACHED_CLEAN);
     }
 
-    /**
-     * Method to transition when serialised.
-     * @param op ObjectProvider
-     * @return The new LifeCycle state
-     */
+    @Override
     public LifeCycleState transitionSerialize(ObjectProvider op)
     {
         Transaction tx = op.getExecutionContext().getTransaction();

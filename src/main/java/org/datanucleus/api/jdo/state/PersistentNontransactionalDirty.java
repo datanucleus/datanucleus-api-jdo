@@ -41,24 +41,13 @@ class PersistentNontransactionalDirty extends LifeCycleState
         stateType = P_NONTRANS_DIRTY;
     }
 
-
-    /**
-     * Method to transition to transactional.
-     * @param op ObjectProvider.
-     * @param refreshFields Whether to refresh loaded fields
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeTransactional(ObjectProvider op, boolean refreshFields)
     {
         return this;
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         op.clearSavedFields();
@@ -72,12 +61,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to rollback state.
-     * @param op ObjectProvider.
-     * @param tx The transaction
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op,Transaction tx)
     {
         if (tx.getRestoreValues())
@@ -90,12 +74,8 @@ class PersistentNontransactionalDirty extends LifeCycleState
         op.clearSavedFields();
         return changeState(op, HOLLOW);
     }
-    
-    /**
-     * Method to transition to evict state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+
+    @Override
     public LifeCycleState transitionEvict(ObjectProvider op)
     {
         op.clearNonPrimaryKeyFields();
@@ -103,12 +83,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to read-field state.
-     * @param op ObjectProvider.
-     * @param isLoaded if the field was previously loaded.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
     {
         Transaction tx = op.getExecutionContext().getTransaction();
@@ -119,34 +94,21 @@ class PersistentNontransactionalDirty extends LifeCycleState
         return this;
     }
 
-    /**
-     * Method to transition to transaction begin state.
-     * @param op ObjectProvider.
-     * @param tx Transaction.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionBegin(ObjectProvider op, org.datanucleus.transaction.Transaction tx)
     {
         op.saveFields();
         op.enlistInTransaction();
         return this;
     }
-    
-    /**
-     * Method to transition to write-field state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+
+    @Override
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
         return this;
     }
 
-    /**
-     * Method to transition to detached-clean.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     */
+    @Override
     public LifeCycleState transitionDetach(ObjectProvider op)
     {
         return changeState(op, DETACHED_CLEAN);

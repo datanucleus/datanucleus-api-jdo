@@ -48,11 +48,7 @@ class DetachedClean extends LifeCycleState
         return "DETACHED_CLEAN";
     }
 
-    /**
-     * Method to transition to persistent-clean.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionAttach(ObjectProvider op)
     {
         return changeState(op, P_CLEAN);

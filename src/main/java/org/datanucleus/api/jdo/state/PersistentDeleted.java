@@ -44,33 +44,19 @@ class PersistentDeleted extends LifeCycleState
         stateType =  P_DELETED;
     }
 
-    /**
-     * Method to transition to non-transactional.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {
         throw new JDOUserException(Localiser.msg("027007"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to transition to transient.
-     * @param op ObjectProvider.
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         throw new JDOUserException(Localiser.msg("027008"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         if (!tx.getRetainValues())
@@ -80,12 +66,7 @@ class PersistentDeleted extends LifeCycleState
         return changeState(op, TRANSIENT);
     }
 
-    /**
-     * Method to transition to rollback state.
-     * @param op ObjectProvider.
-     * @param tx The transaction
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
     {
         if (tx.getRetainValues())
@@ -104,31 +85,19 @@ class PersistentDeleted extends LifeCycleState
 
     }
 
-    /**
-     * Method to transition to read-field state.
-     * @param op ObjectProvider.
-     * @param isLoaded if the field was previously loaded.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
     {
         throw new JDOUserException(Localiser.msg("027009"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to transition to write-field state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
         throw new JDOUserException(Localiser.msg("027010"),op.getInternalObjectId());
     }
 
-    /**
-     * Method to return a string version of this object.
-     * @return The string "P_DELETED".
-     **/
+    @Override
     public String toString()
     {
         return "P_DELETED";

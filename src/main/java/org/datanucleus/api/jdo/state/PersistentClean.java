@@ -42,34 +42,21 @@ class PersistentClean extends LifeCycleState
         stateType = P_CLEAN;
     }
 
-    /**
-     * Method to transition to delete persistent.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionDeletePersistent(ObjectProvider op)
     {
         op.clearLoadedFlags();        
         return changeState(op, P_DELETED);
     }
 
-    /**
-     * Method to transition to nontransactional.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
     {
         op.clearSavedFields();
         return changeState(op, P_NONTRANS);
     }
 
-    /**
-     * Method to transition to transient.
-     * @param op ObjectProvider.
-     * @param useFetchPlan to make transient the fields in the fetch plan
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
@@ -79,12 +66,7 @@ class PersistentClean extends LifeCycleState
         return changeState(op, TRANSIENT);
     }
 
-    /**
-     * Method to transition to commit state.
-     * @param op ObjectProvider.
-     * @param tx the Transaction been committed.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
     {
         op.clearSavedFields();
@@ -98,12 +80,7 @@ class PersistentClean extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to rollback state.
-     * @param op ObjectProvider.
-     * @param tx The Transaction
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionRollback(ObjectProvider op,Transaction tx)
     {
         if (tx.getRestoreValues())
@@ -117,11 +94,7 @@ class PersistentClean extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to evict state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionEvict(ObjectProvider op)
     {
         op.clearNonPrimaryKeyFields();
@@ -129,11 +102,7 @@ class PersistentClean extends LifeCycleState
         return changeState(op, HOLLOW);
     }
 
-    /**
-     * Method to transition to write-field state.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionWriteField(ObjectProvider op)
     {
         Transaction tx = op.getExecutionContext().getTransaction();
@@ -145,11 +114,7 @@ class PersistentClean extends LifeCycleState
         return changeState(op, P_DIRTY);
     }
 
-	/**
-	 * Method to transition to refresh state.
-	 * @param op ObjectProvider.
-	 * @return new LifeCycle state.
-	 **/
+    @Override
 	public LifeCycleState transitionRefresh(ObjectProvider op)
 	{
 		op.clearSavedFields();
@@ -165,13 +130,8 @@ class PersistentClean extends LifeCycleState
 		}
 		return changeState(op,P_NONTRANS);      
 	}
-	
-    /**
-     * Method to transition to retrieve state.
-     * @param op ObjectProvider.
-	 * @param fgOnly only the current fetch group fields
-     * @return new LifeCycle state.
-     **/
+
+    @Override
     public LifeCycleState transitionRetrieve(ObjectProvider op, boolean fgOnly)
     {
 		if (fgOnly)
@@ -185,23 +145,14 @@ class PersistentClean extends LifeCycleState
         return this;
     }
 
-    /**
-     * Method to transition to retrieve state.
-     * @param op ObjectProvider.
-     * @param fetchPlan the fetch plan to load fields
-     * @return new LifeCycle state.
-     **/
+    @Override
     public LifeCycleState transitionRetrieve(ObjectProvider op, FetchPlan fetchPlan)
     {
         op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
         return this;
     }
-    
-    /**
-     * Method to transition to detached-clean.
-     * @param op ObjectProvider.
-     * @return new LifeCycle state.
-     **/
+
+    @Override
     public LifeCycleState transitionDetach(ObjectProvider op)
     {
         return changeState(op, DETACHED_CLEAN);
