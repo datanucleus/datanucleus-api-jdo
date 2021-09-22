@@ -43,55 +43,55 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider op)
+    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
     {
-        op.clearLoadedFlags();        
-        return changeState(op, P_DELETED);
+        sm.clearLoadedFlags();        
+        return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
+    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
     {
-        op.clearSavedFields();
-        return changeState(op, P_NONTRANS);
+        sm.clearSavedFields();
+        return changeState(sm, P_NONTRANS);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
-            op.loadUnloadedFieldsInFetchPlan();
+            sm.loadUnloadedFieldsInFetchPlan();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-        op.clearSavedFields();
+        sm.clearSavedFields();
 
         if (tx.getRetainValues())
         {
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op,Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm,Transaction tx)
     {
         if (tx.getRestoreValues())
         {
-            op.restoreFields();
-            return changeState(op, P_NONTRANS);
+            sm.restoreFields();
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override

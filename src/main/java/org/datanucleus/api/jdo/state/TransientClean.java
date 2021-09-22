@@ -42,57 +42,57 @@ class TransientClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
+    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
     {  
         try
         {
-            return changeTransientState(op,TRANSIENT);
+            return changeTransientState(sm,TRANSIENT);
         }
         finally
         {
-            op.disconnect();
+            sm.disconnect();
         }
     }
 
     @Override
-    public LifeCycleState transitionMakePersistent(ObjectProvider op)
+    public LifeCycleState transitionMakePersistent(ObjectProvider sm)
     {    
-        op.registerTransactional();
-        return changeState(op,P_NEW);
+        sm.registerTransactional();
+        return changeState(sm,P_NEW);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive())
         {
-            op.saveFields();
-            return changeTransientState(op,T_DIRTY);
+            sm.saveFields();
+            return changeTransientState(sm,T_DIRTY);
         }
         return this;
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
         return this;
     }

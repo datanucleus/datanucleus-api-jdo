@@ -42,33 +42,33 @@ class TransientDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionMakePersistent(ObjectProvider op)
+    public LifeCycleState transitionMakePersistent(ObjectProvider sm)
     {
-        op.registerTransactional();
-        return changeState(op,P_NEW);
+        sm.registerTransactional();
+        return changeState(sm,P_NEW);
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-    	op.clearSavedFields();
-        return changeTransientState(op,T_CLEAN);
+    	sm.clearSavedFields();
+        return changeTransientState(sm,T_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
-        if (tx.getRestoreValues() || op.isRestoreValues())
+        if (tx.getRestoreValues() || sm.isRestoreValues())
         {
-            op.restoreFields();
-        } // else do nothing.
-        return changeTransientState(op,T_CLEAN); 
+            sm.restoreFields();
+        }
+        return changeTransientState(sm,T_CLEAN); 
     }
 
     /**

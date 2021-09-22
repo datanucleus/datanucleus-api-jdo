@@ -45,56 +45,56 @@ class PersistentDeleted extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
+    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
     {
-        throw new JDOUserException(Localiser.msg("027007"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027007"),sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
-        throw new JDOUserException(Localiser.msg("027008"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027008"),sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
         if (!tx.getRetainValues())
         {
-            op.clearFields();
+            sm.clearFields();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
         if (tx.getRetainValues())
         {
             if (tx.getRestoreValues())
             {
-                op.restoreFields();
+                sm.restoreFields();
             }
 
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
 
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
-        throw new JDOUserException(Localiser.msg("027009"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027009"), sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
-        throw new JDOUserException(Localiser.msg("027010"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027010"), sm.getInternalObjectId());
     }
 
     @Override

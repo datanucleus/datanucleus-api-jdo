@@ -46,47 +46,47 @@ class PersistentNewDeleted extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
+    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
     {
-        throw new NucleusUserException(Localiser.msg("027003"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027003"), sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
-        throw new NucleusUserException(Localiser.msg("027004"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027004"),sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
         if (!tx.getRetainValues())
         {
-            op.clearFields();
+            sm.clearFields();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
         if (tx.getRestoreValues())
         {
-            op.restoreFields();
+            sm.restoreFields();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
-        throw new JDOUserException(Localiser.msg("027005"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027005"), sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
-        throw new JDOUserException(Localiser.msg("027006"),op.getInternalObjectId());
+        throw new JDOUserException(Localiser.msg("027006"), sm.getInternalObjectId());
     }
 
     /**

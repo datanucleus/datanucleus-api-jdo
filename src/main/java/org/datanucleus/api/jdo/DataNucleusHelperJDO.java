@@ -258,22 +258,22 @@ public class DataNucleusHelperJDO
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
 
             // Temporarily attach a StateManager to access the detached field information
-            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
-            pc.dnReplaceStateManager(op);
-            op.retrieveDetachState(op);
-            String[] dirtyFieldNames = op.getDirtyFieldNames();
+            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            pc.dnReplaceStateManager(sm);
+            sm.retrieveDetachState(sm);
+            String[] dirtyFieldNames = sm.getDirtyFieldNames();
             pc.dnReplaceStateManager(null);
 
             return dirtyFieldNames;
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider op = ec.findObjectProvider(pc);
-        if (op == null)
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
             return null;
         }
-        return op.getDirtyFieldNames();
+        return sm.getDirtyFieldNames();
     }
 
     /**
@@ -294,22 +294,22 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
-            pc.dnReplaceStateManager(op);
-            op.retrieveDetachState(op);
-            String[] loadedFieldNames = op.getLoadedFieldNames();
+            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            pc.dnReplaceStateManager(sm);
+            sm.retrieveDetachState(sm);
+            String[] loadedFieldNames = sm.getLoadedFieldNames();
             pc.dnReplaceStateManager(null);
 
             return loadedFieldNames;
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider op = ec.findObjectProvider(pc);
-        if (op == null)
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
             return null;
         }
-        return op.getLoadedFieldNames();
+        return sm.getLoadedFieldNames();
     }
 
     /**
@@ -331,24 +331,24 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
-            pc.dnReplaceStateManager(op);
-            op.retrieveDetachState(op);
-            int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
-            boolean loaded = op.isFieldLoaded(position);
+            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            pc.dnReplaceStateManager(sm);
+            sm.retrieveDetachState(sm);
+            int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+            boolean loaded = sm.isFieldLoaded(position);
             pc.dnReplaceStateManager(null);
 
             return loaded;
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider op = ec.findObjectProvider(pc);
-        if (op == null)
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
             return null;
         }
-        int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
-        return op.isFieldLoaded(position);
+        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        return sm.isFieldLoaded(position);
     }
 
     /**
@@ -370,24 +370,24 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider op = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
-            pc.dnReplaceStateManager(op);
-            op.retrieveDetachState(op);
-            int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
-            boolean[] dirtyFieldNumbers = op.getDirtyFields();
+            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            pc.dnReplaceStateManager(sm);
+            sm.retrieveDetachState(sm);
+            int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+            boolean[] dirtyFieldNumbers = sm.getDirtyFields();
             pc.dnReplaceStateManager(null);
 
             return dirtyFieldNumbers[position];
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider op = ec.findObjectProvider(pc);
-        if (op == null)
+        ObjectProvider sm = ec.findObjectProvider(pc);
+        if (sm == null)
         {
             return null;
         }
-        int position = op.getClassMetaData().getAbsolutePositionOfMember(memberName);
-        boolean[] dirtyFieldNumbers = op.getDirtyFields();
+        int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
+        boolean[] dirtyFieldNumbers = sm.getDirtyFields();
         return dirtyFieldNumbers[position];
     }
 }

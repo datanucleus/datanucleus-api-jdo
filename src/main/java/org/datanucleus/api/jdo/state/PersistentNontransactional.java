@@ -48,129 +48,129 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider op)
+    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
     {
-        op.clearLoadedFlags();
-        return changeState(op, P_DELETED);
+        sm.clearLoadedFlags();
+        return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider op, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
     {
         if (refreshFields)
         {
-            op.refreshLoadedFields();
+            sm.refreshLoadedFields();
         }
-        return changeState(op, P_CLEAN);
+        return changeState(sm, P_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
-            op.loadUnloadedFieldsInFetchPlan();
+            sm.loadUnloadedFieldsInFetchPlan();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-        throw new IllegalStateTransitionException(this, "commit", op);
+        throw new IllegalStateTransitionException(this, "commit", sm);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op,Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
-        throw new IllegalStateTransitionException(this, "rollback", op);
+        throw new IllegalStateTransitionException(this, "rollback", sm);
     }
 
     @Override
-    public LifeCycleState transitionRefresh(ObjectProvider op)
+    public LifeCycleState transitionRefresh(ObjectProvider sm)
     {
         // Refresh the FetchPlan fields and unload all others
-        op.refreshFieldsInFetchPlan();
-        op.unloadNonFetchPlanFields();
+        sm.refreshFieldsInFetchPlan();
+        sm.unloadNonFetchPlanFields();
 
         return this;
     }
 
     @Override
-    public LifeCycleState transitionEvict(ObjectProvider op)
+    public LifeCycleState transitionEvict(ObjectProvider sm)
     {
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
 		{
-	        throw new TransactionNotReadableException(Localiser.msg("027002"), op.getInternalObjectId());
+	        throw new TransactionNotReadableException(Localiser.msg("027002"), sm.getInternalObjectId());
 		}
         if (tx.isActive() && !tx.getOptimistic())
         {
             // Save the fields for rollback.
-            op.saveFields();
-            op.refreshLoadedFields();
-            return changeState(op, P_CLEAN);
+            sm.saveFields();
+            sm.refreshLoadedFields();
+            return changeState(sm, P_CLEAN);
         }
         return this;
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalWrite())
         {
-            throw new TransactionNotWritableException(Localiser.msg("027001"), op.getInternalObjectId());
+            throw new TransactionNotWritableException(Localiser.msg("027001"), sm.getInternalObjectId());
         }
         if (tx.isActive())
         {
             // Save the fields for rollback.
-            op.saveFields();
-            return changeState(op, P_DIRTY);
+            sm.saveFields();
+            return changeState(sm, P_DIRTY);
         }
 
         // Save the fields for rollback.
-        op.saveFields();
-        return changeState(op, P_NONTRANS_DIRTY);
+        sm.saveFields();
+        return changeState(sm, P_NONTRANS_DIRTY);
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider op, boolean fgOnly)
+    public LifeCycleState transitionRetrieve(ObjectProvider sm, boolean fgOnly)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
             // Save the fields for rollback.
-            op.saveFields();
+            sm.saveFields();
     		if (fgOnly)
             {
-                op.loadUnloadedFieldsInFetchPlan();
+                sm.loadUnloadedFieldsInFetchPlan();
             }
     		else
             {
-    			op.loadUnloadedFields();
+    			sm.loadUnloadedFields();
             }             
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
         else if (tx.isActive() && tx.getOptimistic())
         {
             // Save the fields for rollback.
-            op.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
+            sm.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
     		if (fgOnly)
             {
-                op.loadUnloadedFieldsInFetchPlan();
+                sm.loadUnloadedFieldsInFetchPlan();
             }
     		else
             {
-    			op.loadUnloadedFields();
+    			sm.loadUnloadedFields();
             }
     		return this;
         }
@@ -178,56 +178,56 @@ class PersistentNontransactional extends LifeCycleState
         {
     		if (fgOnly)
             {
-                op.loadUnloadedFieldsInFetchPlan();
+                sm.loadUnloadedFieldsInFetchPlan();
             }
     		else
             {
-    			op.loadUnloadedFields();
+    			sm.loadUnloadedFields();
             }
     		return this;
         }
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider op, FetchPlan fetchPlan)
+    public LifeCycleState transitionRetrieve(ObjectProvider sm, FetchPlan fetchPlan)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
             // Save the fields for rollback.
-            op.saveFields();
-            op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
-            return changeState(op, P_CLEAN);
+            sm.saveFields();
+            sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
+            return changeState(sm, P_CLEAN);
         }
         else if (tx.isActive() && tx.getOptimistic())
         {
             // Save the fields for rollback.
-            op.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
-            op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
+            sm.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
+            sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
             return this;
         }
         else
         {
-            op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
+            sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
             return this;
         }
     }
 
     @Override
-    public LifeCycleState transitionSerialize(ObjectProvider op)
+    public LifeCycleState transitionSerialize(ObjectProvider sm)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
         return this;
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider op)
+    public LifeCycleState transitionDetach(ObjectProvider sm)
     {
-        return changeState(op, DETACHED_CLEAN);
+        return changeState(sm, DETACHED_CLEAN);
     }
 
     /**

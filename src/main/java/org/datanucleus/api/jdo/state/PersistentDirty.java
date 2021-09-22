@@ -44,77 +44,77 @@ class PersistentDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider op)
+    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
     {
-        op.clearLoadedFlags();        
-        return changeState(op, P_DELETED);
+        sm.clearLoadedFlags();        
+        return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider op)
+    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
     {
-        throw new NucleusUserException(Localiser.msg("027011"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027011"), sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (detachAllOnCommit)
         {
-            return changeState(op, TRANSIENT);
+            return changeState(sm, TRANSIENT);
         }
-        throw new NucleusUserException(Localiser.msg("027012"),op.getInternalObjectId());
+        throw new NucleusUserException(Localiser.msg("027012"),sm.getInternalObjectId());
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-        op.clearSavedFields();
+        sm.clearSavedFields();
 
         if (tx.getRetainValues())
         {
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
         if (tx.getRestoreValues())
         {
-            op.restoreFields();
-            return changeState(op, P_NONTRANS);
+            sm.restoreFields();
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionRefresh(ObjectProvider op)
+    public LifeCycleState transitionRefresh(ObjectProvider sm)
     {
-        op.clearSavedFields();
+        sm.clearSavedFields();
 
         // Refresh the FetchPlan fields and unload all others
-        op.refreshFieldsInFetchPlan();
-        op.unloadNonFetchPlanFields();
+        sm.refreshFieldsInFetchPlan();
+        sm.unloadNonFetchPlanFields();
 
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
-            return changeState(op,P_CLEAN);
+            return changeState(sm,P_CLEAN);
         }
-        return changeState(op,P_NONTRANS);      
+        return changeState(sm,P_NONTRANS);      
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider op)
+    public LifeCycleState transitionDetach(ObjectProvider sm)
     {
-        return changeState(op, DETACHED_CLEAN);
+        return changeState(sm, DETACHED_CLEAN);
     }
 
     /**

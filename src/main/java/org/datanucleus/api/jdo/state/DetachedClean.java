@@ -49,8 +49,8 @@ class DetachedClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionAttach(ObjectProvider op)
+    public LifeCycleState transitionAttach(ObjectProvider sm)
     {
-        return changeState(op, P_CLEAN);
+        return changeState(sm, P_CLEAN);
     }
 }

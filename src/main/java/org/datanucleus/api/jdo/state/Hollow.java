@@ -49,53 +49,53 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider op)
+    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
     {
-        op.clearLoadedFlags();
-        return changeState(op, P_DELETED);
+        sm.clearLoadedFlags();
+        return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider op, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
     {
         if (refreshFields)
         {
-            op.refreshLoadedFields();
+            sm.refreshLoadedFields();
         }
-        return changeState(op, P_CLEAN);
+        return changeState(sm, P_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider op, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
-            op.loadUnloadedFieldsInFetchPlan();
+            sm.loadUnloadedFieldsInFetchPlan();
         }
-        return changeState(op, TRANSIENT);
+        return changeState(sm, TRANSIENT);
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-        throw new IllegalStateTransitionException(this, "commit", op);
+        throw new IllegalStateTransitionException(this, "commit", sm);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
     {
-        throw new IllegalStateTransitionException(this, "rollback", op);
+        throw new IllegalStateTransitionException(this, "rollback", sm);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalRead())
         {
-            throw new TransactionNotReadableException(Localiser.msg("027000"), op.getInternalObjectId());
+            throw new TransactionNotReadableException(Localiser.msg("027000"), sm.getInternalObjectId());
         }
-        else if (!tx.isActive() && op.getClassMetaData().getIdentityType() == IdentityType.NONDURABLE)
+        else if (!tx.isActive() && sm.getClassMetaData().getIdentityType() == IdentityType.NONDURABLE)
         {
             if (!isLoaded)
             {
@@ -105,87 +105,87 @@ class Hollow extends LifeCycleState
         }
         if (!tx.getOptimistic() && tx.isActive())
         {
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
-        return changeState(op, P_NONTRANS);
+        return changeState(sm, P_NONTRANS);
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalWrite())
         {
-            throw new TransactionNotWritableException(Localiser.msg("027001"), op.getInternalObjectId());
+            throw new TransactionNotWritableException(Localiser.msg("027001"), sm.getInternalObjectId());
         }
-        return changeState(op, tx.isActive() ? P_DIRTY : P_NONTRANS);
+        return changeState(sm, tx.isActive() ? P_DIRTY : P_NONTRANS);
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider op, boolean fgOnly)
+    public LifeCycleState transitionRetrieve(ObjectProvider sm, boolean fgOnly)
     {
         if (fgOnly)
         {
-            op.loadUnloadedFieldsInFetchPlan();
+            sm.loadUnloadedFieldsInFetchPlan();
         }
         else
         {
-            op.loadUnloadedFields();
+            sm.loadUnloadedFields();
         }
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.getOptimistic() && tx.isActive())
         {
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
         else if (tx.getOptimistic())
         {
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
-        return super.transitionRetrieve(op, fgOnly);
+        return super.transitionRetrieve(sm, fgOnly);
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider op, FetchPlan fetchPlan)
+    public LifeCycleState transitionRetrieve(ObjectProvider sm, FetchPlan fetchPlan)
     {
-        op.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
-        Transaction tx = op.getExecutionContext().getTransaction();
+        sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.getOptimistic() && tx.isActive())
         {
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
         else if (tx.getOptimistic())
         {
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
-        return super.transitionRetrieve(op, fetchPlan);
+        return super.transitionRetrieve(sm, fetchPlan);
     }
 
     @Override
-    public LifeCycleState transitionRefresh(ObjectProvider op)
+    public LifeCycleState transitionRefresh(ObjectProvider sm)
     {
-        op.clearSavedFields();
+        sm.clearSavedFields();
 
         // Refresh the FetchPlan fields and unload all others
-        op.refreshFieldsInFetchPlan();
-        op.unloadNonFetchPlanFields();
+        sm.refreshFieldsInFetchPlan();
+        sm.unloadNonFetchPlanFields();
 
         // We leave in the same state to be consistent with JDO section 5.9.1
         return this;
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider op)
+    public LifeCycleState transitionDetach(ObjectProvider sm)
     {
-        return changeState(op, DETACHED_CLEAN);
+        return changeState(sm, DETACHED_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionSerialize(ObjectProvider op)
+    public LifeCycleState transitionSerialize(ObjectProvider sm)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
-            return changeState(op, P_CLEAN);
+            return changeState(sm, P_CLEAN);
         }
         return this;
     }

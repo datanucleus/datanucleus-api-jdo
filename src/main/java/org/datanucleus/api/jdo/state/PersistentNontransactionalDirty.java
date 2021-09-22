@@ -42,76 +42,76 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider op, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider op, Transaction tx)
+    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
     {
-        op.clearSavedFields();
+        sm.clearSavedFields();
 
         if (tx.getRetainValues())
         {
-            return changeState(op, P_NONTRANS);
+            return changeState(sm, P_NONTRANS);
         }
 
-        op.clearNonPrimaryKeyFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider op,Transaction tx)
+    public LifeCycleState transitionRollback(ObjectProvider sm,Transaction tx)
     {
         if (tx.getRestoreValues())
         {
-            op.restoreFields();
-            return changeState(op, P_NONTRANS_DIRTY);
+            sm.restoreFields();
+            return changeState(sm, P_NONTRANS_DIRTY);
         }
 
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionEvict(ObjectProvider op)
+    public LifeCycleState transitionEvict(ObjectProvider sm)
     {
-        op.clearNonPrimaryKeyFields();
-        op.clearSavedFields();
-        return changeState(op, HOLLOW);
+        sm.clearNonPrimaryKeyFields();
+        sm.clearSavedFields();
+        return changeState(sm, HOLLOW);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider op, boolean isLoaded)
+    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
     {
-        Transaction tx = op.getExecutionContext().getTransaction();
+        Transaction tx = sm.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
 		{
-	        throw new JDOUserException(Localiser.msg("027002"),op.getInternalObjectId());
+	        throw new JDOUserException(Localiser.msg("027002"),sm.getInternalObjectId());
 		}
         return this;
     }
 
     @Override
-    public LifeCycleState transitionBegin(ObjectProvider op, org.datanucleus.transaction.Transaction tx)
+    public LifeCycleState transitionBegin(ObjectProvider sm, org.datanucleus.transaction.Transaction tx)
     {
-        op.saveFields();
-        op.enlistInTransaction();
+        sm.saveFields();
+        sm.enlistInTransaction();
         return this;
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider op)
+    public LifeCycleState transitionWriteField(ObjectProvider sm)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider op)
+    public LifeCycleState transitionDetach(ObjectProvider sm)
     {
-        return changeState(op, DETACHED_CLEAN);
+        return changeState(sm, DETACHED_CLEAN);
     }
 
     /**

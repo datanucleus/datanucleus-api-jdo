@@ -48,8 +48,8 @@ class DetachedDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionAttach(ObjectProvider op)
+    public LifeCycleState transitionAttach(ObjectProvider sm)
     {
-        return changeState(op, P_DIRTY);
+        return changeState(sm, P_DIRTY);
     }
 }

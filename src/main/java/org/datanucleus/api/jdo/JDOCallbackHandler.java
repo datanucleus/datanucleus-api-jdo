@@ -119,12 +119,12 @@ public class JDOCallbackHandler implements CallbackHandler
             if (listener.forClass(pc.getClass()) && listener.getListener() instanceof StoreLifecycleListener)
             {
                 // PRE_STORE will return the fields being stored (DataNucleus extension)
-                ObjectProvider op = ec.findObjectProvider(pc);
-                String[] fieldNames = op.getDirtyFieldNames();
+                ObjectProvider sm = ec.findObjectProvider(pc);
+                String[] fieldNames = sm.getDirtyFieldNames();
                 if (fieldNames == null)
                 {
                     // Must be persisting so just return all loaded fields
-                    fieldNames = op.getLoadedFieldNames();
+                    fieldNames = sm.getLoadedFieldNames();
                 }
                 ((StoreLifecycleListener)listener.getListener()).preStore(new FieldInstanceLifecycleEvent(pc, InstanceLifecycleEvent.STORE, null, fieldNames));
             }
@@ -150,8 +150,8 @@ public class JDOCallbackHandler implements CallbackHandler
 
         if (beanValidationHandler != null)
         {
-            ObjectProvider op = ec.findObjectProvider(pc);
-            if (!op.getLifecycleState().isNew())
+            ObjectProvider sm = ec.findObjectProvider(pc);
+            if (!sm.getLifecycleState().isNew())
             {
                 // Don't fire this when persisting new since we will have done prePersist
                 beanValidationHandler.preStore(pc);
