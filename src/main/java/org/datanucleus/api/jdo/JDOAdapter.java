@@ -137,9 +137,7 @@ public class JDOAdapter implements ApiAdapter
         return "JDO";
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#isMemberDefaultPersistent(java.lang.Class)
-     */
+    @Override
     public boolean isMemberDefaultPersistent(Class type)
     {
         String typeName = type.getName();
@@ -172,12 +170,7 @@ public class JDOAdapter implements ApiAdapter
 
     // ------------------------------ Object Lifecycle --------------------------------
 
-    /**
-     * Method to return the ExecutionContext (if any) associated with the passed object.
-     * Supports persistable objects, and PersistenceManager.
-     * @param obj The object
-     * @return The ExecutionContext
-     */
+    @Override
     public ExecutionContext getExecutionContext(Object obj)
     {
         if (obj == null)
@@ -197,21 +190,13 @@ public class JDOAdapter implements ApiAdapter
         return null;
     }
 
-    /**
-     * Returns the LifeCycleState for the state constant.
-     * @param stateType the type as integer
-     * @return the type as LifeCycleState object
-     */
+    @Override
     public LifeCycleState getLifeCycleState(int stateType)
     {
         return LifeCycleStateFactory.getLifeCycleState(stateType);
     }
 
-    /**
-     * Accessor for the object state.
-     * @param obj Object
-     * @return The state ("persistent-clean", "detached-dirty" etc)
-     */
+    @Override
     public String getObjectState(Object obj)
     {
         if (obj == null)
@@ -223,16 +208,7 @@ public class JDOAdapter implements ApiAdapter
 
     // ------------------------------ Object Identity  --------------------------------
 
-    /**
-     * Utility to check if a primary-key class is valid.
-     * Will throw a InvalidPrimaryKeyException if it is invalid, otherwise returning true.
-     * @param pkClass The Primary Key class
-     * @param cmd AbstractClassMetaData for the persistable class
-     * @param clr the ClassLoaderResolver
-     * @param noOfPkFields Number of primary key fields
-     * @param mmgr MetaData manager
-     * @return Whether it is valid
-     */
+    @Override
     public boolean isValidPrimaryKeyClass(Class pkClass, AbstractClassMetaData cmd, ClassLoaderResolver clr, int noOfPkFields, MetaDataManager mmgr)
     {
         // When using inner class, must be static
@@ -441,65 +417,44 @@ public class JDOAdapter implements ApiAdapter
 
     // ------------------------------ Persistence --------------------------------
 
-    /**
-     * Whether the API allows (re-)persistence of a deleted object.
-     * @return Whether you can call persist on a deleted object
-     */
+    @Override
     public boolean allowPersistOfDeletedObject()
     {
         // JDO doesnt allow re-persist of a deleted object
         return false;
     }
 
-    /**
-     * Whether the API allows deletion of a non-persistent object.
-     * @return Whether you can call delete on an object not yet persisted
-     */
+    @Override
     public boolean allowDeleteOfNonPersistentObject()
     {
         // JDO requires an exception throwing on attempts to delete transient objects
         return false;
     }
 
-    /**
-     * Whether the API allows reading a field of a deleted object.
-     * @return Whether you can read after deleting
-     */
+    @Override
     public boolean allowReadFieldOfDeletedObject()
     {
         return false;
     }
 
-    /**
-     * Whether the API requires clearing of the fields of an object when it is deleted.
-     * @return Whether to clear loaded fields at delete
-     */
+    @Override
     public boolean clearLoadedFlagsOnDeleteObject()
     {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadePersistorField()
-     */
     @Override
     public boolean getDefaultCascadePersistForField()
     {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeUpdateForField()
-     */
     @Override
     public boolean getDefaultCascadeAttachForField()
     {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeDeleteForField()
-     */
     @Override
     public boolean getDefaultCascadeDeleteForField()
     {
@@ -507,37 +462,26 @@ public class JDOAdapter implements ApiAdapter
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeDetachForField()
-     */
     @Override
     public boolean getDefaultCascadeDetachForField()
     {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultCascadeRefreshForField()
-     */
     @Override
     public boolean getDefaultCascadeRefreshForField()
     {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getDefaultDFGForPersistableField()
-     */
+    @Override
     public boolean getDefaultDFGForPersistableField()
     {
         // 1-1/N-1 default to being LAZY loaded
         return false;
     }
 
-    /**
-     * Method to return the default factory properties for this API.
-     * @return The default props
-     */
+    @Override
     public Map getDefaultFactoryProperties()
     {
         Map props = new HashMap();
@@ -557,31 +501,19 @@ public class JDOAdapter implements ApiAdapter
         return false;
     }
 
-    /**
-     * Convenience method to return a user exception appropriate for this API.
-     * @param msg The message
-     * @param e The cause
-     * @return The JDO exception
-     */
+    @Override
     public RuntimeException getUserExceptionForException(String msg, Exception e)
     {
         return new JDOUserException(msg, e);
     }
 
-    /**
-     * Convenience method to return a datastore exception appropriate for this API.
-     * @param msg The message
-     * @param e Any root cause exception
-     * @return The exception
-     */
+    @Override
     public RuntimeException getDataStoreExceptionForException(String msg, Exception e)
     {
         return new JDODataStoreException(msg, e);
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.api.ApiAdapter#getApiExceptionForNucleusException(org.datanucleus.exceptions.NucleusException)
-     */
+    @Override
     public RuntimeException getApiExceptionForNucleusException(NucleusException ne)
     {
         return JDOAdapter.getJDOExceptionForNucleusException(ne);
