@@ -46,7 +46,7 @@ import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.identity.StringId;
 import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.MetaDataManager;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.util.ClassUtils;
 
 /**
@@ -258,7 +258,7 @@ public class DataNucleusHelperJDO
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
 
             // Temporarily attach a StateManager to access the detached field information
-            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            DNStateManager sm = ec.getNucleusContext().getStateManagerFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
             pc.dnReplaceStateManager(sm);
             sm.retrieveDetachState(sm);
             String[] dirtyFieldNames = sm.getDirtyFieldNames();
@@ -268,7 +268,7 @@ public class DataNucleusHelperJDO
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
+        DNStateManager sm = ec.findStateManager(pc);
         if (sm == null)
         {
             return null;
@@ -294,7 +294,7 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            DNStateManager sm = ec.getNucleusContext().getStateManagerFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
             pc.dnReplaceStateManager(sm);
             sm.retrieveDetachState(sm);
             String[] loadedFieldNames = sm.getLoadedFieldNames();
@@ -304,7 +304,7 @@ public class DataNucleusHelperJDO
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
+        DNStateManager sm = ec.findStateManager(pc);
         if (sm == null)
         {
             return null;
@@ -331,7 +331,7 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            DNStateManager sm = ec.getNucleusContext().getStateManagerFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
             pc.dnReplaceStateManager(sm);
             sm.retrieveDetachState(sm);
             int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
@@ -342,7 +342,7 @@ public class DataNucleusHelperJDO
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
+        DNStateManager sm = ec.findStateManager(pc);
         if (sm == null)
         {
             return null;
@@ -370,7 +370,7 @@ public class DataNucleusHelperJDO
         {
             // Temporarily attach a StateManager to access the detached field information
             ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
-            ObjectProvider sm = ec.getNucleusContext().getObjectProviderFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
+            DNStateManager sm = ec.getNucleusContext().getStateManagerFactory().newForDetached(ec, pc, JDOHelper.getObjectId(pc), null);
             pc.dnReplaceStateManager(sm);
             sm.retrieveDetachState(sm);
             int position = sm.getClassMetaData().getAbsolutePositionOfMember(memberName);
@@ -381,7 +381,7 @@ public class DataNucleusHelperJDO
         }
 
         ExecutionContext ec = (ExecutionContext) pc.dnGetExecutionContext();
-        ObjectProvider sm = ec.findObjectProvider(pc);
+        DNStateManager sm = ec.findStateManager(pc);
         if (sm == null)
         {
             return null;

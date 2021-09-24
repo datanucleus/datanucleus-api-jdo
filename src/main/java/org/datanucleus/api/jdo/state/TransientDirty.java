@@ -18,7 +18,7 @@ Contributors:
 package org.datanucleus.api.jdo.state;
 
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 
 /**
@@ -42,27 +42,27 @@ class TransientDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(DNStateManager sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionMakePersistent(ObjectProvider sm)
+    public LifeCycleState transitionMakePersistent(DNStateManager sm)
     {
         sm.registerTransactional();
         return changeState(sm,P_NEW);
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
     	sm.clearSavedFields();
         return changeTransientState(sm,T_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm, Transaction tx)
     {
         if (tx.getRestoreValues() || sm.isRestoreValues())
         {

@@ -18,7 +18,7 @@ Contributors:
 package org.datanucleus.api.jdo.state;
 
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 
 /**
@@ -42,13 +42,13 @@ class TransientClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(DNStateManager sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
+    public LifeCycleState transitionMakeNontransactional(DNStateManager sm)
     {  
         try
         {
@@ -61,20 +61,20 @@ class TransientClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakePersistent(ObjectProvider sm)
+    public LifeCycleState transitionMakePersistent(DNStateManager sm)
     {    
         sm.registerTransactional();
         return changeState(sm,P_NEW);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
+    public LifeCycleState transitionReadField(DNStateManager sm, boolean isLoaded)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider sm)
+    public LifeCycleState transitionWriteField(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive())
@@ -86,13 +86,13 @@ class TransientClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm, Transaction tx)
     {
         return this;
     }

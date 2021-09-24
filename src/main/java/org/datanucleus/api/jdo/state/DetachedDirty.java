@@ -19,7 +19,7 @@ Contributors:
 package org.datanucleus.api.jdo.state;
 
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 
 /**
  * Class representing the life cycle state of DetachedDirty.
@@ -48,7 +48,7 @@ class DetachedDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionAttach(ObjectProvider sm)
+    public LifeCycleState transitionAttach(DNStateManager sm)
     {
         return changeState(sm, P_DIRTY);
     }

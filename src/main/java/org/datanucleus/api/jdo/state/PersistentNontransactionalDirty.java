@@ -20,7 +20,7 @@ package org.datanucleus.api.jdo.state;
 import javax.jdo.JDOUserException;
 
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 import org.datanucleus.util.Localiser;
 
@@ -42,13 +42,13 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(DNStateManager sm, boolean refreshFields)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
         sm.clearSavedFields();
 
@@ -62,7 +62,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm,Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm,Transaction tx)
     {
         if (tx.getRestoreValues())
         {
@@ -76,7 +76,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionEvict(ObjectProvider sm)
+    public LifeCycleState transitionEvict(DNStateManager sm)
     {
         sm.clearNonPrimaryKeyFields();
         sm.clearSavedFields();
@@ -84,7 +84,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
+    public LifeCycleState transitionReadField(DNStateManager sm, boolean isLoaded)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
@@ -95,7 +95,7 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionBegin(ObjectProvider sm, org.datanucleus.transaction.Transaction tx)
+    public LifeCycleState transitionBegin(DNStateManager sm, org.datanucleus.transaction.Transaction tx)
     {
         sm.saveFields();
         sm.enlistInTransaction();
@@ -103,13 +103,13 @@ class PersistentNontransactionalDirty extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider sm)
+    public LifeCycleState transitionWriteField(DNStateManager sm)
     {
         return this;
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider sm)
+    public LifeCycleState transitionDetach(DNStateManager sm)
     {
         return changeState(sm, DETACHED_CLEAN);
     }

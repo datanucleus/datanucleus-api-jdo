@@ -27,7 +27,7 @@ import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.state.IllegalStateTransitionException;
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 import org.datanucleus.util.Localiser;
 
@@ -49,14 +49,14 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
+    public LifeCycleState transitionDeletePersistent(DNStateManager sm)
     {
         sm.clearLoadedFlags();
         return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(DNStateManager sm, boolean refreshFields)
     {
         if (refreshFields)
         {
@@ -66,7 +66,7 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(DNStateManager sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
@@ -76,19 +76,19 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "commit", sm);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "rollback", sm);
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
+    public LifeCycleState transitionReadField(DNStateManager sm, boolean isLoaded)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalRead())
@@ -111,7 +111,7 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider sm)
+    public LifeCycleState transitionWriteField(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalWrite())
@@ -122,7 +122,7 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, boolean fgOnly)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, boolean fgOnly)
     {
         if (fgOnly)
         {
@@ -145,7 +145,7 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, FetchPlan fetchPlan)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, FetchPlan fetchPlan)
     {
         sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
         Transaction tx = sm.getExecutionContext().getTransaction();
@@ -161,7 +161,7 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRefresh(ObjectProvider sm)
+    public LifeCycleState transitionRefresh(DNStateManager sm)
     {
         sm.clearSavedFields();
 
@@ -174,13 +174,13 @@ class Hollow extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider sm)
+    public LifeCycleState transitionDetach(DNStateManager sm)
     {
         return changeState(sm, DETACHED_CLEAN);
     }
 
     @Override
-    public LifeCycleState transitionSerialize(ObjectProvider sm)
+    public LifeCycleState transitionSerialize(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())

@@ -22,7 +22,7 @@ package org.datanucleus.api.jdo.state;
 
 import org.datanucleus.FetchPlan;
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 
 /**
@@ -43,21 +43,21 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
+    public LifeCycleState transitionDeletePersistent(DNStateManager sm)
     {
         sm.clearLoadedFlags();        
         return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeNontransactional(ObjectProvider sm)
+    public LifeCycleState transitionMakeNontransactional(DNStateManager sm)
     {
         sm.clearSavedFields();
         return changeState(sm, P_NONTRANS);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(DNStateManager sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
@@ -67,7 +67,7 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
         sm.clearSavedFields();
 
@@ -81,7 +81,7 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm,Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm,Transaction tx)
     {
         if (tx.getRestoreValues())
         {
@@ -95,7 +95,7 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionEvict(ObjectProvider sm)
+    public LifeCycleState transitionEvict(DNStateManager sm)
     {
         sm.clearNonPrimaryKeyFields();
         sm.clearSavedFields();
@@ -103,7 +103,7 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider sm)
+    public LifeCycleState transitionWriteField(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.getRestoreValues())
@@ -115,7 +115,7 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-	public LifeCycleState transitionRefresh(ObjectProvider sm)
+	public LifeCycleState transitionRefresh(DNStateManager sm)
 	{
 		sm.clearSavedFields();
 
@@ -132,7 +132,7 @@ class PersistentClean extends LifeCycleState
 	}
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, boolean fgOnly)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, boolean fgOnly)
     {
 		if (fgOnly)
         {
@@ -146,14 +146,14 @@ class PersistentClean extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, FetchPlan fetchPlan)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, FetchPlan fetchPlan)
     {
         sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
         return this;
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider sm)
+    public LifeCycleState transitionDetach(DNStateManager sm)
     {
         return changeState(sm, DETACHED_CLEAN);
     }

@@ -26,7 +26,7 @@ import org.datanucleus.api.jdo.exceptions.TransactionNotReadableException;
 import org.datanucleus.api.jdo.exceptions.TransactionNotWritableException;
 import org.datanucleus.state.IllegalStateTransitionException;
 import org.datanucleus.state.LifeCycleState;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.transaction.Transaction;
 import org.datanucleus.util.Localiser;
 
@@ -48,14 +48,14 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDeletePersistent(ObjectProvider sm)
+    public LifeCycleState transitionDeletePersistent(DNStateManager sm)
     {
         sm.clearLoadedFlags();
         return changeState(sm, P_DELETED);
     }
 
     @Override
-    public LifeCycleState transitionMakeTransactional(ObjectProvider sm, boolean refreshFields)
+    public LifeCycleState transitionMakeTransactional(DNStateManager sm, boolean refreshFields)
     {
         if (refreshFields)
         {
@@ -65,7 +65,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionMakeTransient(ObjectProvider sm, boolean useFetchPlan, boolean detachAllOnCommit)
+    public LifeCycleState transitionMakeTransient(DNStateManager sm, boolean useFetchPlan, boolean detachAllOnCommit)
     {
         if (useFetchPlan)
         {
@@ -75,19 +75,19 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionCommit(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionCommit(DNStateManager sm, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "commit", sm);
     }
 
     @Override
-    public LifeCycleState transitionRollback(ObjectProvider sm, Transaction tx)
+    public LifeCycleState transitionRollback(DNStateManager sm, Transaction tx)
     {
         throw new IllegalStateTransitionException(this, "rollback", sm);
     }
 
     @Override
-    public LifeCycleState transitionRefresh(ObjectProvider sm)
+    public LifeCycleState transitionRefresh(DNStateManager sm)
     {
         // Refresh the FetchPlan fields and unload all others
         sm.refreshFieldsInFetchPlan();
@@ -97,7 +97,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionEvict(ObjectProvider sm)
+    public LifeCycleState transitionEvict(DNStateManager sm)
     {
         sm.clearNonPrimaryKeyFields();
         sm.clearSavedFields();
@@ -105,7 +105,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionReadField(ObjectProvider sm, boolean isLoaded)
+    public LifeCycleState transitionReadField(DNStateManager sm, boolean isLoaded)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
 		if (!tx.isActive() && !tx.getNontransactionalRead())
@@ -123,7 +123,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionWriteField(ObjectProvider sm)
+    public LifeCycleState transitionWriteField(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (!tx.isActive() && !tx.getNontransactionalWrite())
@@ -143,7 +143,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, boolean fgOnly)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, boolean fgOnly)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
@@ -189,7 +189,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionRetrieve(ObjectProvider sm, FetchPlan fetchPlan)
+    public LifeCycleState transitionRetrieve(DNStateManager sm, FetchPlan fetchPlan)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
@@ -214,7 +214,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionSerialize(ObjectProvider sm)
+    public LifeCycleState transitionSerialize(DNStateManager sm)
     {
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
@@ -225,7 +225,7 @@ class PersistentNontransactional extends LifeCycleState
     }
 
     @Override
-    public LifeCycleState transitionDetach(ObjectProvider sm)
+    public LifeCycleState transitionDetach(DNStateManager sm)
     {
         return changeState(sm, DETACHED_CLEAN);
     }

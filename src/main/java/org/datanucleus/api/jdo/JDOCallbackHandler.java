@@ -53,7 +53,7 @@ import org.datanucleus.api.jdo.metadata.JDOAnnotationUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.EventListenerMetaData;
 import org.datanucleus.state.CallbackHandler;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 
@@ -119,7 +119,7 @@ public class JDOCallbackHandler implements CallbackHandler
             if (listener.forClass(pc.getClass()) && listener.getListener() instanceof StoreLifecycleListener)
             {
                 // PRE_STORE will return the fields being stored (DataNucleus extension)
-                ObjectProvider sm = ec.findObjectProvider(pc);
+                DNStateManager sm = ec.findStateManager(pc);
                 String[] fieldNames = sm.getDirtyFieldNames();
                 if (fieldNames == null)
                 {
@@ -150,7 +150,7 @@ public class JDOCallbackHandler implements CallbackHandler
 
         if (beanValidationHandler != null)
         {
-            ObjectProvider sm = ec.findObjectProvider(pc);
+            DNStateManager sm = ec.findStateManager(pc);
             if (!sm.getLifecycleState().isNew())
             {
                 // Don't fire this when persisting new since we will have done prePersist
