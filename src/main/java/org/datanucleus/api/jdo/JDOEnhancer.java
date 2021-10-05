@@ -21,7 +21,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Properties;
 
-import org.datanucleus.api.jdo.metadata.JDOMetadataImpl;
+import org.datanucleus.api.jdo.metadata.api.JDOMetadataImpl;
 import org.datanucleus.enhancer.DataNucleusEnhancer;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.metadata.FileMetaData;
