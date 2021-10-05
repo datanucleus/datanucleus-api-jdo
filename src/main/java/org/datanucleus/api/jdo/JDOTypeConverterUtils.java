@@ -84,7 +84,7 @@ public class JDOTypeConverterUtils
         return dbType;
     }
 
-    public static AttributeConverter createAttributeConverter(NucleusContext nucCtx, Class converterCls)
+    public static AttributeConverter createAttributeConverter(NucleusContext nucCtx, Class<? extends AttributeConverter> converterCls)
     {
         if (nucCtx != null && nucCtx instanceof PersistenceNucleusContext)
         {
@@ -94,7 +94,7 @@ public class JDOTypeConverterUtils
                 try
                 {
                     // Create stateful AttributeConverter with any injected dependencies
-                    return (AttributeConverter) ctx.getCDIHandler().createObjectWithInjectedDependencies(converterCls);
+                    return ctx.getCDIHandler().createObjectWithInjectedDependencies(converterCls);
                 }
                 catch (Exception e)
                 {
@@ -104,6 +104,6 @@ public class JDOTypeConverterUtils
         }
 
         // Create stateless AttributeConverter
-        return (AttributeConverter)ClassUtils.newInstance(converterCls, null, null);
+        return ClassUtils.newInstance(converterCls, null, null);
     }
 }

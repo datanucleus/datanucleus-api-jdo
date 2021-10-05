@@ -569,8 +569,7 @@ public class JDOAdapter implements ApiAdapter
             try
             {
                 Class cls = clr.classForName("javax.jdo.JDOReadOnlyException");
-                throw (JDOUserException)ClassUtils.newInstance(cls, 
-                    new Class[] {String.class}, new Object[] {ne.getMessage()});
+                throw (JDOUserException)ClassUtils.newInstance(cls, new Class[] {String.class}, new Object[] {ne.getMessage()});
             }
             catch (NucleusException ne2)
             {
