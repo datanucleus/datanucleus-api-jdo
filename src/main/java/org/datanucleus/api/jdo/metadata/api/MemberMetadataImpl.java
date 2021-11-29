@@ -343,7 +343,8 @@ public class MemberMetadataImpl extends AbstractMetadataImpl implements MemberMe
 
     public int getRecursionDepth()
     {
-        return getInternal().getRecursionDepth();
+        Integer recDepth = getInternal().getRecursionDepth();
+        return (recDepth == null) ? 1 : recDepth;
     }
 
     public String getSequence()
