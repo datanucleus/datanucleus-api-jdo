@@ -1014,7 +1014,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                 mmd.setMappedBy(mappedBy);
                 mmd.setColumn(column);
                 mmd.setTable(table);
-                mmd.setRecursionDepth(recursionDepth);
+                mmd.setRecursionDepth(recursionDepth); // TODO Not applicable when just for a member
                 mmd.setLoadFetchGroup(loadFetchGroup);
                 mmd.setValueStrategy(valueStrategy);
                 mmd.setSequence(sequence);
@@ -2221,7 +2221,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
         fmd.setTable(member.table());
         fmd.setLoadFetchGroup(member.loadFetchGroup());
         fmd.setCacheable(Boolean.valueOf(member.cacheable()));
-        fmd.setRecursionDepth(member.recursionDepth());
+        fmd.setRecursionDepth(member.recursionDepth()); // TODO Not applicable when just for a member
 
         String valueStrategy = JDOAnnotationUtils.getValueGenerationStrategyString(member.valueStrategy());
         if (!StringUtils.isWhitespace(member.customValueStrategy()))
