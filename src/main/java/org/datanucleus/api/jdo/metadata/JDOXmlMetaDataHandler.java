@@ -85,6 +85,7 @@ import org.datanucleus.util.StringUtils;
 
 /**
  * Parser handler for JDO XML MetaData.
+ * Caters for "JDO", "ORM" and "JDOQUERY" XML MetaData.
  * Implements DefaultHandler and handles the extracting of MetaData for JDO from the XML elements/attributes. 
  * This class simply constructs the MetaData representation mirroring what is in the XML MetaData file. 
  * It has no knowledge of the class(es) that it represents, simply the information in the XML MetaData file. 

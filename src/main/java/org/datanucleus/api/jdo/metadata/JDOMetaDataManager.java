@@ -227,11 +227,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         ormClassMetaDataByClass = null;
     }
 
-    /**
-     * Convenience method to allow the unloading of metadata, for example where the user wants to reload a class definition
-     * and that class maybe has different metadata with the new definition.
-     * @param className Name of the class
-     */
+    @Override
     public void unloadMetaDataForClass(String className)
     {
         super.unloadMetaDataForClass(className);
@@ -253,11 +249,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         return (FileMetaData)xmlMetaDataParser.parseXmlMetaDataURL(fileURL, "jdo");
     }
 
-    /**
-     * Method to take the FileMetaData and register the relevant parts of it with the assorted caches provided.
-     * @param fileURLString URL of the metadata file
-     * @param filemd The File MetaData
-     */
+    @Override
     public void registerFile(String fileURLString, FileMetaData filemd, ClassLoaderResolver clr)
     {
         if (fileURLString == null)
@@ -349,6 +341,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param clr ClassLoader resolver
      * @return The metadata for this class (if found)
      */
+    @Override
     protected AbstractClassMetaData loadMetaDataForClass(Class c, ClassLoaderResolver clr)
     {
         if (!allowMetaDataLoad)
@@ -419,6 +412,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param queryName Name of the query
      * @return The QueryMetaData for the query for this class
      */
+    @Override
     public QueryMetaData getMetaDataForQuery(Class cls, ClassLoaderResolver clr, String queryName)
     {
         QueryMetaData qmd = super.getMetaDataForQuery(cls, clr, queryName);
@@ -567,6 +561,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param packageSequenceName Fully qualified name of the sequence (inc package name)
      * @return The SequenceMetaData for this named sequence
      */
+    @Override
     public SequenceMetaData getMetaDataForSequence(ClassLoaderResolver clr, String packageSequenceName)
     {
         SequenceMetaData seqmd = super.getMetaDataForSequence(clr, packageSequenceName);
@@ -639,6 +634,7 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
      * @param c The class
      * @param clr the ClassLoaderResolver
      */
+    @Override
     public void addORMDataToClass(Class c, ClassLoaderResolver clr)
     {
         if (getNucleusContext() instanceof EnhancementNucleusContextImpl)
@@ -1027,17 +1023,6 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
     {
         ClassMetaData cmd = (ClassMetaData)classMetaDataByInterface.get(interfaceName);
         return (cmd != null && cmd.getFullClassName().equals(implName));
-    }
-
-    /**
-     * Convenience method to return if the passed class name is an implementation of a "persistent definition".
-     * @param implName The implementation name
-     * @return Whether it is a (generated) impl of the persistent interface or abstract class
-     */
-    public boolean isPersistentDefinitionImplementation(String implName)
-    {
-        ClassMetaData cmd = (ClassMetaData)classMetaDataByClass.get(implName);
-        return (cmd != null && cmd.isImplementationOfPersistentDefinition());
     }
 
     /**
