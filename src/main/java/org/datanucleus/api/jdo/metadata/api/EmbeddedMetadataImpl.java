@@ -17,6 +17,8 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.metadata.api;
 
+import java.util.List;
+
 import javax.jdo.metadata.DiscriminatorMetadata;
 import javax.jdo.metadata.EmbeddedMetadata;
 import javax.jdo.metadata.FieldMetadata;
@@ -49,21 +51,23 @@ public class EmbeddedMetadataImpl extends AbstractMetadataImpl implements Embedd
      */
     public MemberMetadata[] getMembers()
     {
-        AbstractMemberMetaData[] internalMmds = getInternal().getMemberMetaData();
+        List<AbstractMemberMetaData> internalMmds = getInternal().getMemberMetaData();
         if (internalMmds == null)
         {
             return null;
         }
-        MemberMetadataImpl[] mmds = new MemberMetadataImpl[internalMmds.length];
-        for (int i=0;i<mmds.length;i++)
+
+        MemberMetadataImpl[] mmds = new MemberMetadataImpl[internalMmds.size()];
+        int i = 0;
+        for (AbstractMemberMetaData internalMmd : internalMmds)
         {
-            if (internalMmds[i] instanceof FieldMetaData)
+            if (internalMmd instanceof FieldMetaData)
             {
-                mmds[i] = new FieldMetadataImpl((FieldMetaData)internalMmds[i]);
+                mmds[i++] = new FieldMetadataImpl((FieldMetaData)internalMmd);
             }
             else
             {
-                mmds[i] = new PropertyMetadataImpl((PropertyMetaData)internalMmds[i]);
+                mmds[i++] = new PropertyMetadataImpl((PropertyMetaData)internalMmd);
             }
         }
         return mmds;
@@ -90,8 +94,8 @@ public class EmbeddedMetadataImpl extends AbstractMetadataImpl implements Embedd
      */
     public int getNumberOfMembers()
     {
-        AbstractMemberMetaData[] mmds = getInternal().getMemberMetaData();
-        return (mmds != null ? mmds.length : 0);
+        List<AbstractMemberMetaData> mmds = getInternal().getMemberMetaData();
+        return (mmds != null ? mmds.size() : 0);
     }
 
     /* (non-Javadoc)

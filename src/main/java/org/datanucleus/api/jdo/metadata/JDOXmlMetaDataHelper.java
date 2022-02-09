@@ -952,16 +952,16 @@ public class JDOXmlMetaDataHelper
             str.append(getXMLForMetaData(embmd.getDiscriminatorMetaData(), prefix+indent, indent));
         }
 
-        // Add fields
-        AbstractMemberMetaData[] members = embmd.getMemberMetaData();
+        // Add members
+        List<AbstractMemberMetaData> members = embmd.getMemberMetaData();
         if (members != null)
         {
-            for (int i=0; i<members.length; i++)
+            for (AbstractMemberMetaData member : members)
             {
-                str.append(getXMLForMetaData(members[i], prefix + indent,indent));
+                str.append(getXMLForMetaData(member, prefix + indent,indent));
             }
         }
-        
+
         // Add extensions
         processExtensions(embmd.getExtensions(), str, prefix, indent);
 
