@@ -119,7 +119,7 @@ public class VersionMetadataImpl extends AbstractMetadataImpl implements Version
      */
     public VersionStrategy getStrategy()
     {
-        org.datanucleus.metadata.VersionStrategy strategy = getInternal().getVersionStrategy();
+        org.datanucleus.metadata.VersionStrategy strategy = getInternal().getStrategy();
         if (strategy == org.datanucleus.metadata.VersionStrategy.DATE_TIME)
         {
             return VersionStrategy.DATE_TIME;

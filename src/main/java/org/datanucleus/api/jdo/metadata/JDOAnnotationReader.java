@@ -1056,7 +1056,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
             {
                 // Tag this field as the version field. We ignore the column/columns attributes since specifiable on the field itself
                 VersionMetaData vermd = cmd.newVersionMetaData();
-                vermd.setFieldName(member.getName());
+                vermd.setMemberName(member.getName());
                 VersionStrategy versionStrategy = (VersionStrategy) annotationValues.get("strategy");
                 String strategy = null;
                 if (versionStrategy == VersionStrategy.UNSPECIFIED)

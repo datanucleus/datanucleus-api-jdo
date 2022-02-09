@@ -624,7 +624,7 @@ public class JDOXmlMetaDataHelper
         // Field needs outputting so generate metadata
         StringBuilder str = new StringBuilder();
         str.append(prefix).append("<version " + 
-            (vermd.getVersionStrategy()!=null ? ("strategy=\"" + vermd.getVersionStrategy() + "\"") : "") +
+            (vermd.getStrategy()!=null ? ("strategy=\"" + vermd.getStrategy() + "\"") : "") +
             (vermd.getIndexed() != null ? (" indexed=\"" + vermd.getIndexed() + "\"") : ""));
         if (vermd.getColumnName() != null && vermd.getColumnMetaData() == null)
         {

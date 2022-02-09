@@ -1145,7 +1145,7 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                     vermd.setIndexed(IndexedValue.getIndexedValue(getAttr(attrs, "indexed")));
                     if (memberName != null)
                     {
-                        vermd.setFieldName(memberName);
+                        vermd.setMemberName(memberName);
                     }
                     pushStack(vermd);
                 }
