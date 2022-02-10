@@ -34,7 +34,7 @@ public class UpdateUserHandler implements MemberAnnotationHandler, ClassAnnotati
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("update-user", "true");
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_UPDATE_USER, "true");
     }
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)

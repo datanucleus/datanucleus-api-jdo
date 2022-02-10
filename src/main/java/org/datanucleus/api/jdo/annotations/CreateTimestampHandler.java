@@ -34,7 +34,7 @@ public class CreateTimestampHandler implements MemberAnnotationHandler, ClassAnn
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("create-timestamp", "true");
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_CREATE_TIMESTAMP, "true");
     }
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)

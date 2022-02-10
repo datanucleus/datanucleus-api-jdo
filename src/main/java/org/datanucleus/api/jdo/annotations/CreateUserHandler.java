@@ -34,7 +34,7 @@ public class CreateUserHandler implements MemberAnnotationHandler, ClassAnnotati
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("create-user", "true"); // TODO Use METADATA.EXTENSION_ enums
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_CREATE_USER, "true");
     }
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)

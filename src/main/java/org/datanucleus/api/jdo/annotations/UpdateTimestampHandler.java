@@ -33,7 +33,7 @@ public class UpdateTimestampHandler implements MemberAnnotationHandler
 {
     public void processMemberAnnotation(AnnotationObject ann, AbstractMemberMetaData mmd, ClassLoaderResolver clr)
     {
-        mmd.addExtension("update-timestamp", "true");
+        mmd.addExtension(MetaData.EXTENSION_MEMBER_UPDATE_TIMESTAMP, "true");
     }
 
     public void processClassAnnotation(AnnotationObject annotation, AbstractClassMetaData cmd, ClassLoaderResolver clr)
