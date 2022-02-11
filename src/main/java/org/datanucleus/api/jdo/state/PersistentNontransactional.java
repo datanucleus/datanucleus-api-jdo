@@ -148,7 +148,7 @@ class PersistentNontransactional extends LifeCycleState
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
-            // Save the fields for rollback.
+            // Save the fields for rollback - TODO Omit this if no unloaded fields
             sm.saveFields();
     		if (fgOnly)
             {
@@ -162,8 +162,8 @@ class PersistentNontransactional extends LifeCycleState
         }
         else if (tx.isActive() && tx.getOptimistic())
         {
-            // Save the fields for rollback.
-            sm.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
+            // Save the fields for rollback - TODO Omit this if no unloaded fields
+            sm.saveFields();
     		if (fgOnly)
             {
                 sm.loadUnloadedFieldsInFetchPlan();
@@ -194,15 +194,15 @@ class PersistentNontransactional extends LifeCycleState
         Transaction tx = sm.getExecutionContext().getTransaction();
         if (tx.isActive() && !tx.getOptimistic())
         {
-            // Save the fields for rollback.
+            // Save the fields for rollback - TODO Omit this if no unloaded fields
             sm.saveFields();
             sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
             return changeState(sm, P_CLEAN);
         }
         else if (tx.isActive() && tx.getOptimistic())
         {
-            // Save the fields for rollback.
-            sm.saveFields(); //TODO this is wrong... saving all the time, retrieve is asked... side effects besides performance?
+            // Save the fields for rollback - TODO Omit this if no unloaded fields
+            sm.saveFields();
             sm.loadUnloadedFieldsOfClassInFetchPlan(fetchPlan);
             return this;
         }
