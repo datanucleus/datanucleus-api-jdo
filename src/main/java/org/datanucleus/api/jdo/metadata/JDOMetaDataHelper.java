@@ -798,7 +798,7 @@ public class JDOMetaDataHelper
         {
             str.append("\n").append(prefix).append("       load-fetch-group=\"" + mmd.getLoadFetchGroup() + "\"");
         }
-        if (mmd.getRecursionDepth() != AbstractMemberMetaData.DEFAULT_RECURSION_DEPTH && mmd.getRecursionDepth() != AbstractMemberMetaData.UNDEFINED_RECURSION_DEPTH)
+        if (mmd.getRecursionDepth() != null && mmd.getRecursionDepth() != 1)
         {
             str.append("\n").append(prefix).append("       recursion-depth=\"" + mmd.getRecursionDepth() + "\"");
         }
