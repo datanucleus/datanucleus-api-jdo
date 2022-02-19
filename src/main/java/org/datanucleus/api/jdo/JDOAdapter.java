@@ -482,9 +482,9 @@ public class JDOAdapter implements ApiAdapter
     }
 
     @Override
-    public Map getDefaultFactoryProperties()
+    public Map<String, Object> getDefaultFactoryProperties()
     {
-        Map props = new HashMap();
+        Map<String, Object> props = new HashMap<>();
         props.put(PropertyNames.PROPERTY_DETACH_ALL_ON_COMMIT, "false");
         props.put(PropertyNames.PROPERTY_COPY_ON_ATTACH, "true");
         props.put(PropertyNames.PROPERTY_IDENTIFIER_FACTORY, "datanucleus2"); // DN identifier naming

@@ -547,7 +547,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             }
         }
 
-        // Apply the properties to the PMF
+        // Apply any properties from a properties file to the PMF
         try
         {
             String propsFileProp = PropertyNames.PROPERTY_PROPERTIES_FILE;
