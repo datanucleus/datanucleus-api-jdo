@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>datanucleus-api-jdo</artifactId>
-    <version>6.0.0-m4</version>
+    <version>6.0.0-m5-SNAPSHOT</version>
 
     <name>DataNucleus JDO API plugin</name>
     <description>
