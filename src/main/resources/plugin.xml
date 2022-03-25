@@ -175,6 +175,8 @@ Contributors:
        <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
        <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 2.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
        <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 3.0//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 3.1//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
+       <entityresolver identity="-//Sun Microsystems, Inc.//DTD Java Data Objects Query Metadata 3.2//EN" type="PUBLIC" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
        <entityresolver identity="file:/javax/jdo/jdoquery.dtd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
        <entityresolver identity="https://db.apache.org/jdo/xmlns/jdoquery_3_2.dtd" type="SYSTEM" url="/org/datanucleus/api/jdo/jdoquery_3_2.dtd"/>
 
