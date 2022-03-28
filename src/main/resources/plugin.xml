@@ -53,6 +53,8 @@ Contributors:
         <persistence-property name="javax.jdo.option.spi.ResourceName"/> <!-- JDOHelper nonsense -->
         <persistence-property name="javax.jdo.option.Multitenancy" internal-name="datanucleus.tenantID"/>
 
+        <persistence-property name="datanucleus.metadata.xml.allowJDO1_0" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+
         <persistence-property name="datanucleus.allowListenerUpdateAfterInit" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
         <persistence-property name="datanucleus.allowInstanceCallbackAnnotations" value="false" validator="org.datanucleus.properties.BooleanPropertyValidator"/>
 
