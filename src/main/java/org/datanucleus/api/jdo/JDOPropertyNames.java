@@ -17,10 +17,12 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo;
 
+import java.util.Locale;
+
 /**
  * Utility providing convenience naming of JDO persistence properties.
  */
 public class JDOPropertyNames
 {
-    public static final String PROPERTY_METADATA_XML_JDO_1_0 = "datanucleus.metadata.xml.allowJDO1_0";
+    public static final String PROPERTY_METADATA_XML_JDO_1_0 = "datanucleus.metadata.xml.allowJDO1_0".toLowerCase(Locale.ENGLISH);
 }
