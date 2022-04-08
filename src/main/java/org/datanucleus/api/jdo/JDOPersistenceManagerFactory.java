@@ -84,7 +84,6 @@ import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
 import org.datanucleus.properties.CorePropertyValidator;
 import org.datanucleus.store.StoreManager;
-import org.datanucleus.store.connection.ConnectionFactory;
 import org.datanucleus.store.connection.ConnectionResourceType;
 import org.datanucleus.store.query.Query;
 import org.datanucleus.store.query.cache.QueryCompilationCache;
@@ -395,8 +394,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     (String) props.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String) props.get(PROPERTY_JDO_TRANSACTION_TYPE);
             if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
             {
-                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
-                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
+                props.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE, ConnectionResourceType.JTA.toString());
+                props.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE2, ConnectionResourceType.JTA.toString());
             }
         }
 
@@ -407,18 +406,18 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 // JTA defined, so use that as primary, and any non-JTA as secondary
                 props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY_NAME, pumd.getJtaDataSource());
-                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
+                props.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE, ConnectionResourceType.JTA.toString());
                 if (pumd.getNonJtaDataSource() != null)
                 {
                     props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY2_NAME, pumd.getNonJtaDataSource());
-                    props.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.RESOURCE_LOCAL.toString());
+                    props.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE2, ConnectionResourceType.RESOURCE_LOCAL.toString());
                 }
             }
             else if (pumd.getNonJtaDataSource() != null)
             {
                 // No JTA defined, so use the non-JTA as primary
                 props.put(PropertyNames.PROPERTY_CONNECTION_FACTORY_NAME, pumd.getNonJtaDataSource());
-                props.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.RESOURCE_LOCAL.toString());
+                props.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE, ConnectionResourceType.RESOURCE_LOCAL.toString());
             }
         }
 
@@ -519,8 +518,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                         (String)pmfProps.get(PropertyNames.PROPERTY_TRANSACTION_TYPE) : (String)pmfProps.get(PROPERTY_JDO_TRANSACTION_TYPE);
                 if (TransactionType.JTA.toString().equalsIgnoreCase(transactionType))
                 {
-                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
-                    pmfProps.put(ConnectionFactory.DATANUCLEUS_CONNECTION2_RESOURCE_TYPE, ConnectionResourceType.JTA.toString());
+                    pmfProps.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE, ConnectionResourceType.JTA.toString());
+                    pmfProps.put(PropertyNames.PROPERTY_CONNECTION_RESOURCETYPE2, ConnectionResourceType.JTA.toString());
                 }
             }
         }
