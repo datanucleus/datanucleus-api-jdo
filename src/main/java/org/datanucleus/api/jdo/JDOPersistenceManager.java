@@ -2340,7 +2340,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         try
         {
-            ec.setProperty(propertyName, value);
+            ec.setProperty(propertyName.toLowerCase(), value); // Properties are lower-cased internally
         }
         catch (NucleusException ne)
         {
