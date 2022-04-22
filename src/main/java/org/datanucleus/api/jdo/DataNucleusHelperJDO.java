@@ -34,6 +34,7 @@ import javax.jdo.identity.StringIdentity;
 
 import org.datanucleus.ClassNameConstants;
 import org.datanucleus.ExecutionContext;
+import org.datanucleus.FetchPlanForClass;
 import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.identity.ByteId;
@@ -44,6 +45,7 @@ import org.datanucleus.identity.ObjectId;
 import org.datanucleus.identity.ShortId;
 import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.identity.StringId;
+import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.ClassMetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.state.DNStateManager;
@@ -63,6 +65,20 @@ public class DataNucleusHelperJDO
     public static JDOQueryCache getQueryResultCache(PersistenceManagerFactory pmf)
     {
         return ((JDOPersistenceManagerFactory)pmf).getQueryCache();
+    }
+
+    /**
+     * Convenience accessor for the fields of a specified class that are currently in the FetchPlan.
+     * @param pm Persistence Manager
+     * @param className Name of the class
+     * @return The fields that are in the FetchPlan
+     */
+    public static int[] getFieldsInFetchPlanForClass(PersistenceManager pm, String className)
+    {
+        ExecutionContext ec = ((JDOPersistenceManager)pm).getExecutionContext();
+        AbstractClassMetaData cmd = ec.getMetaDataManager().getMetaDataForClass(className, ec.getClassLoaderResolver());
+        FetchPlanForClass fpClass = ((JDOFetchPlan)pm.getFetchPlan()).getInternalFetchPlan().getFetchPlanForClass(cmd);
+        return fpClass.getMemberNumbers();
     }
 
     /**
