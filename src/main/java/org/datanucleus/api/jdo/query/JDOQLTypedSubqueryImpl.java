@@ -17,8 +17,6 @@ Contributors:
 **********************************************************************/
 package org.datanucleus.api.jdo.query;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.jdo.JDOException;
@@ -35,7 +33,9 @@ import javax.jdo.query.PersistableExpression;
 import javax.jdo.query.StringExpression;
 import javax.jdo.query.TimeExpression;
 
+import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.store.query.expression.VariableExpression;
+import org.datanucleus.util.ClassUtils;
 
 /**
  * Implementation of a JDOQLTypedSubquery.
@@ -72,29 +72,16 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
         {
             // Access the "candidate" field of the query class
             Class qClass = ec.getClassLoaderResolver().classForName(qName);
-            Constructor ctr = qClass.getConstructor(new Class[] {PersistableExpression.class, String.class});
-            Object candObj = ctr.newInstance(new Object[] {null, candidateAlias});
+            Object candObj = ClassUtils.newInstance(qClass, new Class[] {PersistableExpression.class, String.class}, new Object[] {null, candidateAlias});
             if (candObj == null || !(candObj instanceof PersistableExpression))
             {
                 throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid");
             }
             return (PersistableExpression)candObj;
         }
-        catch (NoSuchMethodException nsfe)
+        catch (NucleusException ne)
         {
-            throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid");
-        }
-        catch (InvocationTargetException ite)
-        {
-            throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid");
-        }
-        catch (InstantiationException ie)
-        {
-            throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid");
-        }
-        catch (IllegalAccessException iae)
-        {
-            throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid");
+            throw new JDOException("Class " + candidateCls.getName() + " has a Query class but the candidate is invalid", ne);
         }
     }
 
@@ -200,24 +187,11 @@ public class JDOQLTypedSubqueryImpl<T> extends AbstractJDOQLTypedQuery<T> implem
         VariableExpression varExpr = new VariableExpression(getAlias());
         try
         {
-            Constructor ctr = implClass.getConstructor(new Class[] {org.datanucleus.store.query.expression.Expression.class});
-            return (Expression)ctr.newInstance(new Object[] {varExpr});
+            return (Expression) ClassUtils.newInstance(implClass, new Class[] {org.datanucleus.store.query.expression.Expression.class}, new Object[] {varExpr});
         }
-        catch (NoSuchMethodException nsme)
+        catch (NucleusException ne)
         {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " since required constructor doesnt exist");
-        }
-        catch (InvocationTargetException ite)
-        {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
-        }
-        catch (IllegalAccessException iae)
-        {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
-        }
-        catch (InstantiationException ie)
-        {
-            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error in constructor");
+            throw new JDOException("Unable to create expression of type " + expr.getClass().getName() + " due to error", ne);
         }
     }
 }
