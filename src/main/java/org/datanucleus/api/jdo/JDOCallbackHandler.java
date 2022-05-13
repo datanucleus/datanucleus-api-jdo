@@ -624,7 +624,6 @@ public class JDOCallbackHandler implements CallbackHandler
         AccessController.doPrivileged(
             new PrivilegedAction<Object>()
             {
-                @SuppressWarnings("deprecation")
                 public Object run()
                 {
                     try
@@ -632,7 +631,7 @@ public class JDOCallbackHandler implements CallbackHandler
                         Class[] classArgs = pcArgument ? new Class[]{Object.class} : null;
                         Object[] methodArgs = pcArgument ? new Object[] {pc} : null;
                         Method m = callbackClass.getDeclaredMethod(callbackMethodName, classArgs);
-                        if (!m.isAccessible())
+                        if (!m.canAccess(pc))
                         {
                             m.setAccessible(true);
                         }
