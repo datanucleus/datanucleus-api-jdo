@@ -20,8 +20,6 @@ package org.datanucleus.api.jdo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -620,37 +618,28 @@ public class JDOCallbackHandler implements CallbackHandler
         final String callbackMethodName = methodName.substring(methodName.lastIndexOf('.')+1);
         final Class callbackClass = callbackClassName.equals(pc.getClass().getName()) ? pc.getClass() : clr.classForName(callbackClassName);
 
-        // Need to have privileges to perform invoke on private methods
-        AccessController.doPrivileged(
-            new PrivilegedAction<Object>()
+        try
+        {
+            Class[] classArgs = pcArgument ? new Class[]{Object.class} : null;
+            Object[] methodArgs = pcArgument ? new Object[] {pc} : null;
+            Method m = callbackClass.getDeclaredMethod(callbackMethodName, classArgs);
+            if (!m.canAccess(pc))
             {
-                public Object run()
-                {
-                    try
-                    {
-                        Class[] classArgs = pcArgument ? new Class[]{Object.class} : null;
-                        Object[] methodArgs = pcArgument ? new Object[] {pc} : null;
-                        Method m = callbackClass.getDeclaredMethod(callbackMethodName, classArgs);
-                        if (!m.canAccess(pc))
-                        {
-                            m.setAccessible(true);
-                        }
-                        m.invoke(pc, methodArgs);
-                    }
-                    catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException e)
-                    {
-                        NucleusLogger.GENERAL.warn("Exception in JDOCallbackHandler", e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        if (e.getTargetException() instanceof RuntimeException)
-                        {
-                            throw (RuntimeException) e.getTargetException();
-                        }
-                        throw new RuntimeException(e.getTargetException());
-                    }
-                    return null;
-                }
-            });
+                m.setAccessible(true);
+            }
+            m.invoke(pc, methodArgs);
+        }
+        catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException e)
+        {
+            NucleusLogger.GENERAL.warn("Exception in JDOCallbackHandler", e);
+        }
+        catch (InvocationTargetException e)
+        {
+            if (e.getTargetException() instanceof RuntimeException)
+            {
+                throw (RuntimeException) e.getTargetException();
+            }
+            throw new RuntimeException(e.getTargetException());
+        }
     }
 }
