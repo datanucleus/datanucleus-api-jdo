@@ -586,15 +586,15 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 {
                     if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
                     {
-                        lang = QueryLanguage.JDOQL.toString();
+                        lang = QueryLanguage.JDOQL.name();
                     }
                     else if (lang.equals(JDOQuery.SQL_QUERY_LANGUAGE)) // Convert to SQL
                     {
-                        lang = QueryLanguage.SQL.toString();
+                        lang = QueryLanguage.SQL.name();
                     }
                     else if (lang.equals(JDOQuery.JPQL_QUERY_LANGUAGE)) // Convert to JPQL
                     {
-                        lang = QueryLanguage.JPQL.toString();
+                        lang = QueryLanguage.JPQL.name();
                     }
                 }
                 if (emd instanceof ClassMetaData)

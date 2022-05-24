@@ -180,22 +180,22 @@ public class JDOAnnotationUtils
         if (value == null)
         {
             // Fallback to JDOQL
-            return QueryLanguage.JDOQL.toString();
+            return QueryLanguage.JDOQL.name();
         }
         else if (value.equalsIgnoreCase(JDOQuery.JDOQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "JDOQL"
-            return QueryLanguage.JDOQL.toString();
+            return QueryLanguage.JDOQL.name();
         }
         else if (value.equalsIgnoreCase(JDOQuery.SQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "SQL"
-            return QueryLanguage.SQL.toString();
+            return QueryLanguage.SQL.name();
         }
         else if (value.equalsIgnoreCase(JDOQuery.JPQL_QUERY_LANGUAGE))
         {
             // Allow shortcut to "JPQL"
-            return QueryLanguage.JPQL.toString();
+            return QueryLanguage.JPQL.name();
         }
         return value;
     }

@@ -31,7 +31,7 @@ import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.metadata.MetaDataManager;
-import org.datanucleus.store.query.Query;
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.store.query.Query.QueryType;
 import org.datanucleus.store.query.compiler.JDOQLSymbolResolver;
 import org.datanucleus.store.query.compiler.PropertySymbol;
@@ -288,7 +288,7 @@ public abstract class AbstractJDOQLTypedQuery<T>
         {
             compilation.setResultDistinct();
         }
-        compilation.setQueryLanguage(Query.LANGUAGE_JDOQL);
+        compilation.setQueryLanguage(QueryLanguage.JDOQL.name());
 
         return compilation;
     }

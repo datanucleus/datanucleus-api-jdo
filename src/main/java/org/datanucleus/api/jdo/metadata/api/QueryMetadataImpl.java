@@ -113,15 +113,15 @@ public class QueryMetadataImpl extends AbstractMetadataImpl implements QueryMeta
         {
             if (lang.equals(JDOQuery.JDOQL_QUERY_LANGUAGE)) // Convert to JDOQL
             {
-                lang = QueryLanguage.JDOQL.toString();
+                lang = QueryLanguage.JDOQL.name();
             }
             else if (lang.equals(JDOQuery.SQL_QUERY_LANGUAGE)) // Convert to SQL
             {
-                lang = QueryLanguage.SQL.toString();
+                lang = QueryLanguage.SQL.name();
             }
             else if (lang.equals(JDOQuery.JPQL_QUERY_LANGUAGE)) // Convert to JPQL
             {
-                lang = QueryLanguage.JPQL.toString();
+                lang = QueryLanguage.JPQL.name();
             }
         }
         getInternal().setLanguage(lang);

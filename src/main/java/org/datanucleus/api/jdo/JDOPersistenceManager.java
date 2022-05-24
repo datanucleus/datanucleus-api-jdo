@@ -1192,7 +1192,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public Query newQuery()
     {
-        return newQuery("javax.jdo.query.JDOQL", null);
+        return newQuery(JDOQuery.JDOQL_QUERY_LANGUAGE, null);
     }
 
     /**
@@ -1225,7 +1225,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public Query newQuery(String query)
     {
-        return newQuery("javax.jdo.query.JDOQL", query);
+        return newQuery(JDOQuery.JDOQL_QUERY_LANGUAGE, query);
     }
 
     /**
@@ -1243,19 +1243,19 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         String queryLanguage = language;
         if (queryLanguage == null)
         {
-            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JDOQL;
+            queryLanguage = org.datanucleus.metadata.QueryLanguage.JDOQL.name();
         }
         else if (queryLanguage.equals(JDOQuery.JDOQL_QUERY_LANGUAGE))
         {
-            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JDOQL;
+            queryLanguage = org.datanucleus.metadata.QueryLanguage.JDOQL.name();
         }
         else if (queryLanguage.equals(JDOQuery.SQL_QUERY_LANGUAGE))
         {
-            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_SQL;
+            queryLanguage = org.datanucleus.metadata.QueryLanguage.SQL.name();
         }
         else if (queryLanguage.equals(JDOQuery.JPQL_QUERY_LANGUAGE))
         {
-            queryLanguage = org.datanucleus.store.query.Query.LANGUAGE_JPQL;
+            queryLanguage = org.datanucleus.metadata.QueryLanguage.JPQL.name();
         }
 
         // Check that our store supports the language
@@ -1442,7 +1442,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
 
         // Optional args that should only be used with SQL
-        if (qmd.getLanguage().equals(QueryLanguage.JDOQL.toString()) && 
+        if (qmd.getLanguage().equals(QueryLanguage.JDOQL.name()) && 
             (qmd.isUnique() || qmd.getResultClass() != null))
         {
             throw new JDOUserException(Localiser.msg("011007", queryName));
@@ -1481,10 +1481,8 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         Map<String, String> extmds = qmd.getExtensions();
         if (extmds != null)
         {
-            Iterator<Entry<String, String>> entryIter = extmds.entrySet().iterator();
-            while (entryIter.hasNext())
+            for (Entry<String, String> entry : extmds.entrySet())
             {
-                Entry<String, String> entry = entryIter.next();
                 query.addExtension(entry.getKey(), entry.getValue());
             }
         }
@@ -1534,7 +1532,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         try
         {
-            return new JDOExtent(this,ec.getExtent(pcClass, subclasses));
+            return new JDOExtent(this, ec.getExtent(pcClass, subclasses));
         }
         catch (NucleusException ne)
         {

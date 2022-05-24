@@ -85,7 +85,6 @@ import org.datanucleus.metadata.TransactionType;
 import org.datanucleus.properties.CorePropertyValidator;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ConnectionResourceType;
-import org.datanucleus.store.query.Query;
 import org.datanucleus.store.query.cache.QueryCompilationCache;
 import org.datanucleus.store.query.cache.QueryDatastoreCompilationCache;
 import org.datanucleus.store.query.cache.QueryResultsCache;
@@ -1195,11 +1194,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 options.remove("javax.jdo.option.ApplicationIdentity");
             }
 
-            if (!storeMgr.supportsQueryLanguage(Query.LANGUAGE_JDOQL))
+            if (!storeMgr.supportsQueryLanguage(org.datanucleus.metadata.QueryLanguage.JDOQL.name()))
             {
                 options.remove("javax.jdo.query.JDOQL");
             }
-            if (!storeMgr.supportsQueryLanguage(Query.LANGUAGE_SQL))
+            if (!storeMgr.supportsQueryLanguage(org.datanucleus.metadata.QueryLanguage.SQL.name()))
             {
                 options.remove("javax.jdo.query.SQL");
             }
