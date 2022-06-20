@@ -22,7 +22,6 @@ import javax.jdo.AttributeConverter;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
-import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.PropertyNames;
 import org.datanucleus.api.jdo.JDOQuery;
 import org.datanucleus.api.jdo.JDOTypeConverter;
@@ -292,7 +291,6 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
         else if (!StringUtils.isWhitespace(converterAttr))
         {
             TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-            ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
             Class converterCls = clr.classForName(converterAttr);
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
@@ -380,7 +378,6 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
         else if (!StringUtils.isWhitespace(converterAttr))
         {
             TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-            ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
             Class converterCls = clr.classForName(converterAttr);
             if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
             {
@@ -935,7 +932,6 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
                     TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
@@ -976,7 +972,6 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
                     TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
@@ -1018,7 +1013,6 @@ public class JDOXmlMetaDataHandler extends AbstractXmlMetaDataHandler
                 else if (!StringUtils.isWhitespace(converterAttr))
                 {
                     TypeManager typeMgr = mmgr.getNucleusContext().getTypeManager();
-                    ClassLoaderResolver clr = mmgr.getNucleusContext().getClassLoaderResolver(null);
                     Class converterCls = clr.classForName(converterAttr);
                     if (typeMgr.getTypeConverterForName(converterCls.getName()) == null)
                     {
