@@ -50,7 +50,7 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public BooleanExpression contains(E elem)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new Literal(elem));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -61,7 +61,7 @@ public class CollectionExpressionImpl<T extends Collection<E>, E> extends Expres
      */
     public BooleanExpression contains(Expression<E> expr)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
         return new BooleanExpressionImpl(invokeExpr);

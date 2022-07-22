@@ -38,7 +38,7 @@ public class MultiPointExpressionImpl<T> extends GeometryCollectionExpressionImp
         super(queryExpr);
     }
 
-    public MultiPointExpressionImpl(Class cls, String name, ExpressionType type)
+    public MultiPointExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

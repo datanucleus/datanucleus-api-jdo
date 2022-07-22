@@ -161,7 +161,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public ComparableExpression<T> max()
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(queryExpr);
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "max", args);
         return new NumericExpressionImpl(invokeExpr);
@@ -172,7 +172,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public ComparableExpression<T> min()
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(queryExpr);
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "min", args);
         return new NumericExpressionImpl(invokeExpr);
@@ -183,7 +183,7 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public OrderExpression<T> asc()
     {
-        return new OrderExpressionImpl(this, OrderDirection.ASC);
+        return new OrderExpressionImpl<T>(this, OrderDirection.ASC);
     }
 
     /* (non-Javadoc)
@@ -191,6 +191,6 @@ public class ComparableExpressionImpl<T> extends ExpressionImpl<T> implements Co
      */
     public OrderExpression<T> desc()
     {
-        return new OrderExpressionImpl(this, OrderDirection.DESC);
+        return new OrderExpressionImpl<T>(this, OrderDirection.DESC);
     }
 }

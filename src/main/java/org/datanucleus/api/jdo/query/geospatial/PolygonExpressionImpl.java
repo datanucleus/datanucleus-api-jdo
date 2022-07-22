@@ -46,7 +46,7 @@ public class PolygonExpressionImpl<T> extends GeometryExpressionImpl<T> implemen
         super(queryExpr);
     }
 
-    public PolygonExpressionImpl(Class cls, String name, ExpressionType type)
+    public PolygonExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

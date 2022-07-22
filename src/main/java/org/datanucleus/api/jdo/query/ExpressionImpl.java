@@ -54,7 +54,7 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public ExpressionImpl(PersistableExpression parent, String name)
     {
-        List<String> tuples = new ArrayList<String>();
+        List<String> tuples = new ArrayList<>();
         if (parent != null)
         {
             org.datanucleus.store.query.expression.Expression parentQueryExpr = ((ExpressionImpl)parent).getQueryExpression();
@@ -236,7 +236,7 @@ public class ExpressionImpl<T> implements Expression<T>
             ClassLoaderResolver clr = new ClassLoaderResolverImpl(cls.getClassLoader());
             try
             {
-                Class implCls = clr.classForName(implClsName);
+                Class<?> implCls = clr.classForName(implClsName);
                 return (Expression)ClassUtils.newInstance(implCls, ctrArgTypes, ctrArgs);
             }
             catch (Throwable thr)
@@ -265,7 +265,7 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public NumericExpression<Long> count()
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(queryExpr);
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
         return new NumericExpressionImpl<Long>(invokeExpr);
@@ -276,7 +276,7 @@ public class ExpressionImpl<T> implements Expression<T>
      */
     public NumericExpression<Long> countDistinct()
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new DyadicExpression(org.datanucleus.store.query.expression.Expression.OP_DISTINCT, queryExpr));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(null, "count", args);
         return new NumericExpressionImpl<Long>(invokeExpr);

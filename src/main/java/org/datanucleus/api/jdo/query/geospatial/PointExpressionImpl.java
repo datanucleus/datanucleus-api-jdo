@@ -41,7 +41,7 @@ public class PointExpressionImpl<T> extends GeometryExpressionImpl<T> implements
         super(queryExpr);
     }
 
-    public PointExpressionImpl(Class cls, String name, ExpressionType type)
+    public PointExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

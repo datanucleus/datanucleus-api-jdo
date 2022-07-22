@@ -243,7 +243,7 @@ public class JDOAdapter implements ApiAdapter
             // Must have public default constructor
             try
             {
-                Constructor constructor = pkClass.getConstructor(new Class[0]);
+                Constructor<?> constructor = pkClass.getConstructor(new Class[0]);
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
@@ -258,7 +258,7 @@ public class JDOAdapter implements ApiAdapter
             // Must have public String arg constructor
             try
             {
-                Constructor constructor = pkClass.getConstructor(new Class[] {String.class});
+                Constructor<?> constructor = pkClass.getConstructor(new Class[] {String.class});
                 if (constructor == null ||
                     !Modifier.isPublic(constructor.getModifiers()))
                 {
@@ -272,7 +272,7 @@ public class JDOAdapter implements ApiAdapter
             // Must override toString() method
             try
             {
-                java.lang.reflect.Method method=pkClass.getMethod("toString",new Class[0]);
+                java.lang.reflect.Method method=pkClass.getMethod("toString", new Class[0]);
                 if (method == null ||
                     !Modifier.isPublic(method.getModifiers()) ||
                     method.getDeclaringClass().equals(Object.class))
@@ -287,7 +287,7 @@ public class JDOAdapter implements ApiAdapter
             // Must override hashCode() method
             try
             {
-                java.lang.reflect.Method method=pkClass.getMethod("hashCode",new Class[0]);
+                java.lang.reflect.Method method=pkClass.getMethod("hashCode", new Class[0]);
                 if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
                     throw new InvalidPrimaryKeyException("019007", cmd.getFullClassName(), pkClass.getName());
@@ -300,7 +300,7 @@ public class JDOAdapter implements ApiAdapter
             // Must override equals(Object) method
             try
             {
-                java.lang.reflect.Method method=pkClass.getMethod("equals",new Class[] {Object.class});
+                java.lang.reflect.Method method=pkClass.getMethod("equals", new Class[] {Object.class});
                 if (method == null || method.getDeclaringClass().equals(Object.class))
                 {
                     throw new InvalidPrimaryKeyException("019008", cmd.getFullClassName(), pkClass.getName());

@@ -38,7 +38,7 @@ public class MultiPolygonExpressionImpl<T> extends GeometryCollectionExpressionI
         super(queryExpr);
     }
 
-    public MultiPolygonExpressionImpl(Class cls, String name, ExpressionType type)
+    public MultiPolygonExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

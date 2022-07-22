@@ -38,7 +38,7 @@ public class GeometryCollectionExpressionImpl<T> extends GeometryExpressionImpl<
         super(queryExpr);
     }
 
-    public GeometryCollectionExpressionImpl(Class cls, String name, ExpressionType type)
+    public GeometryCollectionExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

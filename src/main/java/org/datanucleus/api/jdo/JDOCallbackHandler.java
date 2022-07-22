@@ -616,7 +616,7 @@ public class JDOCallbackHandler implements CallbackHandler
     {
         final String callbackClassName = methodName.substring(0, methodName.lastIndexOf('.'));
         final String callbackMethodName = methodName.substring(methodName.lastIndexOf('.')+1);
-        final Class callbackClass = callbackClassName.equals(pc.getClass().getName()) ? pc.getClass() : clr.classForName(callbackClassName);
+        final Class<?> callbackClass = callbackClassName.equals(pc.getClass().getName()) ? pc.getClass() : clr.classForName(callbackClassName);
 
         try
         {

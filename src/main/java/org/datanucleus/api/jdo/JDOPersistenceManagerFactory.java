@@ -179,7 +179,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public synchronized static PersistenceManagerFactory getPersistenceManagerFactory(Properties overridingProps)
     {
         // Extract the properties into a Map allowing for a Properties object being used
-        Map overridingMap = new HashMap();
+        Map<String, Object> overridingMap = new HashMap<>();
 
         // Make sure we handle default properties too (java.util.Properties class oddness)
         for (Enumeration e = overridingProps.propertyNames() ; e.hasMoreElements() ;)
@@ -201,11 +201,11 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public synchronized static PersistenceManagerFactory getPersistenceManagerFactory(Map overridingProps)
     {
         // Extract the properties into a Map allowing for a Properties object being used
-        Map overridingMap = null;
+        Map<String, Object> overridingMap = null;
         if (overridingProps instanceof Properties)
         {
             // Make sure we handle default properties too (java.util.Properties class oddness)
-            overridingMap = new HashMap();
+            overridingMap = new HashMap<>();
             for (Enumeration e = ((Properties)overridingProps).propertyNames() ; e.hasMoreElements() ;)
             {
                 // Use props.get to allow for user misusing Properties class
@@ -234,7 +234,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (props instanceof Properties)
         {
             // Make sure we handle default properties too (java.util.Properties class oddness)
-            propsMap = new HashMap();
+            propsMap = new HashMap<>();
             for (Enumeration e = ((Properties)props).propertyNames() ; e.hasMoreElements() ;)
             {
                 // Use props.get to allow for user misusing Properties class
@@ -252,7 +252,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         if (overrides instanceof Properties)
         {
             // Make sure we handle default properties too (java.util.Properties class oddness)
-            overridesMap = new HashMap();
+            overridesMap = new HashMap<>();
             for (Enumeration e = ((Properties)overrides).propertyNames() ; e.hasMoreElements() ;)
             {
                 // Use props.get to allow for user misusing Properties class
@@ -266,7 +266,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         // Set the properties of the PMF, taking propsMap+overridesMap
-        Map overallMap = (propsMap != null) ? new HashMap(propsMap) : new HashMap();
+        Map overallMap = (propsMap != null) ? new HashMap<>(propsMap) : new HashMap<>();
         if (overridesMap != null)
         {
             overallMap.putAll(overridesMap);
@@ -370,7 +370,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     public JDOPersistenceManagerFactory(PersistenceUnitMetaData pumd, Map overrideProps)
     {
         // Build up map of all properties to apply (from persistence-unit + overridden + defaulted)
-    	Map props = new HashMap();
+    	Map<Object, Object> props = new HashMap<>();
         if (pumd != null && pumd.getProperties() != null)
         {
             props.putAll(pumd.getProperties());
@@ -446,7 +446,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 {
                     if (startupProps == null)
                     {
-                        startupProps = new HashMap();
+                        startupProps = new HashMap<>();
                     }
                     startupProps.put(startupPropName, props.get(startupPropName));
                 }
@@ -457,7 +457,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         nucleusContext = new PersistenceNucleusContextImpl("JDO", startupProps);
 
         // Generate the properties to apply to the PMF
-        Map pmfProps = new HashMap();
+        Map pmfProps = new HashMap<>();
 
         PersistenceUnitMetaData pumd = null;
         if (props != null)
@@ -528,7 +528,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         }
 
         // Split out any properties for type information
-        Map typeProps = null;
+        Map<String, Object> typeProps = null;
         Iterator<Map.Entry<String, Object>> entryIter = pmfProps.entrySet().iterator();
         while (entryIter.hasNext())
         {
@@ -538,7 +538,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
             {
                 if (typeProps == null)
                 {
-                    typeProps = new HashMap();
+                    typeProps = new HashMap<>();
                 }
                 typeProps.put(propName, entry.getValue());
                 entryIter.remove();
@@ -582,8 +582,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                 {
                     // Register this TypeConverter (after checking that it is a valid TypeConverter)
                     Class attrConvCls = nucleusContext.getClassLoaderResolver(null).classForName(converterName);
-                    Class attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(attrConvCls, null);
-                    Class dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(attrConvCls, attrType, null);
+                    Class<?> attrType = JDOTypeConverterUtils.getAttributeTypeForAttributeConverter(attrConvCls, null);
+                    Class<?> dbType = JDOTypeConverterUtils.getDatastoreTypeForAttributeConverter(attrConvCls, attrType, null);
 
                     // Register the TypeConverter under the name of the AttributeConverter class
                     if (attrType != null)
@@ -2126,7 +2126,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     {
         if (sequenceByFactoryClass == null)
         {
-            sequenceByFactoryClass = new HashMap();
+            sequenceByFactoryClass = new HashMap<>();
         }
 
         sequenceByFactoryClass.put(factoryClassName, sequence);

@@ -52,7 +52,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
         super(queryExpr);
     }
 
-    public GeometryExpressionImpl(Class cls, String name, ExpressionType type)
+    public GeometryExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }
@@ -153,7 +153,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression contains(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "contains", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -165,7 +165,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression overlaps(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "overlaps", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -177,7 +177,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression touches(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "touches", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -189,7 +189,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression crosses(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "crosses", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -201,7 +201,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression within(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "within", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -213,7 +213,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression intersects(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "intersects", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -225,7 +225,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression equals(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "equals", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -237,7 +237,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression disjoint(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "disjoint", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -249,7 +249,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public BooleanExpression relate(GeometryExpression geom, StringExpression pattern)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "relate", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -261,7 +261,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public NumericExpression distance(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "distance", args);
         return new NumericExpressionImpl(invokeExpr);
@@ -273,7 +273,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression intersection(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "intersection", args);
         return new GeometryExpressionImpl(invokeExpr);
@@ -285,7 +285,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression buffer(NumericExpression dist)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)dist).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "buffer", args);
         return new GeometryExpressionImpl(invokeExpr);
@@ -307,7 +307,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression symDifference(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "symDifference", args);
         return new GeometryExpressionImpl(invokeExpr);
@@ -319,7 +319,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression difference(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "difference", args);
         return new GeometryExpressionImpl(invokeExpr);
@@ -331,7 +331,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression union(GeometryExpression geom)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)geom).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "union", args);
         return new GeometryExpressionImpl(invokeExpr);
@@ -403,7 +403,7 @@ public class GeometryExpressionImpl<T> extends ComparableExpressionImpl<T> imple
     @Override
     public GeometryExpression getGeometryN(NumericExpression position)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)position).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getGeometryN", args);
         return new GeometryExpressionImpl(invokeExpr);

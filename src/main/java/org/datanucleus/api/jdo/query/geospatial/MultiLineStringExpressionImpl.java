@@ -41,7 +41,7 @@ public class MultiLineStringExpressionImpl<T> extends GeometryCollectionExpressi
         super(queryExpr);
     }
 
-    public MultiLineStringExpressionImpl(Class cls, String name, ExpressionType type)
+    public MultiLineStringExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }

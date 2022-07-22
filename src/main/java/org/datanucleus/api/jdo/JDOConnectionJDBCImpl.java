@@ -309,7 +309,7 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
      * @return The type map
      * @throws SQLException Thrown if an error occurs
      */
-    public Map getTypeMap() throws SQLException
+    public Map<String, Class<?>> getTypeMap() throws SQLException
     {
         assertAvailable();
         return this.conn.getTypeMap();
@@ -482,14 +482,14 @@ public class JDOConnectionJDBCImpl extends JDOConnectionImpl implements Connecti
         return Connection.class.equals(iface);
     }
 
-    public Object unwrap(Class iface) throws SQLException
+    public <T> T unwrap(Class<T> iface) throws SQLException
     {
         if (!Connection.class.equals(iface))
         {
             throw new SQLException("Connection of type [" + getClass().getName() +
                    "] can only be unwrapped as [java.sql.Connection], not as [" + iface.getName() + "]");
         }
-        return this;
+        return (T) this;
     }
 
     public void setSchema(String schema) throws SQLException

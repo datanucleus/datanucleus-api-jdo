@@ -66,13 +66,13 @@ public class LifecycleListenerForClass
      * @param cls The class
      * @return Whether it is supported
      */
-    public boolean forClass(Class cls)
+    public boolean forClass(Class<?> cls)
     {
         if (classes == null)
         {
             return true;
         }
-        
+
         for (int i=0;i<classes.length;i++)
         {
             if (classes[i].isAssignableFrom(cls))

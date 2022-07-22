@@ -106,7 +106,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     private boolean closed = false;
 
     /** Map of user objects attached to this PM. */
-    private Map userObjectMap = null;
+    private Map<Object, Object> userObjectMap = null;
 
     /** User object attached to the PM. */
     private Object userObject = null;
@@ -133,7 +133,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
      */
     public JDOPersistenceManager(JDOPersistenceManagerFactory pmf, String userName, String password)
     {
-        Map<String, Object> options = new HashMap();
+        Map<String, Object> options = new HashMap<>();
         options.put(ExecutionContext.OPTION_USERNAME, userName);
         options.put(ExecutionContext.OPTION_PASSWORD, password);
         this.ec = pmf.getNucleusContext().getExecutionContext(this, options);
@@ -447,7 +447,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void evictAll(Collection pcs)
     {
         assertIsOpen();
-        ArrayList failures = new ArrayList();
+        List<Throwable> failures = new ArrayList<>();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -463,7 +463,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010036"), (Exception[]) failures.toArray(new Exception[0]));
+            throw new JDOUserException(Localiser.msg("010036"), failures.toArray(new Exception[0]));
         }
     }
 
@@ -524,7 +524,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void refreshAll(Collection pcs)
     {
         assertIsOpen();
-        ArrayList failures = new ArrayList();
+        List<Throwable> failures = new ArrayList<>();
         Iterator iter = pcs.iterator();
         while (iter.hasNext())
         {
@@ -540,7 +540,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010037"), (Exception[]) failures.toArray(new Exception[0]));
+            throw new JDOUserException(Localiser.msg("010037"), failures.toArray(new Exception[0]));
         }
     }
 
@@ -897,7 +897,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public void makeTransientAll(Collection pcs, boolean useFetchPlan)
     {
         assertIsOpen();
-        ArrayList failures = new ArrayList();
+        List<Throwable> failures = new ArrayList<>();
         Iterator i = pcs.iterator();
         FetchPlanState state = null;
         if (useFetchPlan)
@@ -919,7 +919,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010041"), (Exception[]) failures.toArray(new Exception[0]));
+            throw new JDOUserException(Localiser.msg("010041"), failures.toArray(new Exception[0]));
         }
     }
 
@@ -983,7 +983,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         assertActiveTransaction();
 
-        ArrayList failures = new ArrayList();
+        List<Throwable> failures = new ArrayList<>();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -999,7 +999,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010042"), (Exception[]) failures.toArray(new Exception[0]));
+            throw new JDOUserException(Localiser.msg("010042"), failures.toArray(new Exception[0]));
         }
     }
 
@@ -1067,7 +1067,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertIsOpen();
         assertActiveTransaction();
 
-        ArrayList failures = new ArrayList();
+        List<Throwable> failures = new ArrayList<>();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -1083,7 +1083,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (!failures.isEmpty())
         {
-            throw new JDOUserException(Localiser.msg("010043"), (Exception[]) failures.toArray(new Exception[0]));
+            throw new JDOUserException(Localiser.msg("010043"), failures.toArray(new Exception[0]));
         }
     }
 
@@ -1168,7 +1168,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
 
         // Detach the objects
         FetchPlanState state = new DetachState(ec.getApiAdapter());
-        List detacheds = new ArrayList();
+        List<T> detacheds = new ArrayList<>();
         for (T pc : pcs)
         {
             if (pc == null)
@@ -1943,7 +1943,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
         if (userObjectMap == null)
         {
-            userObjectMap = new HashMap();
+            userObjectMap = new HashMap<>();
         }
         if (value == null)
         {
@@ -2356,7 +2356,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     public Map<String, Object> getProperties()
     {
         assertIsOpen();
-        Map<String, Object> pmProps = new HashMap<String, Object>();
+        Map<String, Object> pmProps = new HashMap<>();
 
         Map<String, Object> ecProps = ec.getProperties();
         Iterator<Map.Entry<String, Object>> propertiesIter = ecProps.entrySet().iterator();

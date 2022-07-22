@@ -47,7 +47,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
         super(queryExpr);
     }
 
-    public LineStringExpressionImpl(Class cls, String name, ExpressionType type)
+    public LineStringExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }
@@ -78,7 +78,7 @@ public class LineStringExpressionImpl<T> extends GeometryExpressionImpl<T> imple
     @Override
     public GeometryExpression getPointN(NumericExpression position)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)position).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "getPointN", args);
         return new GeometryExpressionImpl(invokeExpr);

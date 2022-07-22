@@ -52,10 +52,10 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     @Override
     public Expression<V> get(Expression<K> expr)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
-        return new ExpressionImpl(invokeExpr);
+        return new ExpressionImpl<V>(invokeExpr);
     }
 
     /* (non-Javadoc)
@@ -64,10 +64,10 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
     @Override
     public Expression<V> get(K key)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new Literal(key));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "get", args);
-        return new ExpressionImpl(invokeExpr);
+        return new ExpressionImpl<V>(invokeExpr);
     }
 
     /* (non-Javadoc)
@@ -75,7 +75,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsEntry(Entry<K, V> entry)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new Literal(entry));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsEntry", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -86,7 +86,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsEntry(Expression<Entry<K, V>> expr)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsEntry", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -97,7 +97,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsKey(Expression<K> expr)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsKey", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -108,7 +108,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsKey(K key)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new Literal(key));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsKey", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -119,7 +119,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsValue(Expression<V> expr)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(((ExpressionImpl)expr).getQueryExpression());
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsValue", args);
         return new BooleanExpressionImpl(invokeExpr);
@@ -130,7 +130,7 @@ public class MapExpressionImpl<T extends Map<K, V>, K, V> extends ExpressionImpl
      */
     public BooleanExpression containsValue(V value)
     {
-        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList();
+        List<org.datanucleus.store.query.expression.Expression> args = new ArrayList<>();
         args.add(new Literal(value));
         org.datanucleus.store.query.expression.Expression invokeExpr = new InvokeExpression(queryExpr, "containsValue", args);
         return new BooleanExpressionImpl(invokeExpr);

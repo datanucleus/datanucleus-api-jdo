@@ -41,7 +41,7 @@ public class LinearRingExpressionImpl<T> extends GeometryExpressionImpl<T> imple
         super(queryExpr);
     }
 
-    public LinearRingExpressionImpl(Class cls, String name, ExpressionType type)
+    public LinearRingExpressionImpl(Class<T> cls, String name, ExpressionType type)
     {
         super(cls, name, type);
     }
