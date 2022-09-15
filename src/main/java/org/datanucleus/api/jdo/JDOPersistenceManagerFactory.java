@@ -1440,11 +1440,10 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the second data store connection factory.  This is
-     * needed for managed environments to get nontransactional connections for
-     * optimistic transactions.  JDO implementations
-     * will support specific connection factories.  The connection
-     * factory interfaces are not part of the JDO specification.
+     * Set the second data store connection factory.  
+     * This is needed for managed environments to get nontransactional connections for optimistic transactions.  
+     * JDO implementations will support specific connection factories.
+     * The connection factory interfaces are not part of the JDO specification.
      * @param connectionFactory the data store connection factory.
      */
     public void setConnectionFactory2(Object connectionFactory)
@@ -1454,8 +1453,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default Multithreaded setting for all <i>PersistenceManager</i>
-     * instances obtained from this factory.
+     * Set the default Multithreaded setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default Multithreaded setting.
      */
     public void setMultithreaded(boolean flag)
@@ -1465,8 +1463,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default Optimistic setting for all <i>PersistenceManager</i>
-     * instances obtained from this factory.
+     * Set the default Optimistic setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default Optimistic setting.
      */
     public void setOptimistic(boolean flag)
@@ -1476,8 +1473,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Set the default RetainValues setting for all <i>PersistenceManager</i>
-     * instances obtained from this factory.
+     * Set the default RetainValues setting for all <i>PersistenceManager</i> instances obtained from this factory.
      * @param flag the default RetainValues setting.
      */
     public void setRetainValues(boolean flag)
@@ -1749,9 +1745,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the name for the second data store connection factory.  This is
-     * needed for managed environments to get nontransactional connections for
-     * optimistic transactions.
+     * Get the name for the second data store connection factory.
+     * This is needed for managed environments to get nontransactional connections for optimistic transactions.
      * @return the name of the data store connection factory.
      */
     public String getConnectionFactory2Name()
@@ -1769,9 +1764,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
     }
 
     /**
-     * Get the second data store connection factory.  This is
-     * needed for managed environments to get nontransactional connections for
-     * optimistic transactions.
+     * Get the second data store connection factory.
+     * This is needed for managed environments to get nontransactional connections for optimistic transactions.
      * @return the data store connection factory.
      */
     public Object getConnectionFactory2()
@@ -1916,8 +1910,7 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
 
     /**
      * Accessor for the filename of the persistence.xml file.
-     * This is for the case where an application has placed the persistence.xml somewhere else maybe
-     * outside the CLASSPATH.
+     * This is for the case where an application has placed the persistence.xml somewhere else maybe outside the CLASSPATH.
      * @return the filename of the persistence unit
      */
     public String getPersistenceXmlFilename()
@@ -2320,10 +2313,12 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
         FileMetaData filemd = ((JDOMetadataImpl)metadata).getInternal();
 
         // Check if already defined
-        for (int i=0;i<filemd.getNoOfPackages();i++)
+        int numPackages = filemd.getNoOfPackages();
+        for (int i=0;i<numPackages;i++)
         {
             PackageMetaData pmd = filemd.getPackage(i);
-            for (int j=0;j<pmd.getNoOfClasses();j++)
+            int numClasses = pmd.getNoOfClasses();
+            for (int j=0;j<numClasses;j++)
             {
                 ClassMetaData cmd = pmd.getClass(j);
                 if (mmgr.hasMetaDataForClass(cmd.getFullClassName()))
@@ -2331,7 +2326,8 @@ public class JDOPersistenceManagerFactory implements PersistenceManagerFactory, 
                     throw new JDOUserException("Cannot redefine metadata for " + cmd.getFullClassName());
                 }
             }
-            for (int j=0;j<pmd.getNoOfInterfaces();j++)
+            int numInterfaces = pmd.getNoOfInterfaces();
+            for (int j=0;j<numInterfaces;j++)
             {
                 InterfaceMetaData imd = pmd.getInterface(j);
                 if (mmgr.hasMetaDataForClass(imd.getFullClassName()))
