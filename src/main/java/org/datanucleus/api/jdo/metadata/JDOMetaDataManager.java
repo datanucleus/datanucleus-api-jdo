@@ -273,12 +273,14 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
         // Register the classes and interfaces for later use
         if (filemd.getType() != MetaDataFileType.JDO_QUERY_FILE)
         {
-            for (int i = 0; i < filemd.getNoOfPackages(); i++)
+            int numPackages = filemd.getNoOfPackages();
+            for (int i = 0; i < numPackages; i++)
             {
                 PackageMetaData pmd = filemd.getPackage(i);
 
                 // Register all classes into the respective lookup maps
-                for (int j = 0; j < pmd.getNoOfClasses(); j++)
+                int numClasses = pmd.getNoOfClasses();
+                for (int j = 0; j < numClasses; j++)
                 {
                     ClassMetaData cmd = pmd.getClass(j);
                     if (classesWithoutPersistenceInfo.contains(cmd.getFullClassName()))
@@ -318,7 +320,8 @@ public class JDOMetaDataManager extends MetaDataManagerImpl
                 }
 
                 // Register all interfaces into the respective lookup maps
-                for (int j = 0; j < pmd.getNoOfInterfaces(); j++)
+                int numInterfaces = pmd.getNoOfInterfaces();
+                for (int j = 0; j < numInterfaces; j++)
                 {
                     InterfaceMetaData intfmd = pmd.getInterface(j);
                     if (filemd.getType() == MetaDataFileType.JDO_FILE || filemd.getType() == MetaDataFileType.ANNOTATIONS)

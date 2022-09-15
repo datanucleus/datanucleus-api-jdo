@@ -1385,9 +1385,10 @@ public class JDOXmlMetaDataHelper
         str.append(">\n");
 
         // Add packages
-        if (filemd.getNoOfPackages() > 0)
+        int numPackages = filemd.getNoOfPackages();
+        if (numPackages > 0)
         {
-            for (int i=0;i<filemd.getNoOfPackages();i++)
+            for (int i=0;i<numPackages;i++)
             {
                 PackageMetaData pmd = filemd.getPackage(i);
                 str.append(getXMLForMetaData(pmd, prefix+indent, indent));
