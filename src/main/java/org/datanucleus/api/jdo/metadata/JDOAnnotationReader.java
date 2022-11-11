@@ -622,6 +622,11 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     }
                 }
             }
+            else if (annName.equals(JDOAnnotationUtils.CONVERT))
+            {
+                // TODO Support this when @Convert is for TYPE also
+                NucleusLogger.METADATA.warn("Don't currently support @Convert specified on a class. Specify a global default converter for the type, or specify on individual fields");
+            }
             else if (annName.equals(JDOAnnotationUtils.EXTENSION))
             {
                 String vendorName = (String)annotationValues.get("vendorName");
