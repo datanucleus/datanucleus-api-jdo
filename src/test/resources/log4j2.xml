@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" strict="true" name="datanucleus">
+
+    <Properties>
+        <Property name="dnFilename">datanucleus.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Appender type="File" name="DataNucleus" fileName="${dnFilename}">
+            <Layout type="PatternLayout" pattern="%d{HH:mm:ss,SSS} (%t) %-5p [%c] - %m%n"/>
+        </Appender>
+    </Appenders>
+  
+    <Loggers>
+        <!-- DataNucleus Loggers -->
+        <Logger name="DataNucleus" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+    
+        <!--
+        <Logger name="DataNucleus.Persistence" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Transaction" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Connection" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Query" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Cache" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.MetaData" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Datastore" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.General" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Lifecycle" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.ValueGeneration" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.Enhancer" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.SchemaTool" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.JDO" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="DataNucleus.JPA" level="info" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        -->
+    
+        <!-- C3P0 Loggers -->
+        <Logger name="com.mchange.v2" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- DBCP2 Loggers -->
+        <Logger name="org.apache.commons.dbcp2" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- Proxool Loggers -->
+        <Logger name="org.logicalcobwebs.proxool" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- BoneCP Loggers -->
+        <Logger name="com.jolbox.bonecp" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- HikariCP Loggers -->
+        <Logger name="com.zaxxer.hikari" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+       
+        <!-- HBase Loggers -->
+        <Logger name="org.apache.hadoop" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="org.apache.zookeeper" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- EHCache Loggers -->
+        <Logger name="net.sf.ehcache" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="org.mortbay" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- Apache BVAL Loggers -->
+        <Logger name="org.apache.bval" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- Cassandra Loggers -->
+        <Logger name="com.datastax.driver" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="com.datastax.oss.driver" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+        <Logger name="io.netty" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- MongoDB Loggers -->
+        <Logger name="org.mongodb" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <!-- Flyway Loggers -->
+        <Logger name="com.googlecode.flyway" level="warn" additivity="false">
+            <AppenderRef ref="DataNucleus"/>
+        </Logger>
+
+        <Root level="error">
+            <AppenderRef ref="DataNucleus"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
