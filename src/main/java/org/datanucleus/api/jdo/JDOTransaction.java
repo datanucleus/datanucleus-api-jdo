@@ -128,19 +128,33 @@ public class JDOTransaction implements Transaction
                     // Optimistic exceptions - return a single JDOOptimisticVerificationException
                     // with all individual exceptions nested
                     Throwable[] nested = ex.getNestedExceptions();
-                    JDOOptimisticVerificationException[] jdoNested = new JDOOptimisticVerificationException[nested.length];
-                    for (int i=0;i<nested.length;i++)
+                    final JDOOptimisticVerificationException[] jdoNested;
+                    if (nested == null && ex instanceof NucleusOptimisticException)
                     {
-                        NucleusException nestedEx;
-                        if (nested[i] instanceof NucleusException)
+                        // This is handling the case where an optimistic exception is thrown
+                        // as part of closing last batch in this case it isn't nested further.
+                        // This happens when closing the connection that was used and all its
+                        // listeners is informed - in particular this happens here:
+                        // org.datanucleus.store.connection.ManagedConnectionResourceListener.transactionFlushed
+                        // from listener added here:
+                        // org.datanucleus.store.rdbms.SQLController.setConnectionStatementState
+                        jdoNested = new JDOOptimisticVerificationException[] {(JDOOptimisticVerificationException) JDOAdapter.getJDOExceptionForNucleusException(ex)};
+                    }
+                    else {
+                        jdoNested = new JDOOptimisticVerificationException[nested.length];
+                        for (int i = 0; i < nested.length; i++)
                         {
-                            nestedEx = (NucleusException)nested[i];
+                            NucleusException nestedEx;
+                            if (nested[i] instanceof NucleusException)
+                            {
+                                nestedEx = (NucleusException) nested[i];
+                            }
+                            else
+                            {
+                                nestedEx = new NucleusException(nested[i].getMessage(), nested[i]);
+                            }
+                            jdoNested[i] = (JDOOptimisticVerificationException) JDOAdapter.getJDOExceptionForNucleusException(nestedEx);
                         }
-                        else
-                        {
-                            nestedEx = new NucleusException(nested[i].getMessage(),nested[i]);                        
-                        }
-                        jdoNested[i] = (JDOOptimisticVerificationException)JDOAdapter.getJDOExceptionForNucleusException(nestedEx);
                     }
                     throw new JDOOptimisticVerificationException(ne.getMessage(), jdoNested);
                 }
