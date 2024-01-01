@@ -122,25 +122,32 @@ public class JDOTransaction implements Transaction
                     }
                     else
                     {
-                        ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(),ne.getNestedExceptions()[0]);                        
+                        ex = new NucleusException(ne.getNestedExceptions()[0].getMessage(), ne.getNestedExceptions()[0]);                        
                     }
 
-                    // Optimistic exceptions - return a single JDOOptimisticVerificationException
-                    // with all individual exceptions nested
+                    // Optimistic exceptions - return a single JDOOptimisticVerificationException with all individual exceptions nested
                     Throwable[] nested = ex.getNestedExceptions();
                     final JDOOptimisticVerificationException[] jdoNested;
-                    if (nested == null && ex instanceof NucleusOptimisticException)
+                    if (nested == null)
                     {
-                        // This is handling the case where an optimistic exception is thrown
-                        // as part of closing last batch in this case it isn't nested further.
-                        // This happens when closing the connection that was used and all its
-                        // listeners is informed - in particular this happens here:
-                        // org.datanucleus.store.connection.ManagedConnectionResourceListener.transactionFlushed
-                        // from listener added here:
-                        // org.datanucleus.store.rdbms.SQLController.setConnectionStatementState
-                        jdoNested = new JDOOptimisticVerificationException[] {(JDOOptimisticVerificationException) JDOAdapter.getJDOExceptionForNucleusException(ex)};
+                        if (ex instanceof NucleusOptimisticException)
+                        {
+                            // This is handling the case where an optimistic exception is thrown
+                            // as part of closing last batch in this case it isn't nested further.
+                            // This happens when closing the connection that was used and all its
+                            // listeners is informed - in particular this happens here:
+                            // org.datanucleus.store.connection.ManagedConnectionResourceListener.transactionFlushed
+                            // from listener added here:
+                            // org.datanucleus.store.rdbms.SQLController.setConnectionStatementState
+                            jdoNested = new JDOOptimisticVerificationException[] {(JDOOptimisticVerificationException) JDOAdapter.getJDOExceptionForNucleusException(ex)};
+                        }
+                        else
+                        {
+                            throw JDOAdapter.getJDOExceptionForNucleusException(ex);
+                        }
                     }
-                    else {
+                    else
+                    {
                         jdoNested = new JDOOptimisticVerificationException[nested.length];
                         for (int i = 0; i < nested.length; i++)
                         {
