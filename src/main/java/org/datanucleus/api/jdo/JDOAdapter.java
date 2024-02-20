@@ -591,7 +591,7 @@ public class JDOAdapter implements ApiAdapter
                 }
                 else if (ne.getFailedObject() != null)
                 {
-                    return new JDOFatalDataStoreException(ne.getMessage(), ne.getFailedObject());
+                    return new JDOFatalDataStoreException(ne.getMessage(), ne, ne.getFailedObject());
                 }
                 else
                 {
@@ -713,7 +713,7 @@ public class JDOAdapter implements ApiAdapter
             }
             else if (ne.getFailedObject() != null)
             {
-                return new JDOOptimisticVerificationException(ne.getMessage(), ne.getFailedObject());
+                return new JDOOptimisticVerificationException(ne.getMessage(), ne, ne.getFailedObject());
             }
             else
             {
