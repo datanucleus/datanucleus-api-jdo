@@ -581,14 +581,17 @@ public class JDOAdapter implements ApiAdapter
         {
             if (ne.isFatal())
             {
-                //sadly JDOFatalDataStoreException dont allow nested exceptions and failed objects together
-                if (ne.getFailedObject() != null)
+                if (ne.getNestedExceptions() != null)
                 {
-                    return new JDOFatalDataStoreException(ne.getMessage(), ne.getFailedObject());
-                }
-                else if (ne.getNestedExceptions() != null)
-                {
+                    if (ne.getFailedObject() != null)
+                    {
+                        return new JDOFatalDataStoreException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
+                    }
                     return new JDOFatalDataStoreException(ne.getMessage(), ne.getNestedExceptions());
+                }
+                else if (ne.getFailedObject() != null)
+                {
+                    return new JDOFatalDataStoreException(ne.getMessage(), ne, ne.getFailedObject());
                 }
                 else
                 {
@@ -700,14 +703,17 @@ public class JDOAdapter implements ApiAdapter
         }
         else if (ne instanceof NucleusOptimisticException)
         {
-            //sadly JDOOptimisticVerificationException dont allow nested exceptions and failed objects together
-            if (ne.getFailedObject() != null)
+            if (ne.getNestedExceptions() != null)
             {
-                return new JDOOptimisticVerificationException(ne.getMessage(), ne.getFailedObject());
-            }
-            else if (ne.getNestedExceptions() != null)
-            {
+                if (ne.getFailedObject() != null)
+                {
+                    return new JDOOptimisticVerificationException(ne.getMessage(), ne.getNestedExceptions(), ne.getFailedObject());
+                }
                 return new JDOOptimisticVerificationException(ne.getMessage(), ne.getNestedExceptions());
+            }
+            else if (ne.getFailedObject() != null)
+            {
+                return new JDOOptimisticVerificationException(ne.getMessage(), ne, ne.getFailedObject());
             }
             else
             {
