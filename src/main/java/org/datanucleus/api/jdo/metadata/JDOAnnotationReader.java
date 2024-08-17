@@ -457,6 +457,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     for (Index idx : values)
                     {
                         IndexMetaData idxmd = JDOAnnotationUtils.getIndexMetaData(idx.name(), idx.table(), "" + idx.unique(), idx.members(), idx.columns());
+                        JDOAnnotationUtils.addExtensionsToMetaData(idxmd, idx.extensions());
                         if (idxmd.getNumberOfColumns() == 0 && idxmd.getNumberOfMembers() == 0)
                         {
                             NucleusLogger.METADATA.warn(Localiser.msg("044204", cls.getName()));
@@ -499,6 +500,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     for (Unique uni : values)
                     {
                         UniqueMetaData unimd = JDOAnnotationUtils.getUniqueMetaData(uni.name(), uni.table(), "" + uni.deferred(), uni.members(), uni.columns());
+                        JDOAnnotationUtils.addExtensionsToMetaData(unimd, uni.extensions());
                         if (unimd.getNumberOfColumns() == 0 && unimd.getNumberOfMembers() == 0)
                         {
                             NucleusLogger.METADATA.warn(Localiser.msg("044205", cls.getName()));
@@ -543,6 +545,7 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                         String deleteAction = JDOAnnotationUtils.getForeignKeyActionString(fk.deleteAction());
                         String updateAction = JDOAnnotationUtils.getForeignKeyActionString(fk.updateAction());
                         ForeignKeyMetaData fkmd = JDOAnnotationUtils.getFKMetaData(fk.name(), fk.table(), fk.unique(), "" + fk.deferred(), deleteAction, updateAction, fk.members(), fk.columns());
+                        JDOAnnotationUtils.addExtensionsToMetaData(fkmd, fk.extensions());
                         if (fkmd.getNumberOfColumns() == 0 && fkmd.getNumberOfMembers() == 0)
                         {
                             NucleusLogger.METADATA.warn(Localiser.msg("044206", cls.getName()));
