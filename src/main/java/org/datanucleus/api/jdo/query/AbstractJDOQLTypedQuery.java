@@ -167,9 +167,9 @@ public abstract class AbstractJDOQLTypedQuery<T>
                 resultExprs[i++] = resultExpr;
             }
 
-            if (resultExprs.length == 1 && resultExprs[0] instanceof PrimaryExpression)
+            if (resultExprs.length == 1 && resultExprs[0] instanceof PrimaryExpression && resultClass == null)
             {
-                // Check for special case of "Object(p)" in result, which means no special result
+                // Check for special case of "Object(p)" in result and no result class, which means no special result
                 String resultExprId = ((PrimaryExpression)resultExprs[0]).getId();
                 if (resultExprId.equalsIgnoreCase(candidateAlias))
                 {
