@@ -997,17 +997,17 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         assertIsModifiable();
         discardCompiled();
 
-        if (exprs != null && exprs.length == 1 && exprs[0] == candidate())
-        {
-            // User has set the result to "this", so just ignore since default is "distinct this"
-            result = null;
-            if (!distinct)
-            {
-                this.resultDistinct = distinct;
-            }
-        }
-        else
-        {
+//        if (exprs != null && exprs.length == 1 && exprs[0] == candidate())
+//        {
+//            // User has set the result to "this", so just ignore since default is "distinct this"
+//            result = null;
+//            if (!distinct)
+//            {
+//                this.resultDistinct = distinct;
+//            }
+//        }
+//        else
+//        {
             result = null;
             if (exprs != null && exprs.length > 0)
             {
@@ -1018,7 +1018,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
                 }
             }
             this.resultDistinct = distinct;
-        }
+//        }
 
         return this;
     }
