@@ -1149,7 +1149,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     /**
      * Checks whether the specified result expression is a result of a candidate("this") call
      * @param resultExpr the result expression to be checked
-     * @return
+     * @return Whether the expression is the candidate ("this")
      */
     private boolean isCandidateThisExpression(ExpressionImpl resultExpr)
     {
@@ -1157,14 +1157,14 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         {
             // result expression is a PersistableExpressionImpl
             PersistableExpressionImpl persExpr = (PersistableExpressionImpl)resultExpr;
-            if (!persExpr.isParameter() && !persExpr.isVariable() &&
-                    persExpr.getQueryExpression() instanceof PrimaryExpression) {
+            if (!persExpr.isParameter() && !persExpr.isVariable() && persExpr.getQueryExpression() instanceof PrimaryExpression)
+            {
                 // it is not a variable or parameter and its query expression is a PrimaryExpression
                 PrimaryExpression primaryExpr = (PrimaryExpression)persExpr.getQueryExpression();
                 List<String> tuples = primaryExpr.getTuples();
+
                 // the primary Expression does not have a parent and its tuple list constsis of the string "this"
-                return (primaryExpr.getLeft() == null &&
-                        tuples != null && tuples.size() == 1 && "this".equalsIgnoreCase(tuples.get(0)));
+                return (primaryExpr.getLeft() == null && tuples != null && tuples.size() == 1 && "this".equalsIgnoreCase(tuples.get(0)));
             }
         }
         return false;
