@@ -73,6 +73,7 @@ import org.datanucleus.store.query.Query.QueryType;
 import org.datanucleus.store.query.compiler.QueryCompilation;
 import org.datanucleus.store.query.expression.Literal;
 import org.datanucleus.store.query.expression.ParameterExpression;
+import org.datanucleus.store.query.expression.PrimaryExpression;
 import org.datanucleus.store.query.expression.VariableExpression;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.StringUtils;
@@ -998,28 +999,16 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         assertIsModifiable();
         discardCompiled();
 
-//        if (exprs != null && exprs.length == 1 && exprs[0] == candidate())
-//        {
-//            // User has set the result to "this", so just ignore since default is "distinct this"
-//            result = null;
-//            if (!distinct)
-//            {
-//                this.resultDistinct = distinct;
-//            }
-//        }
-//        else
-//        {
-            result = null;
-            if (exprs != null && exprs.length > 0)
+        result = null;
+        if (exprs != null && exprs.length > 0)
+        {
+            result = new ArrayList<ExpressionImpl>();
+            for (int i=0;i<exprs.length;i++)
             {
-                result = new ArrayList<ExpressionImpl>();
-                for (int i=0;i<exprs.length;i++)
-                {
-                    result.add((ExpressionImpl)exprs[i]);
-                }
+                result.add((ExpressionImpl)exprs[i]);
             }
-            this.resultDistinct = distinct;
-//        }
+        }
+        this.resultDistinct = distinct;
 
         return this;
     }
@@ -1031,6 +1020,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public <R> List<R> executeResultList(Class<R> resultCls)
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result == null && resultCls == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result AND resultClass unset. Call executeList instead.");
@@ -1051,6 +1041,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public <R> R executeResultUnique(Class<R> resultCls)
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result == null && resultCls == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result AND resultClass unset. Call executeUnique instead.");
@@ -1071,6 +1062,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public List executeResultList()
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultList method when query has result unset. Call executeList instead.");
@@ -1091,6 +1083,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public Object executeResultUnique()
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result == null)
         {
             throw new JDOUserException("Cannot call executeResultUnique method when query has result unset. Call executeUnique instead.");
@@ -1110,6 +1103,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public List<T> executeList()
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result != null)
         {
             throw new JDOUserException("Cannot call executeList method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultList instead.");
@@ -1128,6 +1122,7 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
     public T executeUnique()
     {
         assertIsOpen();
+        checkCandidateResult();
         if (result != null)
         {
             throw new JDOUserException("Cannot call executeUnique method when query has result set to " + StringUtils.collectionToString(result) + ". Call executeResultUnique instead.");
@@ -1138,6 +1133,41 @@ public class JDOQLTypedQueryImpl<T> extends AbstractJDOQLTypedQuery<T> implement
         unique = true;
 
         return (T)executeInternalQuery(getInternalQuery());
+    }
+
+    /**
+     * Helper method to check the result expression(s).
+     * If the user has set the result to "this", then just ignore since default is "distinct this"
+     */
+    private void checkCandidateResult()
+    {
+        if (result != null && result.size() == 1 && isCandidateThisExpression(result.get(0)))
+        {
+            result = null;
+        }
+    }
+
+    /**
+     * Checks whether the specified result expression is a result of a candidate("this") call
+     * @param resultExpr the result expression to be checked
+     * @return Whether the candidate is "this"
+     */
+    private boolean isCandidateThisExpression(ExpressionImpl resultExpr)
+    {
+        if ((resultExpr != null)  && (resultExpr instanceof PersistableExpressionImpl))
+        {
+            // result expression is a PersistableExpressionImpl
+            PersistableExpressionImpl persExpr = (PersistableExpressionImpl)resultExpr;
+            if (!persExpr.isParameter() && !persExpr.isVariable() && persExpr.getQueryExpression() instanceof PrimaryExpression) 
+            {
+                // it is not a variable or parameter and its query expression is a PrimaryExpression
+                PrimaryExpression primaryExpr = (PrimaryExpression)persExpr.getQueryExpression();
+                List<String> tuples = primaryExpr.getTuples();
+                // the primary Expression does not have a parent and its tuple list consists of the string "this"
+                return (primaryExpr.getLeft() == null && tuples != null && tuples.size() == 1 && "this".equalsIgnoreCase(tuples.get(0)));
+            }
+        }
+        return false;
     }
 
     /**
