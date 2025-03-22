@@ -58,7 +58,7 @@ public class ExpressionImpl<T> implements Expression<T>
         if (parent != null)
         {
             org.datanucleus.store.query.expression.Expression parentQueryExpr = ((ExpressionImpl)parent).getQueryExpression();
-            if (name == null && parentQueryExpr instanceof DyadicExpression && ((DyadicExpression)parentQueryExpr).getOperator() == org.datanucleus.store.query.expression.Expression.OP_CAST)
+            if (name == null && parentQueryExpr instanceof DyadicExpression && parentQueryExpr.getOperator() == org.datanucleus.store.query.expression.Expression.OP_CAST)
             {
                 queryExpr = parentQueryExpr;
             }
