@@ -2112,6 +2112,12 @@ public class JDOAnnotationReader extends AbstractAnnotationReader
                     ordermd.setParent(mmd);
                     mmd.setOrderMetaData(ordermd);
                 }
+
+                // Propagate vendor extensions to container metadata (for cache, etc.)
+                if (extensions != null)
+                {
+                    contmd.addExtensions(extensions);
+                }
             }
             if (joinmd != null)
             {
