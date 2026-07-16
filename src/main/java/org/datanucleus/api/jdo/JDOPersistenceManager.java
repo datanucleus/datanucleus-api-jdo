@@ -370,6 +370,11 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         }
     }
 
+    public int getMaximumCollectNestedExceptions() {
+        assertIsOpen();
+        return ec.getMaximumCollectNestedExceptions();
+    }
+
     /**
      * Accessor for the current transaction.
      * @return The transaction
@@ -448,6 +453,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         assertIsOpen();
         List<Throwable> failures = new ArrayList<>();
+        int maximumCollectNestedExceptions = this.getMaximumCollectNestedExceptions();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -459,6 +465,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             catch (JDOException e)
             {
                 failures.add(e);
+                if (failures.size() >= maximumCollectNestedExceptions) {
+                    throw new JDOUserException(Localiser.msg("010036"), failures.toArray(new Exception[0]));
+                }
             }
         }
         if (!failures.isEmpty())
@@ -525,6 +534,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         assertIsOpen();
         List<Throwable> failures = new ArrayList<>();
+        int maximumCollectNestedExceptions = this.getMaximumCollectNestedExceptions();
         Iterator iter = pcs.iterator();
         while (iter.hasNext())
         {
@@ -536,6 +546,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             catch (JDOException e)
             {
                 failures.add(e);
+                if (failures.size() >= maximumCollectNestedExceptions) {
+                    throw new JDOUserException(Localiser.msg("010037"), failures.toArray(new Exception[0]));
+                }
             }
         }
         if (!failures.isEmpty())
@@ -898,6 +911,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
     {
         assertIsOpen();
         List<Throwable> failures = new ArrayList<>();
+        int maximumCollectNestedExceptions = this.getMaximumCollectNestedExceptions();
         Iterator i = pcs.iterator();
         FetchPlanState state = null;
         if (useFetchPlan)
@@ -915,6 +929,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             catch (RuntimeException e)
             {
                 failures.add(e);
+                if (failures.size() >= maximumCollectNestedExceptions) {
+                    throw new JDOUserException(Localiser.msg("010041"), failures.toArray(new Exception[0]));
+                }
             }
         }
         if (!failures.isEmpty())
@@ -984,6 +1001,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertActiveTransaction();
 
         List<Throwable> failures = new ArrayList<>();
+        int maximumCollectNestedExceptions = this.getMaximumCollectNestedExceptions();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -995,6 +1013,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             catch (RuntimeException e)
             {
                 failures.add(e);
+                if (failures.size() >= maximumCollectNestedExceptions) {
+                    throw new JDOUserException(Localiser.msg("010042"), failures.toArray(new Exception[0]));
+                }
             }
         }
         if (!failures.isEmpty())
@@ -1068,6 +1089,7 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
         assertActiveTransaction();
 
         List<Throwable> failures = new ArrayList<>();
+        int maximumCollectNestedExceptions = this.getMaximumCollectNestedExceptions();
         Iterator i = pcs.iterator();
         while (i.hasNext())
         {
@@ -1079,6 +1101,9 @@ public class JDOPersistenceManager implements javax.jdo.PersistenceManager
             catch (RuntimeException e)
             {
                 failures.add(e);
+                if (failures.size() >= maximumCollectNestedExceptions) {
+                    throw new JDOUserException(Localiser.msg("010043"), failures.toArray(new Exception[0]));
+                }
             }
         }
         if (!failures.isEmpty())
